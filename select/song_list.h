@@ -1,0 +1,9 @@
+#include LUNATIC_MELODY_SELECT_SONG_LIST_H
+#include LUNATIC_ΜELODY_SELECT_SONG_LIST_H
+
+namespace lm
+{
+	class SongList
+};
+
+#endif	//LUNATIC_MELODY_SELECT_SONG_LIST_H
