@@ -2,11 +2,11 @@
 
 lm::System *lm::System::m_instance = 0;
 
-bool lm::System::init()
+void lm::System::init()
 {
 	screen_width = 1280;
 	screen_heigh = 720;
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+	SDL_Init(SDL_INIT_EVERYTHING);
 
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
@@ -26,7 +26,7 @@ bool lm::System::init()
 	current_state = MainState::instance();
 }
 
-bool lm::System::run()
+void lm::System::run()
 {
 	while (!ControlHandler::instance()->IsQuit())
 	{
@@ -39,7 +39,7 @@ bool lm::System::run()
 	}
 }
 
-bool lm::System::clear()
+void lm::System::clear()
 {
 	SDL_DestroyRenderer(system_renderer);
 	SDL_DestroyWindow(system_window);
@@ -49,15 +49,14 @@ bool lm::System::clear()
 	IMG_Quit();
 }
 
-bool lm::System::PushState(std::string id, State *s)
+void lm::System::PushState(std::string id, State *s)
 {
 
 	m_state[id] = s;
 
 }
 
-bool lm::System::SwitchState(std::string id)
+void lm::System::SwitchState(std::string id)
 {
 //	current_state_id = id;
-	return true;
 }

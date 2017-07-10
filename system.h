@@ -29,9 +29,9 @@ namespace lm
 				}
 				return m_instance;
 			}
-			bool init();
-			bool run();
-			bool clear();
+			void init();
+			void run();
+			void clear();
 			int GetWindowWidth()
 			{
 				return screen_width;
@@ -40,8 +40,8 @@ namespace lm
 			{
 				return screen_heigh;
 			}
-			bool PushState(std::string id, State *s);
-			bool SwitchState(std::string id);
+			void PushState(std::string id, State *s);
+			void SwitchState(std::string id);
 
 			State *current_state;
 		private:
