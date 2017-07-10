@@ -27,6 +27,7 @@ void lm::MainState::clear()
 	main_about->clear();
 	main_character->clear();
 	background->clear();
+	TextureManager::instance()->clearfont("assets/GeosansLight-Oblique.ttf");
 }
 
 void lm::MainState::update()
