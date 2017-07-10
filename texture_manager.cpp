@@ -31,6 +31,18 @@ void lm::TextureManager::clear()
 	texture.clear();
 }
 
+void lm::TextureManager::clear(std::string path)
+{
+	SDL_DestroyTexture(texture[path]);
+	texture[path] = NULL;
+}
+
+void lm::TextureManager::clearfont(std::string path)
+{
+	TTF_CloseFont(font[path]);
+	font[path] = NULL;
+}
+
 void lm::TextureManager::render(std::string path, int x, int y, int w, int h)
 {
 	SDL_Rect dest_rect = { x, y, w, h };

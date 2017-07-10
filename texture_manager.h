@@ -26,8 +26,9 @@ namespace lm
 			void load(std::string path);
 			void load(SDL_Texture *load_texture, std::string path);
 			void loadfont(std::string path, int size);
-
 			void clear();
+			void clear(std::string path);
+			void clearfont(std::string path);
 			void render(std::string path, int x, int y, int w, int h);
 			void render(SDL_Texture *load_texture, int x, int y, int w, int h);
 			void render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b);
