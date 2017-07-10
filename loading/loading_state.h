@@ -32,10 +32,9 @@ namespace lm
 			static LoadingState *m_instance;
 			Sprite *shutter_l;
 			Sprite *shutter_r;
+			int animate_duration;
 			double a_l;
 			double a_r;
-			float v_a;
-			float v_b;
 			bool is_entered;
 			bool is_loaded;
 			bool is_exited;
