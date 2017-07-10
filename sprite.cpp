@@ -22,7 +22,7 @@ void lm::Sprite::render()
 
 void lm::Sprite::clear()
 {
-	//do nothing
+	TextureManager::instance()->clear(m_path);
 }
 
 void lm::Sprite::SetPos(int x, int y)
