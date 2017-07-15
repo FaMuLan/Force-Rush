@@ -7,6 +7,7 @@ lm::ControlHandler::ControlHandler()
 	quit = false;
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
+//	touch_state.reserve(12);
 }
 
 bool lm::ControlHandler::IsKeyDown(SDL_Scancode k)
@@ -25,6 +26,18 @@ void lm::ControlHandler::GetMousePos(int &x, int &y)
 	y = mouse_pos.y;
 }
 
+bool lm::ControlHandler::GetTouch(lm::Finger *output)
+{
+	if (finger_count == touch_state.size() - 1)
+	{
+		finger_count = 0;
+		return false;
+	}
+	output = touch_state[finger_count];
+	finger_count++;	
+	return true;
+}
+
 bool lm::ControlHandler::IsQuit()
 {
 	return quit;
@@ -32,8 +45,15 @@ bool lm::ControlHandler::IsQuit()
 
 void lm::ControlHandler::update()
 {
+	for (unsigned int i = 0; i < touch_state.size(); i++)
+	{
+		delete touch_state[i];
+	}
+	touch_state.clear();
+
 	while (SDL_PollEvent(&e))
 	{
+		Finger *newFinger = new Finger;
 		switch (e.type)
 		{
 			case SDL_QUIT:
@@ -83,9 +103,21 @@ void lm::ControlHandler::update()
 				mouse_pos.x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
 				mouse_pos.y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
 				mouse_state[MOUSEBUTTON_LEFT] = true;
+				newFinger->x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
+				newFinger->y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
+				newFinger->dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
+				newFinger->dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+				newFinger->state = SDL_FINGERDOWN;
+				touch_state.push_back(newFinger);
 			break;
 			case SDL_FINGERUP:
 				mouse_state[MOUSEBUTTON_LEFT] = false;
+				newFinger->x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
+				newFinger->y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
+				newFinger->dx = 0;
+				newFinger->dy = 0;
+				newFinger->state = SDL_FINGERUP;
+				touch_state.push_back(newFinger);
 			break;
 		}	//switch (e.type)
 	}	//while (SDL_PollEvent(&e))
