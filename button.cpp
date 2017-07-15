@@ -15,7 +15,9 @@ void lm::Button::load(std::string path, std::string path_pressed, int x, int y, 
 void lm::Button::update()
 {
 	is_released = false;
+	Finger *touch_single;
 	int x, y;
+/*
 	ControlHandler::instance()->GetMousePos(x, y);
 	if (x >= m_x && y >= m_y && x <= (m_x + m_w) && y <= (m_y + m_h))
 	{
@@ -30,6 +32,35 @@ void lm::Button::update()
 				is_released = true;
 			}
 			is_pressed = false;
+		}
+	}
+	else
+	{
+		is_pressed = false;
+	}
+*/
+	if (ControlHandler::instance()->GetTouch(touch_single))
+	{
+		x = touch_single->x;
+		y = touch_single->y;
+		if (x >= m_x && y >= m_y && x <= (m_x + m_w) && y <= (m_y + m_h))
+		{
+			if (touch_single->state == SDL_FINGERDOWN)
+			{
+				is_pressed = true;
+			}
+			else if (touch_single->state == SDL_FINGERMOTION)
+			{
+				is_pressed = false;
+			}
+			else
+			{
+				if (is_pressed)
+				{
+					is_released = true;
+					is_pressed = false;
+				}
+			}
 		}
 	}
 	else
