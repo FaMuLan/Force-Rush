@@ -19,6 +19,7 @@ void lm::System::init()
 	IMG_Init(0);
 	TextureManager::instance()->init(system_renderer);
 	SoundManager::instance()->init();
+	ControlHandler::instance()->init();
 //	current_state_id = "main";
 //	PushState("main", main_state);
 	MainState::instance()->init();
@@ -30,17 +31,20 @@ void lm::System::run()
 {
 	while (!ControlHandler::instance()->IsQuit())
 	{
+		ControlHandler::instance()->update();
 		SDL_RenderClear(system_renderer);
 //		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
+		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
-		ControlHandler::instance()->update();
 	}
 }
 
 void lm::System::clear()
 {
+	ControlHandler::instance()->clear();
+	TextureManager::instance()->clear();
 	SDL_DestroyRenderer(system_renderer);
 	SDL_DestroyWindow(system_window);
 	system_renderer = NULL;
