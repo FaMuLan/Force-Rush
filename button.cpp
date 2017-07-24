@@ -10,12 +10,12 @@ void lm::Button::load(std::string path, std::string path_pressed, int x, int y, 
 	m_y = y;
 	m_w = w;
 	m_h = h;
+	has_pressed_id = 12;
 }
 
 void lm::Button::update()
 {
 	is_released = false;
-	Finger *touch_single;
 	int x, y;
 /*
 	ControlHandler::instance()->GetMousePos(x, y);
@@ -29,9 +29,9 @@ void lm::Button::update()
 		{
 			if (is_pressed)
 			{
-				is_released = true;
+				is_released = true;]}]|"
 			}
-			is_pressed = false;
+			is_pressed = false;]}]]
 		}
 	}
 	else
@@ -39,35 +39,52 @@ void lm::Button::update()
 		is_pressed = false;
 	}
 */
-	if (ControlHandler::instance()->GetTouch(touch_single))
+	if (!is_pressed)
 	{
-		x = touch_single->x;
-		y = touch_single->y;
-		if (x >= m_x && y >= m_y && x <= (m_x + m_w) && y <= (m_y + m_h))
+		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
-			if (touch_single->state == SDL_FINGERDOWN)
+			Finger load_finger = ControlHandler::instance()->GetFinger(i);
+			if (load_finger.x >= m_x && load_finger.y >= m_y && load_finger.x <= (m_x + m_w) && load_finger.y <= (m_y + m_h))
 			{
-				is_pressed = true;
-			}
-			else if (touch_single->state == SDL_FINGERMOTION)
-			{
-				is_pressed = false;
-			}
-			else
-			{
-				if (is_pressed)
+				if (load_finger.dx == 0 && load_finger.dy == 0)
 				{
-					is_released = true;
-					is_pressed = false;
+					is_pressed = true;
+					has_pressed_id = load_finger.id;
 				}
 			}
 		}
 	}
 	else
 	{
-		is_pressed = false;
+		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+		{
+			Finger load_finger = ControlHandler::instance()->GetFinger(i);
+			if (load_finger.id == has_pressed_id)
+			{
+				if (load_finger.dx != 0 || load_finger.dy != 0)
+				{
+					has_moved = true;
+				}
+			}
+			else if (i == ControlHandler::instance()->GetFingerCount() - 1)
+			{
+				if (!has_moved)
+				{
+					is_released = true;
+				}
+				is_pressed = false;
+			}
+		}
+		if (ControlHandler::instance()->GetFingerCount() == 0)
+		{
+			if (!has_moved)
+			{
+				is_released = true;
+			}
+			is_pressed = false;
+		}
 	}
-}
+}	//void lm::Button::update()
 
 void lm::Button::render()
 {

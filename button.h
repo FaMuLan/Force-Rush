@@ -9,6 +9,7 @@
 
 namespace lm
 {
+	typedef SDL_FingerID FingerID;
 	class Button : public Sprite
 	{
 		public:
@@ -23,10 +24,15 @@ namespace lm
 		protected:
 			bool is_pressed;
 			bool is_released;
+			bool has_moved;
+			FingerID has_pressed_id;
+			//for touch
 			std::string m_path_pressed;
+			//adden
 			std::string text;
 			std::string font_path;
 			Uint8 r, g, b;
+			//text & font
 	};	//class Button : public Sprite
 };	//namespace lm
 
