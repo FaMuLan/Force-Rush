@@ -46,10 +46,12 @@ void lm::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.x >= m_x && load_finger.y >= m_y && load_finger.x <= (m_x + m_w) && load_finger.y <= (m_y + m_h))
 			{
-				if (load_finger.dx == 0 && load_finger.dy == 0)
+				if (!load_finger.moved)
+				//從外側劃進來的是不會被檢測到的。
 				{
 					is_pressed = true;
 					has_pressed_id = load_finger.id;
+					//防止干擾記錄下標
 				}
 			}
 		}
@@ -77,6 +79,7 @@ void lm::Button::update()
 			}
 		}
 		if (ControlHandler::instance()->GetFingerCount() == 0)
+		//怕連一根手指都沒有檢測到的情況下
 		{
 			if (!has_moved)
 			{
@@ -90,7 +93,7 @@ void lm::Button::update()
 
 void lm::Button::render()
 {
-	if (is_pressed)
+	if (is_pressed && (!has_moved))
 	{
 		TextureManager::instance()->render(m_path_pressed, m_x, m_y, m_w, m_h);
 	}
