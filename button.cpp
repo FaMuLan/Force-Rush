@@ -61,7 +61,7 @@ void lm::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.id == has_pressed_id)
 			{
-				if (load_finger.dx != 0 || load_finger.dy != 0)
+				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
 				{
 					has_moved = true;
 				}
@@ -72,6 +72,7 @@ void lm::Button::update()
 				{
 					is_released = true;
 				}
+				has_moved = false;
 				is_pressed = false;
 			}
 		}
@@ -81,6 +82,7 @@ void lm::Button::update()
 			{
 				is_released = true;
 			}
+			has_moved = false;
 			is_pressed = false;
 		}
 	}
