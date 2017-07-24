@@ -5,11 +5,15 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "system.h"
+#include "texture_manager.h"
 
 namespace lm
 {
+	typedef SDL_FingerID FingerID;
+
 	enum MouseButton
 	{
 		MOUSEBUTTON_LEFT = 0,
@@ -24,9 +28,9 @@ namespace lm
 		int y;
 		int dx;
 		int dy;
-		SDL_EventType state;
+		FingerID id;
 	};
-	//觸控有點特殊，考慮到是多點觸控，就把單個手指的數據打包成結構體
+	//觸控有點特殊，考慮到是多點觸控，就把單個手指的數據打包成結構
 
 	class ControlHandler
 	{
@@ -40,17 +44,22 @@ namespace lm
 				}
 				return m_instance;
 			}
+			void init();
+			void clear();
+
 			bool IsKeyDown(SDL_Scancode k);
 
 			bool IsMouseButtonDown(MouseButton k);
 			void GetMousePos(int &x, int &y);
 
-			bool GetTouch(Finger *output);
+			int GetFingerCount();
+			Finger GetFinger(int index);
 
 			bool IsQuit();
 			void update();
+			void render();
 		private:
-			ControlHandler();
+			ControlHandler() {}
 			~ControlHandler() {}
 			static ControlHandler *m_instance;
 			SDL_Event e;
@@ -62,8 +71,7 @@ namespace lm
 			bool mouse_state[MOUSEBUTTON_TOTAL];
 			SDL_Point mouse_pos;
 			//鼠標狀態
-			std::vector<Finger*> touch_state;
-			int finger_count;
+			std::vector<Finger> finger_state;
 			//觸屏狀態
 	};	//class ControlHandler
 };	//namespace lm

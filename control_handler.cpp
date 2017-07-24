@@ -2,12 +2,18 @@
 
 lm::ControlHandler *lm::ControlHandler::m_instance = 0;
 
-lm::ControlHandler::ControlHandler()
+void lm::ControlHandler::init()
 {
 	quit = false;
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
+	TextureManager::instance()->loadfont("assets/Kazesawa-Light.ttf", 30);
 //	touch_state.reserve(12);
+}
+
+void lm::ControlHandler::clear()
+{
+	
 }
 
 bool lm::ControlHandler::IsKeyDown(SDL_Scancode k)
@@ -26,16 +32,14 @@ void lm::ControlHandler::GetMousePos(int &x, int &y)
 	y = mouse_pos.y;
 }
 
-bool lm::ControlHandler::GetTouch(lm::Finger *output)
+int lm::ControlHandler::GetFingerCount()
 {
-	if (finger_count == touch_state.size() - 1)
-	{
-		finger_count = 0;
-		return false;
-	}
-	output = touch_state[finger_count];
-	finger_count++;	
-	return true;
+	return finger_state.size();
+}
+
+lm::Finger lm::ControlHandler::GetFinger(int index)
+{
+	return finger_state[index];
 }
 
 bool lm::ControlHandler::IsQuit()
@@ -45,15 +49,8 @@ bool lm::ControlHandler::IsQuit()
 
 void lm::ControlHandler::update()
 {
-	for (unsigned int i = 0; i < touch_state.size(); i++)
-	{
-		delete touch_state[i];
-	}
-	touch_state.clear();
-
 	while (SDL_PollEvent(&e))
 	{
-		Finger *newFinger = new Finger;
 		switch (e.type)
 		{
 			case SDL_QUIT:
@@ -99,26 +96,59 @@ void lm::ControlHandler::update()
 				}
 			break;
 			case SDL_FINGERDOWN:
+			{
+				Finger new_finger;
+				new_finger.x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
+				new_finger.y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
+				new_finger.dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
+				new_finger.dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+				new_finger.id = e.tfinger.fingerId;
+				finger_state.push_back(new_finger);
+			}
 			case SDL_FINGERMOTION:
-				mouse_pos.x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
-				mouse_pos.y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
-				mouse_state[MOUSEBUTTON_LEFT] = true;
-				newFinger->x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
-				newFinger->y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
-				newFinger->dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
-				newFinger->dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
-				newFinger->state = SDL_FINGERDOWN;
-				touch_state.push_back(newFinger);
+			{
+				FingerID load_id = e.tfinger.fingerId;
+				for (int i = 0; i < finger_state.size(); i++)
+				{
+					if (load_id == finger_state[i].id)
+					{
+						finger_state[i].x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
+						finger_state[i].y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
+						finger_state[i].dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
+						finger_state[i].dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+					}
+				}
+			}
 			break;
 			case SDL_FINGERUP:
-				mouse_state[MOUSEBUTTON_LEFT] = false;
-				newFinger->x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
-				newFinger->y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
-				newFinger->dx = 0;
-				newFinger->dy = 0;
-				newFinger->state = SDL_FINGERUP;
-				touch_state.push_back(newFinger);
+			{
+				FingerID load_id = e.tfinger.fingerId;
+				std::vector<Finger>::iterator iter;
+				for (iter = finger_state.begin(); iter != finger_state.end();)
+				{
+					if (iter->id == load_id)
+					{
+						finger_state.erase(iter);
+						iter = finger_state.begin();
+					}
+					else
+					{
+						iter++;
+					}
+				}
+			}
 			break;
 		}	//switch (e.type)
 	}	//while (SDL_PollEvent(&e))
-}	//void ControlHandler::update()
+}	//void lm::ControlHandler::update()
+
+void lm::ControlHandler::render()
+{
+	for (int i = 0; i < finger_state.size(); i++)
+	{
+		char output[50];
+		sprintf(output, "id:%d x:%d y:%d dx:%d dy:%d", finger_state[i].id, finger_state[i].x, finger_state[i].y, finger_state[i].dx, finger_state[i].dy);
+		std::string output_str(output);
+		TextureManager::instance()->render(output_str, finger_state[i].x, finger_state[i].y, "assets/Kazesawa-Light.ttf", 0x00, 0x00, 0x00);
+	}
+}
