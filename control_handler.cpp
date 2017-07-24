@@ -8,6 +8,7 @@ void lm::ControlHandler::init()
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
 	TextureManager::instance()->loadfont("assets/Kazesawa-Light.ttf", 30);
+	//for debug rendering
 //	touch_state.reserve(12);
 }
 
@@ -102,6 +103,7 @@ void lm::ControlHandler::update()
 				new_finger.y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
 				new_finger.dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
 				new_finger.dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+				new_finger.moved = false;
 				new_finger.id = e.tfinger.fingerId;
 				finger_state.push_back(new_finger);
 			}
@@ -116,6 +118,11 @@ void lm::ControlHandler::update()
 						finger_state[i].y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
 						finger_state[i].dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
 						finger_state[i].dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+						if (finger_state[i].dx != 0 || finger_state[i].dy != 0)
+						//檢測手指是否移動
+						{
+							finger_state[i].moved = true;
+						}
 					}
 				}
 			}
@@ -148,7 +155,10 @@ void lm::ControlHandler::render()
 	{
 		char output[50];
 		sprintf(output, "id:%d x:%d y:%d dx:%d dy:%d", finger_state[i].id, finger_state[i].x, finger_state[i].y, finger_state[i].dx, finger_state[i].dy);
+
 		std::string output_str(output);
+		output_str += finger_state[i].moved ? std::string(" moved:true") : std::string(" moved:false");
+
 		TextureManager::instance()->render(output_str, finger_state[i].x, finger_state[i].y, "assets/Kazesawa-Light.ttf", 0x00, 0x00, 0x00);
 	}
 }
