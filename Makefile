@@ -1,5 +1,5 @@
 LDFLAGS	:= `sdl2-config --cflags`
-CFLAGS := -Wall -O0 -c -g
+CFLAGS := -O0 -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 HEADER	:= button.h control_handler.h sound_manager.h sprite.h state.h system.h texture_manager.h timer.h main/main_state.h crafting/crafting_state.h loading/loading_state.h
