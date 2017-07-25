@@ -63,7 +63,9 @@ void lm::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.id == has_pressed_id)
 			{
-				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
+//				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
+				if (load_finger.moved)
+				//被注釋掉的那行是檢測是否移出按鈕，但這次嚴格一點，就檢測手指是否移動，方便之後做歌曲列表
 				{
 					has_moved = true;
 				}
