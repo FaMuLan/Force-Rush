@@ -34,7 +34,7 @@ void lm::LoadingState::init()
 	shutter_r = new Sprite;
 	shutter_l->load("assets/shutter_l.png", 0, 0, 1165, 960);
 	shutter_r->load("assets/shutter_r.png", 0, 0, 459, 960);
-	animate_duration = 1000;
+	animate_duration = 500;
 	//動畫持續時間
 	a_l = 1165.0 * 2 / ( animate_duration * animate_duration );
 	a_r = 459.0 * 2 / ( animate_duration * animate_duration );
