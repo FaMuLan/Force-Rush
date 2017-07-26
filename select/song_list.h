@@ -47,6 +47,7 @@ namespace lm
 			int list_length;
 			int list_process;
 			int selected_index;
+			Sprite *select_cover;
 	};
 };	//namespace lm
 

@@ -5,6 +5,7 @@ lm::SongList *lm::SongList::m_instance = 0;
 void lm::SongList::init()
 {
 	TextureManager::instance()->loadfont("assets/Exo-Light.ttf", 30);
+	select_cover = new Sprite;
 	std::string text;
 	std::ifstream file;
 	file.open("songs/song_list.fml");
@@ -25,7 +26,7 @@ void lm::SongList::init()
 		new_song_information->m_artist = std::regex_replace(result_str, pattern, std::string("$2"));
 		new_song_information->m_noter = std::regex_replace(result_str, pattern, std::string("$3"));
 		new_song_information->m_bpm = std::regex_replace(result_str, pattern, std::string("$4"));
-		new_song_information->m_cover_path = std::regex_replace(result_str, pattern, std::string("$4"));
+		new_song_information->m_cover_path = std::regex_replace(result_str, pattern, std::string("$5"));
 		new_cell->load("assets/song_cell_right.png", "assets/song_cell_right_selected.png", 0, 0, 549, 123);
 		new_cell->SetText(new_song_information->m_title, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00);
 		m_information.push_back(new_song_information);
@@ -34,6 +35,7 @@ void lm::SongList::init()
 	list_length = 123 * m_cell.size() - System::instance()->GetWindowHeigh();
 	list_process = 0;
 	selected_index = 0;
+	select_cover->load(m_information[selected_index]->m_cover_path, 135, 120, 512, 512);
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
@@ -75,6 +77,8 @@ void lm::SongList::update()
 			else
 			{
 				selected_index = i;
+				select_cover->clear();
+				select_cover->load(m_information[i]->m_cover_path, 135, 120, 512, 512);
 			}
 		}
 	}
@@ -86,4 +90,5 @@ void lm::SongList::render()
 	{
 		m_cell[i]->render();
 	}
+	select_cover->render();
 }
