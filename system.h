@@ -11,6 +11,7 @@
 #include "state.h"
 #include "main/main_state.h"
 #include "crafting/crafting_state.h"
+#include "select/select_state.h"
 #include "loading/loading_state.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
