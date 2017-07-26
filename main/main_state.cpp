@@ -44,6 +44,6 @@ void lm::MainState::update()
 
 	if (main_start->IsReleased())
 	{
-		LoadingState::instance()->init(CraftingState::instance(), this);
+		LoadingState::instance()->init(SelectState::instance(), this);
 	}
 }
