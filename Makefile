@@ -2,12 +2,12 @@ LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS := -O0 -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
-HEADER	:= button.h control_handler.h sound_manager.h sprite.h state.h system.h texture_manager.h timer.h main/main_state.h crafting/crafting_state.h loading/loading_state.h
+HEADER	:= button.h control_handler.h sound_manager.h sprite.h state.h system.h texture_manager.h timer.h main/main_state.h crafting/crafting_state.h select/select_state.h select/song_list.h  loading/loading_state.h
 
 all: run
 
-run: button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o
-	$(CXX) $(LDFLAGS) $(LIBS) button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o -O2 -o run
+run: button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o
+	$(CXX) $(LDFLAGS) $(LIBS) button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o -O2 -o run
 
 button.o: button.cpp $(HEADER)
 	$(CXX) button.cpp $(CFLAGS)
@@ -21,6 +21,10 @@ main.o: main.cpp
 	$(CXX) main.cpp $(CFLAGS)
 main_state.o: main/main_state.cpp $(HEADER)
 	$(CXX) main/main_state.cpp $(CFLAGS)
+select_state.o: select/select_state.cpp $(HEADER)
+	$(CXX) select/select_state.cpp $(CFLAGS)
+song_list.o: select/song_list.cpp $(HEADER)
+	$(CXX) select/song_list.cpp $(CFLAGS)
 sound_manager.o: sound_manager.cpp $(HEADER)
 	$(CXX) sound_manager.cpp $(CFLAGS)
 sprite.o: sprite.cpp $(HEADER)
