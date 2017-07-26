@@ -29,6 +29,7 @@ namespace lm
 			~SelectState() {}
 			static SelectState *m_instance;
 			Sprite *background;
+			Button *select_back;
 	};
 };
 
