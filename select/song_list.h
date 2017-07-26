@@ -1,12 +1,16 @@
-#include LUNATIC_MELODY_SELECT_SONG_LIST_H
-#include LUNATIC_ΜELODY_SELECT_SONG_LIST_H
+#ifndef LUNATIC_MELODY_SELECT_SONG_LIST_H
+#define LUNATIC_MELODY_SELECT_SONG_LIST_H
 
 #include <vector>
 #include <regex>
-#include "button.h"
+#include <fstream>
+#include "../button.h"
+#include "../control_handler.h"
 
 namespace lm
 {
+	class Button;
+
 	struct SongInformation
 	{
 		std::string m_title;
@@ -19,14 +23,28 @@ namespace lm
 	class SongList
 	{
 		public:
+			static SongList *instance()
+			{
+				if (m_instance == 0)
+				{
+					m_instance = new SongList;
+					return m_instance;
+				}
+				return m_instance;
+			}
 			void init();
 			void clear();
 			void update();
-			void clear();
+			void render();
 		private:
+			SongList() {}
+			~SongList() {}
+			static SongList *m_instance;
 			std::vector<Button*> m_cell;
 			std::vector<SongInformation*> m_information;
+			int list_length;
+			int list_process;
 	};
-};
+};	//namespace lm
 
 #endif	//LUNATIC_MELODY_SELECT_SONG_LIST_H

@@ -1,10 +1,11 @@
-#ifndef LUNATIC_ΜELODY_SELECT_SELECT_STATE_H
+#ifndef LUNATIC_MELODY_SELECT_SELECT_STATE_H
 #define LUNATIC_MELODY_SELECT_SELECT_STATE_H
 
 #include <vector>
 #include <string>
-#include "state.h"
-#include "button.h"
+#include "../state.h"
+#include "../button.h"
+#include "song_list.h"
 
 namespace lm
 {
@@ -27,6 +28,7 @@ namespace lm
 			SelectState() {}
 			~SelectState() {}
 			static SelectState *m_instance;
+			Sprite *background;
 	};
 };
 
