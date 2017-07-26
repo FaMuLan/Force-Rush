@@ -6,6 +6,8 @@
 #include <fstream>
 #include "../button.h"
 #include "../control_handler.h"
+#include "../loading/loading_state.h"
+#include "../crafting/crafting_state.h"
 
 namespace lm
 {
@@ -44,6 +46,7 @@ namespace lm
 			std::vector<SongInformation*> m_information;
 			int list_length;
 			int list_process;
+			int selected_index;
 	};
 };	//namespace lm
 

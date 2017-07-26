@@ -33,11 +33,13 @@ void lm::SongList::init()
 	}
 	list_length = 123 * m_cell.size() - System::instance()->GetWindowHeigh();
 	list_process = 0;
+	selected_index = 0;
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
 {
-	
+	m_cell.clear();
+	m_information.clear();
 }
 
 void lm::SongList::update()
@@ -64,6 +66,17 @@ void lm::SongList::update()
 	{
 		m_cell[i]->SetPos(System::instance()->GetWindowWidth() - 549, 123 * i - list_process);
 		m_cell[i]->update();
+		if (m_cell[i]->IsReleased())
+		{
+			if (i == selected_index)
+			{
+				LoadingState::instance()->init(CraftingState::instance(), SelectState::instance());
+			}
+			else
+			{
+				selected_index = i;
+			}
+		}
 	}
 }
 
