@@ -55,15 +55,24 @@ void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, 
 	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
 }
 
-void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b)
+void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b, TextFormat format)
 {
 	SDL_Color color = { r, g, b };
 	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path], text.c_str(), color);
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	int w = text_surface->w;
 	int h = text_surface->h;
-	x -= w / 2;
-	y -= h / 2;
+	switch (format)
+	{
+		case TEXTFORMAT_MIDDLE:
+			x -= w / 2;
+			y -= h / 2;
+		break;
+		case TEXTFORMAT_RIGHT:
+			x -= w;
+			y -= h;
+		break;
+	}
 	SDL_Rect dest_rect = { x, y, w, h };
 	SDL_RenderCopy(renderer, text_texture, NULL, &dest_rect);
 

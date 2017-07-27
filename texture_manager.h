@@ -10,6 +10,13 @@
 
 namespace lm
 {
+	enum TextFormat
+	{
+		TEXTFORMAT_MIDDLE = 0,
+		TEXTFORMAT_LEFT = 1,
+		TEXTFORMAT_RIGHT
+	};
+
 	class TextureManager
 	{
 		public:
@@ -31,7 +38,7 @@ namespace lm
 			void clearfont(std::string path);
 			void render(std::string path, int x, int y, int w, int h);
 			void render(SDL_Texture *load_texture, int x, int y, int w, int h);
-			void render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b);
+			void render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b, TextFormat format = TEXTFORMAT_MIDDLE);
 		private: 
 			TextureManager() {}
 			~TextureManager() {}
