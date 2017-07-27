@@ -10,50 +10,55 @@ void lm::SoundManager::init()
 
 void lm::SoundManager::clean()
 {
-	S.clear();
-	M.clear();
+	m_sfx.clear();
+	m_music.clear();
 	Mix_CloseAudio();
 }
 
-void lm::SoundManager::load(std::string path, std::string id, soundType type)
+void lm::SoundManager::load(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
 	{
-		Mix_Chunk *newSound = Mix_LoadWAV(path.c_str());
+		Mix_Chunk *new_sound = Mix_LoadWAV(path.c_str());
 		//加載聲音文件.
-		S[id] = newSound;
+		m_sfx[path] = new_sound;
 		//將指針放入容器.
 	}
 	if (type == SOUNDTYPE_MUSIC)
 	{
-		Mix_Music *newMusic = Mix_LoadMUS(path.c_str());
-		M[id] = newMusic;
+		Mix_Music *new_music = Mix_LoadMUS(path.c_str());
+		m_music[path] = new_music;
 	}
 }
 
-void lm::SoundManager::setVolume(Uint16 loadVolume, soundType type)
+void lm::SoundManager::play(std::string path, SoundType type)
+{
+	if (type == SOUNDTYPE_SFX)
+	{
+		Mix_PlayChannel(0, m_sfx[path], 1);
+	}
+	if (type == SOUNDTYPE_MUSIC)
+	{
+		Mix_PlayMusic(m_music[path], 1);
+	}
+}
+
+void lm::SoundManager::stop()
+{
+	Mix_HaltMusic();
+}
+
+void lm::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
 {
 	if (type == SOUNDTYPE_MUSIC)
 	{
-		Mix_VolumeMusic(loadVolume);
+		Mix_VolumeMusic(load_volume);
 	}
 	if (type == SOUNDTYPE_SFX)
 	{
-		for (std::map<std::string, Mix_Chunk*>::iterator i = S.begin(); i != S.end(); i++)
+		for (std::map<std::string, Mix_Chunk*>::iterator i = m_sfx.begin(); i != m_sfx.end(); i++)
 		{
-			Mix_VolumeChunk(i->second, loadVolume);
+			Mix_VolumeChunk(i->second, load_volume);
 		}
-	}
-}
-
-void lm::SoundManager::output(std::string id, soundType type)
-{
-	if (type == SOUNDTYPE_SFX)
-	{
-		Mix_PlayChannel(0, S[id], 1);
-	}
-	if (type == SOUNDTYPE_MUSIC)
-	{
-		Mix_PlayMusic(M[id], 1);
 	}
 }

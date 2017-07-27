@@ -9,9 +9,9 @@
 
 namespace lm
 {
-	enum soundType
+	enum SoundType
 	{
-		SOUNDTYPE_MUSIC,
+		SOUNDTYPE_MUSIC = 0,
 		SOUNDTYPE_SFX
 	};
 
@@ -28,15 +28,16 @@ namespace lm
 			}
 			void init();
 			void clean();
-			void load(std::string path, std::string id, soundType type);
-			void setVolume(Uint16 loadVolume, soundType type);
-			void output(std::string id, soundType type);
+			void load(std::string path, SoundType type);
+			void play(std::string path, SoundType type);
+			void stop();	//music type only
+			void SetVolume(Uint16 load_volume, SoundType type);
 		private:
 			SoundManager() {}
 			~SoundManager() {}
-			std::map<std::string, Mix_Music*> M;
-			std::map<std::string, Mix_Chunk*> S;
-			Uint16 soundVolume;
+			std::map<std::string, Mix_Music*> m_music;
+			std::map<std::string, Mix_Chunk*> m_sfx;
+			Uint16 SoundVolume;
 			static SoundManager *m_instance;
 	};	//class SoundManager
 };	//namespace lm
