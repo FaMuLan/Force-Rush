@@ -46,12 +46,14 @@ void lm::SongList::clear()
 
 void lm::SongList::update()
 {
+	static int roll_speed;
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
 		if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
 		{
 			list_process -= load_finger.dy;
+			roll_speed = load_finger.dy;
 
 			if (list_process > list_length)
 			{
@@ -62,6 +64,29 @@ void lm::SongList::update()
 				list_process = 0;
 			}
 			//把list_process盡量控制在[0,list_length]區間內
+		}
+	}
+	if (ControlHandler::instance()->GetFingerCount() == 0)
+	{
+		if (roll_speed < 0)
+		{
+			roll_speed += 2;
+			roll_speed = roll_speed > 0 ? 0 : roll_speed;
+		}
+		else if (roll_speed > 0)
+		{
+			roll_speed -= 2;
+			roll_speed = roll_speed < 0 ? 0 : roll_speed;
+		}
+		//不包含 roll_speed == 0 這個情況
+		list_process -= roll_speed;
+		if (list_process > list_length)
+		{
+			list_process = list_length;
+		}
+		else if (list_process < 0)
+		{
+			list_process = 0;
 		}
 	}
 	for (int i = 0; i < m_cell.size(); i++)
@@ -91,4 +116,8 @@ void lm::SongList::render()
 		m_cell[i]->render();
 	}
 	select_cover->render();
+	TextureManager::instance()->render(m_information[selected_index]->m_title, 0, 0, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	TextureManager::instance()->render(m_information[selected_index]->m_artist, 0, 40, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	TextureManager::instance()->render(m_information[selected_index]->m_noter, 0, 80, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	TextureManager::instance()->render(m_information[selected_index]->m_bpm, 0, 120, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 }
