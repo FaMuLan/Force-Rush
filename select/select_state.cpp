@@ -16,6 +16,8 @@ void lm::SelectState::init()
 void lm::SelectState::clear()
 {
 	SongList::instance()->clear();
+	select_back->clear();
+	background->clear();
 }
 
 void lm::SelectState::update()
