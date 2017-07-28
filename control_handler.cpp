@@ -50,6 +50,19 @@ bool lm::ControlHandler::IsQuit()
 
 void lm::ControlHandler::update()
 {
+	for (std::vector<Finger>::iterator iter = finger_state.begin(); iter != finger_state.end();)
+	{
+		if (iter->released)
+		{
+			finger_state.erase(iter);
+			iter = finger_state.begin();
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
 	while (SDL_PollEvent(&e))
 	{
 		switch (e.type)
@@ -104,6 +117,7 @@ void lm::ControlHandler::update()
 				new_finger.dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
 				new_finger.dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
 				new_finger.moved = false;
+				new_finger.released = false;
 				new_finger.id = e.tfinger.fingerId;
 				finger_state.push_back(new_finger);
 			}
@@ -130,17 +144,11 @@ void lm::ControlHandler::update()
 			case SDL_FINGERUP:
 			{
 				FingerID load_id = e.tfinger.fingerId;
-				std::vector<Finger>::iterator iter;
-				for (iter = finger_state.begin(); iter != finger_state.end();)
+				for (int i = 0; i < finger_state.size(); i++)
 				{
-					if (iter->id == load_id)
+					if (load_id == finger_state[i].id)
 					{
-						finger_state.erase(iter);
-						iter = finger_state.begin();
-					}
-					else
-					{
-						iter++;
+						finger_state[i].released = true;
 					}
 				}
 			}
@@ -154,11 +162,12 @@ void lm::ControlHandler::render()
 	for (int i = 0; i < finger_state.size(); i++)
 	{
 		char output[50];
-		sprintf(output, "id:%d x:%d y:%d dx:%d dy:%d", finger_state[i].id, finger_state[i].x, finger_state[i].y, finger_state[i].dx, finger_state[i].dy);
+		sprintf(output, "id:%d x:%d y:%d dx:%d dy:%d count:%d", finger_state[i].id, finger_state[i].x, finger_state[i].y, finger_state[i].dx, finger_state[i].dy, i);
 
 		std::string output_str(output);
-		output_str += finger_state[i].moved ? std::string(" moved:true") : std::string(" moved:false");
-
+		output_str += finger_state[i].moved ? std::string(" moved:true ") : std::string(" moved:false ");
+		output_str += finger_state[i].released ? std::string("released:true") : std::string("released:false");
+	
 		TextureManager::instance()->render(output_str, finger_state[i].x, finger_state[i].y, "assets/Kazesawa-Light.ttf", 0x00, 0x00, 0x00);
 	}
 }

@@ -29,6 +29,7 @@ namespace lm
 		int dx;
 		int dy;
 		bool moved;
+		bool released;
 		FingerID id;
 	};
 	//觸控有點特殊，考慮到是多點觸控，就把單個手指的數據打包成結構
