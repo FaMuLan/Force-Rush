@@ -10,7 +10,7 @@ void lm::Button::load(std::string path, std::string path_pressed, int x, int y, 
 	m_y = y;
 	m_w = w;
 	m_h = h;
-	has_pressed_id = 12;
+	is_pressed = false;
 }
 
 void lm::Button::update()
@@ -29,9 +29,9 @@ void lm::Button::update()
 		{
 			if (is_pressed)
 			{
-				is_released = true;]}]|"
+				is_released = true;
 			}
-			is_pressed = false;]}]]
+			is_pressed = false;
 		}
 	}
 	else
@@ -63,39 +63,23 @@ void lm::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.id == has_pressed_id)
 			{
-//				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
-				if (load_finger.moved)
-				//被注釋掉的那行是檢測是否移出按鈕，但這次嚴格一點，就檢測手指是否移動，方便之後做歌曲列表
+				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
 				{
-					has_moved = true;
+					is_pressed = false;
 				}
-			}
-			else if (i == ControlHandler::instance()->GetFingerCount() - 1)
-			{
-				if (!has_moved)
+				if (load_finger.released)
 				{
 					is_released = true;
+					is_pressed = false;
 				}
-				has_moved = false;
-				is_pressed = false;
 			}
-		}
-		if (ControlHandler::instance()->GetFingerCount() == 0)
-		//怕連一根手指都沒有檢測到的情況下
-		{
-			if (!has_moved)
-			{
-				is_released = true;
-			}
-			has_moved = false;
-			is_pressed = false;
 		}
 	}
 }	//void lm::Button::update()
 
 void lm::Button::render()
 {
-	if (is_pressed && (!has_moved))
+	if (is_pressed)
 	{
 		TextureManager::instance()->render(m_path_pressed, m_x, m_y, m_w, m_h);
 	}

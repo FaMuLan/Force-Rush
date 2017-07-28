@@ -24,7 +24,6 @@ namespace lm
 		protected:
 			bool is_pressed;
 			bool is_released;
-			bool has_moved;
 			FingerID has_pressed_id;
 			//for touch
 			std::string m_path_pressed;
