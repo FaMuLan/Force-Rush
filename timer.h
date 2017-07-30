@@ -1,5 +1,5 @@
 #ifndef LUNATIC_MELODY_TIMER_H
-#define LUNAITC_MELODY_TIMER_H
+#define LUNATIC_MELODY_TIMER_H
 
 #include <SDL2/SDL.h>
 #include <string>
