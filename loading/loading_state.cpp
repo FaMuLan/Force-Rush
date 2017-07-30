@@ -7,8 +7,8 @@ void lm::LoadingState::update()
 	if (!is_entered)
 	{
 		OnEnter();
-		shutter_l->render();
 		shutter_r->render();
+		shutter_l->render();
 	}
 	else if (!is_loaded)
 	{
@@ -16,15 +16,15 @@ void lm::LoadingState::update()
 		next_state->init();
 		System::instance()->current_state = next_state;
 		is_loaded = true;
-		shutter_l->render();
 		shutter_r->render();
+		shutter_l->render();
 		Timer::instance()->RunTimer("shutter");
 	}
 	else if (!is_exited)
 	{
 		OnExit();
-		shutter_l->render();
 		shutter_r->render();
+		shutter_l->render();
 	}
 }
 
@@ -69,8 +69,8 @@ v0 = aT
 
 void lm::LoadingState::OnEnter()
 {
-	long shutter_l_pos_x = -1165 + ((2 * a_l * animate_duration - a_l * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
-	long shutter_r_pos_x = System::instance()->GetWindowWidth() - ((2 * a_r * animate_duration - a_r * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
+	int shutter_l_pos_x = -1165 + ((2 * a_l * animate_duration - a_l * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
+	int shutter_r_pos_x = System::instance()->GetWindowWidth() - ((2 * a_r * animate_duration - a_r * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
 	//求出某個時段的位移(感覺物理沒白學)
 	shutter_l->SetPos(shutter_l_pos_x, 0);
 	shutter_r->SetPos(shutter_r_pos_x, 0);
