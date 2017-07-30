@@ -1,14 +1,13 @@
 #include "sound_manager.h"
-#include "math.h"
 
 lm::SoundManager *lm::SoundManager::m_instance = 0;
 
 void lm::SoundManager::init()
 {
-	Mix_OpenAudio(22050, AUDIO_S16, 2, 2048);
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
-void lm::SoundManager::clean()
+void lm::SoundManager::clear()
 {
 	m_sfx.clear();
 	m_music.clear();
@@ -20,9 +19,7 @@ void lm::SoundManager::load(std::string path, SoundType type)
 	if (type == SOUNDTYPE_SFX)
 	{
 		Mix_Chunk *new_sound = Mix_LoadWAV(path.c_str());
-		//加載聲音文件.
 		m_sfx[path] = new_sound;
-		//將指針放入容器.
 	}
 	if (type == SOUNDTYPE_MUSIC)
 	{
@@ -35,11 +32,11 @@ void lm::SoundManager::play(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
 	{
-		Mix_PlayChannel(0, m_sfx[path], 1);
+		Mix_PlayChannel(-1, m_sfx[path], 0);
 	}
 	if (type == SOUNDTYPE_MUSIC)
 	{
-		Mix_PlayMusic(m_music[path], 1);
+		Mix_PlayMusic(m_music[path], -1);
 	}
 }
 

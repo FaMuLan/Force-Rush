@@ -27,7 +27,7 @@ namespace lm
 				return m_instance;
 			}
 			void init();
-			void clean();
+			void clear();
 			void load(std::string path, SoundType type);
 			void play(std::string path, SoundType type);
 			void stop();	//music type only
