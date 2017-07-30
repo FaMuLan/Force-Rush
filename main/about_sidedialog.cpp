@@ -9,9 +9,6 @@ void lm::AboutSidedialog::init()
 
 	sidedialog_bottom->load("assets/sidedialog_bottom.png", -219, 0, 219, 541);
 	sidedialog_top->load("assets/sidedialog_top.png", -756, 0, 756, 964);
-	text += "Program Design: FaMuLan\n";
-	text += "Assets Source: Arcaea\n";
-	text += "emmmmmm...that's all!";
 	is_entered = true;
 	ready_to_exit = true;
 	is_exited = true;
@@ -79,6 +76,8 @@ void lm::AboutSidedialog::render()
 	{
 		sidedialog_bottom->render();
 		sidedialog_top->render();
+		TextureManager::instance()->render("Program: FaMuLan", sidedialog_bottom->GetX() - 200, 300, "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
+		TextureManager::instance()->render("Source: Arcaea", sidedialog_bottom->GetX() - 200, 400, "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
 	}
 }
 

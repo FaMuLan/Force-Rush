@@ -4,6 +4,7 @@
 #include <string>
 #include "../control_handler.h"
 #include "../sprite.h"
+#include "../texture_manager.h"
 #include "../timer.h"
 
 namespace lm
@@ -35,7 +36,6 @@ namespace lm
 			float a_bottom;
 			float a_top;
 			int animate_duration;
-			std::string text;
 			bool is_entered;
 			bool ready_to_exit;
 			bool is_exited;
