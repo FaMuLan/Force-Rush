@@ -2,13 +2,15 @@ LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS := -O0 -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
-HEADER	:= button.h control_handler.h sound_manager.h sprite.h state.h system.h texture_manager.h timer.h main/main_state.h crafting/crafting_state.h select/select_state.h select/song_list.h  loading/loading_state.h
+HEADER	:= button.h control_handler.h sound_manager.h sprite.h state.h system.h texture_manager.h timer.h main/main_state.h main/about_sidedialog.h crafting/crafting_state.h select/select_state.h select/song_list.h  loading/loading_state.h
 
 all: run
 
-run: button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o
-	$(CXX) $(LDFLAGS) $(LIBS) button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o -O2 -o run
+run: about_sidedialog.o button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o
+	$(CXX) $(LDFLAGS) $(LIBS) about_sidedialog.o button.o control_handler.o crafting_state.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o -O2 -o run
 
+about_sidedialog.o: main/about_sidedialog.cpp $(HEADER)
+	$(CXX) main/about_sidedialog.cpp $(CFLAGS)
 button.o: button.cpp $(HEADER)
 	$(CXX) button.cpp $(CFLAGS)
 control_handler.o: control_handler.cpp $(HEADER)
