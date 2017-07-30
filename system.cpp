@@ -6,7 +6,7 @@ void lm::System::init()
 {
 	screen_width = 1280;
 	screen_heigh = 720;
-	SDL_Init(SDL_INIT_EVERYTHING);
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
