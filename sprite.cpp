@@ -12,7 +12,7 @@ void lm::Sprite::load(std::string path, int x, int y, int w, int h)
 
 void lm::Sprite::update()
 {
-	//do nothing	
+	//do nothing
 }
 
 void lm::Sprite::render()
@@ -29,4 +29,14 @@ void lm::Sprite::SetPos(int x, int y)
 {
 	m_x = x;
 	m_y = y;
+}
+
+int lm::Sprite::GetX()
+{
+	return m_x;
+}
+
+int lm::Sprite::GetY()
+{
+	return m_y;
 }

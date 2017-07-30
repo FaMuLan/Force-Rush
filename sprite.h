@@ -16,6 +16,8 @@ namespace lm
 			virtual void clear();
 
 			void SetPos(int x, int y);
+			int GetX();
+			int GetY();
 		protected:
 			std::string m_path;
 			int m_x;
