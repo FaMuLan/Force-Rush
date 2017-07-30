@@ -9,6 +9,7 @@ void lm::MainState::init()
 	main_about = new Button;
 	main_character = new Sprite;
 	background = new Sprite;
+
 	main_start->load("assets/main_musicplay.png", "assets/main_musicplay_selected.png", 180, 160, 492, 129);
 	main_network->load("assets/main_network_connected.png", "assets/main_network_pressed.png", 90, 330, 492, 129);
 	main_about->load("assets/main_button_narrow.png", "assets/main_button_narrow_pressed.png", 180, 500, 313, 129);
@@ -18,6 +19,11 @@ void lm::MainState::init()
 	main_start->SetText("Music Play", "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
 	main_network->SetText("Network", "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
 	main_about->SetText("About", "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
+
+	AboutSidedialog::instance()->init();
+
+//	SoundManager::instance()->load("assets/BGM.mp3", SOUNDTYPE_MUSIC);
+//	SoundManager::instance()->play("assets/BGM.mp3", SOUNDTYPE_MUSIC);
 }
 
 void lm::MainState::clear()
@@ -28,6 +34,8 @@ void lm::MainState::clear()
 	main_character->clear();
 	background->clear();
 	TextureManager::instance()->clearfont("assets/GeosansLight-Oblique.ttf");
+
+//	SoundManager::instance()->stop();
 }
 
 void lm::MainState::update()
@@ -35,15 +43,21 @@ void lm::MainState::update()
 	main_start->update();
 	main_network->update();
 	main_about->update();
+	AboutSidedialog::instance()->update();
 
 	background->render();
 	main_character->render();
 	main_start->render();
 	main_network->render();
 	main_about->render();
+	AboutSidedialog::instance()->render();
 
 	if (main_start->IsReleased())
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
+	}
+	if (main_about->IsReleased())
+	{
+		AboutSidedialog::instance()->open();
 	}
 }
