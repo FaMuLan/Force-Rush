@@ -14,12 +14,13 @@ namespace lm
 	{
 		public:
 			virtual void load(std::string path, std::string path_pressed, int x, int y, int w, int h);
+			virtual void clear();
 			virtual void update();
 			virtual void render();
-			virtual void clear();
 
 			virtual bool IsPressed();
 			virtual bool IsReleased();
+			virtual void SetPos(int x, int y);
 			void SetText(std::string load_text, std::string load_font_path, Uint8 load_r, Uint8 load_g, Uint8 load_b);
 		protected:
 			bool is_pressed;
