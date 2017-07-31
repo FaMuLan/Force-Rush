@@ -6,6 +6,7 @@
 #include "../sprite.h"
 #include "../texture_manager.h"
 #include "../timer.h"
+#include "main_state.h"
 
 namespace lm
 {

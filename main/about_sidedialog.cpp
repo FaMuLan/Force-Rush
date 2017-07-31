@@ -27,6 +27,8 @@ void lm::AboutSidedialog::update()
 {
 	if (!is_entered)
 	{
+		MainState::instance()->lock(true);
+		//上鎖
 		int sidedialog_bottom_pos_x = -400 + ((2 * a_bottom * animate_duration - a_bottom * Timer::instance()->GetTime("sidedialog")) * 0.5f *  Timer::instance()->GetTime("sidedialog"));
 		int sidedialog_top_pos_x = -756 + ((2 * a_top * animate_duration - a_top * Timer::instance()->GetTime("sidedialog")) * 0.5f *  Timer::instance()->GetTime("sidedialog"));
 		sidedialog_bottom->SetPos(sidedialog_bottom_pos_x, 0);
@@ -66,6 +68,8 @@ void lm::AboutSidedialog::update()
 			sidedialog_bottom->SetPos(System::instance()->GetWindowWidth(), 0);
 			Timer::instance()->ResetTimer("sidedialog");
 			is_exited = true;
+			MainState::instance()->lock(false);
+			//解鎖
 		}
 	}
 }	//void lm::AboutSidedialog::update()
