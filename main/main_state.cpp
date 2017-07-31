@@ -21,9 +21,10 @@ void lm::MainState::init()
 	main_about->SetText("About", "assets/GeosansLight-Oblique.ttf", 0xFF, 0xFF, 0xFF);
 
 	AboutSidedialog::instance()->init();
+	is_locked = false;
 
-//	SoundManager::instance()->load("assets/BGM.mp3", SOUNDTYPE_MUSIC);
-//	SoundManager::instance()->play("assets/BGM.mp3", SOUNDTYPE_MUSIC);
+	SoundManager::instance()->load("assets/BGM.ogg", SOUNDTYPE_MUSIC);
+	SoundManager::instance()->play("assets/BGM.ogg", SOUNDTYPE_MUSIC);
 }
 
 void lm::MainState::clear()
@@ -34,15 +35,17 @@ void lm::MainState::clear()
 	main_character->clear();
 	background->clear();
 	TextureManager::instance()->clearfont("assets/GeosansLight-Oblique.ttf");
-
-//	SoundManager::instance()->stop();
 }
 
 void lm::MainState::update()
 {
-	main_start->update();
-	main_network->update();
-	main_about->update();
+	if (!is_locked)
+	{
+		main_start->update();
+		main_network->update();
+		main_about->update();
+	}
+	//鎖定按鈕在打開側邊欄或彈窗時不進行檢測
 	AboutSidedialog::instance()->update();
 
 	background->render();
@@ -55,9 +58,16 @@ void lm::MainState::update()
 	if (main_start->IsReleased())
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
+		SoundManager::instance()->stop();
 	}
 	if (main_about->IsReleased())
 	{
 		AboutSidedialog::instance()->open();
 	}
+}
+
+void lm::MainState::lock(bool load)
+{
+	is_locked = load;
+	//這樣鎖定和解鎖可以用在同一個函數。
 }

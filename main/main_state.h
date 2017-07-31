@@ -30,6 +30,7 @@ namespace lm
 			void init();
 			void clear();
 			void update();
+			void lock(bool load);
 		private:
 			MainState() {}
 			~MainState() {}
@@ -39,6 +40,7 @@ namespace lm
 			Button *main_about;
 			Sprite *main_character;
 			Sprite *background;
+			bool is_locked;
 	};
 };
 
