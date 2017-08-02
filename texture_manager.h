@@ -36,7 +36,7 @@ namespace lm
 			void clear();
 			void clear(std::string path);
 			void clearfont(std::string path);
-			void render(std::string path, int x, int y, int w, int h);
+			void render(std::string path, int x, int y, int w, int h, int src_x = 0, int src_y = 0, int src_w = 0, int src_h = 0);
 			void render(SDL_Texture *load_texture, int x, int y, int w, int h);
 			void render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b, TextFormat format = TEXTFORMAT_MIDDLE);
 		private: 

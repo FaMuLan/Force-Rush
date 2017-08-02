@@ -43,10 +43,15 @@ void lm::TextureManager::clearfont(std::string path)
 	font[path] = NULL;
 }
 
-void lm::TextureManager::render(std::string path, int x, int y, int w, int h)
+void lm::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
 {
 	SDL_Rect dest_rect = { x, y, w, h };
-	SDL_RenderCopy(renderer, texture[path], NULL, &dest_rect);
+	SDL_Rect src_rect = { src_x, src_y, src_w, src_h };
+	if (src_w == 0 || src_h == 0)
+	{
+		src_rect = { 0, 0, w, h };
+	}
+	SDL_RenderCopy(renderer, texture[path], &src_rect, &dest_rect);
 }
 
 void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, int h)
