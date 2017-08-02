@@ -24,6 +24,7 @@ void lm::System::init()
 //	PushState("main", main_state);
 	MainState::instance()->init();
 	LoadingState::instance()->init();
+	DebugWidget::instance()->init();
 	current_state = MainState::instance();
 }
 
@@ -36,6 +37,7 @@ void lm::System::run()
 //		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
+		DebugWidget::instance()->update();
 		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
 	}
