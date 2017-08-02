@@ -19,6 +19,7 @@ void lm::LoadingState::update()
 		shutter_r->render();
 		shutter_l->render();
 		Timer::instance()->RunTimer("shutter");
+		SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	}
 	else if (!is_exited)
 	{
@@ -34,6 +35,8 @@ void lm::LoadingState::init()
 	shutter_r = new Sprite;
 	shutter_l->load("assets/shutter_l.png", 0, 0, 1165, 960);
 	shutter_r->load("assets/shutter_r.png", 0, 0, 459, 960);
+	SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
+	SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	animate_duration = 500;
 	//動畫持續時間
 	a_l = 1165.0 * 2 / ( animate_duration * animate_duration );
@@ -52,6 +55,7 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	next_state = load_next_state;
 	last_state = load_last_state;
 	Timer::instance()->RunTimer("shutter");
+	SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
 }
 
 void lm::LoadingState::clear()
