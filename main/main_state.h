@@ -4,6 +4,7 @@
 #include "../state.h"
 #include "../sprite.h"
 #include "../button.h"
+#include "../debug_widget.h"
 #include "../sound_manager.h"
 #include "../loading/loading_state.h"
 #include "../crafting/crafting_state.h"
@@ -36,7 +37,7 @@ namespace lm
 			~MainState() {}
 			static MainState *m_instance;
 			Button *main_start;
-			Button *main_network;
+			Button *main_debug;
 			Button *main_about;
 			Sprite *main_character;
 			Sprite *background;
