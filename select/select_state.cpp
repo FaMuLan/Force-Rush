@@ -31,5 +31,6 @@ void lm::SelectState::update()
 	if (select_back->IsReleased())
 	{
 		LoadingState::instance()->init(MainState::instance(), this);
+		DebugWidget::instance()->PushLog("back to main menu from select_state");
 	}
 }

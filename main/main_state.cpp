@@ -58,6 +58,7 @@ void lm::MainState::update()
 	if (main_start->IsReleased())
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
+		DebugWidget::instance()->PushLog("Leaving main menu");
 //		SoundManager::instance()->stop();
 	}
 	if (main_debug->IsReleased())

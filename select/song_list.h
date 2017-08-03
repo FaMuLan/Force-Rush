@@ -6,6 +6,7 @@
 #include <fstream>
 #include "../button.h"
 #include "../control_handler.h"
+#include "../debug_widget.h"
 #include "../loading/loading_state.h"
 #include "../crafting/crafting_state.h"
 

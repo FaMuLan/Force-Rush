@@ -3,6 +3,7 @@
 
 #include <string>
 #include "../control_handler.h"
+#include "../debug_widget.h"
 #include "../sprite.h"
 #include "../texture_manager.h"
 #include "../timer.h"

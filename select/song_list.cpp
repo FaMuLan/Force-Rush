@@ -8,7 +8,7 @@ void lm::SongList::init()
 	select_cover = new Sprite;
 	std::string text;
 	std::ifstream file;
-	file.open("songs/song_list.fml");
+	file.open("assets/songs/song_list.fml");
 	while (!file.eof())
 	{
 		text += file.get();
@@ -98,12 +98,18 @@ void lm::SongList::update()
 			if (i == selected_index)
 			{
 				LoadingState::instance()->init(CraftingState::instance(), SelectState::instance());
+				std::string output = "Enter song ";
+				output += m_information[i]->m_title;
+				DebugWidget::instance()->PushLog(output);
 			}
 			else
 			{
 				selected_index = i;
 				select_cover->clear();
 				select_cover->load(m_information[i]->m_cover_path, 135, 120, 512, 512);
+				std::string output = "Selected song ";
+				output += m_information[i]->m_title;
+				DebugWidget::instance()->PushLog(output);
 			}
 		}
 	}

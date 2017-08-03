@@ -5,6 +5,7 @@
 #include <string>
 #include "../state.h"
 #include "../button.h"
+#include "../debug_widget.h"
 #include "song_list.h"
 
 namespace lm

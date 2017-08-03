@@ -28,5 +28,6 @@ void lm::CraftingState::update()
 	if (crafting_back->IsReleased())
 	{
 		LoadingState::instance()->init(MainState::instance(), this);
+		DebugWidget::instance()->PushLog("Back to main menu from crafting_state");
 	}
 }

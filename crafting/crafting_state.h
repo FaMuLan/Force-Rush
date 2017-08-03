@@ -6,6 +6,7 @@
 #include "../state.h"
 #include "../button.h"
 #include "../sprite.h"
+#include "../debug_widget.h"
 #include "../texture_manager.h"
 #include "../main/main_state.h"
 

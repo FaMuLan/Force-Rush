@@ -52,6 +52,7 @@ void lm::AboutSidedialog::update()
 				{
 					ready_to_exit = true;
 					Timer::instance()->RunTimer("sidedialog");
+					DebugWidget::instance()->PushLog("Closing about sidedialog");
 				}
 			}
 		}
@@ -90,5 +91,6 @@ void lm::AboutSidedialog::open()
 	is_entered = false;
 	ready_to_exit = false;
 	is_exited = false;
+	DebugWidget::instance()->PushLog("Opening about sidedialog");
 	Timer::instance()->RunTimer("sidedialog");
 }

@@ -20,6 +20,7 @@ void lm::LoadingState::update()
 		shutter_l->render();
 		Timer::instance()->RunTimer("shutter");
 		SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
+		//加載完立刻放音效
 	}
 	else if (!is_exited)
 	{
@@ -56,6 +57,7 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	last_state = load_last_state;
 	Timer::instance()->RunTimer("shutter");
 	SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
+	//一開始就放音效
 }
 
 void lm::LoadingState::clear()
