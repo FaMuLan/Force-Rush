@@ -55,13 +55,13 @@ void lm::SongList::update()
 			list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
 
-			if (list_process > list_length)
-			{
-				list_process = list_length;
-			}
-			else if (list_process < 0)
+			if (list_process < 0)
 			{
 				list_process = 0;
+			}
+			else if (list_process > list_length && list_length > System::instance()->GetWindowHeigh())
+			{
+				list_process = list_length;
 			}
 			//把list_process盡量控制在[0,list_length]區間內
 		}
@@ -80,14 +80,16 @@ void lm::SongList::update()
 		}
 		//不包含 roll_speed == 0 這個情況
 		list_process -= roll_speed;
-		if (list_process > list_length)
-		{
-			list_process = list_length;
-		}
-		else if (list_process < 0)
+		if (list_process < 0)
 		{
 			list_process = 0;
 		}
+		else if (list_process > list_length && list_length > System::instance()->GetWindowHeigh())
+		//順便檢測列表長度是否超過屏幕寬度，免得列表顯得抽搐……
+		{
+			list_process = list_length;
+		}
+
 	}
 	for (int i = 0; i < m_cell.size(); i++)
 	{
