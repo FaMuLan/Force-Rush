@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "control_handler.h"
 #include "texture_manager.h"
 #include "sprite.h"
 #include "system.h"
@@ -39,6 +40,10 @@ namespace lm
 			int row_count;
 			int m_x;
 			int m_y;
+			int m_w;
+			int m_h;
+			int v_x;
+			int v_y;
 	};
 };
 
