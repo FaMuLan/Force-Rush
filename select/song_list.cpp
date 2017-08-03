@@ -46,50 +46,57 @@ void lm::SongList::clear()
 
 void lm::SongList::update()
 {
-	static int roll_speed;
-	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+	if (list_length > System::instance()->GetWindowHeigh())
 	{
-		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
+		static int roll_speed;
+		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
-			list_process -= load_finger.dy;
-			roll_speed = load_finger.dy;
+			Finger load_finger = ControlHandler::instance()->GetFinger(i);
+			if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
+			{
+				list_process -= load_finger.dy;
+				roll_speed = load_finger.dy;
 
+				if (list_process <= 0)
+				{
+					list_process = 0;
+				}
+				else if (list_process > list_length)
+				{
+					list_process = list_length;
+				}
+				//把list_process盡量控制在[0,list_length]區間內
+			}
+		}
+		if (ControlHandler::instance()->GetFingerCount() == 0)
+		{
+			if (roll_speed < 0)
+			{
+				roll_speed += 2;
+				roll_speed = roll_speed > 0 ? 0 : roll_speed;
+			}
+			else if (roll_speed > 0)
+			{
+				roll_speed -= 2;
+				roll_speed = roll_speed < 0 ? 0 : roll_speed;
+			}
+			//不包含 roll_speed == 0 這個情況
+			list_process -= roll_speed;
 			if (list_process < 0)
 			{
 				list_process = 0;
 			}
-			else if (list_process > list_length && list_length > System::instance()->GetWindowHeigh())
+			else if (list_process > list_length)
+			//順便檢測列表長度是否超過屏幕寬度，免得列表顯得抽搐……
 			{
 				list_process = list_length;
 			}
-			//把list_process盡量控制在[0,list_length]區間內
+
 		}
 	}
-	if (ControlHandler::instance()->GetFingerCount() == 0)
+	else
 	{
-		if (roll_speed < 0)
-		{
-			roll_speed += 2;
-			roll_speed = roll_speed > 0 ? 0 : roll_speed;
-		}
-		else if (roll_speed > 0)
-		{
-			roll_speed -= 2;
-			roll_speed = roll_speed < 0 ? 0 : roll_speed;
-		}
-		//不包含 roll_speed == 0 這個情況
-		list_process -= roll_speed;
-		if (list_process < 0)
-		{
-			list_process = 0;
-		}
-		else if (list_process > list_length && list_length > System::instance()->GetWindowHeigh())
-		//順便檢測列表長度是否超過屏幕寬度，免得列表顯得抽搐……
-		{
-			list_process = list_length;
-		}
-
+		list_process = 0;
 	}
 	for (int i = 0; i < m_cell.size(); i++)
 	{
