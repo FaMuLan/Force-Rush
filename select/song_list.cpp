@@ -46,7 +46,7 @@ void lm::SongList::clear()
 
 void lm::SongList::update()
 {
-	if (list_length > System::instance()->GetWindowHeigh())
+	if (list_length > 0)
 	{
 		static int roll_speed;
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
