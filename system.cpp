@@ -36,6 +36,8 @@ void lm::System::init()
 	DebugWidget::instance()->init();
 	current_state = MainState::instance();
 	scale = float(screen_width) / float(window_width);
+	window_heigh = screen_heigh / scale;
+	//将理论分辨率的宽高比例与实际屏幕分辨率的宽高比例吻合
 }
 
 void lm::System::run()

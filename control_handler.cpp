@@ -31,8 +31,8 @@ bool lm::ControlHandler::IsMouseButtonDown(MouseButton k)
 
 void lm::ControlHandler::GetMousePos(int &x, int &y)
 {
-	x = mouse_pos.x;
-	y = mouse_pos.y;
+	x = mouse_pos.x / System::instance()->GetScale();
+	y = mouse_pos.y / System::instance()->GetScale();
 }
 
 int lm::ControlHandler::GetFingerCount()
@@ -114,10 +114,10 @@ void lm::ControlHandler::update()
 			case SDL_FINGERDOWN:
 			{
 				Finger new_finger;
-				new_finger.x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
-				new_finger.y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
-				new_finger.dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
-				new_finger.dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+				new_finger.x = e.tfinger.x * System::instance()->GetWindowWidth();
+				new_finger.y = e.tfinger.y * System::instance()->GetWindowHeigh();
+				new_finger.dx = e.tfinger.dx * System::instance()->GetWindowWidth();
+				new_finger.dy = e.tfinger.dy * System::instance()->GetWindowHeigh();
 				new_finger.moved = false;
 				new_finger.released = false;
 				new_finger.id = e.tfinger.fingerId;
@@ -130,10 +130,10 @@ void lm::ControlHandler::update()
 				{
 					if (load_id == finger_state[i].id)
 					{
-						finger_state[i].x = e.tfinger.x * lm::System::instance()->GetWindowWidth();
-						finger_state[i].y = e.tfinger.y * lm::System::instance()->GetWindowHeigh();
-						finger_state[i].dx = e.tfinger.dx * lm::System::instance()->GetWindowWidth();
-						finger_state[i].dy = e.tfinger.dy * lm::System::instance()->GetWindowHeigh();
+						finger_state[i].x = e.tfinger.x * System::instance()->GetWindowWidth();
+						finger_state[i].y = e.tfinger.y * System::instance()->GetWindowHeigh();
+						finger_state[i].dx = e.tfinger.dx * System::instance()->GetWindowWidth();
+						finger_state[i].dy = e.tfinger.dy * System::instance()->GetWindowHeigh();
 						if (finger_state[i].dx != 0 || finger_state[i].dy != 0)
 						//檢測手指是否移動
 						{
