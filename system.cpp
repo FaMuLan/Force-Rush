@@ -64,18 +64,6 @@ void lm::System::clear()
 	IMG_Quit();
 }
 
-void lm::System::PushState(std::string id, State *s)
-{
-
-//	m_state[id] = s;
-
-}
-
-void lm::System::SwitchState(std::string id)
-{
-//	current_state_id = id;
-}
-
 int lm::System::GetWindowWidth()
 {
 	return window_width;

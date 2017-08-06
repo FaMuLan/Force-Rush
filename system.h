@@ -26,8 +26,6 @@ namespace lm
 			void init();
 			void run();
 			void clear();
-			void PushState(std::string id, State *s);
-			void SwitchState(std::string id);
 			int GetWindowWidth();
 			int GetWindowHeigh();
 			int GetScreenWidth();
