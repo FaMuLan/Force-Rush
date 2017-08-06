@@ -35,6 +35,7 @@ void lm::System::init()
 	LoadingState::instance()->init();
 	DebugWidget::instance()->init();
 	current_state = MainState::instance();
+	scale = float(screen_width) / float(window_width);
 }
 
 void lm::System::run()
@@ -79,4 +80,8 @@ int lm::System::GetScreenWidth()
 int lm::System::GetScreenHeigh()
 {
 	return screen_heigh;
+}
+float lm::System::GetScale()
+{
+	return scale;
 }

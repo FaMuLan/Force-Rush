@@ -30,6 +30,7 @@ namespace lm
 			int GetWindowHeigh();
 			int GetScreenWidth();
 			int GetScreenHeigh();
+			float GetScale();
 
 			State *current_state;
 		private:
@@ -45,6 +46,8 @@ namespace lm
 
 //			std::map<std::string, State*> m_state;
 			bool m_loading;
+			float scale;
+			//用於縮放
 	};	//class System
 };	//namespace lm
 
