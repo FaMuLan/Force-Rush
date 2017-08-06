@@ -1,4 +1,5 @@
 #include "texture_manager.h"
+#include "system.h"
 
 lm::TextureManager *lm::TextureManager::m_instance = 0;
 
@@ -45,13 +46,16 @@ void lm::TextureManager::clearfont(std::string path)
 
 void lm::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
 {
-	SDL_Rect dest_rect = { x, y, w, h };
-	SDL_Rect src_rect = { src_x, src_y, src_w, src_h };
+	SDL_Rect dest_rect = { x * System::instance()->GetScale(), y * System::instance()->GetScale(), w * System::instance()->GetScale(), h * System::instance()->GetScale() };
 	if (src_w == 0 || src_h == 0)
 	{
-		src_rect = { 0, 0, w, h };
+		SDL_RenderCopy(renderer, texture[path], NULL, &dest_rect);
 	}
-	SDL_RenderCopy(renderer, texture[path], &src_rect, &dest_rect);
+	else
+	{
+		SDL_Rect src_rect = { src_x, src_y, src_w, src_h };
+		SDL_RenderCopy(renderer, texture[path], &src_rect, &dest_rect);
+	}
 }
 
 void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, int h)
@@ -78,7 +82,7 @@ void lm::TextureManager::render(std::string text, int x, int y, std::string font
 			y -= h;
 		break;
 	}
-	SDL_Rect dest_rect = { x, y, w, h };
+	SDL_Rect dest_rect = { x * System::instance()->GetScale(), y * System::instance()->GetScale(), w * System::instance()->GetScale(), h * System::instance()->GetScale() };
 	SDL_RenderCopy(renderer, text_texture, NULL, &dest_rect);
 
 	SDL_DestroyTexture(text_texture);
