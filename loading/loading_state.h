@@ -3,12 +3,11 @@
 
 #include <string>
 #include "../state.h"
-#include "../system.h"
-#include "../timer.h"
-#include "../sound_manager.h"
 
 namespace lm
 {
+	class Sprite;
+
 	class LoadingState : public State
 	{
 		public:

@@ -1,4 +1,13 @@
 #include "main_state.h"
+#include "../sprite.h"
+#include "../button.h"
+#include "../debug_widget.h"
+#include "../sound_manager.h"
+#include "../texture_manager.h"
+#include "../loading/loading_state.h"
+#include "../crafting/crafting_state.h"
+#include "../select/select_state.h"
+#include "about_sidedialog.h"
 
 lm::MainState *lm::MainState::m_instance = 0;
 

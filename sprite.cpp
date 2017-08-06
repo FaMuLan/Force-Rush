@@ -1,4 +1,5 @@
 #include "sprite.h"
+#include "texture_manager.h"
 
 void lm::Sprite::load(std::string path, int x, int y, int w, int h)
 {

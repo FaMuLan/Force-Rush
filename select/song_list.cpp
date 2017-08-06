@@ -1,4 +1,15 @@
 #include "song_list.h"
+#include <regex>
+#include <fstream>
+#include "../button.h"
+#include "../control_handler.h"
+#include "../debug_widget.h"
+#include "../sprite.h"
+#include "../system.h"
+#include "../texture_manager.h"
+#include "../loading/loading_state.h"
+#include "../crafting/crafting_state.h"
+#include "select_state.h"
 
 lm::SongList *lm::SongList::m_instance = 0;
 

@@ -1,4 +1,8 @@
 #include "loading_state.h"
+#include "../system.h"
+#include "../sprite.h"
+#include "../timer.h"
+#include "../sound_manager.h"
 
 lm::LoadingState *lm::LoadingState::m_instance = 0;
 

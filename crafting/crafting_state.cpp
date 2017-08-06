@@ -1,4 +1,11 @@
 #include "crafting_state.h"
+#include "../button.h"
+#include "../sprite.h"
+#include "../debug_widget.h"
+#include "../texture_manager.h"
+#include "../system.h"
+#include "../main/main_state.h"
+#include "../loading/loading_state.h"
 
 lm::CraftingState *lm::CraftingState::m_instance = 0;
 

@@ -7,18 +7,10 @@
 #include <map>
 #include <string>
 
-#include "control_handler.h"
-#include "state.h"
-#include "main/main_state.h"
-#include "crafting/crafting_state.h"
-#include "debug_widget.h"
-#include "select/select_state.h"
-#include "loading/loading_state.h"
-#include "texture_manager.h"
-#include "sound_manager.h"
-
 namespace lm
 {
+	class State;
+
 	class System
 	{
 		public:
@@ -34,16 +26,12 @@ namespace lm
 			void init();
 			void run();
 			void clear();
-			int GetWindowWidth()
-			{
-				return screen_width;
-			}
-			int GetWindowHeigh()
-			{
-				return screen_heigh;
-			}
 			void PushState(std::string id, State *s);
 			void SwitchState(std::string id);
+			int GetWindowWidth();
+			int GetWindowHeigh();
+			int GetScreenWidth();
+			int GetScreenHeigh();
 
 			State *current_state;
 		private:
@@ -52,10 +40,12 @@ namespace lm
 			static System *m_instance;
 			SDL_Window *system_window;
 			SDL_Renderer *system_renderer;
+			int window_width;
+			int window_heigh;
 			int screen_width;
 			int screen_heigh;
 
-			std::map<std::string, State*> m_state;
+//			std::map<std::string, State*> m_state;
 			bool m_loading;
 	};	//class System
 };	//namespace lm

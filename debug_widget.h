@@ -3,13 +3,11 @@
 
 #include <string>
 #include <vector>
-#include "control_handler.h"
-#include "texture_manager.h"
-#include "sprite.h"
-#include "system.h"
 
 namespace lm
 {
+	class Sprite;
+
 	class DebugWidget
 	{
 		public:

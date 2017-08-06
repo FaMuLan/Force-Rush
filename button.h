@@ -1,11 +1,10 @@
 #ifndef LUNATIC_MELODY_BUTTON_H
 #define LUNATIC_MELODY_BUTTON_H
 
+#include <SDL2/SDL.h>
 #include <string>
 
-#include "control_handler.h"
 #include "sprite.h"
-#include "texture_manager.h"
 
 namespace lm
 {

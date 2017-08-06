@@ -1,4 +1,11 @@
 #include "select_state.h"
+#include "../button.h"
+#include "../sprite.h"
+#include "../debug_widget.h"
+#include "../texture_manager.h"
+#include "../main/main_state.h"
+#include "../loading/loading_state.h"
+#include "song_list.h"
 
 lm::SelectState *lm::SelectState::m_instance = 0;
 

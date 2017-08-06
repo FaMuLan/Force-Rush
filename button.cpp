@@ -1,4 +1,6 @@
 #include "button.h"
+#include "control_handler.h"
+#include "texture_manager.h"
 
 void lm::Button::load(std::string path, std::string path_pressed, int x, int y, int w, int h)
 {

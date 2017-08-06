@@ -1,15 +1,14 @@
 #ifndef LUNATIC_MELODY_SELECT_SELECT_STATE_H
 #define LUNATIC_MELODY_SELECT_SELECT_STATE_H
 
-#include <vector>
 #include <string>
 #include "../state.h"
-#include "../button.h"
-#include "../debug_widget.h"
-#include "song_list.h"
 
 namespace lm
 {
+	class Sprite;
+	class Button;
+
 	class SelectState : public State
 	{
 		public:

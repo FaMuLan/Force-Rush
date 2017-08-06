@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "texture_manager.h"
-
 namespace lm
 {
 	class Sprite

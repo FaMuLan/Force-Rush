@@ -1,4 +1,6 @@
 #include "control_handler.h"
+#include "system.h"
+#include "texture_manager.h"
 
 lm::ControlHandler *lm::ControlHandler::m_instance = 0;
 

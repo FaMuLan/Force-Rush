@@ -1,4 +1,8 @@
 #include "debug_widget.h"
+#include "control_handler.h"
+#include "texture_manager.h"
+#include "sprite.h"
+#include "system.h"
 
 lm::DebugWidget *lm::DebugWidget::m_instance = 0;
 

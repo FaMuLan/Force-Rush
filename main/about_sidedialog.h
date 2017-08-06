@@ -2,15 +2,10 @@
 #define LUNATIC_MELODY_MAIN_ABOUT_SIDEDIALOG_H
 
 #include <string>
-#include "../control_handler.h"
-#include "../debug_widget.h"
-#include "../sprite.h"
-#include "../texture_manager.h"
-#include "../timer.h"
-#include "main_state.h"
 
 namespace lm
 {
+	class Sprite;
 	class AboutSidedialog
 	{
 		public:

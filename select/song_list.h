@@ -2,16 +2,11 @@
 #define LUNATIC_MELODY_SELECT_SONG_LIST_H
 
 #include <vector>
-#include <regex>
-#include <fstream>
-#include "../button.h"
-#include "../control_handler.h"
-#include "../debug_widget.h"
-#include "../loading/loading_state.h"
-#include "../crafting/crafting_state.h"
+#include <string>
 
 namespace lm
 {
+	class Sprite;
 	class Button;
 
 	struct SongInformation

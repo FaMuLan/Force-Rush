@@ -7,9 +7,6 @@
 #include <vector>
 #include <string>
 
-#include "system.h"
-#include "texture_manager.h"
-
 namespace lm
 {
 	typedef SDL_FingerID FingerID;

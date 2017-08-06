@@ -1,4 +1,11 @@
 #include "about_sidedialog.h"
+#include "../control_handler.h"
+#include "../debug_widget.h"
+#include "../sprite.h"
+#include "../texture_manager.h"
+#include "../timer.h"
+#include "../system.h"
+#include "main_state.h"
 
 lm::AboutSidedialog *lm::AboutSidedialog::m_instance = 0;
 

@@ -1,11 +1,20 @@
 #include "system.h"
+#include "control_handler.h"
+#include "state.h"
+#include "main/main_state.h"
+#include "crafting/crafting_state.h"
+#include "debug_widget.h"
+#include "select/select_state.h"
+#include "loading/loading_state.h"
+#include "texture_manager.h"
+#include "sound_manager.h"
 
 lm::System *lm::System::m_instance = 0;
 
 void lm::System::init()
 {
-	screen_width = 1280;
-	screen_heigh = 720;
+	window_width = 1280;
+	window_heigh = 720;
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	SDL_DisplayMode displayMode;
@@ -58,11 +67,28 @@ void lm::System::clear()
 void lm::System::PushState(std::string id, State *s)
 {
 
-	m_state[id] = s;
+//	m_state[id] = s;
 
 }
 
 void lm::System::SwitchState(std::string id)
 {
 //	current_state_id = id;
+}
+
+int lm::System::GetWindowWidth()
+{
+	return window_width;
+}
+int lm::System::GetWindowHeigh()
+{
+	return window_heigh;
+}
+int lm::System::GetScreenWidth()
+{
+	return screen_width;
+}
+int lm::System::GetScreenHeigh()
+{
+	return screen_heigh;
 }
