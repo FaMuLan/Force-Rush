@@ -4,7 +4,7 @@ lm::SoundManager *lm::SoundManager::m_instance = 0;
 
 void lm::SoundManager::init()
 {
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
 void lm::SoundManager::clear()

@@ -32,8 +32,8 @@ void lm::MainState::init()
 	AboutSidedialog::instance()->init();
 	is_locked = false;
 
-//	SoundManager::instance()->load("assets/BGM.ogg", SOUNDTYPE_MUSIC);
-//	SoundManager::instance()->play("assets/BGM.ogg", SOUNDTYPE_MUSIC);
+	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
+	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
 }
 
 void lm::MainState::clear()
@@ -68,7 +68,7 @@ void lm::MainState::update()
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
 		DebugWidget::instance()->PushLog("Leaving main menu");
-//		SoundManager::instance()->stop();
+		SoundManager::instance()->stop();
 	}
 	if (main_debug->IsReleased())
 	{
