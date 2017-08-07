@@ -155,6 +155,9 @@ void lm::ControlHandler::update()
 				}
 			}
 			break;
+			case SDL_WINDOWEVENT:
+				System::instance()->RefreshWindowSize();
+			break;
 		}	//switch (e.type)
 	}	//while (SDL_PollEvent(&e))
 }	//void lm::ControlHandler::update()
