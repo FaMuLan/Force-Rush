@@ -67,6 +67,20 @@ void lm::System::clear()
 	IMG_Quit();
 }
 
+void lm::System::RefreshWindowSize()
+{
+	int w, h;
+	SDL_GetWindowSize(system_window, &w, &h);
+	screen_width = w;
+	screen_heigh = h;
+	scale = float(screen_width) / float(window_width);
+	window_heigh = screen_heigh / scale;
+	char output[50];
+	sprintf(output, "Reset window size: %d * %d", w, h);
+	std::string output_str(output);
+	DebugWidget::instance()->PushLog(output_str);
+}
+
 int lm::System::GetWindowWidth()
 {
 	return window_width;

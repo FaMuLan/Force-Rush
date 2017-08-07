@@ -26,6 +26,7 @@ namespace lm
 			void init();
 			void run();
 			void clear();
+			void RefreshWindowSize();
 			int GetWindowWidth();
 			int GetWindowHeigh();
 			int GetScreenWidth();
