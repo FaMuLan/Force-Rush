@@ -13,7 +13,7 @@ void lm::DebugWidget::init()
 	m_h = 316;
 	background->load("assets/window_base.png", 0, 0, m_w, m_h);
 	font_size = 16;
-	row_count = (m_w - 60) / font_size;
+	row_count = (m_h - 60) / font_size;
 	//限制顯示行數，我怎麼知道這是什麼操作啊！
 	v_x = 0;
 	v_y = 0;
