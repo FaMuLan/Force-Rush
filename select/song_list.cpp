@@ -15,6 +15,7 @@ lm::SongList *lm::SongList::m_instance = 0;
 
 void lm::SongList::init()
 {
+	cell_heigh = 123;
 	TextureManager::instance()->loadfont("assets/Exo-Light.ttf", 30);
 	select_cover = new Sprite;
 	std::string text;
@@ -31,20 +32,22 @@ void lm::SongList::init()
 	{
 		std::smatch result = *i;
 		std::string result_str = result.str();
-		Button *new_cell = new Button;
 		SongInformation *new_song_information = new SongInformation;
 		new_song_information->m_title = std::regex_replace(result_str, pattern, std::string("$1"));
 		new_song_information->m_artist = std::regex_replace(result_str, pattern, std::string("$2"));
 		new_song_information->m_noter = std::regex_replace(result_str, pattern, std::string("$3"));
 		new_song_information->m_bpm = std::regex_replace(result_str, pattern, std::string("$4"));
 		new_song_information->m_cover_path = std::regex_replace(result_str, pattern, std::string("$5"));
-		new_cell->load("assets/song_cell_right.png", "assets/song_cell_right_selected.png", 0, 0, 549, 123);
-		new_cell->SetText(new_song_information->m_title, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00);
 		m_information.push_back(new_song_information);
-		m_cell.push_back(new_cell);
 	}
-	list_length = 123 * m_cell.size() - System::instance()->GetWindowHeigh();
+	list_length = cell_heigh * m_information.size();
 	list_process = 0;
+	for (int i = 0; i < (System::instance()->GetWindowHeigh() / cell_heigh + 2); i++)
+	{
+		Button *new_button = new Button;
+		new_button->load("assets/song_cell_right.png", "assets/song_cell_right_selected.png", 0, 0, 549, 123);
+		m_cell.push_back(new_button);
+	}
 	selected_index = 0;
 	select_cover->load(m_information[selected_index]->m_cover_path, 135, 120, 512, 512);
 }	//void lm::SongList::inìt()
@@ -57,81 +60,82 @@ void lm::SongList::clear()
 
 void lm::SongList::update()
 {
-	if (list_length > 0)
+	static int roll_speed;
+	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
-		static int roll_speed;
-		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+		Finger load_finger = ControlHandler::instance()->GetFinger(i);
+		if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
 		{
-			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
-			{
-				list_process -= load_finger.dy;
-				roll_speed = load_finger.dy;
+			list_process -= load_finger.dy;
+			roll_speed = load_finger.dy;
 
-				if (list_process <= 0)
-				{
-					list_process = 0;
-				}
-				else if (list_process > list_length)
-				{
-					list_process = list_length;
-				}
-				//把list_process盡量控制在[0,list_length]區間內
-			}
-		}
-		if (ControlHandler::instance()->GetFingerCount() == 0)
-		{
-			if (roll_speed < 0)
-			{
-				roll_speed += 2;
-				roll_speed = roll_speed > 0 ? 0 : roll_speed;
-			}
-			else if (roll_speed > 0)
-			{
-				roll_speed -= 2;
-				roll_speed = roll_speed < 0 ? 0 : roll_speed;
-			}
-			//不包含 roll_speed == 0 這個情況
-			list_process -= roll_speed;
 			if (list_process < 0)
 			{
-				list_process = 0;
+				list_process += list_length;
 			}
-			else if (list_process > list_length)
-			//順便檢測列表長度是否超過屏幕寬度，免得列表顯得抽搐……
+			else if (list_process >= list_length)
 			{
-				list_process = list_length;
+				list_process -= list_length;
 			}
-
+			//把list_process盡量控制在[0,list_length)區間內
 		}
 	}
-	else
+	if (ControlHandler::instance()->GetFingerCount() == 0)
 	{
-		list_process = 0;
+		if (roll_speed < 0)
+		{
+			roll_speed += 2;
+			roll_speed = roll_speed > 0 ? 0 : roll_speed;
+		}
+		else if (roll_speed > 0)
+		{
+			roll_speed -= 2;
+			roll_speed = roll_speed < 0 ? 0 : roll_speed;
+		}
+		//不包含 roll_speed == 0 這個情況
+		list_process -= roll_speed;
+		if (list_process < 0)
+		{
+			list_process += list_length;
+		}
+		else if (list_process >= list_length)
+		{
+			list_process -= list_length;
+		}
 	}
+	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		m_cell[i]->SetPos(System::instance()->GetWindowWidth() - 549, 123 * i - list_process);
+		int x = System::instance()->GetWindowWidth() - 549;
+		int y = -(list_process % cell_heigh) + i * cell_heigh;
+		m_cell[i]->SetPos(x, y);
+		if (current_index >= m_information.size())
+		{
+			current_index = 0;
+		}
+			m_cell[i]->SetText(m_information[current_index]->m_title, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00);
+
 		m_cell[i]->update();
 		if (m_cell[i]->IsReleased())
 		{
-			if (i == selected_index)
+			if (current_index == selected_index)
 			{
 				LoadingState::instance()->init(CraftingState::instance(), SelectState::instance());
 				std::string output = "Enter song ";
-				output += m_information[i]->m_title;
+				output += m_information[current_index]->m_title;
 				DebugWidget::instance()->PushLog(output);
 			}
 			else
 			{
-				selected_index = i;
+				selected_index = current_index;
 				select_cover->clear();
-				select_cover->load(m_information[i]->m_cover_path, 135, 120, 512, 512);
+				select_cover->load(m_information[current_index]->m_cover_path, 135, 120, 512, 512);
 				std::string output = "Selected song ";
-				output += m_information[i]->m_title;
+				output += m_information[current_index]->m_title;
 				DebugWidget::instance()->PushLog(output);
 			}
 		}
+		current_index++;
 	}
 }
 
