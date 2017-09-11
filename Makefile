@@ -4,8 +4,8 @@ LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 all: run
 
-run: about_sidedialog.o button.o control_handler.o crafting_state.o debug_widget.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o
-	$(CXX) $(LDFLAGS) $(LIBS) about_sidedialog.o button.o control_handler.o crafting_state.o debug_widget.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o state.o system.o texture_manager.o timer.o -O2 -o run
+run: about_sidedialog.o button.o control_handler.o crafting_state.o debug_widget.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o system.o texture_manager.o timer.o
+	$(CXX) $(LDFLAGS) $(LIBS) about_sidedialog.o button.o control_handler.o crafting_state.o debug_widget.o loading_state.o main.o main_state.o select_state.o song_list.o sound_manager.o sprite.o system.o texture_manager.o timer.o -O2 -o run
 
 about_sidedialog.o: main/about_sidedialog.cpp main/about_sidedialog.h
 	$(CXX) main/about_sidedialog.cpp $(CFLAGS)
