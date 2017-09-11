@@ -3,7 +3,6 @@
 #include "state.h"
 #include "main/main_state.h"
 #include "crafting/crafting_state.h"
-#include "debug_widget.h"
 #include "select/select_state.h"
 #include "loading/loading_state.h"
 #include "texture_manager.h"
@@ -13,8 +12,8 @@ lm::System *lm::System::m_instance = 0;
 
 void lm::System::init()
 {
-	window_width = 1280;
-	window_heigh = 720;
+	window_width = 720;
+	window_heigh = 1280;
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	SDL_DisplayMode displayMode;
@@ -33,7 +32,6 @@ void lm::System::init()
 //	PushState("main", main_state);
 	MainState::instance()->init();
 	LoadingState::instance()->init();
-	DebugWidget::instance()->init();
 	current_state = MainState::instance();
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
@@ -49,8 +47,7 @@ void lm::System::run()
 //		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
-		DebugWidget::instance()->update();
-		ControlHandler::instance()->render();
+//		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
 	}
 }
@@ -75,10 +72,6 @@ void lm::System::RefreshWindowSize()
 	screen_heigh = h;
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
-	char output[50];
-	sprintf(output, "Reset window size: %d * %d", w, h);
-	std::string output_str(output);
-	DebugWidget::instance()->PushLog(output_str);
 }
 
 int lm::System::GetWindowWidth()
