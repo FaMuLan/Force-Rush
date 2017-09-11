@@ -30,11 +30,11 @@ namespace lm
 			LoadingState() {}
 			~LoadingState() {}
 			static LoadingState *m_instance;
-			Sprite *shutter_l;
-			Sprite *shutter_r;
+			Sprite *shutter_top;
+			Sprite *shutter_bottom;
 			unsigned int animate_duration;
-			double a_l;
-			double a_r;
+			double a_top;
+			double a_bottom;
 			bool is_entered;
 			bool is_loaded;
 			bool is_exited;
