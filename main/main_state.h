@@ -29,9 +29,7 @@ namespace lm
 			~MainState() {}
 			static MainState *m_instance;
 			Button *main_start;
-			Button *main_debug;
 			Button *main_about;
-			Sprite *main_character;
 			Sprite *background;
 			bool is_locked;
 	};
