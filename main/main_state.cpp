@@ -22,8 +22,8 @@ void lm::MainState::init()
 
 	is_locked = false;
 
-	main_start->SetText("Start", "assets/Audiowide.ttf", 0x00, 0x00, 0x00);
-	main_about->SetText("About", "assets/Audiowide.ttf", 0x00, 0x00, 0x00);
+	main_start->SetText("Start", "assets/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
+	main_about->SetText("About", "assets/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
 
 //	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
@@ -34,7 +34,7 @@ void lm::MainState::clear()
 	main_start->clear();
 	main_about->clear();
 	background->clear();
-	TextureManager::instance()->clearfont("assets/Audiowide.ttf");
+	TextureManager::instance()->clearfont("assets/Audiowide.ttf", 60);
 }
 
 void lm::MainState::update()

@@ -20,7 +20,7 @@ namespace lm
 			virtual bool IsPressed();
 			virtual bool IsReleased();
 			virtual void SetPos(int x, int y);
-			void SetText(std::string load_text, std::string load_font_path, Uint8 load_r, Uint8 load_g, Uint8 load_b);
+			void SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b);
 		protected:
 			bool is_pressed;
 			bool is_released;
@@ -30,6 +30,7 @@ namespace lm
 			//adden
 			std::string text;
 			std::string font_path;
+			int font_size;
 			Uint8 r, g, b;
 			//text & font
 	};	//class Button : public Sprite

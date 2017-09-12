@@ -91,7 +91,7 @@ void lm::Button::render()
 	}
 	int text_x = m_x + m_w / 2;
 	int text_y = m_y + m_h / 2;
-	TextureManager::instance()->render(text, text_x, text_y, font_path, r, g, b);
+	TextureManager::instance()->render(text, text_x, text_y, font_path, font_size, r, g, b);
 }
 
 void lm::Button::clear()
@@ -118,10 +118,11 @@ void lm::Button::SetPos(int x, int y)
 	}
 }
 
-void lm::Button::SetText(std::string load_text, std::string load_font_path, Uint8 load_r, Uint8 load_g, Uint8 load_b)
+void lm::Button::SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b)
 {
 	text = load_text;
 	font_path = load_font_path;
+	font_size = load_font_size;
 	r = load_r;
 	g = load_g;
 	b = load_b;
