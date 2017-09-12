@@ -9,9 +9,6 @@ void lm::ControlHandler::init()
 	quit = false;
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
-	TextureManager::instance()->loadfont("assets/Kazesawa-Light.ttf", 30);
-	//for debug rendering
-//	touch_state.reserve(12);
 }
 
 void lm::ControlHandler::clear()
@@ -161,18 +158,3 @@ void lm::ControlHandler::update()
 		}	//switch (e.type)
 	}	//while (SDL_PollEvent(&e))
 }	//void lm::ControlHandler::update()
-
-void lm::ControlHandler::render()
-{
-	for (int i = 0; i < finger_state.size(); i++)
-	{
-		char output[50];
-		sprintf(output, "id:%d x:%d y:%d dx:%d dy:%d count:%d", finger_state[i].id, finger_state[i].x, finger_state[i].y, finger_state[i].dx, finger_state[i].dy, i);
-
-		std::string output_str(output);
-		output_str += finger_state[i].moved ? std::string(" moved:true ") : std::string(" moved:false ");
-		output_str += finger_state[i].released ? std::string("released:true") : std::string("released:false");
-	
-		TextureManager::instance()->render(output_str, finger_state[i].x, finger_state[i].y, "assets/Kazesawa-Light.ttf", 0x00, 0x00, 0x00);
-	}
-}

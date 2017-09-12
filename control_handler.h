@@ -56,7 +56,6 @@ namespace lm
 
 			bool IsQuit();
 			void update();
-			void render();
 		private:
 			ControlHandler() {}
 			~ControlHandler() {}
