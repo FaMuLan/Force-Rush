@@ -24,7 +24,7 @@ void lm::TextureManager::load(SDL_Texture *load_texture, std::string path)
 void lm::TextureManager::loadfont(std::string path, int size)
 {
 	TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
-	font[path] = new_font;
+	font[path][size] = new_font;
 }
 
 void lm::TextureManager::clear()
@@ -38,10 +38,10 @@ void lm::TextureManager::clear(std::string path)
 	texture[path] = NULL;
 }
 
-void lm::TextureManager::clearfont(std::string path)
+void lm::TextureManager::clearfont(std::string path, int size)
 {
-	TTF_CloseFont(font[path]);
-	font[path] = NULL;
+	TTF_CloseFont(font[path][size]);
+	font[path][size] = NULL;
 }
 
 void lm::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
@@ -64,10 +64,10 @@ void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, 
 	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
 }
 
-void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, Uint8 r, Uint8 g, Uint8 b, TextFormat format)
+void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, int r, int g, int b, TextFormat format)
 {
 	SDL_Color color = { r, g, b };
-	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path], text.c_str(), color);
+	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	int w = text_surface->w;
 	int h = text_surface->h;
