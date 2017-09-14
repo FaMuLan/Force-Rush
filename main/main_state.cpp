@@ -3,6 +3,7 @@
 #include "../button.h"
 #include "../sound_manager.h"
 #include "../texture_manager.h"
+#include "../system.h"
 #include "../loading/loading_state.h"
 #include "../crafting/crafting_state.h"
 #include "../select/select_state.h"
@@ -53,6 +54,7 @@ void lm::MainState::update()
 	if (main_start->IsReleased())
 	{
 		LoadingState::instance()->init(this, this);
+		LoadingState::instance()->AddText("Loop", "assets/Audiowide.ttf", 80, System::instance()->GetWindowWidth() / 2, 100, 0x00, 0x00, 0x00, SHUTTER_TOP);
 //		SoundManager::instance()->stop();
 	}
 }
