@@ -1,7 +1,9 @@
 #include "loading_state.h"
 #include "../system.h"
 #include "../sprite.h"
+#include "../text_area.h"
 #include "../timer.h"
+#include "../texture_manager.h"
 #include "../sound_manager.h"
 
 lm::LoadingState *lm::LoadingState::m_instance = 0;
@@ -13,6 +15,15 @@ void lm::LoadingState::update()
 		OnEnter();
 		shutter_bottom->render();
 		shutter_top->render();
+
+		for (int i = 0; i < text_area_top.size(); i++)
+		{
+			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
+		}
+		for (int i = 0; i < text_area_bottom.size(); i++)
+		{
+			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
+		}
 	}
 	else if (!is_loaded)
 	{
@@ -22,6 +33,16 @@ void lm::LoadingState::update()
 		is_loaded = true;
 		shutter_bottom->render();
 		shutter_top->render();
+
+		for (int i = 0; i < text_area_top.size(); i++)
+		{
+			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
+		}
+		for (int i = 0; i < text_area_bottom.size(); i++)
+		{
+			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
+		}
+
 		Timer::instance()->RunTimer("shutter");
 		//SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
 		//加載完立刻放音效
@@ -31,6 +52,28 @@ void lm::LoadingState::update()
 		OnExit();
 		shutter_bottom->render();
 		shutter_top->render();
+
+		for (int i = 0; i < text_area_top.size(); i++)
+		{
+			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
+		}
+		for (int i = 0; i < text_area_bottom.size(); i++)
+		{
+			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
+		}
+		if (is_exited)
+		{
+			for (int i = 0; i < text_area_top.size(); i++)
+			{
+				delete text_area_top[i];
+			}
+			for (int i = 0; i < text_area_bottom.size(); i++)
+			{
+				delete text_area_bottom[i];
+			}
+			text_area_top.clear();
+			text_area_bottom.clear();
+		}
 	}
 }
 
@@ -40,6 +83,7 @@ void lm::LoadingState::init()
 	shutter_bottom = new Sprite;
 	shutter_top->load("assets/shutter_top.png", 0, 0, 720, 534);
 	shutter_bottom->load("assets/shutter_bottom.png", 0, 0, 720, 848);
+	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 80);
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	animate_duration = 500;
@@ -60,13 +104,16 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	next_state = load_next_state;
 	last_state = load_last_state;
 	Timer::instance()->RunTimer("shutter");
+	TextArea *new_text_area = new TextArea;
+	new_text_area->load("Loading...", "assets/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
+	new_text_area->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+	text_area_bottom.push_back(new_text_area);
 	//SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//一開始就放音效
 }
 
 void lm::LoadingState::clear()
 {
-	
 }
 
 /*
@@ -106,4 +153,14 @@ void lm::LoadingState::OnExit()
 		Timer::instance()->ResetTimer("shutter");
 		is_exited = true;
 	}
+}
+
+//void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b)
+//{
+	
+//}
+
+bool lm::LoadingState::IsSwitching()
+{
+	return !is_exited;
 }

@@ -2,11 +2,13 @@
 #define LUNATIC_MELODY_LOADING_LOADING_STATE_H
 
 #include <string>
+#include <vector>
 #include "../state.h"
 
 namespace lm
 {
 	class Sprite;
+	class TextArea;
 
 	class LoadingState : public State
 	{
@@ -26,12 +28,16 @@ namespace lm
 			void clear();
 			void OnEnter();
 			void OnExit();
+			void AddTest(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b);
+			bool IsSwitching();
 		private:
 			LoadingState() {}
 			~LoadingState() {}
 			static LoadingState *m_instance;
 			Sprite *shutter_top;
 			Sprite *shutter_bottom;
+			std::vector<TextArea*> text_area_top;
+			std::vector<TextArea*> text_area_bottom;
 			unsigned int animate_duration;
 			double a_top;
 			double a_bottom;
