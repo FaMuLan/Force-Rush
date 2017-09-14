@@ -1,6 +1,7 @@
 #include "button.h"
 #include "control_handler.h"
 #include "texture_manager.h"
+#include "loading/loading_state.h"
 
 void lm::Button::load(std::string path, std::string path_pressed, int x, int y, int w, int h)
 {
@@ -106,7 +107,7 @@ bool lm::Button::IsPressed()
 
 bool lm::Button::IsReleased()
 {
-	return is_released;
+	return is_released && !LoadingState::instance()->IsSwitching();
 }
 
 void lm::Button::SetPos(int x, int y)
