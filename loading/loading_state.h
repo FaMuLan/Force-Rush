@@ -10,6 +10,12 @@ namespace lm
 	class Sprite;
 	class TextArea;
 
+	enum ShutterType
+	{
+		SHUTTER_TOP = 0,
+		SHUTTER_BOTTOM
+	};
+
 	class LoadingState : public State
 	{
 		public:
@@ -28,7 +34,7 @@ namespace lm
 			void clear();
 			void OnEnter();
 			void OnExit();
-			void AddTest(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b);
+			void AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b, ShutterType type);
 			bool IsSwitching();
 		private:
 			LoadingState() {}
@@ -44,6 +50,7 @@ namespace lm
 			bool is_entered;
 			bool is_loaded;
 			bool is_exited;
+			bool is_text_default;
 			State* next_state;
 			State* last_state;
 	};

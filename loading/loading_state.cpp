@@ -108,6 +108,7 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	new_text_area->load("Loading...", "assets/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
 	new_text_area->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
 	text_area_bottom.push_back(new_text_area);
+	is_text_default = true;
 	//SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//一開始就放音效
 }
@@ -155,10 +156,26 @@ void lm::LoadingState::OnExit()
 	}
 }
 
-//void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b)
-//{
-	
-//}
+void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b, ShutterType type)
+{
+	if (is_text_default)
+	{
+		delete text_area_bottom[0];
+		text_area_bottom.clear();
+		is_text_default = false;
+	}
+	TextArea *new_text_area = new TextArea;
+	new_text_area->load(text, font_path, font_size, r, g, b);
+	new_text_area->SetPos(x, y);
+	if (type == SHUTTER_TOP)
+	{
+		text_area_top.push_back(new_text_area);
+	}
+	else
+	{
+		text_area_bottom.push_back(new_text_area);
+	}
+}
 
 bool lm::LoadingState::IsSwitching()
 {
