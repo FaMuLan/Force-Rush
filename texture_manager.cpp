@@ -46,7 +46,7 @@ void lm::TextureManager::clearfont(std::string path, int size)
 
 void lm::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
 {
-	SDL_Rect dest_rect = { x * System::instance()->GetScale(), y * System::instance()->GetScale(), w * System::instance()->GetScale(), h * System::instance()->GetScale() };
+	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
 	if (src_w == 0 || src_h == 0)
 	{
 		SDL_RenderCopy(renderer, texture[path], NULL, &dest_rect);
@@ -64,13 +64,14 @@ void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, 
 	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
 }
 
-void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, int r, int g, int b, TextFormat format)
+void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, int r, int g, int b, TextFormat format, int limited_w)
 {
-	SDL_Color color = { r, g, b };
+	SDL_Color color = { char(r), char(g), char(b) };
 	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	int w = text_surface->w;
 	int h = text_surface->h;
+	w = (limited_w == 0 || limited_w > w) ? w : limited_w;
 	switch (format)
 	{
 		case TEXTFORMAT_MIDDLE:
@@ -82,7 +83,7 @@ void lm::TextureManager::render(std::string text, int x, int y, std::string font
 			y -= h;
 		break;
 	}
-	SDL_Rect dest_rect = { x * System::instance()->GetScale(), y * System::instance()->GetScale(), w * System::instance()->GetScale(), h * System::instance()->GetScale() };
+	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
 	SDL_RenderCopy(renderer, text_texture, NULL, &dest_rect);
 
 	SDL_DestroyTexture(text_texture);
