@@ -15,7 +15,6 @@ namespace lm
 		std::string m_artist;
 		std::string m_noter;
 		std::string m_bpm;
-		std::string m_cover_path;
 	};
 
 	class SongList
@@ -44,7 +43,6 @@ namespace lm
 			int list_process;
 			int selected_index;
 			int cell_heigh;
-			Sprite *select_cover;
 	};
 };	//namespace lm
 

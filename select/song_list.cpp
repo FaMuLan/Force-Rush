@@ -3,53 +3,39 @@
 #include <fstream>
 #include "../button.h"
 #include "../control_handler.h"
-#include "../debug_widget.h"
 #include "../sprite.h"
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
-#include "../crafting/crafting_state.h"
+#include "../main/main_state.h"
 #include "select_state.h"
+#include "song_header.h"
 
 lm::SongList *lm::SongList::m_instance = 0;
 
 void lm::SongList::init()
 {
-	cell_heigh = 123;
-	TextureManager::instance()->loadfont("assets/Exo-Light.ttf", 30);
-	select_cover = new Sprite;
-	std::string text;
-	std::ifstream file;
-	file.open("assets/songs/song_list.fml");
-	while (!file.eof())
-	{
-		text += file.get();
-	}
-	file.close();
-	std::regex pattern("\"(.+?)\",\"(.+?)\",\"(.+?)\",\"(.+?)\",\"(.+?)\"");
-	//"title","artist","noter","bpm","cover_path"
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); ++i)
-	{
-		std::smatch result = *i;
-		std::string result_str = result.str();
-		SongInformation *new_song_information = new SongInformation;
-		new_song_information->m_title = std::regex_replace(result_str, pattern, std::string("$1"));
-		new_song_information->m_artist = std::regex_replace(result_str, pattern, std::string("$2"));
-		new_song_information->m_noter = std::regex_replace(result_str, pattern, std::string("$3"));
-		new_song_information->m_bpm = std::regex_replace(result_str, pattern, std::string("$4"));
-		new_song_information->m_cover_path = std::regex_replace(result_str, pattern, std::string("$5"));
-		m_information.push_back(new_song_information);
-	}
+	cell_heigh = 60;
+	TextureManager::instance()->loadfont("assets/Ubuntu-M.ttf", 28);
+
+	SongInformation *new_information = new SongInformation;
+	new_information->m_title = "Title";
+	new_information->m_artist = "Artist";
+	new_information->m_noter = "Noter";
+	new_information->m_bpm = "???";
+	m_information.push_back(new_information);
+
 	list_length = cell_heigh * m_information.size();
 	list_process = 0;
-	for (int i = 0; i < (System::instance()->GetWindowHeigh() / cell_heigh + 2); i++)
+	for (int i = 0; i < ((System::instance()->GetWindowHeigh() - 560) / cell_heigh + 2); i++)
 	{
-		Button *new_button = new Button;
-		new_button->load("assets/song_cell_right.png", "assets/song_cell_right_selected.png", 0, 0, 549, 123);
-		m_cell.push_back(new_button);
+		Button *new_song_cell = new Button;
+		new_song_cell->load("assets/select_song_cell.png", "assets/select_song_cell_pressed.png", 0, 0, 654, 60);
+		new_song_cell->SetTextPos(16, 20, TEXTFORMAT_LEFT, 640);
+		m_cell.push_back(new_song_cell);
 	}
 	selected_index = 0;
-	select_cover->load(m_information[selected_index]->m_cover_path, 135, 120, 512, 512);
+	SongHeader::instance()->SetInformation(m_information[selected_index]);
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
@@ -64,7 +50,7 @@ void lm::SongList::update()
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if (load_finger.x >= System::instance()->GetWindowWidth() - 549)
+		if (load_finger.x >= System::instance()->GetWindowWidth() - 654)
 		{
 			list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
@@ -106,33 +92,26 @@ void lm::SongList::update()
 	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		int x = System::instance()->GetWindowWidth() - 549;
-		int y = -(list_process % cell_heigh) + i * cell_heigh;
+		int x = System::instance()->GetWindowWidth() - 654;
+		int y = -(list_process % cell_heigh) + i * cell_heigh + 360;
 		m_cell[i]->SetPos(x, y);
 		if (current_index >= m_information.size())
 		{
 			current_index = 0;
 		}
-			m_cell[i]->SetText(m_information[current_index]->m_title, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00);
+			m_cell[i]->SetText(m_information[current_index]->m_title, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00);
 
 		m_cell[i]->update();
 		if (m_cell[i]->IsReleased())
 		{
 			if (current_index == selected_index)
 			{
-				LoadingState::instance()->init(CraftingState::instance(), SelectState::instance());
-				std::string output = "Enter song ";
-				output += m_information[current_index]->m_title;
-				DebugWidget::instance()->PushLog(output);
+				LoadingState::instance()->init(MainState::instance(), SelectState::instance());
 			}
 			else
 			{
 				selected_index = current_index;
-				select_cover->clear();
-				select_cover->load(m_information[current_index]->m_cover_path, 135, 120, 512, 512);
-				std::string output = "Selected song ";
-				output += m_information[current_index]->m_title;
-				DebugWidget::instance()->PushLog(output);
+				SongHeader::instance()->SetInformation(m_information[selected_index]);
 			}
 		}
 		current_index++;
@@ -145,9 +124,4 @@ void lm::SongList::render()
 	{
 		m_cell[i]->render();
 	}
-	select_cover->render();
-	TextureManager::instance()->render(m_information[selected_index]->m_title, 0, 0, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	TextureManager::instance()->render(m_information[selected_index]->m_artist, 0, 40, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	TextureManager::instance()->render(m_information[selected_index]->m_noter, 0, 80, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	TextureManager::instance()->render(m_information[selected_index]->m_bpm, 0, 120, "assets/Exo-Light.ttf", 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 }
