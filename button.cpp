@@ -14,6 +14,10 @@ void lm::Button::load(std::string path, std::string path_pressed, int x, int y, 
 	m_w = w;
 	m_h = h;
 	is_pressed = false;
+	text_x = m_w / 2;
+	text_y = m_h / 2;
+	format = TEXTFORMAT_MIDDLE;
+	limited_w = 0;
 }
 
 void lm::Button::update()
@@ -90,9 +94,7 @@ void lm::Button::render()
 	{
 		TextureManager::instance()->render(m_path, m_x, m_y, m_w, m_h);
 	}
-	int text_x = m_x + m_w / 2;
-	int text_y = m_y + m_h / 2;
-	TextureManager::instance()->render(text, text_x, text_y, font_path, font_size, r, g, b);
+	TextureManager::instance()->render(text, m_x + text_x, m_y + text_y, font_path, font_size, r, g, b, format, limited_w);
 }
 
 void lm::Button::clear()
@@ -127,4 +129,12 @@ void lm::Button::SetText(std::string load_text, std::string load_font_path, int 
 	r = load_r;
 	g = load_g;
 	b = load_b;
+}
+
+void lm::Button::SetTextPos(int x, int y, TextFormat load_format, int load_limited_w)
+{
+	text_x = x;
+	text_y = y;
+	format = load_format;
+	limited_w = load_limited_w;
 }
