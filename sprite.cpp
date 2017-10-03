@@ -12,6 +12,7 @@ void lm::Sprite::load(std::string path, int x, int y, int w, int h)
 		m_w = w;
 		m_h = h;
 	}
+	scale = 1;
 }
 
 void lm::Sprite::update()
@@ -21,7 +22,7 @@ void lm::Sprite::update()
 
 void lm::Sprite::render()
 {
-	TextureManager::instance()->render(m_path, m_x, m_y, m_w, m_h);
+	TextureManager::instance()->render(m_path, m_x, m_y, m_w * scale, m_h * scale);
 }
 
 void lm::Sprite::clear()
@@ -33,6 +34,11 @@ void lm::Sprite::SetPos(int x, int y)
 {
 	m_x = x;
 	m_y = y;
+}
+
+void lm::Sprite::SetScale(float load_scale)
+{
+	scale = load_scale;
 }
 
 int lm::Sprite::GetX()

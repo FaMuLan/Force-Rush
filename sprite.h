@@ -14,6 +14,7 @@ namespace lm
 			virtual void clear();
 
 			void SetPos(int x, int y);
+			void SetScale(float load_scale);
 			int GetX();
 			int GetY();
 		protected:
@@ -22,6 +23,7 @@ namespace lm
 			int m_y;
 			int m_w;
 			int m_h;
+			float scale;
 	};	//class Sprite
 };	//namespace lm
 
