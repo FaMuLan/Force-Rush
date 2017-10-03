@@ -3,12 +3,15 @@
 
 void lm::Sprite::load(std::string path, int x, int y, int w, int h)
 {
-	TextureManager::instance()->load(path);
+	TextureManager::instance()->load(path, m_w, m_h);
 	m_path = path;
 	m_x = x;
 	m_y = y;
-	m_w = w;
-	m_h = h;
+	if (w != 0 || h != 0)
+	{
+		m_w = w;
+		m_h = h;
+	}
 }
 
 void lm::Sprite::update()

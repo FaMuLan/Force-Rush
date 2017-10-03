@@ -5,14 +5,17 @@
 
 void lm::Button::load(std::string path, std::string path_pressed, int x, int y, int w, int h)
 {
-	TextureManager::instance()->load(path);
-	TextureManager::instance()->load(path_pressed);
+	TextureManager::instance()->load(path, m_w, m_h);
+	TextureManager::instance()->load(path_pressed, m_w, m_h);
 	m_path = path;
 	m_path_pressed = path_pressed;
 	m_x = x;
 	m_y = y;
-	m_w = w;
-	m_h = h;
+	if (w != 0 || y != 0)
+	{
+		m_w = w;
+		m_h = h;
+	}
 	is_pressed = false;
 	text_x = m_w / 2;
 	text_y = m_h / 2;

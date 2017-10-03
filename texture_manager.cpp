@@ -8,11 +8,13 @@ void lm::TextureManager::init(SDL_Renderer *load_renderer)
 	renderer = load_renderer;
 }
 
-void lm::TextureManager::load(std::string path)
+void lm::TextureManager::load(std::string path, int &output_w, int &output_h)
 {
 	SDL_Surface *load_surface = IMG_Load(path.c_str());
 	SDL_Texture *new_texture = SDL_CreateTextureFromSurface(renderer, load_surface);
 	texture[path] = new_texture;
+	output_w = load_surface->w;
+	output_h = load_surface->h;
 	SDL_FreeSurface(load_surface);
 }
 

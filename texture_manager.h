@@ -30,7 +30,7 @@ namespace lm
 				return m_instance;
 			}
 			void init(SDL_Renderer *load_renderer);
-			void load(std::string path);
+			void load(std::string path, int &output_w, int &output_h);
 			void load(SDL_Texture *load_texture, std::string path);
 			void loadfont(std::string path, int size);
 			void clear();
