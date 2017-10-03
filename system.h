@@ -11,6 +11,12 @@ namespace lm
 {
 	class State;
 
+	enum WindowRotation
+	{
+		WINDOWROTATION_PORTRAIT = 0,
+		WINDOWROTATION_LANDSCAPE
+	};
+
 	class System
 	{
 		public:
@@ -27,12 +33,13 @@ namespace lm
 			void run();
 			void clear();
 			void RefreshWindowSize();
+			void SetBackgroundColor(char r, char g, char b);
 			int GetWindowWidth();
 			int GetWindowHeigh();
 			int GetScreenWidth();
 			int GetScreenHeigh();
 			float GetScale();
-
+			WindowRotation GetWindowRotation();
 			State *current_state;
 		private:
 			System() {}
@@ -44,10 +51,11 @@ namespace lm
 			int window_heigh;
 			int screen_width;
 			int screen_heigh;
-
+			char bg_r, bg_g, bg_b;
 //			std::map<std::string, State*> m_state;
 			bool m_loading;
 			float scale;
+			WindowRotation rotation;
 			//用於縮放
 	};	//class System
 };	//namespace lm

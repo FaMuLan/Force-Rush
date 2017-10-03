@@ -5,6 +5,7 @@
 #include "crafting/crafting_state.h"
 #include "select/select_state.h"
 #include "loading/loading_state.h"
+#include "user/character.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
 
@@ -14,6 +15,11 @@ void lm::System::init()
 {
 	window_width = 720;
 	window_heigh = 1280;
+	rotation = WINDOWROTATION_PORTRAIT;
+	bg_r = 0xFF;
+	bg_g = 0xFF;
+	bg_b = 0xFF;
+
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	SDL_DisplayMode displayMode;
@@ -28,6 +34,7 @@ void lm::System::init()
 	TextureManager::instance()->init(system_renderer);
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
+	Character::instance()->init();
 //	current_state_id = "main";
 //	PushState("main", main_state);
 	MainState::instance()->init();
@@ -35,6 +42,7 @@ void lm::System::init()
 	current_state = MainState::instance();
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
+	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 	//将理论分辨率的宽高比例与实际屏幕分辨率的宽高比例吻合
 }
 
@@ -43,6 +51,7 @@ void lm::System::run()
 	while (!ControlHandler::instance()->IsQuit())
 	{
 		ControlHandler::instance()->update();
+		SDL_SetRenderDrawColor(system_renderer, bg_r, bg_g, bg_b, 0xFF);
 		SDL_RenderClear(system_renderer);
 //		m_state[current_state_id]->update();
 		current_state->update();
@@ -72,6 +81,14 @@ void lm::System::RefreshWindowSize()
 	screen_heigh = h;
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
+	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
+}
+
+void lm::System::SetBackgroundColor(char r, char g, char b)
+{
+	bg_r = r;
+	bg_g = g;
+	bg_b = b;
 }
 
 int lm::System::GetWindowWidth()
@@ -93,4 +110,8 @@ int lm::System::GetScreenHeigh()
 float lm::System::GetScale()
 {
 	return scale;
+}
+lm::WindowRotation lm::System::GetWindowRotation()
+{
+	return rotation;
 }
