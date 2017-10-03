@@ -16,8 +16,8 @@ void lm::MainState::init()
 	main_about = new Button;
 	background = new Sprite;
 
-	main_start->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 600, 397, 108);
-	main_about->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 800, 397, 108);
+	main_start->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 700, 397, 108);
+	main_about->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 900, 397, 108);
 	background->load("assets/background.jpg", 0, 0, 720, 1440);
 	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 60);
 
@@ -40,6 +40,17 @@ void lm::MainState::clear()
 
 void lm::MainState::update()
 {
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		main_start->SetPos(162, 700);
+		main_about->SetPos(162, 900);
+	}
+	else
+	{
+		main_start->SetPos(162, 200);
+		main_about->SetPos(162, 400);
+	}
+
 	if (!is_locked)
 	{
 		main_start->update();
