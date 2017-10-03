@@ -7,7 +7,7 @@ lm::SongHeader *lm::SongHeader::m_instance = 0;
 void lm::SongHeader::init()
 {
 	header_base = new Sprite;
-	header_base->load("assets/select_header.png", 0, 0, 720, 300);
+	header_base->load("assets/select_header_portrait.png", 0, 0, 720, 300);
 	TextureManager::instance()->loadfont("assets/Ubuntu-R.ttf", 32);
 	TextureManager::instance()->loadfont("assets/Ubuntu-R.ttf", 24);
 }
