@@ -79,9 +79,12 @@ void lm::System::RefreshWindowSize()
 	SDL_GetWindowSize(system_window, &w, &h);
 	screen_width = w;
 	screen_heigh = h;
+	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
+	window_width = rotation == WINDOWROTATION_PORTRAIT ? 720 : 1280;
+	//屏幕縮放以720p 16:9為基準(也就是我手機屏幕的分辨率了)
+	//是720 * 1280的分辨率
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
-	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 }
 
 void lm::System::SetBackgroundColor(char r, char g, char b)
