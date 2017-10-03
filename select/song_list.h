@@ -36,6 +36,7 @@ namespace lm
 		private:
 			SongList() {}
 			~SongList() {}
+			void LoadList();
 			static SongList *m_instance;
 			std::vector<Button*> m_cell;
 			std::vector<SongInformation*> m_information;

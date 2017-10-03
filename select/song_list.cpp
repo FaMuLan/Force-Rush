@@ -1,6 +1,7 @@
 #include "song_list.h"
 #include <regex>
 #include <fstream>
+#include <dirent.h>
 #include "../button.h"
 #include "../control_handler.h"
 #include "../sprite.h"
@@ -55,15 +56,16 @@ void lm::SongList::update()
 			list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
 
-			if (list_process < 0)
+			while (list_process < 0)
 			{
 				list_process += list_length;
 			}
-			else if (list_process >= list_length)
+			while (list_process >= list_length)
 			{
 				list_process -= list_length;
 			}
 			//把list_process盡量控制在[0,list_length)區間內
+			//艸有必要用一個笨方法來控制變量在範圍內了
 		}
 	}
 	if (ControlHandler::instance()->GetFingerCount() == 0)
@@ -80,11 +82,11 @@ void lm::SongList::update()
 		}
 		//不包含 roll_speed == 0 這個情況
 		list_process -= roll_speed;
-		if (list_process < 0)
+		while (list_process < 0)
 		{
 			list_process += list_length;
 		}
-		else if (list_process >= list_length)
+		while (list_process >= list_length)
 		{
 			list_process -= list_length;
 		}
@@ -115,6 +117,11 @@ void lm::SongList::update()
 			}
 		}
 		current_index++;
+	}
+
+	if (list_process < 0 || list_process > list_length)
+	{
+		exit(0);
 	}
 }
 
