@@ -6,6 +6,7 @@
 #include "../system.h"
 #include "../loading/loading_state.h"
 #include "../select/select_state.h"
+#include "../user/character.h"
 
 lm::MainState *lm::MainState::m_instance = 0;
 
@@ -46,7 +47,8 @@ void lm::MainState::update()
 	}
 	//鎖定按鈕在打開側邊欄或彈窗時不進行檢測
 
-	background->render();
+//	background->render();
+	Character::instance()->render();
 	main_start->render();
 	main_about->render();
 
