@@ -28,7 +28,7 @@ void lm::SongList::init()
 
 	list_length = cell_heigh * m_information.size();
 	list_process = 0;
-	for (int i = 0; i < ((System::instance()->GetWindowHeigh() - 560) / cell_heigh + 2); i++)
+	for (int i = 0; i < ((System::instance()->GetWindowHeigh() - 500) / cell_heigh + 2); i++)
 	{
 		Button *new_song_cell = new Button;
 		new_song_cell->load("assets/select_song_cell.png", "assets/select_song_cell_pressed.png", 0, 0, 654, 60);
@@ -91,6 +91,10 @@ void lm::SongList::update()
 			list_process -= list_length;
 		}
 	}
+
+	is_list_moved = roll_speed != 0;
+	//检测列表是否移动。
+
 	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
@@ -103,7 +107,10 @@ void lm::SongList::update()
 		}
 			m_cell[i]->SetText(m_information[current_index]->m_title, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00);
 
-		m_cell[i]->update();
+		if (m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 || !is_list_moved)
+		{
+			m_cell[i]->update();
+		}
 		if (m_cell[i]->IsReleased())
 		{
 			if (current_index == selected_index)
@@ -129,6 +136,7 @@ void lm::SongList::render()
 {
 	for (int i = 0; i < m_cell.size(); i++)
 	{
+		if (m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140)
 		m_cell[i]->render();
 	}
 }

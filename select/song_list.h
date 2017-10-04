@@ -44,6 +44,7 @@ namespace lm
 			int list_process;
 			int selected_index;
 			int cell_heigh;
+			bool is_list_moved;
 	};
 };	//namespace lm
 

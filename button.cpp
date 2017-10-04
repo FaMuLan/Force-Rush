@@ -115,15 +115,6 @@ bool lm::Button::IsReleased()
 	return is_released && !LoadingState::instance()->IsSwitching();
 }
 
-void lm::Button::SetPos(int x, int y)
-{
-	if (x != m_x || y != m_y)
-	{
-		Sprite::SetPos(x, y);
-		is_pressed = false;
-	}
-}
-
 void lm::Button::SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b)
 {
 	text = load_text;
