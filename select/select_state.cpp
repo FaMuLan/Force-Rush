@@ -5,6 +5,7 @@
 #include "../texture_manager.h"
 #include "../main/main_state.h"
 #include "../loading/loading_state.h"
+#include "../user/character.h"
 #include "song_list.h"
 #include "song_header.h"
 
@@ -44,7 +45,8 @@ void lm::SelectState::update()
 	select_back->update();
 	select_mod->update();
 
-	background->render();
+//	background->render();
+	Character::instance()->render();
 	SongList::instance()->render();
 	SongHeader::instance()->render();
 	select_footer->render();
