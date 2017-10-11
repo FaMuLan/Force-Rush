@@ -14,7 +14,7 @@ namespace lm
 	class Button : public Sprite
 	{
 		public:
-			virtual void load(std::string path, std::string path_pressed, int x, int y, int w, int h);
+			virtual void load(std::string path, std::string path_pressed, int x = 0, int y = 0, int w = 0, int h = 0);
 			virtual void clear();
 			virtual void update();
 			virtual void render();
