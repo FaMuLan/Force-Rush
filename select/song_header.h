@@ -25,9 +25,10 @@ namespace lm
 			SongHeader() {}
 			~SongHeader() {}
 			static SongHeader *m_instance;
-			Sprite *header_base;
+			Sprite *header_base_portrait;
+			Sprite *header_base_landscape;
 			SongInformation *m_information;
-	};
-};
+	};	//class SongHeader
+};	//namespace lm
 
-#endif
+#endif	//LUNATIC_MELODY_SELECT_SONG_HEADER_H

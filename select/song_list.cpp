@@ -28,15 +28,11 @@ void lm::SongList::init()
 
 	list_length = cell_heigh * m_information.size();
 	list_process = 0;
-	for (int i = 0; i < ((System::instance()->GetWindowHeigh() - 500) / cell_heigh + 2); i++)
-	{
-		Button *new_song_cell = new Button;
-		new_song_cell->load("assets/select_song_cell.png", "assets/select_song_cell_pressed.png", 0, 0, 654, 60);
-		new_song_cell->SetTextPos(16, 20, TEXTFORMAT_LEFT, 640);
-		m_cell.push_back(new_song_cell);
-	}
 	selected_index = 0;
-	SongHeader::instance()->SetInformation(m_information[selected_index]);
+
+	RefreshListSize();
+
+		SongHeader::instance()->SetInformation(m_information[selected_index]);
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
@@ -95,11 +91,16 @@ void lm::SongList::update()
 	is_list_moved = roll_speed != 0;
 	//检测列表是否移动。
 
+	if (System::instance()->IsWindowModified())
+	{
+		RefreshListSize();
+	}
+
 	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
 		int x = System::instance()->GetWindowWidth() - 654;
-		int y = -(list_process % cell_heigh) + i * cell_heigh + 360;
+		int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 360 : 60);
 		m_cell[i]->SetPos(x, y);
 		if (current_index >= m_information.size())
 		{
@@ -107,7 +108,10 @@ void lm::SongList::update()
 		}
 			m_cell[i]->SetText(m_information[current_index]->m_title, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00);
 
-		if (m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 || !is_list_moved)
+		if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
+		!is_list_moved)
+		//這個條件運算吃棗藥丸……
 		{
 			m_cell[i]->update();
 		}
@@ -136,7 +140,33 @@ void lm::SongList::render()
 {
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		if (m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140)
-		m_cell[i]->render();
+		if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE))
+		{
+			m_cell[i]->render();
+		}
+	}
+}
+
+void lm::SongList::RefreshListSize()
+{
+	m_cell.clear();
+	int cell_count;
+
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		cell_count = ((System::instance()->GetWindowHeigh() - 500) / cell_heigh + 2);
+	}
+	else
+	{
+		cell_count = ((System::instance()->GetWindowHeigh() - 120) / cell_heigh + 2);
+	}
+
+	for (int i = 0; i < cell_count; i++)
+	{
+		Button *new_song_cell = new Button;
+		new_song_cell->load("assets/select_song_cell.png", "assets/select_song_cell_pressed.png", 0, 0, 654, 60);
+		new_song_cell->SetTextPos(16, 20, TEXTFORMAT_LEFT, 640);
+		m_cell.push_back(new_song_cell);
 	}
 }
