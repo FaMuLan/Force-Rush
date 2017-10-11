@@ -1,9 +1,9 @@
 #ifndef LUNATIC_MELODY_SYSTEM_H
 #define LUNATIC_MELODY_SYSTEM_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "SDL_image.h"
 #include <map>
 #include <string>
 
@@ -33,6 +33,7 @@ namespace lm
 			void run();
 			void clear();
 			void RefreshWindowSize();
+			bool IsWindowModified();
 			void SetBackgroundColor(char r, char g, char b);
 			int GetWindowWidth();
 			int GetWindowHeigh();
@@ -54,6 +55,7 @@ namespace lm
 			char bg_r, bg_g, bg_b;
 //			std::map<std::string, State*> m_state;
 			bool m_loading;
+			bool is_window_modified;
 			float scale;
 			WindowRotation rotation;
 			//用於縮放

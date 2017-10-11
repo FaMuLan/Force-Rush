@@ -2,7 +2,6 @@
 #include "control_handler.h"
 #include "state.h"
 #include "main/main_state.h"
-#include "crafting/crafting_state.h"
 #include "select/select_state.h"
 #include "loading/loading_state.h"
 #include "user/character.h"
@@ -50,6 +49,7 @@ void lm::System::run()
 {
 	while (!ControlHandler::instance()->IsQuit())
 	{
+		is_window_modified = false;
 		ControlHandler::instance()->update();
 		SDL_SetRenderDrawColor(system_renderer, bg_r, bg_g, bg_b, 0xFF);
 		SDL_RenderClear(system_renderer);
@@ -85,6 +85,12 @@ void lm::System::RefreshWindowSize()
 	//是720 * 1280的分辨率
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
+	is_window_modified = true;
+}
+
+bool lm::System::IsWindowModified()
+{
+	return is_window_modified;
 }
 
 void lm::System::SetBackgroundColor(char r, char g, char b)
