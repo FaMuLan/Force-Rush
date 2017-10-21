@@ -11,10 +11,11 @@ namespace lm
 
 	struct SongInformation
 	{
-		std::string m_title;
-		std::string m_artist;
-		std::string m_noter;
-		std::string m_bpm;
+		std::string title;
+		std::string artist;
+		std::string noter;
+		std::string bpm;
+		std::string file_path;
 	};
 
 	class SongList
@@ -29,26 +30,29 @@ namespace lm
 				}
 				return m_instance;
 			}
-			void init();
-			void clear();
-			void update();
-			void render();
+			static void init();
+			static void clear();
+			static void update();
+			static void render();
+
+			static bool LoadList();
+			static void RefreshList();
+			static bool IsRefreshing();
+			static void RefreshListSize();
 		private:
 			SongList() {}
 			~SongList() {}
 			static SongList *m_instance;
 
-			void LoadList();
-			void RefreshList();
-			void RefreshListSize();
-
-			std::vector<Button*> m_cell;
-			std::vector<SongInformation*> m_information;
-			int list_length;
-			int list_process;
-			int selected_index;
-			int cell_heigh;
-			bool is_list_moved;
+			static std::vector<Button*> m_cell;
+			static std::vector<SongInformation*> m_information;
+			static SongInformation *null_information;
+			static int list_length;
+			static int list_process;
+			static int selected_index;
+			static int cell_heigh;
+			static bool is_list_moved;
+			static bool is_refreshing;
 	};
 };	//namespace lm
 
