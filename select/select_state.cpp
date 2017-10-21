@@ -1,4 +1,5 @@
 #include "select_state.h"
+#include <thread>
 #include "../button.h"
 #include "../sprite.h"
 #include "../system.h"
@@ -90,5 +91,10 @@ void lm::SelectState::update()
 	if (select_back->IsReleased())
 	{
 		LoadingState::instance()->init(MainState::instance(), this);
+	}
+	if (select_mod->IsReleased() && !SongList::instance()->IsRefreshing())
+	{
+		std::thread refresh_thread(&lm::SongList::RefreshList);
+		refresh_thread.detach();
 	}
 }	//void lm::SelectState::update()
