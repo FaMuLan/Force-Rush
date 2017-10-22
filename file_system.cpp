@@ -3,23 +3,29 @@
 #include <fstream>
 #include <regex>
 
-void lm::ReadFile(std::string path, std::string &output)
+bool lm::ReadFile(std::string path, std::string &output)
 {
 	std::ifstream file;
 	file.open(path);
+	if (!file)
+	{
+		return false;
+	}
 	while (!file.eof())
 	{
 		output += file.get();
 	}
 	file.close();
+	return true;
 }
 
-void lm::WriteFile(std::string path, std::string &output)
+bool lm::WriteFile(std::string path, std::string &output)
 {
 	std::ofstream file;
 	file.open(path);
 	file << output;
 	file.close();
+	return true;
 }
 
 bool lm::ListDir(std::string path, std::vector<lm::File*> &output)

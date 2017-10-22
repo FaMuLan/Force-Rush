@@ -19,8 +19,8 @@ namespace lm
 		FileType type;
 	};
 
-	void ReadFile(std::string path, std::string &output);
-	void WriteFile(std::string path, std::string &output);
+	bool ReadFile(std::string path, std::string &output);
+	bool WriteFile(std::string path, std::string &output);
 	
 	bool ListDir(std::string path, std::vector<File*> &output);
 	void FindFile(std::string path, std::string pattern_str, std::vector<File*> &output);
