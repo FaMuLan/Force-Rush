@@ -29,20 +29,24 @@ void lm::SongList::init()
 {
 	cell_heigh = 60;
 	TextureManager::instance()->loadfont("assets/Ubuntu-M.ttf", 28);
-	if (!is_refreshing)
-	{
-		LoadList();
-	}
-	//一定要在計算列表長度之前加載好信息
-	list_length = cell_heigh * m_information.size();
-	list_process = 0;
-	selected_index = 0;
 
 	null_information = new SongInformation;
 	null_information->title = "null";
 	null_information->artist = "null";
 	null_information->noter = "null";
 	null_information->bpm = "null";
+
+	if (!is_refreshing)
+	{
+		if (!LoadList())
+		{
+			m_information.push_back(null_information);
+		}
+	}
+	//一定要在計算列表長度之前加載好信息
+	list_length = cell_heigh * m_information.size();
+	list_process = 0;
+	selected_index = 0;
 
 	RefreshListSize();
 	SongHeader::instance()->SetInformation(m_information[selected_index]);
@@ -181,7 +185,10 @@ bool lm::SongList::LoadList()
 
 	std::string text;
 	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(.*?)\\n");
-	ReadFile("song_list.fa", text);
+	if (!ReadFile("/sdcard/data/song_list.fa", text));
+	{
+		return false;
+	}
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); ++i)
 	{
 		exist = true;
@@ -250,7 +257,7 @@ void lm::SongList::RefreshList()
 		output_text += m_information[i]->bpm + ",";
 		output_text += m_information[i]->file_path + "\n";
 	}
-	WriteFile("song_list.fa", output_text);
+	WriteFile("/sdcard/data/song_list.fa", output_text);
 	is_refreshing = false;
 }	//void lm::SongList::RefreshList()
 
