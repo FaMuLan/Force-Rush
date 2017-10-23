@@ -9,6 +9,7 @@
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../file_system.h"
+#include "../message_box.h"
 #include "../loading/loading_state.h"
 #include "../main/main_state.h"
 #include "select_state.h"
@@ -120,7 +121,7 @@ void lm::SongList::update()
 	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		int x = System::instance()->GetWindowWidth() - 654;
+		int x = System::instance()->GetWindowWidth() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 654 : 560);
 		int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 360 : 60);
 		m_cell[i]->SetPos(x, y);
 		if (m_information.size() != 0)
@@ -207,6 +208,8 @@ bool lm::SongList::LoadList()
 void lm::SongList::RefreshList()
 {
 	is_refreshing = true;
+	MessageBox::instance()->SetText("Start Refresh!");
+	char *output_ch = new char[50];
 	m_information.clear();
 
 	std::vector<File*> file;
@@ -215,6 +218,8 @@ void lm::SongList::RefreshList()
 	std::regex noter_pattern("Creator:(.*)");
 	std::regex bpm_pattern("\\d+,([\\d.-]+),\\d+,\\d+,\\d+,\\d+,1,\\d+");
 	FindFile("/sdcard/data/malody/beatmap", ".*\\.osu", file);
+	sprintf(output_ch, "Match %d files", file.size());
+	MessageBox::instance()->SetText(output_ch);
 	for (int i = 0; i < file.size(); i++)
 //	for (int i = 0; i < 3; i++)
 	{
@@ -246,6 +251,8 @@ void lm::SongList::RefreshList()
 
 		list_length = cell_heigh * m_information.size();
 		SongHeader::instance()->SetInformation(m_information[selected_index]);
+		sprintf(output_ch, "Loaded %d%%", int(float(i) / float(file.size()) * 100));
+		MessageBox::instance()->SetText(output_ch);
 	}
 
 	std::string output_text;
@@ -258,6 +265,7 @@ void lm::SongList::RefreshList()
 		output_text += m_information[i]->file_path + "\n";
 	}
 	WriteFile("/sdcard/data/song_list.fa", output_text);
+	MessageBox::instance()->SetText("Refresh Completed!");
 	is_refreshing = false;
 }	//void lm::SongList::RefreshList()
 

@@ -7,6 +7,7 @@
 #include "user/character.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
+#include "message_box.h"
 
 lm::System *lm::System::m_instance = 0;
 
@@ -34,6 +35,7 @@ void lm::System::init()
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
 	Character::instance()->init();
+	MessageBox::instance()->init();
 //	current_state_id = "main";
 //	PushState("main", main_state);
 	MainState::instance()->init();
@@ -56,6 +58,8 @@ void lm::System::run()
 //		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
+		MessageBox::instance()->update();
+		MessageBox::instance()->render();
 //		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
 	}
