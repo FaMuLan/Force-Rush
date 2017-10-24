@@ -39,10 +39,7 @@ void lm::SongList::init()
 
 	if (!is_refreshing)
 	{
-		if (!LoadList())
-		{
-			m_information.push_back(null_information);
-		}
+		LoadList();
 	}
 	//一定要在計算列表長度之前加載好信息
 	list_length = cell_heigh * m_information.size();
@@ -50,7 +47,16 @@ void lm::SongList::init()
 	selected_index = 0;
 
 	RefreshListSize();
-	SongHeader::instance()->SetInformation(m_information[selected_index]);
+	if (m_information.size() == 0)
+	{
+		list_length = cell_heigh;
+		SongHeader::instance()->SetInformation(null_information);
+	}
+	else
+	{
+		list_length = cell_heigh * m_information.size();
+		SongHeader::instance()->SetInformation(m_information[selected_index]);
+	}
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
@@ -186,7 +192,7 @@ bool lm::SongList::LoadList()
 
 	std::string text;
 	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(.*?)\\n");
-	if (!ReadFile("/sdcard/data/song_list.fa", text));
+	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
 	}
@@ -202,6 +208,9 @@ bool lm::SongList::LoadList()
 		new_information->file_path = std::regex_replace(line.str(), pattern, "$5");
 		m_information.push_back(new_information);
 	}
+	char *output_ch = new char[50];
+	sprintf(output_ch, "Match %d files", m_information.size());
+	MessageBox::instance()->SetText(output_ch);
 	return exist;
 }
 
