@@ -12,6 +12,8 @@
 #include "../message_box.h"
 #include "../loading/loading_state.h"
 #include "../main/main_state.h"
+#include "../game/game_state.h"
+#include "../game/beatmap.h"
 #include "select_state.h"
 #include "song_header.h"
 
@@ -149,7 +151,8 @@ void lm::SongList::update()
 			{
 				if (current_index == selected_index)
 				{
-					LoadingState::instance()->init(MainState::instance(), SelectState::instance());
+					LoadingState::instance()->init(GameState::instance(), SelectState::instance());
+					GameState::instance()->SetFile(m_information[selected_index]->file_path);
 				}
 				else
 				{
