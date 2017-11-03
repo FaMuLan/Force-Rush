@@ -23,12 +23,14 @@ void lm::SelectState::init()
 	search_bar = new Sprite;
 	random_bar = new Sprite;
 	select_footer = new Sprite;
-	select_back->load("assets/sort_button.png", "assets/sort_button_pressed.png", 0, System::instance()->GetWindowHeigh() - 80, 176, 80);
-	select_mod->load("assets/sort_button.png", "assets/sort_button_pressed.png", System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80);
-	background->load("assets/background.jpg", 0, 0, 720, 1440);
-	search_bar->load("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, 300, 654, 60);
-	random_bar->load("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, System::instance()->GetWindowHeigh() - 140, 654, 60);
-	select_footer->load("assets/select_footer.png", 0, System::instance()->GetWindowHeigh() - 80, 720, 80);
+	select_back->init("assets/sort_button.png", 0, System::instance()->GetWindowHeigh() - 80, 176, 80);
+	select_back->AddPressedFrame( "assets/sort_button_pressed.png");
+	select_mod->init("assets/sort_button.png", System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80);
+	select_mod->AddPressedFrame( "assets/sort_button_pressed.png");
+	background->init("assets/background.jpg", 0, 0, 720, 1440);
+	search_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, 300, 654, 60);
+	random_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, System::instance()->GetWindowHeigh() - 140, 654, 60);
+	select_footer->init("assets/select_footer.png", 0, System::instance()->GetWindowHeigh() - 80, 720, 80);
 	select_back->SetText("Back", "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	select_mod->SetText("Mod", "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 

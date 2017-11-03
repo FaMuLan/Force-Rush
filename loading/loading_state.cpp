@@ -81,8 +81,8 @@ void lm::LoadingState::init()
 {
 	shutter_top = new Sprite;
 	shutter_bottom = new Sprite;
-	shutter_top->load("assets/shutter_top.png", 0, 0, 720, 534);
-	shutter_bottom->load("assets/shutter_bottom.png", 0, 0, 720, 848);
+	shutter_top->init("assets/shutter_top.png", 0, 0, 720, 534);
+	shutter_bottom->init("assets/shutter_bottom.png", 0, 0, 720, 848);
 	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 80);
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);

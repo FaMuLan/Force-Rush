@@ -16,9 +16,11 @@ void lm::MainState::init()
 	main_about = new Button;
 	background = new Sprite;
 
-	main_start->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 700, 397, 108);
-	main_about->load("assets/main_button.png", "assets/main_button_pressed.png", 162, 900, 397, 108);
-	background->load("assets/background.jpg", 0, 0, 720, 1440);
+	main_start->init("assets/main_button.png", 162, 700, 397, 108);
+	main_start->AddPressedFrame("assets/main_button_pressed.png");
+	main_about->init("assets/main_button.png", 162, 900, 397, 108);
+	main_about->AddPressedFrame("assets/main_button_pressed.png");
+	background->init("assets/background.jpg", 0, 0, 720, 1440);
 	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 60);
 
 	is_locked = false;

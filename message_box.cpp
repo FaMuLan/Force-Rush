@@ -8,7 +8,7 @@ lm::MessageBox *lm::MessageBox::m_instance = 0;
 void lm::MessageBox::init()
 {
 	base = new Sprite;
-	base->load("assets/message_box_base.png");
+	base->init("assets/message_box_base.png");
 	TextureManager::instance()->loadfont("assets/Ubuntu-R.ttf", 48);
 	text_base = "none text";
 	is_base_text_showing = true;

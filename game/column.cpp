@@ -16,10 +16,10 @@ void lm::Column::init(int x, int w)
 	s_note_ln_body = new Sprite;
 	s_note_ln_end = new Sprite;
 	s_judge_line = new Sprite;
-	s_note->load("assets/whiteblue/Key-Mod/Note/White.png", m_x, 0, m_w, m_h);
-	s_note_ln_body->load("assets/whiteblue/Key-Mod/Note/wHoldBody.png", m_x, 0, m_w, m_h);
-	s_note_ln_end->load("assets/whiteblue/Key-Mod/Note/wHoldEnd.png", m_x, 0, m_w, m_h);
-	s_judge_line->load("assets/whiteblue/Key-Mod/Key/White-Up.png", m_x, System::instance()->GetWindowHeigh() - m_h, m_w, m_h);
+	s_note->init("assets/whiteblue/Key-Mod/Note/White.png", m_x, 0, m_w, m_h);
+	s_note_ln_body->init("assets/whiteblue/Key-Mod/Note/wHoldBody.png", m_x, 0, m_w, m_h);
+	s_note_ln_end->init("assets/whiteblue/Key-Mod/Note/wHoldEnd.png", m_x, 0, m_w, m_h);
+	s_judge_line->init("assets/whiteblue/Key-Mod/Key/White-Up.png", m_x, System::instance()->GetWindowHeigh() - m_h, m_w, m_h);
 	is_tapped = false;
 }
 

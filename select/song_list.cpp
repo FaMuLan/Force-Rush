@@ -303,7 +303,8 @@ void lm::SongList::RefreshListSize()
 	for (int i = 0; i < cell_count; i++)
 	{
 		Button *new_song_cell = new Button;
-		new_song_cell->load("assets/select_song_cell.png", "assets/select_song_cell_pressed.png", 0, 0, 654, 60);
+		new_song_cell->init("assets/select_song_cell.png", 0, 0, 654, 60);
+		new_song_cell->AddPressedFrame( "assets/select_song_cell_pressed.png");
 		new_song_cell->SetTextPos(16, 20, TEXTFORMAT_LEFT, 640);
 		m_cell.push_back(new_song_cell);
 	}

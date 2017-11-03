@@ -9,8 +9,8 @@ void lm::SongHeader::init()
 {
 	header_base_portrait = new Sprite;
 	header_base_landscape = new Sprite;
-	header_base_portrait->load("assets/select_header_portrait.png", 0, 0);
-	header_base_landscape->load("assets/select_header_landscape.png", 0, 0);
+	header_base_portrait->init("assets/select_header_portrait.png", 0, 0);
+	header_base_landscape->init("assets/select_header_landscape.png", 0, 0);
 	TextureManager::instance()->loadfont("assets/Ubuntu-R.ttf", 32);
 	TextureManager::instance()->loadfont("assets/Ubuntu-R.ttf", 24);
 }
