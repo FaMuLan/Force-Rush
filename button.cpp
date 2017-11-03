@@ -3,19 +3,9 @@
 #include "texture_manager.h"
 #include "loading/loading_state.h"
 
-void lm::Button::load(std::string path, std::string path_pressed, int x, int y, int w, int h)
+void lm::Button::init(std::string path, int x, int y, int w, int h)
 {
-	TextureManager::instance()->load(path, m_w, m_h);
-	TextureManager::instance()->load(path_pressed, m_w, m_h);
-	m_path = path;
-	m_path_pressed = path_pressed;
-	m_x = x;
-	m_y = y;
-	if (w != 0 || y != 0)
-	{
-		m_w = w;
-		m_h = h;
-	}
+	Sprite::init(path, x, y, w, h);
 	is_pressed = false;
 	text_x = m_w / 2;
 	text_y = m_h / 2;
@@ -85,24 +75,32 @@ void lm::Button::update()
 			}
 		}
 	}
+	Sprite::update();
+	if (is_pressed)
+	{
+		current_index = pressed_index;
+	}
+	else
+	{
+		current_index = base_index;
+	}
 }	//void lm::Button::update()
 
 void lm::Button::render()
 {
-	if (is_pressed)
-	{
-		TextureManager::instance()->render(m_path_pressed, m_x, m_y, m_w, m_h);
-	}
-	else
-	{
-		TextureManager::instance()->render(m_path, m_x, m_y, m_w, m_h);
-	}
+	Sprite::render();
 	TextureManager::instance()->render(text, m_x + text_x, m_y + text_y, font_path, font_size, r, g, b, format, limited_w);
 }
 
 void lm::Button::clear()
 {
 	
+}
+
+void lm::Button::AddPressedFrame(std::string path)
+{
+	Sprite::AddFrame(path);
+	pressed_index = frame.size() - 1;
 }
 
 bool lm::Button::IsPressed()

@@ -14,11 +14,12 @@ namespace lm
 	class Button : public Sprite
 	{
 		public:
-			virtual void load(std::string path, std::string path_pressed, int x = 0, int y = 0, int w = 0, int h = 0);
+			virtual void init(std::string path, int x = 0, int y = 0, int w = 0, int h = 0);
 			virtual void clear();
 			virtual void update();
 			virtual void render();
 
+			virtual void AddPressedFrame(std::string path);
 			virtual bool IsPressed();
 			virtual bool IsReleased();
 			void SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b);
@@ -28,7 +29,7 @@ namespace lm
 			bool is_released;
 			FingerID has_pressed_id;
 			//for touch
-			std::string m_path_pressed;
+			int pressed_index;
 			//adden
 			std::string text;
 			std::string font_path;
