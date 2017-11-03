@@ -23,13 +23,13 @@ void lm::Timer::RunTimer(std::string id)
 	}
 }
 
-inline void lm::Timer::PauseTimer(std::string id)
+void lm::Timer::PauseTimer(std::string id)
 {
 	pause_time[id] = SDL_GetTicks();
 	is_pause[id] = true;
 }
 
-Uint32 lm::Timer::GetTime(std::string id)
+unsigned long lm::Timer::GetTime(std::string id)
 {
 	Uint32 output = 0;
 	if (is_start[id])
@@ -45,4 +45,9 @@ Uint32 lm::Timer::GetTime(std::string id)
 	}
 
 	return output;
+}
+
+unsigned long lm::Timer::GetSystemTime()
+{
+	return SDL_GetTicks();
 }

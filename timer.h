@@ -23,12 +23,13 @@ namespace lm
 			void RunTimer(std::string id);
 			void PauseTimer(std::string id);
 
-			Uint32 GetTime(std::string id);
+			unsigned long GetTime(std::string id);
+			unsigned long GetSystemTime();
 		private:
 			Timer() {}
 			~Timer() {}
-			std::map<std::string, Uint32> start_time;
-			std::map<std::string, Uint32> pause_time;
+			std::map<std::string, unsigned long> start_time;
+			std::map<std::string, unsigned long> pause_time;
 			std::map<std::string, bool> is_start;
 			std::map<std::string, bool> is_pause;
 			static Timer *m_instance;
