@@ -16,9 +16,9 @@ void lm::MainState::init()
 	main_about = new Button;
 	background = new Sprite;
 
-	main_start->init("assets/main_button.png", 162, 700, 397, 108);
+	main_start->init("assets/main_button.png", 162, System::instance()->GetWindowHeigh() - 580, 397, 108);
 	main_start->AddPressedFrame("assets/main_button_pressed.png");
-	main_about->init("assets/main_button.png", 162, 900, 397, 108);
+	main_about->init("assets/main_button.png", 162, System::instance()->GetWindowHeigh() - 380, 397, 108);
 	main_about->AddPressedFrame("assets/main_button_pressed.png");
 	background->init("assets/background.jpg", 0, 0, 720, 1440);
 	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 60);
@@ -44,8 +44,8 @@ void lm::MainState::update()
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		main_start->SetPos(162, 700);
-		main_about->SetPos(162, 900);
+		main_start->SetPos(162, System::instance()->GetWindowHeigh() - 580);
+		main_about->SetPos(162, System::instance()->GetWindowHeigh() - 380);
 	}
 	else
 	{
