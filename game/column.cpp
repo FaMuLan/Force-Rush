@@ -68,42 +68,49 @@ void lm::Column::update()
 		}
 	}
 
-	if (is_tapped)
+	if (current_note_index < m_note.size())
 	{
-		Judgement current_judgement = Beatmap::instance()->judge(m_note[current_note_index]->time);
-		if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
+		if (is_tapped)
 		{
-			if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+			Judgement current_judgement = Beatmap::instance()->judge(m_note[current_note_index]->time);
+			if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
 			{
-				is_pressing_ln = true;
-				//有長條的情況下先不跳過
+				if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+				{
+					is_pressing_ln = true;
+					//有長條的情況下先不跳過
+				}
+				else
+				{
+					current_note_index++;
+					//正常note可跳過
+				}
 			}
-			else
+			else if (current_judgement == JUDGEMENT_ER)
 			{
 				current_note_index++;
-				//正常note可跳過
+				//誤觸就ERROR的話，別說了，下一個note，請
 			}
 		}
-		else if (current_judgement == JUDGEMENT_ER)
-		{
-			current_note_index++;
-			//誤觸就ERROR的話，別說了，下一個note，請
-		}
-	}
 
-	if (is_released)
-	{
-		if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+		if (is_released)
 		{
-			Beatmap::instance()->judge(m_note[current_note_index]->time_end, true, true);
-			current_note_index++;
+			is_pressing_ln = false;
+			if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+			{
+				Beatmap::instance()->judge(m_note[current_note_index]->time_end, true, true);
+				current_note_index++;
+			}
 		}
-		is_pressing_ln = false;
-	}
 
-	if (Beatmap::instance()->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
-	{
-		current_note_index++;
+		if (!is_pressing_ln)
+		//以防檢測開頭而導致意外ERROR
+		{
+			if (Beatmap::instance()->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
+			{
+				current_note_index++;
+			}
+		}
 	}
 }
 
@@ -111,9 +118,13 @@ void lm::Column::render()
 {
 	s_judge_line->render();
 	int i = current_note_index;
-	while (i + 1 <= m_note.size() && DrawNote(m_note[i]->time, m_note[i]->time_end))
+	bool is_note_in_screen = i < m_note.size();
+
+	while (is_note_in_screen)
 	{
-		++i;
+		is_note_in_screen = DrawNote(m_note[i]->time, m_note[i]->time_end);
+		is_note_in_screen = is_note_in_screen && i < m_note.size();
+		i++;
 	}
 }
 

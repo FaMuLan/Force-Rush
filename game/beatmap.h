@@ -41,6 +41,7 @@ namespace lm
 			void load(std::string path);
 			void clear();
 			void update();
+			void render();
 			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false);
 			//第三個參數中考慮到ln尾判的判定與一般note不一樣
 			int GetCombo();

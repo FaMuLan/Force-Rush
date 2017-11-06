@@ -32,6 +32,7 @@ namespace lm
 			bool is_hold;
 			bool is_released;
 			bool is_pressing_ln;
+			bool is_ended;
 			FingerID has_pressed_id;
 			int current_note_index;
 	};

@@ -11,7 +11,7 @@ lm::Beatmap *lm::Beatmap::m_instance = 0;
 
 void lm::Beatmap::load(std::string path)
 {
-	note_duration = 1000;
+	note_duration = 650;
 	offset = -200;
 
 	std::string text;
@@ -57,7 +57,7 @@ void lm::Beatmap::load(std::string path)
 
 void lm::Beatmap::clear()
 {
-	
+	m_column.clear();
 }
 
 void lm::Beatmap::update()
@@ -65,6 +65,13 @@ void lm::Beatmap::update()
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->update();
+	}
+}
+
+void lm::Beatmap::render()
+{
+	for (int i = 0; i < m_column.size(); i++)
+	{
 		m_column[i]->render();
 	}
 }

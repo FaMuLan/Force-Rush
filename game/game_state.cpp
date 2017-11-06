@@ -27,6 +27,9 @@ void lm::GameState::update()
 	Character::instance()->render();
 	game_pause->update();
 	Beatmap::instance()->update();
+
+	Beatmap::instance()->render();
+
 	if (game_pause->IsReleased())
 	{
 		LoadingState::instance()->init(MainState::instance(), this);
