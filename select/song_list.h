@@ -15,6 +15,9 @@ namespace lm
 		std::string artist;
 		std::string noter;
 		std::string bpm;
+		std::string version;
+		int difficulty;
+		int duration;
 		std::string file_path;
 	};
 

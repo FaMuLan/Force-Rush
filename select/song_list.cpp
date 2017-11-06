@@ -228,7 +228,11 @@ void lm::SongList::RefreshList()
 	std::regex title_pattern("Title:(.*)");
 	std::regex artist_pattern("Artist:(.*)");
 	std::regex noter_pattern("Creator:(.*)");
+	std::regex version_pattern("Version:(.*)");
+	std::regex mode_pattern("Mode: (\\d)");
+	std::regex key_count_pattern("CircleSize:(\\d)");
 	std::regex bpm_pattern("\\d+,([\\d.-]+),\\d+,\\d+,\\d+,\\d+,1,\\d+");
+	std::regex note_pattern("\\d+,\\d+,(\\d+),\\d+,\\d+,\\d+:\\d+:\\d+:\\d+:(\\d+:)?");
 	FindFile("/sdcard/data/malody/beatmap", ".*\\.osu", file);
 	sprintf(output_ch, "Match %d files", file.size());
 	MessageBox::instance()->SetText(output_ch);
@@ -236,20 +240,42 @@ void lm::SongList::RefreshList()
 //	for (int i = 0; i < 3; i++)
 	{
 		SongInformation *new_song_information = new SongInformation;
+		bool success = true;
+		int note_count = 0;
+		int key_count = 0;
+		int mode = 0;
 		new_song_information->file_path = file[i]->name;
 		std::string text;
 		ReadFile(file[i]->name, text);
 		std::smatch title_line;
 		std::smatch artist_line;
 		std::smatch noter_line;
+		std::smatch version_line;
+		std::smatch mode_line;
+		std::smatch key_count_line;
 
 		std::regex_search(text, title_line, title_pattern);
 		std::regex_search(text, artist_line, artist_pattern);
 		std::regex_search(text, noter_line, noter_pattern);
+		std::regex_search(text, version_line, version_pattern);
+		std::regex_search(text, mode_line, mode_pattern);
+		std::regex_search(text, key_count_line, key_count_pattern);
 
 		new_song_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
 		new_song_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
 		new_song_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
+		new_song_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
+		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
+		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
+
+		for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
+		{
+			std::smatch note_line = *i;
+			new_song_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str()) / 1000;
+			note_count++;
+		}
+		new_song_information->difficulty = note_count / new_song_information->duration;
+
 		for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), bpm_pattern); i != std::sregex_iterator(); ++i)
 		{
 			std::smatch bpm_line = *i;
@@ -259,10 +285,15 @@ void lm::SongList::RefreshList()
 			new_song_information->bpm += bpm_ch;
 			new_song_information->bpm += " - ";
 		}
-		m_information.push_back(new_song_information);
 
-		list_length = cell_heigh * m_information.size();
-		SongHeader::instance()->SetInformation(m_information[selected_index]);
+		if (success)
+		{
+			m_information.push_back(new_song_information);
+
+			list_length = cell_heigh * m_information.size();
+			SongHeader::instance()->SetInformation(m_information[selected_index]);
+		}
+
 		sprintf(output_ch, "Loaded %d%%", int(float(i) / float(file.size()) * 100));
 		MessageBox::instance()->SetText(output_ch);
 	}
