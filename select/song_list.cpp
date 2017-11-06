@@ -38,6 +38,9 @@ void lm::SongList::init()
 	null_information->artist = "null";
 	null_information->noter = "null";
 	null_information->bpm = "null";
+	null_information->version = "null";
+	null_information->difficulty = 0;
+	null_information->duration = 0;
 
 	if (!is_refreshing)
 	{
@@ -194,7 +197,7 @@ bool lm::SongList::LoadList()
 	bool exist = false;
 
 	std::string text;
-	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(.*?)\\n");
+	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(\\d+?),(\\d+?),(.*?)\\n");
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
@@ -208,7 +211,9 @@ bool lm::SongList::LoadList()
 		new_information->artist = std::regex_replace(line.str(), pattern, "$2");
 		new_information->noter = std::regex_replace(line.str(), pattern, "$3");
 		new_information->bpm = std::regex_replace(line.str(), pattern, "$4");
-		new_information->file_path = std::regex_replace(line.str(), pattern, "$5");
+		new_information->difficulty = atoi(std::regex_replace(line.str(), pattern, "$5").c_str());
+		new_information->duration = atoi(std::regex_replace(line.str(), pattern, "$6").c_str());
+		new_information->file_path = std::regex_replace(line.str(), pattern, "$7");
 		m_information.push_back(new_information);
 	}
 	char *output_ch = new char[50];
@@ -301,10 +306,16 @@ void lm::SongList::RefreshList()
 	std::string output_text;
 	for (int i = 0; i < m_information.size(); i++)
 	{
+		char *difficulty_ch = new char[3];
+		char *duration_ch = new char[4];
+		sprintf(difficulty_ch, "%d,", m_information[i]->difficulty);
+		sprintf(duration_ch, "%d,", m_information[i]->duration);
 		output_text += m_information[i]->title + ",";
 		output_text += m_information[i]->artist + ",";
 		output_text += m_information[i]->noter + ",";
 		output_text += m_information[i]->bpm + ",";
+		output_text += difficulty_ch;
+		output_text += duration_ch;
 		output_text += m_information[i]->file_path + "\n";
 	}
 	WriteFile("/sdcard/data/song_list.fa", output_text);
