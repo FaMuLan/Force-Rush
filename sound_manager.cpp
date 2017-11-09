@@ -4,6 +4,10 @@ lm::SoundManager *lm::SoundManager::m_instance = 0;
 
 void lm::SoundManager::init()
 {
+	if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0)
+	{
+		exit(0);
+	}
 	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
