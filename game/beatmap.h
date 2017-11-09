@@ -55,6 +55,7 @@ namespace lm
 			std::vector<Column*> m_column;
 			std::map<Judgement, int> judge_count;
 			std::map<int, int> column_mapper;
+			std::string audio_path;
 			int offset;
 			int note_duration;
 			int score;

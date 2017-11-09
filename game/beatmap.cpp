@@ -3,6 +3,7 @@
 #include <regex>
 #include "column.h"
 #include "../message_box.h"
+#include "../sound_manager.h"
 #include "../file_system.h"
 #include "../system.h"
 #include "../timer.h"
@@ -11,21 +12,27 @@ lm::Beatmap *lm::Beatmap::m_instance = 0;
 
 void lm::Beatmap::load(std::string path)
 {
+	audio_path = GetParentDir(path);
 	note_duration = 650;
-	offset = -200;
+	offset = 200;
+	bool is_mapped = false;
 
 	std::string text;
 	ReadFile(path, text);
+	std::regex audio_path_pattern("AudioFilename: (.*)");
 	std::regex note_pattern("(\\d+),\\d+,(\\d+),(\\d+),\\d+,(\\d+):\\d+:\\d+:\\d+:(\\d+:)?");
-	bool is_mapped = false;
+
+	std::smatch audio_path_line;
+	std::regex_search(text, audio_path_line, audio_path_pattern);
+	audio_path += std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
 
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch line = *i;
 		Note *new_note = new Note;
-		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + 2000;
+		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + offset;
 		int type = atoi(std::regex_replace(line.str(), note_pattern, "$3").c_str());
-		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
+		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + offset : new_note->time;
 		int column_index = atoi(std::regex_replace(line.str(), note_pattern, "$1").c_str());
 		if (!is_mapped)
 		{
@@ -52,6 +59,8 @@ void lm::Beatmap::load(std::string path)
 		}
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
+	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
 	Timer::instance()->RunTimer("game");
 }
 
