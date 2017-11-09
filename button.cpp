@@ -7,10 +7,6 @@ void lm::Button::init(std::string path, int x, int y, int w, int h)
 {
 	Sprite::init(path, x, y, w, h);
 	is_pressed = false;
-	text_x = m_w / 2;
-	text_y = m_h / 2;
-	format = TEXTFORMAT_MIDDLE;
-	limited_w = 0;
 }
 
 void lm::Button::update()
@@ -89,7 +85,10 @@ void lm::Button::update()
 void lm::Button::render()
 {
 	Sprite::render();
-	TextureManager::instance()->render(text, m_x + text_x, m_y + text_y, font_path, font_size, r, g, b, format, limited_w);
+	for (int i = 0; i < text.size(); i++)
+	{
+		text[i]->render(m_x + text[i]->GetX(), m_y + text[i]->GetY());
+	}
 }
 
 void lm::Button::clear()
@@ -113,20 +112,14 @@ bool lm::Button::IsReleased()
 	return is_released && !LoadingState::instance()->IsSwitching();
 }
 
-void lm::Button::SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b)
+void lm::Button::AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
 {
-	text = load_text;
-	font_path = load_font_path;
-	font_size = load_font_size;
-	r = load_r;
-	g = load_g;
-	b = load_b;
+	TextArea *new_text = new TextArea;
+	new_text->init(load_text, x, y, font_path, font_size, r, g, b, format, limited_w);
+	text.push_back(new_text);
 }
 
-void lm::Button::SetTextPos(int x, int y, TextFormat load_format, int load_limited_w)
+void lm::Button::ClearText()
 {
-	text_x = x;
-	text_y = y;
-	format = load_format;
-	limited_w = load_limited_w;
+	text.clear();
 }

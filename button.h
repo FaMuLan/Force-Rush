@@ -3,13 +3,14 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-
+#include <vector>
 #include "sprite.h"
-#include "texture_manager.h"
+#include "text_area.h"
 
 namespace lm
 {
 	typedef SDL_FingerID FingerID;
+	class TextArea;
 
 	class Button : public Sprite
 	{
@@ -22,8 +23,8 @@ namespace lm
 			virtual void AddPressedFrame(std::string path);
 			virtual bool IsPressed();
 			virtual bool IsReleased();
-			void SetText(std::string load_text, std::string load_font_path, int load_font_size, Uint8 load_r, Uint8 load_g, Uint8 load_b);
-			void SetTextPos(int x, int y, TextFormat load_format, int load_limited_w);
+			void AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
+			void ClearText();
 		protected:
 			bool is_pressed;
 			bool is_released;
@@ -31,12 +32,7 @@ namespace lm
 			//for touch
 			int pressed_index;
 			//adden
-			std::string text;
-			std::string font_path;
-			int font_size;
-			char r, g, b;
-			int text_x, text_y, limited_w;
-			TextFormat format;
+			std::vector<TextArea*> text;
 			//text & font
 	};	//class Button : public Sprite
 };	//namespace lm
