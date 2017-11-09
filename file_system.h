@@ -24,6 +24,7 @@ namespace lm
 	
 	bool ListDir(std::string path, std::vector<File*> &output);
 	void FindFile(std::string path, std::string pattern_str, std::vector<File*> &output);
+	std::string GetParentDir(std::string path);
 };
 
 #endif

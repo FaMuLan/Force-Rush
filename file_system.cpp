@@ -67,3 +67,9 @@ void lm::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 		}
 	}
 }
+
+std::string lm::GetParentDir(std::string path)
+{
+	std::regex parent_dir_pattern("(.*/)[^/]*");
+	return regex_replace(path, parent_dir_pattern, "$1");
+}
