@@ -8,15 +8,10 @@
 #include <vector>
 #include <map>
 
+#include "text_area.h"
+
 namespace lm
 {
-	enum TextFormat
-	{
-		TEXTFORMAT_MIDDLE = 0,
-		TEXTFORMAT_LEFT = 1,
-		TEXTFORMAT_RIGHT
-	};
-
 	class TextureManager
 	{
 		public:
@@ -38,7 +33,7 @@ namespace lm
 			void clearfont(std::string path, int size);
 			void render(std::string path, int x, int y, int w, int h, int src_x = 0, int src_y = 0, int src_w = 0, int src_h = 0);
 			void render(SDL_Texture *load_texture, int x, int y, int w, int h);
-			void render(std::string text, int x, int y, std::string font_path, int font_size, int r, int g, int b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
+			void render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
 			//limit_w = 0 = NO_LIMIT
 		private: 
 			TextureManager() {}
