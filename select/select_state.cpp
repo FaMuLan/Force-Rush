@@ -31,8 +31,8 @@ void lm::SelectState::init()
 	search_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, 300, 654, 60);
 	random_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, System::instance()->GetWindowHeigh() - 140, 654, 60);
 	select_footer->init("assets/select_footer.png", 0, System::instance()->GetWindowHeigh() - 80, 720, 80);
-	select_back->SetText("Back", "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	select_mod->SetText("Mod", "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	select_back->AddText("Back", select_back->GetW() / 2, select_back->GetH() / 2, "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	select_mod->AddText("Refresh", select_mod->GetW() / 2, select_mod->GetH() / 2, "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{

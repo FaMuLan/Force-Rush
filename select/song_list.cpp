@@ -141,7 +141,8 @@ void lm::SongList::update()
 			{
 				current_index = 0;
 			}
-				m_cell[i]->SetText(m_information[current_index]->title, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00);
+			m_cell[i]->ClearText();
+				m_cell[i]->AddText(m_information[current_index]->title, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
 
 			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
 			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
@@ -167,7 +168,8 @@ void lm::SongList::update()
 		}
 		else
 		{
-			m_cell[i]->SetText(null_information->title, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00);
+			m_cell[i]->ClearText();
+			m_cell[i]->AddText(null_information->title, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
 				SongHeader::instance()->SetInformation(null_information);
 			list_length = cell_heigh;
 		}
@@ -347,7 +349,6 @@ void lm::SongList::RefreshListSize()
 		Button *new_song_cell = new Button;
 		new_song_cell->init("assets/select_song_cell.png", 0, 0, 654, 60);
 		new_song_cell->AddPressedFrame( "assets/select_song_cell_pressed.png");
-		new_song_cell->SetTextPos(16, 20, TEXTFORMAT_LEFT, 640);
 		m_cell.push_back(new_song_cell);
 	}
 }

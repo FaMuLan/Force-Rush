@@ -34,7 +34,7 @@ namespace lm
 			void clear();
 			void OnEnter();
 			void OnExit();
-			void AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b, ShutterType type);
+			void AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type);
 			bool IsSwitching();
 		private:
 			LoadingState() {}

@@ -105,8 +105,7 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	last_state = load_last_state;
 	Timer::instance()->RunTimer("shutter");
 	TextArea *new_text_area = new TextArea;
-	new_text_area->load("Loading...", "assets/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
-	new_text_area->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+	new_text_area->init("Loading...", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
 	text_area_bottom.push_back(new_text_area);
 	is_text_default = true;
 	//SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
@@ -156,7 +155,7 @@ void lm::LoadingState::OnExit()
 	}
 }
 
-void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, int r, int g, int b, ShutterType type)
+void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type)
 {
 	if (is_text_default)
 	{
@@ -165,8 +164,7 @@ void lm::LoadingState::AddText(std::string text, std::string font_path, int font
 		is_text_default = false;
 	}
 	TextArea *new_text_area = new TextArea;
-	new_text_area->load(text, font_path, font_size, r, g, b);
-	new_text_area->SetPos(x, y);
+	new_text_area->init(text, x, y, font_path, font_size, r, g, b);
 	if (type == SHUTTER_TOP)
 	{
 		text_area_top.push_back(new_text_area);
