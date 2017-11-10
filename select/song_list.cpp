@@ -142,7 +142,11 @@ void lm::SongList::update()
 				current_index = 0;
 			}
 			m_cell[i]->ClearText();
-				m_cell[i]->AddText(m_information[current_index]->title, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
+			char *difficulty_ch = new char[3];
+			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
+				m_cell[i]->AddText(difficulty_ch, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
+				m_cell[i]->AddText(m_information[current_index]->title, 60, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 584);
+				delete [] difficulty_ch;
 
 			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
 			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
