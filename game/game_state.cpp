@@ -10,9 +10,9 @@ lm::GameState *lm::GameState::m_instance = 0;
 void lm::GameState::init()
 {
 	game_pause = new Button;
-	game_pause->init("assets/sort_button.png", 0, 0, 176, 80);
-	game_pause->AddPressedFrame("assets/sort_button_pressed.png");
-	game_pause->AddText("Pause", game_pause->GetW() / 2, game_pause->GetH() / 2, "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	game_pause->init("assets/base/sort_button.png", 0, 0, 176, 80);
+	game_pause->AddPressedFrame("assets/base/sort_button_pressed.png");
+	game_pause->AddText("Pause", game_pause->GetW() / 2, game_pause->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	Beatmap::instance()->load(file_path);
 }
 

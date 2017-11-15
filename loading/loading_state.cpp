@@ -81,9 +81,9 @@ void lm::LoadingState::init()
 {
 	shutter_top = new Sprite;
 	shutter_bottom = new Sprite;
-	shutter_top->init("assets/shutter_top.png", 0, 0, 720, 534);
-	shutter_bottom->init("assets/shutter_bottom.png", 0, 0, 720, 848);
-	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 80);
+	shutter_top->init("assets/base/shutter_top.png", 0, 0, 720, 534);
+	shutter_bottom->init("assets/base/shutter_bottom.png", 0, 0, 720, 848);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 80);
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	animate_duration = 500;
@@ -105,7 +105,7 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	last_state = load_last_state;
 	Timer::instance()->RunTimer("shutter");
 	TextArea *new_text_area = new TextArea;
-	new_text_area->init("Loading...", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
+	new_text_area->init("Loading...", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
 	text_area_bottom.push_back(new_text_area);
 	is_text_default = true;
 	//SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);

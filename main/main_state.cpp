@@ -16,17 +16,16 @@ void lm::MainState::init()
 	main_about = new Button;
 	background = new Sprite;
 
-	main_start->init("assets/main_button.png", 162, System::instance()->GetWindowHeigh() - 580, 397, 108);
-	main_start->AddPressedFrame("assets/main_button_pressed.png");
-	main_about->init("assets/main_button.png", 162, System::instance()->GetWindowHeigh() - 380, 397, 108);
-	main_about->AddPressedFrame("assets/main_button_pressed.png");
-	background->init("assets/background.jpg", 0, 0, 720, 1440);
-	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 60);
+	main_start->init("assets/main/button.png", 162, System::instance()->GetWindowHeigh() - 580, 397, 108);
+	main_start->AddPressedFrame("assets/main/button_pressed.png");
+	main_about->init("assets/main/button.png", 162, System::instance()->GetWindowHeigh() - 380, 397, 108);
+	main_about->AddPressedFrame("assets/main/button_pressed.png");
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 60);
 
 	is_locked = false;
 
-	main_start->AddText("Start", main_start->GetW() / 2, main_start->GetH() / 2, "assets/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
-	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
+	main_start->AddText("Start", main_start->GetW() / 2, main_start->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
+	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
 
 //	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
@@ -37,7 +36,7 @@ void lm::MainState::clear()
 	main_start->clear();
 	main_about->clear();
 	background->clear();
-	TextureManager::instance()->clearfont("assets/Audiowide.ttf", 60);
+	TextureManager::instance()->clearfont("assets/fonts/Audiowide.ttf", 60);
 }
 
 void lm::MainState::update()
@@ -68,7 +67,7 @@ void lm::MainState::update()
 	if (main_start->IsReleased())
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
-		LoadingState::instance()->AddText("Select Song", "assets/Audiowide.ttf", 80, System::instance()->GetWindowWidth() / 2, 100, 0x00, 0x00, 0x00, SHUTTER_TOP);
+		LoadingState::instance()->AddText("Select Song", "assets/fonts/Audiowide.ttf", 80, System::instance()->GetWindowWidth() / 2, 100, 0x00, 0x00, 0x00, SHUTTER_TOP);
 //		SoundManager::instance()->stop();
 	}
 }

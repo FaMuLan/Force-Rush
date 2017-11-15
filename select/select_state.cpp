@@ -14,7 +14,7 @@ lm::SelectState *lm::SelectState::m_instance = 0;
 
 void lm::SelectState::init()
 {
-	TextureManager::instance()->loadfont("assets/Audiowide.ttf", 36);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	SongHeader::instance()->init();
 	SongList::instance()->init();
 	select_back = new Button;
@@ -23,16 +23,15 @@ void lm::SelectState::init()
 	search_bar = new Sprite;
 	random_bar = new Sprite;
 	select_footer = new Sprite;
-	select_back->init("assets/sort_button.png", 0, System::instance()->GetWindowHeigh() - 80, 176, 80);
-	select_back->AddPressedFrame( "assets/sort_button_pressed.png");
-	select_mod->init("assets/sort_button.png", System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80);
-	select_mod->AddPressedFrame( "assets/sort_button_pressed.png");
-	background->init("assets/background.jpg", 0, 0, 720, 1440);
-	search_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, 300, 654, 60);
-	random_bar->init("assets/select_black_cell.png", System::instance()->GetWindowWidth() - 654, System::instance()->GetWindowHeigh() - 140, 654, 60);
-	select_footer->init("assets/select_footer.png", 0, System::instance()->GetWindowHeigh() - 80, 720, 80);
-	select_back->AddText("Back", select_back->GetW() / 2, select_back->GetH() / 2, "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	select_mod->AddText("Refresh", select_mod->GetW() / 2, select_mod->GetH() / 2, "assets/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	select_back->init("assets/base/sort_button.png", 0, System::instance()->GetWindowHeigh() - 80, 176, 80);
+	select_back->AddPressedFrame( "assets/base/sort_button_pressed.png");
+	select_mod->init("assets/base/sort_button.png", System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80);
+	select_mod->AddPressedFrame( "assets/base/sort_button_pressed.png");
+	search_bar->init("assets/select/black_cell.png", System::instance()->GetWindowWidth() - 654, 300, 654, 60);
+	random_bar->init("assets/select/black_cell.png", System::instance()->GetWindowWidth() - 654, System::instance()->GetWindowHeigh() - 140, 654, 60);
+	select_footer->init("assets/select/footer.png", 0, System::instance()->GetWindowHeigh() - 80, 720, 80);
+	select_back->AddText("Back", select_back->GetW() / 2, select_back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	select_mod->AddText("Refresh", select_mod->GetW() / 2, select_mod->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{

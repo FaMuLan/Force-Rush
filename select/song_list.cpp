@@ -31,7 +31,7 @@ bool lm::SongList::is_refreshing = false;
 void lm::SongList::init()
 {
 	cell_heigh = 60;
-	TextureManager::instance()->loadfont("assets/Ubuntu-M.ttf", 28);
+	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 28);
 
 	null_information = new SongInformation;
 	null_information->title = "null";
@@ -144,8 +144,8 @@ void lm::SongList::update()
 			m_cell[i]->ClearText();
 			char *difficulty_ch = new char[3];
 			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
-				m_cell[i]->AddText(difficulty_ch, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
-				m_cell[i]->AddText(m_information[current_index]->title, 60, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 584);
+				m_cell[i]->AddText(difficulty_ch, 16, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
+				m_cell[i]->AddText(m_information[current_index]->title, 60, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 584);
 				delete [] difficulty_ch;
 
 			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
@@ -173,7 +173,7 @@ void lm::SongList::update()
 		else
 		{
 			m_cell[i]->ClearText();
-			m_cell[i]->AddText(null_information->title, 16, 20, "assets/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
+			m_cell[i]->AddText(null_information->title, 16, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
 				SongHeader::instance()->SetInformation(null_information);
 			list_length = cell_heigh;
 		}
@@ -200,7 +200,6 @@ void lm::SongList::render()
 bool lm::SongList::LoadList()
 {
 	m_information.clear();
-	bool exist = false;
 
 	std::string text;
 	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(\\d+?),(\\d+?),(.*?)\\n");
@@ -208,9 +207,12 @@ bool lm::SongList::LoadList()
 	{
 		return false;
 	}
+	if (!std::regex_search(text, pattern))
+	{
+		return false;
+	}
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); ++i)
 	{
-		exist = true;
 		std::smatch line = *i;
 		SongInformation *new_information = new SongInformation;
 		new_information->title = std::regex_replace(line.str(), pattern, "$1");
@@ -225,7 +227,7 @@ bool lm::SongList::LoadList()
 	char *output_ch = new char[50];
 	sprintf(output_ch, "Match %d files", m_information.size());
 	MessageBox::instance()->SetText(output_ch);
-	return exist;
+	return true;
 }
 
 void lm::SongList::RefreshList()
@@ -351,8 +353,8 @@ void lm::SongList::RefreshListSize()
 	for (int i = 0; i < cell_count; i++)
 	{
 		Button *new_song_cell = new Button;
-		new_song_cell->init("assets/select_song_cell.png", 0, 0, 654, 60);
-		new_song_cell->AddPressedFrame( "assets/select_song_cell_pressed.png");
+		new_song_cell->init("assets/select/song_cell.png", 0, 0, 654, 60);
+		new_song_cell->AddPressedFrame( "assets/select/song_cell_pressed.png");
 		m_cell.push_back(new_song_cell);
 	}
 }
