@@ -13,7 +13,7 @@ namespace lm
 	class Column
 	{
 		public:
-			void init(int x, int w);
+			void init(int column_index);
 			void clear();
 			void update();
 			void render();
@@ -22,9 +22,11 @@ namespace lm
 		private:
 			std::vector<Note*> m_note;
 			Sprite *s_note;
-			Sprite *s_note_ln_body;
-			Sprite *s_note_ln_end;
-			Sprite *s_judge_line;
+			int start_x;
+			int start_y;
+			float start_scale;
+			int end_x;
+			int end_y;
 			int m_x;
 			int m_w;
 			int m_h;
