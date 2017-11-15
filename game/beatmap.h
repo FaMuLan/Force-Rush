@@ -8,6 +8,7 @@
 namespace lm
 {
 	class Column;
+	class Sprite;
 
 	enum Judgement
 	{
@@ -56,6 +57,7 @@ namespace lm
 			std::map<Judgement, int> judge_count;
 			std::map<int, int> column_mapper;
 			std::string audio_path;
+			Sprite *play_base;
 			int offset;
 			int note_duration;
 			int score;

@@ -7,13 +7,17 @@
 #include "../file_system.h"
 #include "../system.h"
 #include "../timer.h"
+#include "../sprite.h"
 
 lm::Beatmap *lm::Beatmap::m_instance = 0;
 
 void lm::Beatmap::load(std::string path)
 {
+	play_base = new Sprite;
+	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+
 	audio_path = GetParentDir(path);
-	note_duration = 650;
+	note_duration = 1000;
 	offset = 200;
 	bool is_mapped = false;
 
@@ -45,8 +49,7 @@ void lm::Beatmap::load(std::string path)
 					for (int i = 0; i < 4; i++)
 					{
 						Column *new_column = new Column;
-						int w = System::instance()->GetWindowWidth() / 4;
-						new_column->init(w * i, w);
+						new_column->init(i);
 						m_column.push_back(new_column);
 					}
 					column_mapper[64] = 0;
@@ -79,6 +82,7 @@ void lm::Beatmap::update()
 
 void lm::Beatmap::render()
 {
+	play_base->render();
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->render();
@@ -126,7 +130,6 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			score += JUDGEMENT_PG;
 			combo++;
-			MessageBox::instance()->SetText("Pure");
 			return JUDGEMENT_PG;
 		}
 	}
