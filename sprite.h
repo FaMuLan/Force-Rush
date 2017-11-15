@@ -9,16 +9,17 @@ namespace lm
 	class Sprite
 	{
 		public:
-			virtual void init(std::string path, int x = 0, int y = 0, int w = 0, int h = 0);
+			virtual void init(std::string path = "", int x = 0, int y = 0, int w = 0, int h = 0);
 			virtual void update();
 			virtual void render();
 			virtual void clear();
 
-			void AddFrame(std::string path);
+			void AddFrame(std::string path = "");
 			void SetAnimate(int load_start, int load_end, int load_duration);
 			void SetBaseFrame(int index);
 			void SetPos(int x, int y);
 			void SetScale(float load_scale);
+			void SetSize(int w, int h);
 			int GetX();
 			int GetY();
 			int GetW();

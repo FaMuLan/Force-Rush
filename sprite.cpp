@@ -4,15 +4,18 @@
 
 void lm::Sprite::init(std::string path, int x, int y, int w, int h)
 {
-	TextureManager::instance()->load(path, m_w, m_h);
-	frame.push_back(path);
-	m_x = x;
-	m_y = y;
-	if (w != 0 || h != 0)
+	if (path != "")
 	{
-		m_w = w;
-		m_h = h;
+		TextureManager::instance()->load(path, m_w, m_h);
+		m_x = x;
+		m_y = y;
+		if (w != 0 || h != 0)
+		{
+			m_w = w;
+			m_h = h;
+		}
 	}
+	frame.push_back(path);
 	scale = 1;
 	base_index = 0;
 	start_time = 0;
@@ -25,7 +28,7 @@ void lm::Sprite::update()
 	if (duration != 0)
 	{
 		current_index = (frame_end - frame_start) != 0 ? ((Timer::instance()->GetSystemTime() - start_time) / duration % (frame_end + 1 - frame_start) + frame_start) : frame_start;
-		if (Timer::instance()->GetSystemTime() - start_time >= duration)
+		if (Timer::instance()->GetSystemTime() - start_time > duration)
 		{
 			duration = 0;
 			start_time = 0;
@@ -39,7 +42,10 @@ void lm::Sprite::update()
 
 void lm::Sprite::render()
 {
-	TextureManager::instance()->render(frame[current_index], m_x, m_y, m_w * scale, m_h * scale);
+	if (frame[current_index] != "")
+	{
+		TextureManager::instance()->render(frame[current_index], m_x, m_y, m_w * scale, m_h * scale);
+	}
 }
 
 void lm::Sprite::clear()
@@ -49,8 +55,16 @@ void lm::Sprite::clear()
 
 void lm::Sprite::AddFrame(std::string path)
 {
-	int temp_w, temp_h;
-	TextureManager::instance()->load(path, temp_w, temp_h);
+	int load_w, load_h;
+	if (path != "")
+	{
+		TextureManager::instance()->load(path, load_w, load_h);
+	}
+	if (m_w == 0 && m_h == 0)
+	{
+		m_w = load_w;
+		m_h = load_h;
+	}
 	frame.push_back(path);
 }
 
@@ -96,4 +110,10 @@ int lm::Sprite::GetW()
 int lm::Sprite::GetH()
 {
 	return m_h;
+}
+
+void lm::Sprite::SetSize(int w, int h)
+{
+	m_w = w;
+	m_h = h;
 }
