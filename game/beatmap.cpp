@@ -15,11 +15,14 @@ void lm::Beatmap::load(std::string path)
 {
 	play_base = new Sprite;
 	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+	scale_w = System::instance()->GetWindowWidth() / 720.f;
+	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
 
 	audio_path = GetParentDir(path);
 	note_duration = 700;
 	offset = 200;
 	bool is_mapped = false;
+	is_waiting = true;
 
 	std::string text;
 	ReadFile(path, text);
@@ -34,9 +37,9 @@ void lm::Beatmap::load(std::string path)
 	{
 		std::smatch line = *i;
 		Note *new_note = new Note;
-		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + offset;
+		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + offset + 2000;
 		int type = atoi(std::regex_replace(line.str(), note_pattern, "$3").c_str());
-		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + offset : new_note->time;
+		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + offset + 2000 : new_note->time;
 		int column_index = atoi(std::regex_replace(line.str(), note_pattern, "$1").c_str());
 		if (!is_mapped)
 		{
@@ -63,7 +66,6 @@ void lm::Beatmap::load(std::string path)
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
-	SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
 	Timer::instance()->RunTimer("game");
 }
 
@@ -79,6 +81,17 @@ void lm::Beatmap::clear()
 
 void lm::Beatmap::update()
 {
+	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
+	{
+		SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
+		is_waiting = false;
+	}
+	if (System::instance()->IsWindowModified())
+	{
+		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+		scale_w = System::instance()->GetWindowWidth() / 720.f;
+		scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+	}
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->update();
@@ -157,4 +170,14 @@ int lm::Beatmap::GetDuration()
 int lm::Beatmap::GetOffset()
 {
 	return offset;
+}
+
+float lm::Beatmap::GetScaleW()
+{
+	return scale_w;
+}
+
+float lm::Beatmap::GetScaleH()
+{
+	return scale_h;
 }

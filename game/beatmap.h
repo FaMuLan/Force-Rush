@@ -49,6 +49,9 @@ namespace lm
 			int GetScore();
 			int GetDuration();
 			int GetOffset();
+
+			float GetScaleW();
+			float GetScaleH();
 		private:
 			Beatmap() {}
 			~Beatmap() {}
@@ -58,6 +61,8 @@ namespace lm
 			std::map<int, int> column_mapper;
 			std::string audio_path;
 			Sprite *play_base;
+			float scale_w, scale_h;
+			bool is_waiting;
 			int offset;
 			int note_duration;
 			int score;
