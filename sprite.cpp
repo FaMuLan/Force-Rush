@@ -7,13 +7,13 @@ void lm::Sprite::init(std::string path, int x, int y, int w, int h)
 	if (path != "")
 	{
 		TextureManager::instance()->load(path, m_w, m_h);
-		m_x = x;
-		m_y = y;
-		if (w != 0 || h != 0)
-		{
-			m_w = w;
-			m_h = h;
-		}
+	}
+	m_x = x;
+	m_y = y;
+	if (w != 0 || h != 0)
+	{
+		m_w = w;
+		m_h = h;
 	}
 	frame.push_back(path);
 	scale = 1;
@@ -27,11 +27,12 @@ void lm::Sprite::update()
 {
 	if (duration != 0)
 	{
-		current_index = (frame_end - frame_start) != 0 ? ((Timer::instance()->GetSystemTime() - start_time) / duration % (frame_end + 1 - frame_start) + frame_start) : frame_start;
+		current_index = (frame_end != frame_start) ? (float(Timer::instance()->GetSystemTime() - start_time) / duration * float(frame_end - frame_start) + frame_start) : frame_start;
 		if (Timer::instance()->GetSystemTime() - start_time > duration)
 		{
 			duration = 0;
 			start_time = 0;
+			current_index = base_index;
 		}
 	}
 	else
