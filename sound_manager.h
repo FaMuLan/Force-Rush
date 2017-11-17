@@ -32,6 +32,8 @@ namespace lm
 			void play(std::string path, SoundType type);
 			void stop();	//music type only
 			void SetVolume(Uint16 load_volume, SoundType type);
+
+			bool IsPlayingMusic();
 		private:
 			SoundManager() {}
 			~SoundManager() {}

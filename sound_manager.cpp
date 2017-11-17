@@ -40,7 +40,7 @@ void lm::SoundManager::play(std::string path, SoundType type)
 	}
 	if (type == SOUNDTYPE_MUSIC)
 	{
-		Mix_PlayMusic(m_music[path], -1);
+		Mix_PlayMusic(m_music[path], 0);
 	}
 }
 
@@ -62,4 +62,9 @@ void lm::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
 			Mix_VolumeChunk(i->second, load_volume);
 		}
 	}
+}
+
+bool lm::SoundManager::IsPlayingMusic()
+{
+	return Mix_PlayingMusic();
 }
