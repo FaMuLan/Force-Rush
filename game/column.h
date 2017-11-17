@@ -13,13 +13,14 @@ namespace lm
 	class Column
 	{
 		public:
-			void init(int column_index);
+			void init(int load_column_index);
 			void clear();
 			void update();
 			void render();
 			void AddNote(Note *load_note);
 			bool DrawNote(int time, int time_end);
 		private:
+			int column_index;
 			std::vector<Note*> m_note;
 			Sprite *s_note;
 			Sprite *s_light;
