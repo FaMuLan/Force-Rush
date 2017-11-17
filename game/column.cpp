@@ -11,7 +11,23 @@ void lm::Column::init(int column_index)
 	current_note_index = 0;
 	is_pressing_ln = false;
 	s_note = new Sprite;
+	s_light = new Sprite;
 	int current_w, current_h;
+
+	s_light->init("", 0, 0, 473, 473);
+	s_light->AddFrame("assets/game/lightingN-0.png");
+	s_light->AddFrame("assets/game/lightingN-1.png");
+	s_light->AddFrame("assets/game/lightingN-2.png");
+	s_light->AddFrame("assets/game/lightingN-3.png");
+	s_light->AddFrame("assets/game/lightingN-4.png");
+	s_light->AddFrame("assets/game/lightingN-5.png");
+	s_light->AddFrame("assets/game/lightingN-6.png");
+	s_light->AddFrame("assets/game/lightingN-7.png");
+	s_light->AddFrame("assets/game/lightingN-8.png");
+	s_light->AddFrame("assets/game/lightingN-9.png");
+	s_light->AddFrame("assets/game/lightingN-10.png");
+	s_light->AddFrame("assets/game/lightingN-11.png");
+
 	switch (column_index)
 	{
 		case 0:
@@ -25,6 +41,7 @@ void lm::Column::init(int column_index)
 			m_w = 166;
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
+			s_light->SetPos(-114, 872);
 		break;
 		case 1:
 			start_x = 347;
@@ -37,30 +54,33 @@ void lm::Column::init(int column_index)
 			current_w = 165.0f / 720.0f * System::instance()->GetWindowWidth();
 			current_h = 45.0f / 1280.0f * System::instance()->GetWindowHeigh();
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
+			s_light->SetPos(43, 872);
 		break;
 		case 2:
 			start_x = 360;
 			start_y = 387;
 			end_x = 360;
 			end_y = 1088;
-			m_x = 166;
+			m_x = 360;
 			m_w = 194;
 			start_scale = 0.0828f;
 			current_w = 165.0f / 720.0f * System::instance()->GetWindowWidth();
 			current_h = 45.0f / 1280.0f * System::instance()->GetWindowHeigh();
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
+			s_light->SetPos(206, 872);
 		break;
 		case 3:
 			start_x = 371;
 			start_y = 387;
-			end_x = 517;
+			end_x = 515;
 			end_y = 1088;
-			m_x = 517;
+			m_x = 515;
 			m_w = 166;
 			start_scale = 0.0828f;
 			current_w = 173.0f / 720.0f * System::instance()->GetWindowWidth();
 			current_h = 45.0f / 1280.0f * System::instance()->GetWindowHeigh();
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
+			s_light->SetPos(367, 872);
 		break;
 	}
 
@@ -111,8 +131,24 @@ void lm::Column::update()
 			}
 		}
 	}
-
+//================ Auto Mod =========
 	if (current_note_index < m_note.size())
+	{
+		if (is_pressing_ln)
+		{
+			if (m_note[current_note_index]->time_end < Timer::instance()->GetTime("game"))
+			{
+			is_released = true;
+			}
+		}
+		if (m_note[current_note_index]->time < Timer::instance()->GetTime("game") && !is_pressing_ln)
+		{
+			is_tapped = true;
+		}
+	}
+//=================== End ===========
+	if (current_note_index < m_note.size())
+	//檢測防止下標越界而導致段錯誤
 	{
 		if (is_tapped)
 		{
@@ -129,6 +165,7 @@ void lm::Column::update()
 					current_note_index++;
 					//正常note可跳過
 				}
+				s_light->SetAnimate(1, 12, 300);
 			}
 			else if (current_judgement == JUDGEMENT_ER)
 			{
@@ -147,8 +184,9 @@ void lm::Column::update()
 			}
 		}
 
-		if (!is_pressing_ln)
+		if (!is_pressing_ln && current_note_index < m_note.size())
 		//以防檢測開頭而導致意外ERROR
+		//注意因為之前current_note_index可能執行過++所以還是需要做檢測
 		{
 			if (Beatmap::instance()->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
 			{
@@ -156,6 +194,7 @@ void lm::Column::update()
 			}
 		}
 	}
+	s_light->update();
 }
 
 void lm::Column::render()
@@ -166,9 +205,10 @@ void lm::Column::render()
 	while (is_note_in_screen)
 	{
 		is_note_in_screen = DrawNote(m_note[i]->time, m_note[i]->time_end);
-		is_note_in_screen = is_note_in_screen && i < m_note.size();
 		i++;
+		is_note_in_screen = is_note_in_screen && i < m_note.size();
 	}
+	s_light->render();
 }
 
 void lm::Column::AddNote(Note *load_note)
@@ -179,7 +219,7 @@ void lm::Column::AddNote(Note *load_note)
 bool lm::Column::DrawNote(int time, int time_end)
 {
 	int time_diff = time - Timer::instance()->GetTime("game");
-	float process = float(Beatmap::instance()->GetDuration() - time_diff) / float(Beatmap::instance()->GetDuration());
+	double process = float(Beatmap::instance()->GetDuration() - time_diff) / double(Beatmap::instance()->GetDuration());
 	process *= process;
 	//note時間與當前時間的時間差
 	int current_x = start_x + (end_x - start_x) * process;
@@ -199,14 +239,14 @@ bool lm::Column::DrawNote(int time, int time_end)
 	{
 		int time_diff_end = time_end - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
-		float process_end = float(Beatmap::instance()->GetDuration() - time_diff_end) / float(Beatmap::instance()->GetDuration());
+		double process_end = float(Beatmap::instance()->GetDuration() - time_diff_end) / float(Beatmap::instance()->GetDuration());
 		process_end *= process_end;
 		//時間差轉換成Y坐標 * 2
 		if (is_pressing_ln)
 		{
 			process = 1;
 		}
-		float ln_piece_process = process;
+		double ln_piece_process = process;
 		//長條身Y坐標
 		while (ln_piece_process > 0 && ln_piece_process > process_end)
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
@@ -250,6 +290,7 @@ bool lm::Column::DrawNote(int time, int time_end)
 		s_note->SetScale(current_scale);
 		s_note->render();
 	}
+
 	return true;
 	//畫note
 }

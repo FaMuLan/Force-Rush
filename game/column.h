@@ -22,6 +22,7 @@ namespace lm
 		private:
 			std::vector<Note*> m_note;
 			Sprite *s_note;
+			Sprite *s_light;
 			int start_x;
 			int start_y;
 			float start_scale;
