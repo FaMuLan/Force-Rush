@@ -246,7 +246,7 @@ void lm::SongList::RefreshList()
 	std::regex key_count_pattern("CircleSize:(\\d)");
 	std::regex bpm_pattern("\\d+,([\\d.-]+),\\d+,\\d+,\\d+,\\d+,1,\\d+");
 	std::regex note_pattern("\\d+,\\d+,(\\d+),\\d+,\\d+,\\d+:\\d+:\\d+:\\d+:(\\d+:)?");
-	FindFile("/sdcard/data/malody/beatmap", ".*\\.osu", file);
+	FindFile("/sdcard/data/malody/pending", ".*\\.osu", file);
 	sprintf(output_ch, "Match %d files", file.size());
 	MessageBox::instance()->SetText(output_ch);
 	for (int i = 0; i < file.size(); i++)
