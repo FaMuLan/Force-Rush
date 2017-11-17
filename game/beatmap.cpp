@@ -17,7 +17,7 @@ void lm::Beatmap::load(std::string path)
 	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
 
 	audio_path = GetParentDir(path);
-	note_duration = 1000;
+	note_duration = 700;
 	offset = 200;
 	bool is_mapped = false;
 
@@ -102,14 +102,14 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
-			MessageBox::instance()->SetText("Error");
+			MessageBox::instance()->SetText("Error Early");
 			return JUDGEMENT_ER;
 		}
 		else if (time_diff > 500 || time_diff < -500)
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
-			MessageBox::instance()->SetText("Error");
+			MessageBox::instance()->SetText("Error Early");
 			return JUDGEMENT_ER;
 		}
 		else if (time_diff > 200 || time_diff < -200)
@@ -130,6 +130,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			score += JUDGEMENT_PG;
 			combo++;
+			MessageBox::instance()->SetText("Pure");
 			return JUDGEMENT_PG;
 		}
 	}
@@ -137,7 +138,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 	{
 		score += JUDGEMENT_ER;
 		combo = 0;
-		MessageBox::instance()->SetText("Error");
+		MessageBox::instance()->SetText("Error Late");
 		return JUDGEMENT_ER;
 	}
 	return JUDGEMENT_NONE;
