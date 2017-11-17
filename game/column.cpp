@@ -89,7 +89,7 @@ void lm::Column::init(int column_index)
 
 void lm::Column::clear()
 {
-	m_note.clear();
+	std::vector<Note*>(m_note).swap(m_note);
 }
 
 void lm::Column::update()
@@ -132,13 +132,14 @@ void lm::Column::update()
 		}
 	}
 //================ Auto Mod =========
+
 	if (current_note_index < m_note.size())
 	{
 		if (is_pressing_ln)
 		{
 			if (m_note[current_note_index]->time_end < Timer::instance()->GetTime("game"))
 			{
-			is_released = true;
+				is_released = true;
 			}
 		}
 		if (m_note[current_note_index]->time < Timer::instance()->GetTime("game") && !is_pressing_ln)
@@ -146,6 +147,7 @@ void lm::Column::update()
 			is_tapped = true;
 		}
 	}
+
 //=================== End ===========
 	if (current_note_index < m_note.size())
 	//檢測防止下標越界而導致段錯誤
@@ -176,12 +178,15 @@ void lm::Column::update()
 
 		if (is_released)
 		{
-			is_pressing_ln = false;
 			if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
 			{
-				Beatmap::instance()->judge(m_note[current_note_index]->time_end, true, true);
+				if (Beatmap::instance()->judge(m_note[current_note_index]->time_end, true, true) != JUDGEMENT_ER)
+				{
+					s_light->SetAnimate(1, 12, 300);
+				}
 				current_note_index++;
 			}
+			is_pressing_ln = false;
 		}
 
 		if (!is_pressing_ln && current_note_index < m_note.size())
@@ -192,6 +197,16 @@ void lm::Column::update()
 			{
 				current_note_index++;
 			}
+		}
+
+		if (is_pressing_ln)
+		{
+			if (Beatmap::instance()->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
+			{
+				current_note_index++;
+				is_pressing_ln = false;
+			}
+			//长条尾未松开手指
 		}
 	}
 	s_light->update();
@@ -221,12 +236,10 @@ bool lm::Column::DrawNote(int time, int time_end)
 	int time_diff = time - Timer::instance()->GetTime("game");
 	double process = float(Beatmap::instance()->GetDuration() - time_diff) / double(Beatmap::instance()->GetDuration());
 	process *= process;
-	//note時間與當前時間的時間差
 	int current_x = start_x + (end_x - start_x) * process;
 	int current_y = start_y + (end_y - start_y) * process;
 	float current_scale = start_scale + (1.0f - start_scale) * process;
-	//時間差轉換成Y坐標
-	//屏幕頂端到判定線距離 * 屏幕頂端到判定線所用時間與note出現時間之比 - 偏移
+	//note時間與當前時間的時間差
 
 	if (time_diff > Beatmap::instance()->GetDuration())
 	{
@@ -239,27 +252,32 @@ bool lm::Column::DrawNote(int time, int time_end)
 	{
 		int time_diff_end = time_end - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
-		double process_end = float(Beatmap::instance()->GetDuration() - time_diff_end) / float(Beatmap::instance()->GetDuration());
+		double process_end = float(Beatmap::instance()->GetDuration() - time_diff_end) / double(Beatmap::instance()->GetDuration());
 		process_end *= process_end;
 		//時間差轉換成Y坐標 * 2
-		if (is_pressing_ln)
+
+		if (is_pressing_ln && time == m_note[current_note_index]->time && time_end == m_note[current_note_index]->time_end)
+		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
+			time_diff = 0;
+			current_x = start_x + (end_x - start_x) * process;
+			current_y = start_y + (end_y - start_y) * process;
+			current_scale = start_scale + (1.0f - start_scale) * process;
 		}
+
 		double ln_piece_process = process;
-		//長條身Y坐標
-		while (ln_piece_process > 0 && ln_piece_process > process_end)
+		while (ln_piece_process > (time_diff_end > Beatmap::instance()->GetDuration() ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process;
 			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process;
 			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process;
-
 			s_note->SetPos(current_x_piece, current_y_piece);
 			s_note->SetScale(current_scale_piece);
 			s_note->render();
 			//將長條身往上挪動
-			ln_piece_process -= 0.05f;
+			ln_piece_process -= 0.01f;
 		}
 
 		if (ln_piece_process < 0)
