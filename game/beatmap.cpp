@@ -70,6 +70,11 @@ void lm::Beatmap::load(std::string path)
 void lm::Beatmap::clear()
 {
 	m_column.clear();
+	Timer::instance()->ResetTimer("game");
+	if (SoundManager::instance()->IsPlayingMusic())
+	{
+		SoundManager::instance()->stop();
+	}
 }
 
 void lm::Beatmap::update()
@@ -98,7 +103,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 1000 && is_ln_pressing)
+		else if (time_diff > 500 && is_ln_pressing)
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
@@ -134,7 +139,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			return JUDGEMENT_PG;
 		}
 	}
-	else if (time_diff < -1000)
+	else if (time_diff < -500)
 	{
 		score += JUDGEMENT_ER;
 		combo = 0;
