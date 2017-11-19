@@ -32,6 +32,7 @@ namespace lm
 			int m_x;
 			int m_w;
 			int m_h;
+			SDL_Scancode keyboard_key;
 			bool is_tapped;
 			bool is_hold;
 			bool is_released;

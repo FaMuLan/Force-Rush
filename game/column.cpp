@@ -40,6 +40,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 0;
 			m_w = 166 * Beatmap::instance()->GetScaleW();
+			keyboard_key = SDL_SCANCODE_Q;
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
 			s_light->SetPos(-114 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -53,6 +54,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 166 * Beatmap::instance()->GetScaleW();
 			m_w = 194 * Beatmap::instance()->GetScaleW();
+			keyboard_key = SDL_SCANCODE_W;
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
 			s_light->SetPos(43 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -66,6 +68,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 360 * Beatmap::instance()->GetScaleW();
 			m_w = 194 * Beatmap::instance()->GetScaleW();
+			keyboard_key = SDL_SCANCODE_O;
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
 			s_light->SetPos(206 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -79,6 +82,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 515 * Beatmap::instance()->GetScaleW();
 			m_w = 166 * Beatmap::instance()->GetScaleW();
+			keyboard_key = SDL_SCANCODE_P;
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
 			s_light->SetPos(367 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -99,6 +103,7 @@ void lm::Column::update()
 	is_tapped = false;
 	if (!is_hold)
 	{
+//================= Touch Device ====================
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
@@ -112,9 +117,16 @@ void lm::Column::update()
 				}
 			}
 		}
+//================= Keyboard Device =================
+		if (ControlHandler::instance()->IsKeyDown(keyboard_key))
+		{
+			is_hold = true;
+			is_tapped = true;
+		}
 	}
 	else
 	{
+//================= Touch Device ====================
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
@@ -131,9 +143,15 @@ void lm::Column::update()
 				}
 			}
 		}
+//================= Keyboard Device =================
+		if (!ControlHandler::instance()->IsKeyDown(keyboard_key))
+		{
+			is_hold = false;
+			is_released = true;
+		}
 	}
 //================ Auto Mod =========
-
+/*
 	if (current_note_index < m_note.size())
 	{
 		if (is_pressing_ln)
@@ -148,7 +166,7 @@ void lm::Column::update()
 			is_tapped = true;
 		}
 	}
-
+*/
 //=================== End ===========
 	if (current_note_index < m_note.size())
 	//檢測防止下標越界而導致段錯誤
