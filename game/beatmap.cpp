@@ -112,32 +112,32 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 	int time_diff = note_time - Timer::instance()->GetTime("game");
 	if (is_pressed)
 	{
-		if (time_diff > 1000 && !is_ln_pressing)
+		if (time_diff > 500 && !is_ln_pressing)
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 500 && is_ln_pressing)
+		else if (time_diff > 100 && is_ln_pressing)
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
 			MessageBox::instance()->SetText("Error Early");
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 500 || time_diff < -500)
+		else if (time_diff > 100 || time_diff < -100)
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
 			MessageBox::instance()->SetText("Error Early");
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 200 || time_diff < -200)
+		else if (time_diff > 50 || time_diff < -50)
 		{
 			score += JUDGEMENT_GD;
 			combo++;
 			MessageBox::instance()->SetText("Good");
 			return JUDGEMENT_GD;
 		}
-		else if (time_diff > 100 || time_diff < -100)
+		else if (time_diff > 25 || time_diff < -25)
 		{
 			score += JUDGEMENT_GR;
 			combo++;
@@ -152,7 +152,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			return JUDGEMENT_PG;
 		}
 	}
-	else if (time_diff < -500)
+	else if (time_diff < -100)
 	{
 		score += JUDGEMENT_ER;
 		combo = 0;
