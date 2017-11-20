@@ -1,11 +1,11 @@
 LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS	:= -O0 -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf
-VPATH	:= main : select : game : loading : user
+VPATH	:= main : select : game : loading : user : constructing
 
 all: run
 
-OBJ	:= beatmap.o button.o column.o control_handler.o character.o file_system.o game_state.o loading_state.o main.o main_state.o message_box.o select_state.o song_list.o song_header.o sound_manager.o sprite.o system.o text_area.o texture_manager.o timer.o
+OBJ	:= beatmap.o button.o column.o constructing_state.o control_handler.o character.o file_system.o game_state.o loading_state.o main.o main_state.o message_box.o select_state.o song_list.o song_header.o sound_manager.o sprite.o system.o text_area.o texture_manager.o timer.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -O0 -o $@
 
@@ -21,8 +21,8 @@ column.o: column.cpp column.h
 	$(CXX) $< $(CFLAGS)
 control_handler.o: control_handler.cpp control_handler.h
 	$(CXX) $< $(CFLAGS)
-#crafting_state.o: crafting/crafting_state.cpp crafting/crafting_state.h state.h
-#	$(CXX) crafting/crafting_state.cpp $(CFLAGS)
+constructing_state.o: constructing_state.cpp constructing_state.h state.h
+	$(CXX) $< $(CFLAGS)
 #debug_widget.o: debug_widget.cpp debug_widget.h
 #	$(CXX) debug_widget.cpp $(CFLAGS)
 file_system.o: file_system.cpp file_system.h
