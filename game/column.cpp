@@ -113,6 +113,7 @@ void lm::Column::update()
 				{
 					is_hold = true;
 					is_tapped = true;
+					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
 				}
 			}
@@ -122,29 +123,33 @@ void lm::Column::update()
 		{
 			is_hold = true;
 			is_tapped = true;
+			is_keyboard_pressed = true;
 		}
 	}
 	else
 	{
 //================= Touch Device ====================
-		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+		if (is_touch_pressed)
 		{
-			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.id == has_pressed_id)
+			for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 			{
-				if (load_finger.x < m_x || load_finger.x > (m_x + m_w))
+				Finger load_finger = ControlHandler::instance()->GetFinger(i);
+				if (load_finger.id == has_pressed_id)
 				{
-					is_hold = false;
-				}
-				if (load_finger.released)
-				{
-					is_released = true;
-					is_hold = false;
+					if (load_finger.x < m_x || load_finger.x > (m_x + m_w))
+					{
+						is_hold = false;
+					}
+					if (load_finger.released)
+					{
+						is_released = true;
+						is_hold = false;
+					}
 				}
 			}
 		}
 //================= Keyboard Device =================
-		if (!ControlHandler::instance()->IsKeyDown(keyboard_key))
+		else if (!ControlHandler::instance()->IsKeyDown(keyboard_key) && is_keyboard_pressed)
 		{
 			is_hold = false;
 			is_released = true;
