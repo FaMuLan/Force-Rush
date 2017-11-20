@@ -37,6 +37,11 @@ void lm::TextArea::SetPos(int x, int y)
 	m_y = y;
 }
 
+void lm::TextArea::SetText(std::string text)
+{
+	m_text = text;
+}
+
 int lm::TextArea::GetX()
 {
 	return m_x;
@@ -45,4 +50,9 @@ int lm::TextArea::GetX()
 int lm::TextArea::GetY()
 {
 	return m_y;
+}
+
+std::string lm::TextArea::GetText()
+{
+	return m_text;
 }

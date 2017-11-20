@@ -20,8 +20,10 @@ namespace lm
 			virtual void render(int x, int y);
 			virtual void clear();
 			virtual void SetPos(int x, int y);
+			virtual void SetText(std::string text);
 			virtual int GetX();
 			virtual int GetY();
+			virtual std::string GetText();
 		protected:
 			std::string m_text;
 			std::string m_font_path;
