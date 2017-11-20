@@ -71,6 +71,9 @@ namespace lm
 			//鼠標狀態
 			std::vector<Finger> finger_state;
 			//觸屏狀態
+			bool has_keyboard;
+			bool has_touch;
+			//檢測外設是否有反應
 	};	//class ControlHandler
 };	//namespace lm
 

@@ -7,6 +7,8 @@ lm::ControlHandler *lm::ControlHandler::m_instance = 0;
 void lm::ControlHandler::init()
 {
 	quit = false;
+	has_keyboard = false;
+	has_touch = false;
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
 }
@@ -18,7 +20,11 @@ void lm::ControlHandler::clear()
 
 bool lm::ControlHandler::IsKeyDown(SDL_Scancode k)
 {
-	return key_state[k];
+	if (has_keyboard)
+	{
+		return key_state[k];
+	}
+	return false;
 }
 
 bool lm::ControlHandler::IsMouseButtonDown(MouseButton k)
@@ -102,6 +108,7 @@ void lm::ControlHandler::update()
 				}
 			break;
 			case SDL_KEYDOWN:
+				has_keyboard = true;
 				key_state = SDL_GetKeyboardState(0);
 				if (key_state[SDL_SCANCODE_ESCAPE])
 				{
@@ -110,6 +117,7 @@ void lm::ControlHandler::update()
 			break;
 			case SDL_FINGERDOWN:
 			{
+				has_touch = true;
 				Finger new_finger;
 				new_finger.x = e.tfinger.x * System::instance()->GetWindowWidth();
 				new_finger.y = e.tfinger.y * System::instance()->GetWindowHeigh();
