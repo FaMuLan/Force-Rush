@@ -6,6 +6,7 @@
 #include "../system.h"
 #include "../loading/loading_state.h"
 #include "../select/select_state.h"
+#include "../constructing/constructing_state.h"
 #include "../user/character.h"
 
 lm::MainState *lm::MainState::m_instance = 0;
@@ -68,6 +69,12 @@ void lm::MainState::update()
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
 		LoadingState::instance()->AddText("Select Song", "assets/fonts/Audiowide.ttf", 80, System::instance()->GetWindowWidth() / 2, 100, 0x00, 0x00, 0x00, SHUTTER_TOP);
+//		SoundManager::instance()->stop();
+	}
+	if (main_about->IsReleased())
+	{
+		LoadingState::instance()->init(ConstructingState::instance(), this);
+		LoadingState::instance()->AddText("??????", "assets/fonts/Audiowide.ttf", 80, System::instance()->GetWindowWidth() / 2, 100, 0x00, 0x00, 0x00, SHUTTER_TOP);
 //		SoundManager::instance()->stop();
 	}
 }
