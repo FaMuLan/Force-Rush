@@ -65,7 +65,7 @@ void lm::Beatmap::load(std::string path)
 		}
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
-	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+//	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
 	Timer::instance()->RunTimer("game");
 }
 
@@ -75,7 +75,7 @@ void lm::Beatmap::clear()
 	Timer::instance()->ResetTimer("game");
 	if (SoundManager::instance()->IsPlayingMusic())
 	{
-		SoundManager::instance()->stop();
+//		SoundManager::instance()->stop();
 	}
 }
 
@@ -83,7 +83,7 @@ void lm::Beatmap::update()
 {
 	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 	{
-		SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
+//		SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
 		is_waiting = false;
 	}
 	if (System::instance()->IsWindowModified())
@@ -116,7 +116,14 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 100 && is_ln_pressing)
+		else if (time_diff > 300 && is_ln_pressing)
+		{
+			score += JUDGEMENT_ER;
+			combo = 0;
+			MessageBox::instance()->SetText("Error Early");
+			return JUDGEMENT_ER;
+		}
+		else if (time_diff > 300 && !is_ln_pressing)
 		{
 			score += JUDGEMENT_ER;
 			combo = 0;
@@ -125,19 +132,12 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		}
 		else if (time_diff > 100 || time_diff < -100)
 		{
-			score += JUDGEMENT_ER;
-			combo = 0;
-			MessageBox::instance()->SetText("Error Early");
-			return JUDGEMENT_ER;
-		}
-		else if (time_diff > 50 || time_diff < -50)
-		{
 			score += JUDGEMENT_GD;
 			combo++;
 			MessageBox::instance()->SetText("Good");
 			return JUDGEMENT_GD;
 		}
-		else if (time_diff > 25 || time_diff < -25)
+		else if (time_diff > 50 || time_diff < -50)
 		{
 			score += JUDGEMENT_GR;
 			combo++;
@@ -152,7 +152,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			return JUDGEMENT_PG;
 		}
 	}
-	else if (time_diff < -100)
+	else if (time_diff < -300)
 	{
 		score += JUDGEMENT_ER;
 		combo = 0;
