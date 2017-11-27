@@ -5,6 +5,7 @@
 #include "select/select_state.h"
 #include "loading/loading_state.h"
 #include "user/character.h"
+#include "user/setting.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
 #include "message_box.h"
@@ -36,6 +37,7 @@ void lm::System::init()
 	ControlHandler::instance()->init();
 	Character::instance()->init();
 	MessageBox::instance()->init();
+	Setting::instance()->init();
 //	current_state_id = "main";
 //	PushState("main", main_state);
 	MainState::instance()->init();
@@ -59,7 +61,7 @@ void lm::System::run()
 		current_state->update();
 		LoadingState::instance()->update();
 		MessageBox::instance()->update();
-		MessageBox::instance()->render();
+//		MessageBox::instance()->render();
 //		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
 	}
