@@ -9,6 +9,7 @@ namespace lm
 {
 	class Column;
 	class Sprite;
+	struct SongInformation;
 
 	enum Judgement
 	{
@@ -27,6 +28,16 @@ namespace lm
 		int time_end;
 	};
 
+	struct Score
+	{
+		int pure;
+		int great;
+		int good;
+		int error;
+		int combo;
+		int score;
+	};
+
 	class Beatmap
 	{
 		public:
@@ -39,7 +50,7 @@ namespace lm
 				}
 				return m_instance;
 			}
-			void load(std::string path);
+			void load(SongInformation *load_information);
 			void clear();
 			void update();
 			void render();
@@ -56,6 +67,8 @@ namespace lm
 			Beatmap() {}
 			~Beatmap() {}
 			static Beatmap *m_instance;
+			SongInformation *m_information;
+			Score *m_score;
 			std::vector<Column*> m_column;
 			std::map<Judgement, int> judge_count;
 			std::map<int, int> column_mapper;
@@ -63,10 +76,9 @@ namespace lm
 			Sprite *play_base;
 			float scale_w, scale_h;
 			bool is_waiting;
+			bool is_ended;
 			int offset;
 			int note_duration;
-			int score;
-			int combo;
 	};
 };
 
