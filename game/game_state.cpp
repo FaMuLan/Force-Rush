@@ -1,7 +1,7 @@
 #include "game_state.h"
 #include "../button.h"
 #include "beatmap.h"
-#include "../main/main_state.h"
+#include "../select/select_state.h"
 #include "../loading/loading_state.h"
 #include "../user/character.h"
 
@@ -13,7 +13,7 @@ void lm::GameState::init()
 	game_pause->init("assets/base/sort_button.png", 0, 0, 176, 80);
 	game_pause->AddPressedFrame("assets/base/sort_button_pressed.png");
 	game_pause->AddText("Pause", game_pause->GetW() / 2, game_pause->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	Beatmap::instance()->load(file_path);
+	Beatmap::instance()->load(m_information);
 }
 
 void lm::GameState::clear()
@@ -32,13 +32,13 @@ void lm::GameState::update()
 
 	if (game_pause->IsReleased())
 	{
-		LoadingState::instance()->init(MainState::instance(), this);
+		LoadingState::instance()->init(SelectState::instance(), this);
 	}
 
 	game_pause->render();
 }
 
-void lm::GameState::SetFile(std::string load_path)
+void lm::GameState::SetFile(lm::SongInformation *load_information)
 {
-	file_path = load_path;
+	m_information = load_information;
 }

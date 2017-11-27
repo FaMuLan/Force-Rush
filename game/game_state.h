@@ -7,6 +7,7 @@
 namespace lm
 {
 	class Button;
+	struct SongInformation;
 
 	class GameState : public State
 	{
@@ -24,12 +25,12 @@ namespace lm
 			void clear();
 			void update();
 
-			void SetFile(std::string load_path);
+			void SetFile(SongInformation *load_information);
 		private:
 			GameState() {}
 			~GameState() {}
 			static GameState *m_instance;
-			std::string file_path;
+			SongInformation *m_information;
 			Button *game_pause;
 	};	//class GameState : public State
 };	//namespace lm

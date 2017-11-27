@@ -160,7 +160,7 @@ void lm::SongList::update()
 				if (current_index == selected_index)
 				{
 					LoadingState::instance()->init(GameState::instance(), SelectState::instance());
-					GameState::instance()->SetFile(m_information[selected_index]->file_path);
+					GameState::instance()->SetFile(m_information[selected_index]);
 				}
 				else
 				{
