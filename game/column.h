@@ -37,7 +37,6 @@ namespace lm
 			bool is_hold;
 			bool is_released;
 			bool is_pressing_ln;
-			bool is_ended;
 			bool is_keyboard_pressed;
 			bool is_touch_pressed;
 			FingerID has_pressed_id;

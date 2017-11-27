@@ -4,6 +4,7 @@
 #include "../control_handler.h"
 #include "../system.h"
 #include "../timer.h"
+#include "../user/setting.h"
 
 void lm::Column::init(int load_column_index)
 {
@@ -40,7 +41,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 0;
 			m_w = 166 * Beatmap::instance()->GetScaleW();
-			keyboard_key = SDL_SCANCODE_Q;
+			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
 			s_light->SetPos(-114 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -54,7 +55,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 166 * Beatmap::instance()->GetScaleW();
 			m_w = 194 * Beatmap::instance()->GetScaleW();
-			keyboard_key = SDL_SCANCODE_W;
+			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
 			s_light->SetPos(43 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -68,7 +69,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 360 * Beatmap::instance()->GetScaleW();
 			m_w = 194 * Beatmap::instance()->GetScaleW();
-			keyboard_key = SDL_SCANCODE_O;
+			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
 			s_light->SetPos(206 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -82,7 +83,7 @@ void lm::Column::init(int load_column_index)
 			end_y = 1088;
 			m_x = 515 * Beatmap::instance()->GetScaleW();
 			m_w = 166 * Beatmap::instance()->GetScaleW();
-			keyboard_key = SDL_SCANCODE_P;
+			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
 			s_light->SetPos(367 * Beatmap::instance()->GetScaleW(), 1108 * Beatmap::instance()->GetScaleH() - s_light->GetH() / 2);
@@ -139,39 +140,44 @@ void lm::Column::update()
 					if (load_finger.x < m_x || load_finger.x > (m_x + m_w))
 					{
 						is_hold = false;
+						is_touch_pressed = false;
 					}
 					if (load_finger.released)
 					{
 						is_released = true;
 						is_hold = false;
+						is_touch_pressed = false;
 					}
 				}
 			}
 		}
 //================= Keyboard Device =================
-		else if (!ControlHandler::instance()->IsKeyDown(keyboard_key) && is_keyboard_pressed)
+		if (!ControlHandler::instance()->IsKeyDown(keyboard_key) && is_keyboard_pressed)
+
 		{
 			is_hold = false;
 			is_released = true;
+			is_keyboard_pressed = false;
 		}
 	}
 //================ Auto Mod =========
-/*
-	if (current_note_index < m_note.size())
+	if (Setting::instance()->IsAuto())
 	{
-		if (is_pressing_ln)
+		if (current_note_index < m_note.size())
 		{
-			if (m_note[current_note_index]->time_end < Timer::instance()->GetTime("game"))
+			if (is_pressing_ln)
 			{
-				is_released = true;
+				if (m_note[current_note_index]->time_end < Timer::instance()->GetTime("game"))
+				{
+					is_released = true;
+				}
+			}
+			if (m_note[current_note_index]->time < Timer::instance()->GetTime("game") && !is_pressing_ln)
+			{
+				is_tapped = true;
 			}
 		}
-		if (m_note[current_note_index]->time < Timer::instance()->GetTime("game") && !is_pressing_ln)
-		{
-			is_tapped = true;
-		}
 	}
-*/
 //=================== End ===========
 	if (current_note_index < m_note.size())
 	//檢測防止下標越界而導致段錯誤
@@ -336,7 +342,8 @@ bool lm::Column::DrawNote(int time, int time_end)
 			ln_piece_process -= 0.01f;
 		}
 
-		if (ln_piece_process < 0)
+		if (ln_piece_process > 0)
+/*
 		{
 			if (current_y * Beatmap::instance()->GetScaleH() < System::instance()->GetWindowHeigh())
 			{
@@ -347,6 +354,7 @@ bool lm::Column::DrawNote(int time, int time_end)
 			return false;
 		}
 		else
+*/
 		{
 			int current_x_end = start_x + (end_x - start_x) * process_end;
 			int current_y_end = start_y + (end_y - start_y) * process_end;
