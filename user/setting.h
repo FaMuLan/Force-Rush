@@ -2,6 +2,8 @@
 #define LUNATIC_MEL0DY_USER_SETTING_H
 
 #include <SDL2/SDL.h>
+#include <vector>
+#include <string>
 
 namespace lm
 {
@@ -25,6 +27,7 @@ namespace lm
 			int GetDuration();
 			int GetOffset();
 			SDL_Scancode GetKeycode(int index);
+			void GetSongList(std::vector<std::string> &output);
 		private:
 			Setting() {}
 			~Setting() {}
@@ -33,6 +36,7 @@ namespace lm
 			int duration;
 			int offset;
 			SDL_Scancode key_code[4];
+			std::vector<std::string> song_list;
 	};
 };
 

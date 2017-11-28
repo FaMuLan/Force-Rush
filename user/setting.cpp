@@ -14,6 +14,7 @@ void lm::Setting::init()
 	key_code[1] = SDL_SCANCODE_F;
 	key_code[2] = SDL_SCANCODE_J;
 	key_code[3] = SDL_SCANCODE_K;
+	song_list.push_back("/sdcard/data/malody/beatmap");
 	if (!read())
 	{
 		write();
@@ -27,10 +28,12 @@ bool lm::Setting::read()
 	{
 		return false; 
 	}
+	song_list.clear();
 	std::regex auto_pattern("auto: (.+)");
 	std::regex duration_pattern("duration: (\\d+)");
 	std::regex offset_pattern("offset: (-?\\d+)");
 	std::regex key_code_pattern("key (\\d+): (\\d+)");
+	std::regex song_list_pattern("song_list: (.+)");
 	std::smatch auto_line;
 	std::smatch duration_line;
 	std::smatch offset_line;
@@ -45,6 +48,11 @@ bool lm::Setting::read()
 		std::smatch key_code_line = *i;
 		int column_index = atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$1").c_str());
 		key_code[column_index] = SDL_Scancode( atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$2").c_str()));
+	}
+	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), song_list_pattern); i != std::sregex_iterator(); i++)
+	{
+		std::smatch song_list_line = *i;
+		song_list.push_back(std::regex_replace(song_list_line.str(), song_list_pattern, "$1"));
 	}
 	return true;
 }
@@ -69,6 +77,12 @@ void lm::Setting::write()
 		file += key_code_ch;
 		delete [] key_code_ch;
 	}
+	for (int i = 0; i < song_list.size(); i++)
+	{
+		file += "song_list: ";
+		file += song_list[i];
+		file += "\n";
+	}
 	WriteFile("/sdcard/data/user_setting.fa", file);
 }
 
@@ -90,4 +104,9 @@ int lm::Setting::GetOffset()
 SDL_Scancode lm::Setting::GetKeycode(int index)
 {
 	return key_code[index];
+}
+
+void lm::Setting::GetSongList(std::vector<std::string> &output)
+{
+	output = song_list;
 }
