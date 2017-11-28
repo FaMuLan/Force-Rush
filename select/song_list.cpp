@@ -14,6 +14,7 @@
 #include "../main/main_state.h"
 #include "../game/game_state.h"
 #include "../game/beatmap.h"
+#include "../user/setting.h"
 #include "select_state.h"
 #include "song_header.h"
 
@@ -239,6 +240,7 @@ void lm::SongList::RefreshList()
 	m_information.clear();
 
 	std::vector<File*> file;
+	std::vector<std::string> list_path;
 	std::regex title_pattern("Title:(.*)");
 	std::regex artist_pattern("Artist:(.*)");
 	std::regex noter_pattern("Creator:(.*)");
@@ -247,7 +249,13 @@ void lm::SongList::RefreshList()
 	std::regex key_count_pattern("CircleSize:(\\d)");
 	std::regex bpm_pattern("\\d+,([\\d.-]+),\\d+,\\d+,\\d+,\\d+,1,\\d+");
 	std::regex note_pattern("\\d+,\\d+,(\\d+),\\d+,\\d+,\\d+:\\d+:\\d+:\\d+:(\\d+:)?");
-	FindFile("/sdcard/data/malody/pending", ".*\\.osu", file);
+	Setting::instance()->GetSongList(list_path);
+	for (int i = 0; i < list_path.size(); i++)
+	{
+		std::vector<File*> new_file;
+		FindFile(list_path[i], ".*\\.osu", new_file);
+		file.insert(file.end(), new_file.begin(), new_file.end());
+	}
 	sprintf(output_ch, "Match %d files", file.size());
 	MessageBox::instance()->SetText(output_ch);
 	for (int i = 0; i < file.size(); i++)
