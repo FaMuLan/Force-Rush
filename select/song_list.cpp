@@ -31,8 +31,8 @@ bool lm::SongList::is_refreshing = false;
 
 void lm::SongList::init()
 {
-	cell_heigh = 60;
-	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 28);
+	cell_heigh = 64;
+	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
 
 	null_information = new SongInformation;
 	null_information->title = "null";
@@ -133,8 +133,8 @@ void lm::SongList::update()
 	int current_index = list_process / cell_heigh;
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		int x = System::instance()->GetWindowWidth() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 654 : 560);
-		int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 360 : 60);
+		int x = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280;
+		int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64);
 		m_cell[i]->SetPos(x, y);
 		if (m_information.size() != 0)
 		{
@@ -145,8 +145,8 @@ void lm::SongList::update()
 			m_cell[i]->ClearText();
 			char *difficulty_ch = new char[3];
 			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
-				m_cell[i]->AddText(difficulty_ch, 16, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
-				m_cell[i]->AddText(m_information[current_index]->title, 60, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 584);
+				m_cell[i]->AddText(difficulty_ch, 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
+				m_cell[i]->AddText(m_information[current_index]->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 616);
 				delete [] difficulty_ch;
 
 			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
@@ -174,7 +174,7 @@ void lm::SongList::update()
 		else
 		{
 			m_cell[i]->ClearText();
-			m_cell[i]->AddText(null_information->title, 16, 20, "assets/fonts/Ubuntu-M.ttf", 28, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
+			m_cell[i]->AddText(null_information->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
 				SongHeader::instance()->SetInformation(null_information);
 			list_length = cell_heigh;
 		}
@@ -190,8 +190,8 @@ void lm::SongList::render()
 {
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
-		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE))
+		if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE))
 		{
 			m_cell[i]->render();
 		}
@@ -353,18 +353,19 @@ void lm::SongList::RefreshListSize()
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		cell_count = ((System::instance()->GetWindowHeigh() - 500) / cell_heigh + 2);
+		cell_count = ((System::instance()->GetWindowHeigh() - 352) / cell_heigh + 2);
 	}
 	else
 	{
-		cell_count = ((System::instance()->GetWindowHeigh() - 120) / cell_heigh + 2);
+		cell_count = ((System::instance()->GetWindowHeigh() - 64) / cell_heigh + 2);
 	}
 
 	for (int i = 0; i < cell_count; i++)
 	{
 		Button *new_song_cell = new Button;
-		new_song_cell->init("assets/select/song_cell.png", 0, 0, 654, 60);
+		new_song_cell->init("assets/select/song_cell.png", 0, 0, 720, 64);
 		new_song_cell->AddPressedFrame( "assets/select/song_cell_pressed.png");
+		new_song_cell->AddFrame("assets/select/song_cell_selected.png");
 		m_cell.push_back(new_song_cell);
 	}
 }

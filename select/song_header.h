@@ -25,8 +25,7 @@ namespace lm
 			SongHeader() {}
 			~SongHeader() {}
 			static SongHeader *m_instance;
-			Sprite *header_base_portrait;
-			Sprite *header_base_landscape;
+			Sprite *header_base;
 			SongInformation *m_information;
 	};	//class SongHeader
 };	//namespace lm

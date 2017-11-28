@@ -30,10 +30,8 @@ namespace lm
 			static SelectState *m_instance;
 			Sprite *background;
 			Sprite *search_bar;
-			Sprite *random_bar;
 			Button *select_back;
 			Button *select_mod;
-			Sprite *select_footer;
 	};
 };
 
