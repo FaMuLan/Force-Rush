@@ -145,9 +145,21 @@ void lm::SongList::update()
 			m_cell[i]->ClearText();
 			char *difficulty_ch = new char[3];
 			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
+
+			if (current_index == selected_index)
+			{
+				m_cell[i]->SetBaseFrame(2);
+				m_cell[i]->AddText(difficulty_ch, 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
+				m_cell[i]->AddText(m_information[current_index]->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
+			}
+			else
+			{
+				m_cell[i]->SetBaseFrame(0);
 				m_cell[i]->AddText(difficulty_ch, 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
 				m_cell[i]->AddText(m_information[current_index]->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 616);
-				delete [] difficulty_ch;
+			}
+
+			delete [] difficulty_ch;
 
 			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
 			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
