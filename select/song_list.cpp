@@ -80,7 +80,7 @@ void lm::SongList::update()
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if (load_finger.x >= System::instance()->GetWindowWidth() - 654)
+		if (load_finger.x >= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280 && load_finger.x <= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000 && load_finger.y >= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)
 		{
 			list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
