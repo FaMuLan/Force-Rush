@@ -22,7 +22,7 @@ void lm::SongHeader::render()
 	char *difficulty_ch = new char[3];
 	char *duration_ch = new char[4];
 	sprintf(difficulty_ch, "Lv.%d", m_information->difficulty);
-	sprintf(duration_ch, "%ds", m_information->duration);
+	sprintf(duration_ch, "%ds", m_information->duration / 1000);
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
