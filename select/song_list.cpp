@@ -10,6 +10,7 @@
 #include "../texture_manager.h"
 #include "../file_system.h"
 #include "../message_box.h"
+#include "../sound_manager.h"
 #include "../loading/loading_state.h"
 #include "../main/main_state.h"
 #include "../game/game_state.h"
@@ -38,7 +39,6 @@ void lm::SongList::init()
 	null_information->title = "null";
 	null_information->artist = "null";
 	null_information->noter = "null";
-	null_information->bpm = "null";
 	null_information->version = "null";
 	null_information->difficulty = 0;
 	null_information->duration = 0;
@@ -62,7 +62,10 @@ void lm::SongList::init()
 	{
 		list_length = cell_heigh * m_information.size();
 		SongHeader::instance()->SetInformation(m_information[selected_index]);
+		SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 	}
+
 }	//void lm::SongList::inìt()
 
 void lm::SongList::clear()
@@ -177,8 +180,22 @@ void lm::SongList::update()
 				}
 				else
 				{
-					selected_index = current_index;
-					SongHeader::instance()->SetInformation(m_information[selected_index]);
+					if (m_information[selected_index]->audio_path != m_information[current_index]->audio_path)
+					{
+						if (SoundManager::instance()->IsPlayingMusic())
+						{
+							SoundManager::instance()->stop();
+							SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+						}
+						selected_index = current_index;
+						SongHeader::instance()->SetInformation(m_information[selected_index]);
+						SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+						SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
+					}
+					else
+					{
+						selected_index = current_index;
+					}
 				}
 			}
 			current_index++;
@@ -215,7 +232,7 @@ bool lm::SongList::LoadList()
 	m_information.clear();
 
 	std::string text;
-	std::regex pattern("(.*?),(.*?),(.*?),(.*?),(.*?),(\\d+?),(\\d+?),(.*?)\\n");
+	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*\\}");
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
@@ -224,18 +241,20 @@ bool lm::SongList::LoadList()
 	{
 		return false;
 	}
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); ++i)
+	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch line = *i;
 		SongInformation *new_information = new SongInformation;
-		new_information->title = std::regex_replace(line.str(), pattern, "$1");
-		new_information->artist = std::regex_replace(line.str(), pattern, "$2");
-		new_information->noter = std::regex_replace(line.str(), pattern, "$3");
-		new_information->bpm = std::regex_replace(line.str(), pattern, "$4");
+		new_information->id = std::regex_replace(line.str(), pattern, "$1");
+		new_information->title = std::regex_replace(line.str(), pattern, "$2");
+		new_information->artist = std::regex_replace(line.str(), pattern, "$3");
+		new_information->noter = std::regex_replace(line.str(), pattern, "$4");
 		new_information->version = std::regex_replace(line.str(), pattern, "$5");
 		new_information->difficulty = atoi(std::regex_replace(line.str(), pattern, "$6").c_str());
 		new_information->duration = atoi(std::regex_replace(line.str(), pattern, "$7").c_str());
-		new_information->file_path = std::regex_replace(line.str(), pattern, "$8");
+		new_information->audio_path = std::regex_replace(line.str(), pattern, "$8");
+		new_information->preview_time = atoi(std::regex_replace(line.str(), pattern, "$9").c_str());
+		new_information->file_path = std::regex_replace(line.str(), pattern, "$10");
 		m_information.push_back(new_information);
 	}
 	char *output_ch = new char[50];
@@ -249,17 +268,20 @@ void lm::SongList::RefreshList()
 	is_refreshing = true;
 	MessageBox::instance()->SetText("Start Refresh!");
 	char *output_ch = new char[50];
+	std::string output_text;
 	m_information.clear();
 
 	std::vector<File*> file;
 	std::vector<std::string> list_path;
+	std::regex id_pattern("BeatmapID:(.*)");
 	std::regex title_pattern("Title:(.*)");
 	std::regex artist_pattern("Artist:(.*)");
 	std::regex noter_pattern("Creator:(.*)");
 	std::regex version_pattern("Version:(.*)");
 	std::regex mode_pattern("Mode: (\\d)");
 	std::regex key_count_pattern("CircleSize:(\\d)");
-	std::regex bpm_pattern("\\d+,([\\d.-]+),\\d+,\\d+,\\d+,\\d+,1,\\d+");
+	std::regex audio_path_pattern("AudioFilename: (.*)");
+	std::regex preview_time_pattern("PreviewTime: (\\d*)");
 	std::regex note_pattern("\\d+,\\d+,(\\d+),\\d+,\\d+,\\d+:\\d+:\\d+:\\d+:(\\d+:)?");
 	Setting::instance()->GetSongList(list_path);
 	for (int i = 0; i < list_path.size(); i++)
@@ -271,7 +293,6 @@ void lm::SongList::RefreshList()
 	sprintf(output_ch, "Match %d files", file.size());
 	MessageBox::instance()->SetText(output_ch);
 	for (int i = 0; i < file.size(); i++)
-//	for (int i = 0; i < 3; i++)
 	{
 		SongInformation *new_song_information = new SongInformation;
 		bool success = true;
@@ -281,44 +302,43 @@ void lm::SongList::RefreshList()
 		new_song_information->file_path = file[i]->name;
 		std::string text;
 		ReadFile(file[i]->name, text);
+		std::smatch id_line;
 		std::smatch title_line;
 		std::smatch artist_line;
 		std::smatch noter_line;
 		std::smatch version_line;
 		std::smatch mode_line;
 		std::smatch key_count_line;
+		std::smatch audio_path_line;
+		std::smatch preview_time_line;
 
+		std::regex_search(text, id_line, id_pattern);
 		std::regex_search(text, title_line, title_pattern);
 		std::regex_search(text, artist_line, artist_pattern);
 		std::regex_search(text, noter_line, noter_pattern);
 		std::regex_search(text, version_line, version_pattern);
 		std::regex_search(text, mode_line, mode_pattern);
 		std::regex_search(text, key_count_line, key_count_pattern);
+		std::regex_search(text, audio_path_line, audio_path_pattern);
+		std::regex_search(text, preview_time_line, preview_time_pattern);
 
+		new_song_information->id = std::regex_replace(id_line.str(), id_pattern, "$1");
 		new_song_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
 		new_song_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
 		new_song_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
 		new_song_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
+		new_song_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+		new_song_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
 		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
 		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
 
 		for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 		{
 			std::smatch note_line = *i;
-			new_song_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str()) / 1000;
+			new_song_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
 			note_count++;
 		}
-		new_song_information->difficulty = note_count / new_song_information->duration;
-
-		for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), bpm_pattern); i != std::sregex_iterator(); ++i)
-		{
-			std::smatch bpm_line = *i;
-			char *bpm_ch = new char[5];
-			int bpm_integer = int(60000 / atof(std::regex_replace(bpm_line.str(), bpm_pattern, "$1").c_str()));
-			sprintf(bpm_ch, "%d", bpm_integer);
-			new_song_information->bpm += bpm_ch;
-			new_song_information->bpm += " - ";
-		}
+		new_song_information->difficulty = note_count * 1000 / new_song_information->duration;
 
 		if (success)
 		{
@@ -326,29 +346,42 @@ void lm::SongList::RefreshList()
 
 			list_length = cell_heigh * m_information.size();
 			SongHeader::instance()->SetInformation(m_information[selected_index]);
+//============== Write File ================
+			char *difficulty_ch = new char[3];
+			char *duration_ch = new char[4];
+			char *preview_time_ch = new char[10];
+			sprintf(difficulty_ch, "%d", new_song_information->difficulty);
+			sprintf(duration_ch, "%d", new_song_information->duration);
+			sprintf(preview_time_ch, "%d", new_song_information->preview_time);
+			output_text += "[" + new_song_information->id + "]\n{\n";
+			output_text += "\ttitle:" + new_song_information->title + "\n";
+			output_text += "\tartist:" +  new_song_information->artist + "\n";
+			output_text += "\tnoter:" + new_song_information->noter + "\n";
+			output_text += "\tversion:" + new_song_information->version + "\n";
+			output_text += "\tdifficulty:";
+			output_text += difficulty_ch;
+			output_text += "\n";
+			output_text += "\tduration:";
+			output_text += duration_ch;
+			output_text += "\n";
+			output_text += "\taudio_path:" + GetParentDir(new_song_information->file_path) + new_song_information->audio_path + "\n";
+			output_text += "\tpreview_time:";
+			output_text += preview_time_ch;
+			output_text += "\n";
+			output_text += "\tfile_path:" + new_song_information->file_path + "\n";
+			output_text += "}\n";
+			delete [] difficulty_ch;
+			delete [] duration_ch;
+			delete [] preview_time_ch;
+			WriteFile("/sdcard/data/song_list.fa", output_text);
+			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
+//================= End ======================
 		}
 
 		sprintf(output_ch, "Loaded %d%%", int(float(i) / float(file.size()) * 100));
 		MessageBox::instance()->SetText(output_ch);
 	}
 
-	std::string output_text;
-	for (int i = 0; i < m_information.size(); i++)
-	{
-		char *difficulty_ch = new char[3];
-		char *duration_ch = new char[4];
-		sprintf(difficulty_ch, "%d,", m_information[i]->difficulty);
-		sprintf(duration_ch, "%d,", m_information[i]->duration);
-		output_text += m_information[i]->title + ",";
-		output_text += m_information[i]->artist + ",";
-		output_text += m_information[i]->noter + ",";
-		output_text += m_information[i]->bpm + ",";
-		output_text += m_information[i]->version + ",";
-		output_text += difficulty_ch;
-		output_text += duration_ch;
-		output_text += m_information[i]->file_path + "\n";
-	}
-	WriteFile("/sdcard/data/song_list.fa", output_text);
 	MessageBox::instance()->SetText("Refresh Completed!");
 	is_refreshing = false;
 }	//void lm::SongList::RefreshList()
