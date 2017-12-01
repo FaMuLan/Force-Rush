@@ -33,7 +33,7 @@ bool lm::ListDir(std::string path, std::vector<lm::File*> &output)
 	DIR *dir = opendir(path.c_str());
 	if (dir == NULL)
 	{
-		exit(0);
+		return false;
 	}
 	dirent *file = NULL;
 	while ((file = readdir(dir)) != NULL)
