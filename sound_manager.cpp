@@ -18,6 +18,18 @@ void lm::SoundManager::clear()
 	Mix_CloseAudio();
 }
 
+void lm::SoundManager::clear(std::string path, SoundType type)
+{
+	if (type == SOUNDTYPE_SFX)
+	{
+		Mix_FreeChunk(m_sfx[path]);
+	}
+	if (type == SOUNDTYPE_MUSIC)
+	{
+		Mix_FreeMusic(m_music[path]);
+	}
+}
+
 void lm::SoundManager::load(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
@@ -42,6 +54,12 @@ void lm::SoundManager::play(std::string path, SoundType type)
 	{
 		Mix_PlayMusic(m_music[path], 0);
 	}
+}
+
+void lm::SoundManager::play(std::string path, int time)
+{
+	Mix_PlayMusic(m_music[path], 0);
+	Mix_SetMusicPosition(double(time) / double(1000));
 }
 
 void lm::SoundManager::stop()
