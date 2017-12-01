@@ -112,7 +112,7 @@ void lm::Beatmap::update()
 		m_column[i]->update();
 	}
 
-	if (Timer::instance()->GetTime("game") >= m_information->duration * 1000 + 4000 && !is_ended)
+	if (Timer::instance()->GetTime("game") >= m_information->duration + 5000 && !is_ended)
 	{
 		LoadingState::instance()->init(ResultState::instance(), GameState::instance());
 		ResultState::instance()->LoadScore(m_information, m_score);
@@ -138,7 +138,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 300 && is_ln_pressing)
+		else if (time_diff > 150 && is_ln_pressing)
 		{
 			m_score->score += JUDGEMENT_ER;
 			m_score->combo = 0;
@@ -146,7 +146,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			MessageBox::instance()->SetText("Error Early");
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 300 && !is_ln_pressing)
+		else if (time_diff > 150 && !is_ln_pressing)
 		{
 			m_score->score += JUDGEMENT_ER;
 			m_score->combo = 0;
@@ -179,7 +179,7 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			return JUDGEMENT_PG;
 		}
 	}
-	else if (time_diff < -300)
+	else if (time_diff < -150)
 	{
 		m_score->score += JUDGEMENT_ER;
 		m_score->combo = 0;
