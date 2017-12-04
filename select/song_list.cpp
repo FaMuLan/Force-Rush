@@ -177,6 +177,7 @@ void lm::SongList::update()
 				{
 					LoadingState::instance()->init(GameState::instance(), SelectState::instance());
 					GameState::instance()->SetFile(m_information[selected_index]);
+					SoundManager::instance()->stop();
 				}
 				else
 				{
@@ -327,7 +328,7 @@ void lm::SongList::RefreshList()
 		new_song_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
 		new_song_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
 		new_song_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
-		new_song_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+		new_song_information->audio_path = GetParentDir(new_song_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
 		new_song_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
 		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
 		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
@@ -364,7 +365,7 @@ void lm::SongList::RefreshList()
 			output_text += "\tduration:";
 			output_text += duration_ch;
 			output_text += "\n";
-			output_text += "\taudio_path:" + GetParentDir(new_song_information->file_path) + new_song_information->audio_path + "\n";
+			output_text += "\taudio_path:" + new_song_information->audio_path + "\n";
 			output_text += "\tpreview_time:";
 			output_text += preview_time_ch;
 			output_text += "\n";

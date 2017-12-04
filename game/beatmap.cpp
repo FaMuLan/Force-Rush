@@ -80,7 +80,9 @@ void lm::Beatmap::load(lm::SongInformation *load_information)
 		}
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
-	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+//	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+//	無需加載，因為在選曲界面的時候就加載好了
+
 	Timer::instance()->RunTimer("game");
 }
 
