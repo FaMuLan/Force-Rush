@@ -5,6 +5,7 @@
 #include "../timer.h"
 #include "../texture_manager.h"
 #include "../sound_manager.h"
+#include "../animator.h"
 
 lm::LoadingState *lm::LoadingState::m_instance = 0;
 
@@ -43,7 +44,7 @@ void lm::LoadingState::update()
 			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
 		}
 
-		Timer::instance()->RunTimer("shutter");
+		Animator::instance()->Animate("exit");
 		//SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
 		//加載完立刻放音效
 	}
@@ -88,9 +89,8 @@ void lm::LoadingState::init()
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	animate_duration = 500;
 	//動畫持續時間
-	a_top = 534.0 * 2 / ( animate_duration * animate_duration );
-	a_bottom = 848.0 * 2 / ( animate_duration * animate_duration );
-	//求出加速度
+	Animator::instance()->AddAnimation("enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 500);
+	Animator::instance()->AddAnimation("exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 500);
 	is_entered = true;
 	is_loaded = true;
 	is_exited = true;
@@ -103,11 +103,11 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	is_exited = false;
 	next_state = load_next_state;
 	last_state = load_last_state;
-	Timer::instance()->RunTimer("shutter");
 	TextArea *new_text_area = new TextArea;
 	new_text_area->init("Loading...", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
 	text_area_bottom.push_back(new_text_area);
 	is_text_default = true;
+	Animator::instance()->Animate("enter");
 	//SoundManager::instance()->play("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//一開始就放音效
 }
@@ -116,41 +116,33 @@ void lm::LoadingState::clear()
 {
 }
 
-/*
-先弄一點運動學公式出來
-s = v0 * t + 0.5 * a * (t ^ 2)
-  = (2 * v0 - a * t) / 2 * t
-vt = v0 - at
-v0 = aT
-*/
-
 void lm::LoadingState::OnEnter()
 {
-	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - ((2 * a_top * animate_duration - a_top * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
-	int shutter_bottom_pos_y = -848 + ((2 * a_bottom * animate_duration - a_bottom * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
+	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - shutter_top->GetH() * Animator::instance()->GetProcess("enter");
+	int shutter_bottom_pos_y = -848 + shutter_bottom->GetH() * Animator::instance()->GetProcess("enter");
 	//求出某個時段的位移(感覺物理沒白學)
 	shutter_top->SetPos(0, shutter_top_pos_y);
 	shutter_bottom->SetPos(0, shutter_bottom_pos_y);
-	if (Timer::instance()->GetTime("shutter") >= animate_duration)
+	if (Animator::instance()->IsTimeUp("enter"))
 	{
 		shutter_top->SetPos(0, System::instance()->GetWindowHeigh() - 534);
 		shutter_bottom->SetPos(0, 0);
-		Timer::instance()->ResetTimer("shutter");
+		Animator::instance()->ResetAnimation("enter");
 		is_entered = true;
 	}
 }
 
 void lm::LoadingState::OnExit()
 {
-	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - 534 + ((a_top * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
-	int shutter_bottom_pos_y = -((a_bottom * Timer::instance()->GetTime("shutter")) * 0.5f *  Timer::instance()->GetTime("shutter"));
+	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - 534 + shutter_top->GetH() * Animator::instance()->GetProcess("exit");
+	int shutter_bottom_pos_y = -shutter_bottom->GetH() * Animator::instance()->GetProcess("exit");
 	shutter_top->SetPos(0, shutter_top_pos_y);
 	shutter_bottom->SetPos(0, shutter_bottom_pos_y);
-	if (Timer::instance()->GetTime("shutter") >= animate_duration)
+	if (Animator::instance()->IsTimeUp("exit"))
 	{
 		shutter_top->SetPos(0, System::instance()->GetWindowHeigh());
 		shutter_bottom->SetPos(0, -848);
-		Timer::instance()->ResetTimer("shutter");
+		Animator::instance()->ResetAnimation("exit");
 		is_exited = true;
 	}
 }
