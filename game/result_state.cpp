@@ -63,7 +63,7 @@ void lm::ResultState::update()
 	sprintf(difficulty_ch, "Lv.%d", m_information->difficulty);
 	sprintf(pure_ch, "PURE  %d", m_score->pure);
 	sprintf(great_ch, "GREAT %d", m_score->great);
-	sprintf(good_ch, "GOOD  %d", m_score->error);
+	sprintf(good_ch, "GOOD  %d", m_score->good);
 	sprintf(error_ch, "ERROR %d", m_score->error);
 	sprintf(score_ch, "SCORE  %d", m_score->score);
 	if (System::instance()->IsWindowModified())
