@@ -9,6 +9,7 @@ namespace lm
 {
 	class Column;
 	class Sprite;
+	class TextArea;
 	struct SongInformation;
 
 	enum Judgement
@@ -74,6 +75,7 @@ namespace lm
 			std::map<int, int> column_mapper;
 			std::string audio_path;
 			Sprite *play_base;
+			TextArea *combo_text;
 			float scale_w, scale_h;
 			bool is_waiting;
 			bool is_ended;

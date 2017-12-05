@@ -9,10 +9,13 @@
 #include "../user/setting.h"
 #include "../message_box.h"
 #include "../sound_manager.h"
+#include "../texture_manager.h"
 #include "../file_system.h"
 #include "../system.h"
 #include "../timer.h"
+#include "../text_area.h"
 #include "../sprite.h"
+#include "../animator.h"
 
 lm::Beatmap *lm::Beatmap::m_instance = 0;
 
@@ -29,6 +32,11 @@ void lm::Beatmap::load(lm::SongInformation *load_information)
 
 	play_base = new Sprite;
 	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+	combo_text = new TextArea;
+	combo_text->init("", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 240, 0, 0, 0);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 240);
+	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);
+	Animator::instance()->ResetAnimation("combo");
 	scale_w = System::instance()->GetWindowWidth() / 720.f;
 	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
 
@@ -80,7 +88,7 @@ void lm::Beatmap::load(lm::SongInformation *load_information)
 		}
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
-//	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
 //	無需加載，因為在選曲界面的時候就加載好了
 
 	Timer::instance()->RunTimer("game");
@@ -108,6 +116,7 @@ void lm::Beatmap::update()
 		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
 		scale_w = System::instance()->GetWindowWidth() / 720.f;
 		scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+		combo_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
 	}
 	for (int i = 0; i < m_column.size(); i++)
 	{
@@ -124,6 +133,7 @@ void lm::Beatmap::update()
 
 void lm::Beatmap::render()
 {
+	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
 	play_base->render();
 	for (int i = 0; i < m_column.size(); i++)
 	{
@@ -145,7 +155,10 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			m_score->score += JUDGEMENT_ER;
 			m_score->combo = 0;
 			m_score->error++;
+			combo_text->SetColor(0xEC, 0x6A, 0x5C);
 			MessageBox::instance()->SetText("Error Early");
+			Animator::instance()->ResetAnimation("combo");
+			Animator::instance()->Animate("combo");
 			return JUDGEMENT_ER;
 		}
 		else if (time_diff > 150 && !is_ln_pressing)
@@ -153,7 +166,10 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			m_score->score += JUDGEMENT_ER;
 			m_score->combo = 0;
 			m_score->error++;
+			combo_text->SetColor(0xEC, 0x6A, 0x5C);
 			MessageBox::instance()->SetText("Error Early");
+			Animator::instance()->ResetAnimation("combo");
+			Animator::instance()->Animate("combo");
 			return JUDGEMENT_ER;
 		}
 		else if (time_diff > 100 || time_diff < -100)
@@ -161,7 +177,10 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			m_score->score += JUDGEMENT_GD;
 			m_score->combo++;
 			m_score->good++;
+			combo_text->SetColor(0x84, 0xB1, 0xED);
 			MessageBox::instance()->SetText("Good");
+			Animator::instance()->ResetAnimation("combo");
+			Animator::instance()->Animate("combo");
 			return JUDGEMENT_GD;
 		}
 		else if (time_diff > 50 || time_diff < -50)
@@ -169,7 +188,10 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			m_score->score += JUDGEMENT_GR;
 			m_score->combo++;
 			m_score->great++;
+			combo_text->SetColor(0x81, 0xC7, 0x84);
 			MessageBox::instance()->SetText("Great");
+			Animator::instance()->ResetAnimation("combo");
+			Animator::instance()->Animate("combo");
 			return JUDGEMENT_GR;
 		}
 		else
@@ -177,7 +199,10 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 			m_score->score += JUDGEMENT_PG;
 			m_score->combo++;
 			m_score->pure++;
+			combo_text->SetColor(0xFF, 0xEA, 0x00);
 			MessageBox::instance()->SetText("Pure");
+			Animator::instance()->ResetAnimation("combo");
+			Animator::instance()->Animate("combo");
 			return JUDGEMENT_PG;
 		}
 	}
@@ -186,9 +211,15 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 		m_score->score += JUDGEMENT_ER;
 		m_score->combo = 0;
 		m_score->error++;
+		combo_text->SetColor(0xEC, 0x6A, 0x5C);
 		MessageBox::instance()->SetText("Error Late");
+		Animator::instance()->ResetAnimation("combo");
+		Animator::instance()->Animate("combo");
 		return JUDGEMENT_ER;
 	}
+	char *combo_ch = new char[5];
+	sprintf(combo_ch, "%d", m_score->combo);
+	combo_text->SetText(combo_ch);
 	return JUDGEMENT_NONE;
 }	//Judgement lm::Beatmap::judge()
 
