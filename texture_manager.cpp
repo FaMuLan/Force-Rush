@@ -66,14 +66,14 @@ void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, 
 	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
 }
 
-void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
+void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, float scale)
 {
 	SDL_Color color = { char(r), char(g), char(b) };
 	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	int w = text_surface->w;
-	int h = text_surface->h;
-	w = (limited_w == 0 || limited_w > w) ? w : limited_w;
+	int h = text_surface->h * scale;
+	w = (limited_w == 0 || limited_w > w) ? w * scale : limited_w * scale;
 	switch (format)
 	{
 		case TEXTFORMAT_MIDDLE:
