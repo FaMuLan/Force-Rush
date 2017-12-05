@@ -21,9 +21,12 @@ namespace lm
 			virtual void clear();
 			virtual void SetPos(int x, int y);
 			virtual void SetText(std::string text);
+			virtual void SetColor(char r, char g, char b);
+			virtual void SetScale(float scale);
 			virtual int GetX();
 			virtual int GetY();
 			virtual std::string GetText();
+			virtual float GetScale();
 		protected:
 			std::string m_text;
 			std::string m_font_path;
@@ -35,6 +38,7 @@ namespace lm
 			int m_b;
 			TextFormat m_format;
 			int m_limited_w;
+			float m_scale;
 	};	//class TextArea
 };	//namespace lm
 

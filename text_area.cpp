@@ -14,16 +14,17 @@ void lm::TextArea::init(std::string text, int x, int y, std::string font_path, i
 	m_b = b;
 	m_format = format;
 	m_limited_w = limited_w;
+	m_scale = 1;
 }
 
 void lm::TextArea::render()
 {
-	TextureManager::instance()->render(m_text, m_x, m_y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w);
+	TextureManager::instance()->render(m_text, m_x, m_y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
 }
 
 void lm::TextArea::render(int x, int y)
 {
-	TextureManager::instance()->render(m_text, x, y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w);
+	TextureManager::instance()->render(m_text, x, y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
 }
 
 void lm::TextArea::clear()
@@ -42,6 +43,18 @@ void lm::TextArea::SetText(std::string text)
 	m_text = text;
 }
 
+void lm::TextArea::SetColor(char r, char g, char b)
+{
+	m_r = r;
+	m_g = g;
+	m_b = b;
+}
+
+void lm::TextArea::SetScale(float scale)
+{
+	m_scale = scale;
+}
+
 int lm::TextArea::GetX()
 {
 	return m_x;
@@ -55,4 +68,9 @@ int lm::TextArea::GetY()
 std::string lm::TextArea::GetText()
 {
 	return m_text;
+}
+
+float lm::TextArea::GetScale()
+{
+	return m_scale;
 }
