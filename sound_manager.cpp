@@ -8,7 +8,7 @@ void lm::SoundManager::init()
 	{
 		exit(0);
 	}
-	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 2048);
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
 void lm::SoundManager::clear()
@@ -53,6 +53,7 @@ void lm::SoundManager::play(std::string path, SoundType type)
 	if (type == SOUNDTYPE_MUSIC)
 	{
 		Mix_PlayMusic(m_music[path], 0);
+		Mix_SetMusicPosition(0);
 	}
 }
 
