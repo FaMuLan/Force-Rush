@@ -195,7 +195,7 @@ void lm::SongList::update()
 					}
 					else
 					{
-						selected_index = current_index;
+						selected_index = current_index;								SongHeader::instance()->SetInformation(m_information[selected_index]);
 					}
 				}
 			}
