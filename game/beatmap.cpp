@@ -223,6 +223,16 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 	return JUDGEMENT_NONE;
 }	//Judgement lm::Beatmap::judge()
 
+int lm::Beatmap::GetCombo()
+{
+	return m_score->combo;
+}
+
+int lm::Beatmap::GetScore()
+{
+	return m_score->score;
+}
+
 int lm::Beatmap::GetDuration()
 {
 	return note_duration;
