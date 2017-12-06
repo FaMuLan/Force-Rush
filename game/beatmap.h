@@ -11,6 +11,7 @@ namespace lm
 	class Sprite;
 	class TextArea;
 	struct SongInformation;
+	struct Score;
 
 	enum Judgement
 	{
@@ -27,16 +28,6 @@ namespace lm
 	{
 		int time;
 		int time_end;
-	};
-
-	struct Score
-	{
-		int pure;
-		int great;
-		int good;
-		int error;
-		int combo;
-		int score;
 	};
 
 	class Beatmap

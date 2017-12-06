@@ -8,20 +8,8 @@ namespace lm
 {
 	class Sprite;
 	class Button;
-
-	struct SongInformation
-	{
-		std::string id;
-		std::string title;
-		std::string artist;
-		std::string noter;
-		std::string version;
-		int difficulty;
-		int duration;
-		std::string audio_path;
-		int preview_time;
-		std::string file_path;
-	};
+	struct SongInformation;
+	struct Score;
 
 	class SongList
 	{
@@ -41,9 +29,11 @@ namespace lm
 			static void render();
 
 			static bool LoadList();
+			static void WriteList();
 			static void RefreshList();
 			static bool IsRefreshing();
 			static void RefreshListSize();
+			static bool RecordHighScore(std::string load_id, Score *load_score);
 		private:
 			SongList() {}
 			~SongList() {}

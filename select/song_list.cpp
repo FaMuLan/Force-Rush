@@ -11,6 +11,7 @@
 #include "../file_system.h"
 #include "../message_box.h"
 #include "../sound_manager.h"
+#include "../song_data.h"
 #include "../loading/loading_state.h"
 #include "../main/main_state.h"
 #include "../game/game_state.h"

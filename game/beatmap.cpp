@@ -9,6 +9,7 @@
 #include "../user/setting.h"
 #include "../message_box.h"
 #include "../sound_manager.h"
+#include "../song_data.h"
 #include "../texture_manager.h"
 #include "../file_system.h"
 #include "../system.h"

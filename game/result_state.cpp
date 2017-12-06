@@ -4,6 +4,7 @@
 #include "../sprite.h"
 #include "../system.h"
 #include "../texture_manager.h"
+#include "../song_data.h"
 #include "../select/select_state.h"
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
