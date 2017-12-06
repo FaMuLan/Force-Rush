@@ -7,6 +7,8 @@
 namespace lm
 {
 	class Button;
+	class Sprite;
+	class TextArea;
 	struct SongInformation;
 
 	class GameState : public State
@@ -31,7 +33,9 @@ namespace lm
 			~GameState() {}
 			static GameState *m_instance;
 			SongInformation *m_information;
-			Button *game_pause;
+			Button *title_base;
+			Sprite *score_base;
+			TextArea *score_text;
 	};	//class GameState : public State
 };	//namespace lm
 
