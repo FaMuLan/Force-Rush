@@ -265,13 +265,46 @@ bool lm::SongList::LoadList()
 	return true;
 }
 
+void lm::SongList::WriteList()
+{
+	std::string output_text;
+	for (int i = 0; i < m_information.size(); i++)
+	{
+		char *difficulty_ch = new char[3];
+		char *duration_ch = new char[4];
+		char *preview_time_ch = new char[10];
+		sprintf(difficulty_ch, "%d", m_information[i]->difficulty);
+		sprintf(duration_ch, "%d", m_information[i]->duration);
+		sprintf(preview_time_ch, "%d", m_information[i]->preview_time);
+		output_text += "[" + m_information[i]->id + "]\n{\n";
+		output_text += "\ttitle:" + m_information[i]->title + "\n";
+		output_text += "\tartist:" +  m_information[i]->artist + "\n";
+		output_text += "\tnoter:" + m_information[i]->noter + "\n";
+		output_text += "\tversion:" + m_information[i]->version + "\n";
+		output_text += "\tdifficulty:";
+		output_text += difficulty_ch;
+		output_text += "\n";
+		output_text += "\tduration:";
+		output_text += duration_ch;
+		output_text += "\n";
+		output_text += "\taudio_path:" + m_information[i]->audio_path + "\n";
+		output_text += "\tpreview_time:";
+		output_text += preview_time_ch;
+		output_text += "\n";
+		output_text += "\tfile_path:" + m_information[i]->file_path + "\n";
+		output_text += "}\n";
+		delete [] difficulty_ch;
+		delete [] duration_ch;
+		delete [] preview_time_ch;
+	}
+	WriteFile("/sdcard/data/song_list.fa", output_text);
+}
+
 void lm::SongList::RefreshList()
 {
 	is_refreshing = true;
 	MessageBox::instance()->SetText("Start Refresh!");
 	char *output_ch = new char[50];
-	std::string output_text;
-	m_information.clear();
 
 	std::vector<File*> file;
 	std::vector<std::string> list_path;
@@ -288,9 +321,25 @@ void lm::SongList::RefreshList()
 	Setting::instance()->GetSongList(list_path);
 	for (int i = 0; i < list_path.size(); i++)
 	{
-		std::vector<File*> new_file;
-		FindFile(list_path[i], ".*\\.osu", new_file);
-		file.insert(file.end(), new_file.begin(), new_file.end());
+		FindFile(list_path[i], ".*\\.osu", file);
+	}
+	Setting::instance()->write();
+
+	for (int i = 0; i < m_information.size(); i++)
+	{
+		for (std::vector<File*>::iterator iter = file.begin(); iter != file.end();)
+		{
+			File *check_file = *iter;
+			if (m_information[i]->file_path == check_file->name)
+			{
+				file.erase(iter);
+				iter = file.begin();
+			}
+			else
+			{
+				iter++;
+			}
+		}
 	}
 	sprintf(output_ch, "Match %d files", file.size());
 	MessageBox::instance()->SetText(output_ch);
@@ -348,36 +397,8 @@ void lm::SongList::RefreshList()
 
 			list_length = cell_heigh * m_information.size();
 			SongHeader::instance()->SetInformation(m_information[selected_index]);
-//============== Write File ================
-			char *difficulty_ch = new char[3];
-			char *duration_ch = new char[4];
-			char *preview_time_ch = new char[10];
-			sprintf(difficulty_ch, "%d", new_song_information->difficulty);
-			sprintf(duration_ch, "%d", new_song_information->duration);
-			sprintf(preview_time_ch, "%d", new_song_information->preview_time);
-			output_text += "[" + new_song_information->id + "]\n{\n";
-			output_text += "\ttitle:" + new_song_information->title + "\n";
-			output_text += "\tartist:" +  new_song_information->artist + "\n";
-			output_text += "\tnoter:" + new_song_information->noter + "\n";
-			output_text += "\tversion:" + new_song_information->version + "\n";
-			output_text += "\tdifficulty:";
-			output_text += difficulty_ch;
-			output_text += "\n";
-			output_text += "\tduration:";
-			output_text += duration_ch;
-			output_text += "\n";
-			output_text += "\taudio_path:" + new_song_information->audio_path + "\n";
-			output_text += "\tpreview_time:";
-			output_text += preview_time_ch;
-			output_text += "\n";
-			output_text += "\tfile_path:" + new_song_information->file_path + "\n";
-			output_text += "}\n";
-			delete [] difficulty_ch;
-			delete [] duration_ch;
-			delete [] preview_time_ch;
-			WriteFile("/sdcard/data/song_list.fa", output_text);
+			WriteList();
 			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
-//================= End ======================
 		}
 
 		sprintf(output_ch, "Loaded %d%%", int(float(i) / float(file.size()) * 100));
