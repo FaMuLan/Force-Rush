@@ -30,6 +30,7 @@ int lm::SongList::selected_index = 0;
 int lm::SongList::cell_heigh = 0;
 bool lm::SongList::is_list_moved = false;
 bool lm::SongList::is_refreshing = false;
+bool lm::SongList::is_loaded = false;
 
 void lm::SongList::init()
 {
@@ -44,7 +45,7 @@ void lm::SongList::init()
 	null_information->difficulty = 0;
 	null_information->duration = 0;
 
-	if (!is_refreshing)
+	if (!is_refreshing && !is_loaded)
 	{
 		LoadList();
 	}
@@ -72,10 +73,6 @@ void lm::SongList::init()
 void lm::SongList::clear()
 {
 	m_cell.clear();
-	if (!is_refreshing)
-	{
-		m_information.clear();
-	}
 }
 
 void lm::SongList::update()
@@ -234,7 +231,7 @@ bool lm::SongList::LoadList()
 	m_information.clear();
 
 	std::string text;
-	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*\\}");
+	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
@@ -247,6 +244,7 @@ bool lm::SongList::LoadList()
 	{
 		std::smatch line = *i;
 		SongInformation *new_information = new SongInformation;
+		Score *new_score = new Score;
 		new_information->id = std::regex_replace(line.str(), pattern, "$1");
 		new_information->title = std::regex_replace(line.str(), pattern, "$2");
 		new_information->artist = std::regex_replace(line.str(), pattern, "$3");
@@ -257,11 +255,15 @@ bool lm::SongList::LoadList()
 		new_information->audio_path = std::regex_replace(line.str(), pattern, "$8");
 		new_information->preview_time = atoi(std::regex_replace(line.str(), pattern, "$9").c_str());
 		new_information->file_path = std::regex_replace(line.str(), pattern, "$10");
+		new_score->score = atoi(std::regex_replace(line.str(), pattern, "$11").c_str());
+		new_score->rank = Rank(atoi(std::regex_replace(line.str(), pattern, "$12").c_str()));
+		new_information->high_score = new_score;
 		m_information.push_back(new_information);
 	}
 	char *output_ch = new char[50];
 	sprintf(output_ch, "Match %d files", m_information.size());
 	MessageBox::instance()->SetText(output_ch);
+	is_loaded = true;
 	return true;
 }
 
@@ -273,9 +275,13 @@ void lm::SongList::WriteList()
 		char *difficulty_ch = new char[3];
 		char *duration_ch = new char[4];
 		char *preview_time_ch = new char[10];
+		char *score_ch = new char[6];
+		char *rank_ch = new char;
 		sprintf(difficulty_ch, "%d", m_information[i]->difficulty);
 		sprintf(duration_ch, "%d", m_information[i]->duration);
 		sprintf(preview_time_ch, "%d", m_information[i]->preview_time);
+		sprintf(score_ch, "%d", m_information[i]->high_score->score);
+		sprintf(rank_ch, "%d", m_information[i]->high_score->rank);
 		output_text += "[" + m_information[i]->id + "]\n{\n";
 		output_text += "\ttitle:" + m_information[i]->title + "\n";
 		output_text += "\tartist:" +  m_information[i]->artist + "\n";
@@ -292,10 +298,18 @@ void lm::SongList::WriteList()
 		output_text += preview_time_ch;
 		output_text += "\n";
 		output_text += "\tfile_path:" + m_information[i]->file_path + "\n";
+		output_text += "\tscore:";
+		output_text += score_ch;
+		output_text += "\n";
+		output_text += "\trank:";
+		output_text += rank_ch;
+		output_text += "\n";
 		output_text += "}\n";
 		delete [] difficulty_ch;
 		delete [] duration_ch;
 		delete [] preview_time_ch;
+		delete [] score_ch;
+		delete [] rank_ch;
 	}
 	WriteFile("/sdcard/data/song_list.fa", output_text);
 }
@@ -393,6 +407,10 @@ void lm::SongList::RefreshList()
 
 		if (success)
 		{
+			Score *new_null_score = new Score;
+			new_null_score->rank = RANK_NONE;
+			new_null_score->score = 0;
+			new_song_information->high_score = new_null_score;
 			m_information.push_back(new_song_information);
 
 			list_length = cell_heigh * m_information.size();
@@ -407,6 +425,7 @@ void lm::SongList::RefreshList()
 
 	MessageBox::instance()->SetText("Refresh Completed!");
 	is_refreshing = false;
+	is_loaded = true;
 }	//void lm::SongList::RefreshList()
 
 bool lm::SongList::IsRefreshing()

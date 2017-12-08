@@ -33,7 +33,6 @@ namespace lm
 			static void RefreshList();
 			static bool IsRefreshing();
 			static void RefreshListSize();
-			static bool RecordHighScore(std::string load_id, Score *load_score);
 		private:
 			SongList() {}
 			~SongList() {}
@@ -48,6 +47,7 @@ namespace lm
 			static int cell_heigh;
 			static bool is_list_moved;
 			static bool is_refreshing;
+			static bool is_loaded;
 	};
 };	//namespace lm
 
