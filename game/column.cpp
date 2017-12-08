@@ -296,11 +296,11 @@ void lm::Column::AddNote(Note *load_note)
 bool lm::Column::DrawNote(int time, int time_end)
 {
 	int time_diff = time - Timer::instance()->GetTime("game");
-	double process = float(Beatmap::instance()->GetDuration() - time_diff) / double(Beatmap::instance()->GetDuration());
-	process *= process;
-	int current_x = start_x + (end_x - start_x) * process;
-	int current_y = start_y + (end_y - start_y) * process;
-	float current_scale = start_scale + (1.0f - start_scale) * process;
+	double process = double(Beatmap::instance()->GetDuration() - time_diff) / double(Beatmap::instance()->GetDuration());
+	double process_sq = process * process;
+	int current_x = start_x + (end_x - start_x) * process_sq;
+	int current_y = start_y + (end_y - start_y) * process_sq;
+	float current_scale = start_scale + (1.0f - start_scale) * process_sq;
 	//note時間與當前時間的時間差
 
 	if (time_diff > Beatmap::instance()->GetDuration())
@@ -314,35 +314,36 @@ bool lm::Column::DrawNote(int time, int time_end)
 	{
 		int time_diff_end = time_end - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
-		double process_end = float(Beatmap::instance()->GetDuration() - time_diff_end) / double(Beatmap::instance()->GetDuration());
-		process_end *= process_end;
+		double process_end = double(Beatmap::instance()->GetDuration() - time_diff_end) / double(Beatmap::instance()->GetDuration());
+		double process_end_sq = process_end * process_end;
 		//時間差轉換成Y坐標 * 2
 
 		if (is_pressing_ln && time == m_note[current_note_index]->time && time_end == m_note[current_note_index]->time_end)
 		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
+			process_sq = 1;
 			time_diff = 0;
-			current_x = start_x + (end_x - start_x) * process;
-			current_y = start_y + (end_y - start_y) * process;
-			current_scale = start_scale + (1.0f - start_scale) * process;
+			current_x = start_x + (end_x - start_x) * process_sq;
+			current_y = start_y + (end_y - start_y) * process_sq;
+			current_scale = start_scale + (1.0f - start_scale) * process_sq;
 		}
 
 		double ln_piece_process = process;
+		double ln_piece_process_sq = ln_piece_process * ln_piece_process;
 		while (ln_piece_process > (time_diff_end > Beatmap::instance()->GetDuration() ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
-			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process;
-			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process;
-			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process;
+			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
+			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
+			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
 			s_note->SetPos(current_x_piece * Beatmap::instance()->GetScaleW(), current_y_piece * Beatmap::instance()->GetScaleH());
 			s_note->SetScale(current_scale_piece);
 			s_note->render();
 			//將長條身往上挪動
 			ln_piece_process -= 0.01f;
+			ln_piece_process_sq = ln_piece_process * ln_piece_process;
 		}
-
-		if (ln_piece_process > 0)
 /*
 		{
 			if (current_y * Beatmap::instance()->GetScaleH() < System::instance()->GetWindowHeigh())
@@ -355,10 +356,11 @@ bool lm::Column::DrawNote(int time, int time_end)
 		}
 		else
 */
+		if (ln_piece_process > 0)
 		{
-			int current_x_end = start_x + (end_x - start_x) * process_end;
-			int current_y_end = start_y + (end_y - start_y) * process_end;
-			float current_scale_end = start_scale + (1.0f - start_scale) * process_end;
+			int current_x_end = start_x + (end_x - start_x) * process_end_sq;
+			int current_y_end = start_y + (end_y - start_y) * process_end_sq;
+			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
 			s_note->SetPos(current_x_end * Beatmap::instance()->GetScaleW(), current_y_end * Beatmap::instance()->GetScaleH());
 			s_note->SetScale(current_scale_end);
 			s_note->render();
