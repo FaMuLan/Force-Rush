@@ -34,6 +34,35 @@ void lm::ResultState::init()
 	b_retry->init("assets/base/sort_button.png", System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80);
 	b_retry->AddPressedFrame( "assets/base/sort_button_pressed.png");
 	b_retry->AddText("Retry", b_retry->GetW() / 2, b_retry->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+
+	int full_score = 2 * (m_score->pure + m_score->great, m_score->good, m_score->error);
+	double acc = double(m_score->score) / double(full_score);
+	if (acc >= 0.9)
+	{
+		m_score->rank = RANK_S;
+	}
+	else if (acc >= 0.8)
+	{
+		m_score->rank = RANK_A;
+	}
+	else if (acc >= 0.7)
+	{
+		m_score->rank = RANK_B;
+	}
+	else if (acc >= 0.6)
+	{
+		m_score->rank = RANK_C;
+	}
+	else
+	{
+		m_score->rank = RANK_D;
+	}
+
+	if (m_score->score > m_information->high_score->score)
+	{
+		m_information->high_score = m_score;
+		SongList::instance()->WriteList();
+	}
 }
 
 void lm::ResultState::clear()
