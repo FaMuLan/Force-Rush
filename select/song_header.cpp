@@ -2,6 +2,7 @@
 #include "../texture_manager.h"
 #include "../sprite.h"
 #include "../system.h"
+#include "../song_data.h"
 
 lm::SongHeader *lm::SongHeader::m_instance = 0;
 
@@ -21,8 +22,10 @@ void lm::SongHeader::render()
 {
 	char *difficulty_ch = new char[3];
 	char *duration_ch = new char[4];
+	char *score_ch = new char[12];
 	sprintf(difficulty_ch, "Lv.%d", m_information->difficulty);
 	sprintf(duration_ch, "%ds", m_information->duration / 1000);
+	sprintf(score_ch, "score %d", m_information->high_score->score);
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
@@ -30,10 +33,11 @@ void lm::SongHeader::render()
 		header_base->render();
 		header_base->SetPos(440, 0);
 		header_base->render();
-		TextureManager::instance()->render(m_information->artist, 192, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-		TextureManager::instance()->render(m_information->noter, 192, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-		TextureManager::instance()->render(m_information->version, 192, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-		TextureManager::instance()->render(duration_ch, 192, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+		TextureManager::instance()->render(m_information->artist, 192, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(m_information->noter, 192, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(m_information->version, 192, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(duration_ch, 192, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(score_ch, 472, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	}
 	else
 	{
@@ -41,10 +45,11 @@ void lm::SongHeader::render()
 		header_base->render();
 		header_base->SetPos(System::instance()->GetWindowWidth() - 280, 0);
 		header_base->render();
-		TextureManager::instance()->render(m_information->artist, 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 232);
-		TextureManager::instance()->render(m_information->noter, 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 232);
-		TextureManager::instance()->render(m_information->version, 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 232);
-		TextureManager::instance()->render(duration_ch, 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 232);
+		TextureManager::instance()->render(m_information->artist, 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(m_information->noter, 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(m_information->version, 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(duration_ch, 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+		TextureManager::instance()->render(score_ch, System::instance()->GetWindowWidth() - 248, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	}
 }	//void lm::SongHeader::render()
 
