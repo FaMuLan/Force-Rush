@@ -7,12 +7,12 @@ namespace lm
 {
 	enum Rank
 	{
-		RANK_S,
-		RANK_A,
-		RANK_B,
-		RANK_C,
+		RANK_NONE = 0,
 		RANK_D,
-		RANK_UNKNOWN
+		RANK_C,
+		RANK_B,
+		RANK_A,
+		RANK_S,
 	};
 
 	struct Score
@@ -38,7 +38,7 @@ namespace lm
 		std::string audio_path;
 		int preview_time;
 		std::string file_path;
-		Score high_score;
+		Score *high_score;
 	};
 };
 
