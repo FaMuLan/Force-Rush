@@ -28,6 +28,7 @@ namespace lm
 			void update();
 
 			void SetFile(SongInformation *load_information);
+			void DrawWall();
 		private:
 			GameState() {}
 			~GameState() {}
@@ -35,6 +36,10 @@ namespace lm
 			SongInformation *m_information;
 			Button *title_base;
 			Sprite *score_base;
+			Sprite *wall_l;
+			Sprite *wall_r;
+			Sprite *background_l;
+			Sprite *background_r;
 			TextArea *score_text;
 	};	//class GameState : public State
 };	//namespace lm
