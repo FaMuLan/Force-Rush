@@ -23,6 +23,7 @@ void lm::ResultState::init()
 	b_retry = new Button;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 32);
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 24);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 168);
 	song_base->init("assets/result/song_base.png", 0, System::instance()->GetWindowHeigh() - 720);
 	score_base->init("assets/result/score_base.png", 0, System::instance()->GetWindowHeigh() - 544);
 	rank_base->init("assets/result/rank_base.png", System::instance()->GetWindowWidth() - 232, System::instance()->GetWindowHeigh() - 720);
@@ -90,12 +91,37 @@ void lm::ResultState::update()
 	char *good_ch = new char[10];
 	char *error_ch = new char[10];
 	char *score_ch = new char[10];
+	std::string rank_ch;
+
 	sprintf(difficulty_ch, "Lv.%d", m_information->difficulty);
 	sprintf(pure_ch, "PURE  %d", m_score->pure);
 	sprintf(great_ch, "GREAT %d", m_score->great);
 	sprintf(good_ch, "GOOD  %d", m_score->good);
 	sprintf(error_ch, "ERROR %d", m_score->error);
 	sprintf(score_ch, "SCORE  %d", m_score->score);
+
+	switch (m_information->high_score->rank)
+	{
+		case 0:
+			rank_ch = "?";
+		break;
+		case 1:
+			rank_ch = "D";
+		break;
+		case 2:
+			rank_ch = "C";
+		break;
+		case 3:
+			rank_ch = "B";
+		break;
+		case 4:
+			rank_ch = "W";
+		break;
+		case 5:
+			rank_ch = "S";
+		break;
+	}
+
 	if (System::instance()->IsWindowModified())
 	{
 		song_base->SetPos(0, System::instance()->GetWindowHeigh() - 720);
@@ -116,6 +142,7 @@ void lm::ResultState::update()
 	TextureManager::instance()->render(great_ch, 32, System::instance()->GetWindowHeigh() - 432, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
 	TextureManager::instance()->render(good_ch, 32, System::instance()->GetWindowHeigh() - 392, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
 	TextureManager::instance()->render(error_ch, 32, System::instance()->GetWindowHeigh() - 352, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+		TextureManager::instance()->render(rank_ch, System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
 
 	if (b_return->IsReleased())
 	{
