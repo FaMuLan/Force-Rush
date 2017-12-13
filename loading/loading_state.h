@@ -13,7 +13,9 @@ namespace lm
 	enum ShutterType
 	{
 		SHUTTER_TOP = 0,
-		SHUTTER_BOTTOM
+		SHUTTER_BOTTOM,
+		SHUTTER_LEFT,
+		SHUTTER_RIGHT
 	};
 
 	class LoadingState : public State
@@ -42,11 +44,13 @@ namespace lm
 			static LoadingState *m_instance;
 			Sprite *shutter_top;
 			Sprite *shutter_bottom;
+			Sprite *shutter_left;
+			Sprite *shutter_right;
+			Sprite *shutter_center;
 			std::vector<TextArea*> text_area_top;
 			std::vector<TextArea*> text_area_bottom;
-			unsigned int animate_duration;
-			double a_top;
-			double a_bottom;
+			std::vector<TextArea*> text_area_left;
+			std::vector<TextArea*> text_area_right;
 			bool is_entered;
 			bool is_loaded;
 			bool is_exited;

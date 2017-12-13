@@ -16,6 +16,9 @@ void lm::LoadingState::update()
 		OnEnter();
 		shutter_bottom->render();
 		shutter_top->render();
+		shutter_left->render();
+		shutter_right->render();
+		shutter_center->render();
 
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
@@ -34,6 +37,9 @@ void lm::LoadingState::update()
 		is_loaded = true;
 		shutter_bottom->render();
 		shutter_top->render();
+		shutter_left->render();
+		shutter_right->render();
+		shutter_center->render();
 
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
@@ -53,6 +59,9 @@ void lm::LoadingState::update()
 		OnExit();
 		shutter_bottom->render();
 		shutter_top->render();
+		shutter_left->render();
+		shutter_right->render();
+		shutter_center->render();
 
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
@@ -82,13 +91,17 @@ void lm::LoadingState::init()
 {
 	shutter_top = new Sprite;
 	shutter_bottom = new Sprite;
-	shutter_top->init("assets/base/shutter_top.png", 0, 0, 720, 534);
-	shutter_bottom->init("assets/base/shutter_bottom.png", 0, 0, 720, 848);
+	shutter_left = new Sprite;
+	shutter_right = new Sprite;
+	shutter_center = new Sprite;
+	shutter_top->init("assets/base/shutter_top.png");
+	shutter_bottom->init("assets/base/shutter_bottom.png");
+	shutter_left->init("assets/base/shutter_left.png");
+	shutter_right->init("assets/base/shutter_right.png");
+	shutter_center->init("assets/base/shutter_center.png");
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 80);
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
-	animate_duration = 500;
-	//動畫持續時間
 	Animator::instance()->AddAnimation("enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 500);
 	Animator::instance()->AddAnimation("exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 500);
 	is_entered = true;
@@ -118,15 +131,23 @@ void lm::LoadingState::clear()
 
 void lm::LoadingState::OnEnter()
 {
-	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - shutter_top->GetH() * Animator::instance()->GetProcess("enter");
-	int shutter_bottom_pos_y = -848 + shutter_bottom->GetH() * Animator::instance()->GetProcess("enter");
-	//求出某個時段的位移(感覺物理沒白學)
-	shutter_top->SetPos(0, shutter_top_pos_y);
-	shutter_bottom->SetPos(0, shutter_bottom_pos_y);
+	int shutter_top_x = System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 + shutter_top->GetW() - shutter_top->GetW() * Animator::instance()->GetProcess("enter");
+	int shutter_bottom_x = System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2 - 2 * shutter_bottom->GetW() + shutter_bottom->GetW() * Animator::instance()->GetProcess("enter");
+	int shutter_left_y = System::instance()->GetWindowHeigh() / 2 + (shutter_center->GetH() - 8) / 2 - 2 * shutter_left->GetH() + shutter_left->GetH() * Animator::instance()->GetProcess("enter");
+	int shutter_right_y = System::instance()->GetWindowHeigh() / 2 - (shutter_center->GetH() - 8) / 2 + shutter_right->GetH() - shutter_right->GetH() * Animator::instance()->GetProcess("enter");
+	float shutter_center_scale = Animator::instance()->GetProcess("enter");
+
+	shutter_top->SetPos(shutter_top_x,  System::instance()->GetWindowHeigh() / 2 - (shutter_center->GetH() - 8) / 2 - shutter_top->GetH());
+	shutter_bottom->SetPos(shutter_bottom_x, System::instance()->GetWindowHeigh() / 2 + (shutter_center->GetH() - 8) / 2);
+	shutter_left->SetPos(System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 - shutter_left->GetW(), shutter_left_y);
+	shutter_right->SetPos(System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2, shutter_right_y);
+	shutter_center->SetScale(shutter_center_scale);
+	shutter_center->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_center->GetW() / 2 * shutter_center_scale, System::instance()->GetWindowHeigh() / 2 - shutter_center->GetH() / 2 * shutter_center_scale);
+
 	if (Animator::instance()->IsTimeUp("enter"))
 	{
-		shutter_top->SetPos(0, System::instance()->GetWindowHeigh() - 534);
-		shutter_bottom->SetPos(0, 0);
+//		shutter_top->SetPos(0, System::instance()->GetWindowHeigh() - 534);
+//		shutter_bottom->SetPos(0, 0);
 		Animator::instance()->ResetAnimation("enter");
 		is_entered = true;
 	}
@@ -134,14 +155,23 @@ void lm::LoadingState::OnEnter()
 
 void lm::LoadingState::OnExit()
 {
-	int shutter_top_pos_y = System::instance()->GetWindowHeigh() - 534 + shutter_top->GetH() * Animator::instance()->GetProcess("exit");
-	int shutter_bottom_pos_y = -shutter_bottom->GetH() * Animator::instance()->GetProcess("exit");
-	shutter_top->SetPos(0, shutter_top_pos_y);
-	shutter_bottom->SetPos(0, shutter_bottom_pos_y);
+	int shutter_top_x = System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 + shutter_top->GetW() * Animator::instance()->GetProcess("exit");
+	int shutter_bottom_x = System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2 - shutter_bottom->GetW() - shutter_bottom->GetW() * Animator::instance()->GetProcess("exit");
+	int shutter_left_y = System::instance()->GetWindowHeigh() / 2 + (shutter_center->GetH() - 8) / 2 - shutter_left->GetH() - shutter_left->GetH() * Animator::instance()->GetProcess("exit");
+	int shutter_right_y = System::instance()->GetWindowHeigh() / 2 - (shutter_center->GetH() - 8) / 2 + shutter_right->GetH() * Animator::instance()->GetProcess("exit");
+	float shutter_center_scale = 1.f - Animator::instance()->GetProcess("exit");
+
+	shutter_top->SetPos(shutter_top_x,  System::instance()->GetWindowHeigh() / 2 - (shutter_center->GetH() - 8) / 2 - shutter_top->GetH());
+	shutter_bottom->SetPos(shutter_bottom_x, System::instance()->GetWindowHeigh() / 2 + (shutter_center->GetH() - 8) / 2);
+	shutter_left->SetPos(System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 - shutter_left->GetW(), shutter_left_y);
+	shutter_right->SetPos(System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2, shutter_right_y);
+	shutter_center->SetScale(shutter_center_scale);
+	shutter_center->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_center->GetW() / 2 * shutter_center_scale, System::instance()->GetWindowHeigh() / 2 - shutter_center->GetH() / 2 * shutter_center_scale);
+
 	if (Animator::instance()->IsTimeUp("exit"))
 	{
-		shutter_top->SetPos(0, System::instance()->GetWindowHeigh());
-		shutter_bottom->SetPos(0, -848);
+//		shutter_top->SetPos(0, System::instance()->GetWindowHeigh());
+//		shutter_bottom->SetPos(0, -848);
 		Animator::instance()->ResetAnimation("exit");
 		is_exited = true;
 	}
