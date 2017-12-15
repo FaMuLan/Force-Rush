@@ -19,6 +19,7 @@
 #include "../user/setting.h"
 #include "select_state.h"
 #include "song_header.h"
+#include "mod_widget.h"
 
 lm::SongList *lm::SongList::m_instance = 0;
 std::vector<lm::Button*> lm::SongList::m_cell;
@@ -81,7 +82,7 @@ void lm::SongList::update()
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if (load_finger.x >= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280 && load_finger.x <= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000 && load_finger.y >= System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)
+		if ((load_finger.x >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280)) && (load_finger.x <= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000)) && (load_finger.y >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) && !ModWidget::instance()->IsShown())
 		{
 			list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
@@ -162,14 +163,14 @@ void lm::SongList::update()
 
 			delete [] difficulty_ch;
 
-			if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+			if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
 			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
-			!is_list_moved)
+			!is_list_moved) && !ModWidget::instance()->IsShown())
 			//這個條件運算吃棗藥丸……
 			{
 				m_cell[i]->update();
 			}
-			if (m_cell[i]->IsReleased())
+			if (m_cell[i]->IsReleased() && !ModWidget::instance()->IsShown())
 			{
 				if (current_index == selected_index)
 				{
