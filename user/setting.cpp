@@ -83,6 +83,7 @@ void lm::Setting::write()
 		file += song_list[i];
 		file += "\n";
 	}
+	file += "End of file\n";
 	WriteFile("/sdcard/data/user_setting.fa", file);
 }
 
@@ -109,4 +110,28 @@ SDL_Scancode lm::Setting::GetKeycode(int index)
 void lm::Setting::GetSongList(std::vector<std::string> &output)
 {
 	output = song_list;
+}
+
+void lm::Setting::SwitchAuto()
+{
+	is_auto = !is_auto;
+	write();
+}
+
+void lm::Setting::SetDuration(int input)
+{
+	duration = input;
+	write();
+}
+
+void lm::Setting::SetOffset(int input)
+{
+	offset = input;
+	write();
+}
+
+void lm::Setting::SetKeycode(SDL_Scancode input, int index)
+{
+	key_code[index] = input;
+	write();
 }

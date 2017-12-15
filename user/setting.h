@@ -28,6 +28,10 @@ namespace lm
 			int GetOffset();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
+			void SwitchAuto();
+			void SetDuration(int input);
+			void SetOffset(int input);
+			void SetKeycode(SDL_Scancode input, int index);
 		private:
 			Setting() {}
 			~Setting() {}
