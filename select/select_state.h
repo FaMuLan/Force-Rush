@@ -32,6 +32,7 @@ namespace lm
 			Sprite *search_bar;
 			Button *select_back;
 			Button *select_mod;
+			Button *select_refresh;
 	};
 };
 
