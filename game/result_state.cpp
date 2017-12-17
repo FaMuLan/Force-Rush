@@ -36,7 +36,7 @@ void lm::ResultState::init()
 	b_retry->AddPressedFrame( "assets/base/sort_button_pressed.png");
 	b_retry->AddText("Retry", b_retry->GetW() / 2, b_retry->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
-	int full_score = 2 * (m_score->pure + m_score->great, m_score->good, m_score->error);
+	int full_score = 2 * (m_score->pure + m_score->great + m_score->good + m_score->error);
 	double acc = double(m_score->score) / double(full_score);
 	if (acc >= 0.9)
 	{
