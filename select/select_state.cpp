@@ -50,7 +50,7 @@ void lm::SelectState::init()
 		search_bar->SetPos(280, 0);
 		select_back->SetPos(0, System::instance()->GetWindowHeigh() - 72);
 		select_mod->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 72);
-		select_refresh->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 72);
+		select_refresh->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 144);
 	}
 }	//void lm::SelectState::init()
 
