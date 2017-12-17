@@ -40,6 +40,14 @@ namespace lm
 
 			TextArea *auto_text;
 			Button *auto_switch;
+			TextArea *duration_text;
+			Button *duration_left;
+			Button *duration_right;
+			TextArea *duration_num;
+			TextArea *offset_text;
+			Button *offset_left;
+			Button *offset_right;
+			TextArea *offset_num;
 	};
 };
 
