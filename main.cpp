@@ -2,8 +2,8 @@
 
 int main()
 {
-	lm::System::instance()->init();
-	lm::System::instance()->run();
-	lm::System::instance()->clear();
+	fr::System::instance()->init();
+	fr::System::instance()->run();
+	fr::System::instance()->clear();
 	return 0;
 }

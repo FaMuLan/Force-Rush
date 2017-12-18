@@ -1,8 +1,8 @@
 #include "sound_manager.h"
 
-lm::SoundManager *lm::SoundManager::m_instance = 0;
+fr::SoundManager *fr::SoundManager::m_instance = 0;
 
-void lm::SoundManager::init()
+void fr::SoundManager::init()
 {
 	if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0)
 	{
@@ -11,14 +11,14 @@ void lm::SoundManager::init()
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
 
-void lm::SoundManager::clear()
+void fr::SoundManager::clear()
 {
 	m_sfx.clear();
 	m_music.clear();
 	Mix_CloseAudio();
 }
 
-void lm::SoundManager::clear(std::string path, SoundType type)
+void fr::SoundManager::clear(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
 	{
@@ -30,7 +30,7 @@ void lm::SoundManager::clear(std::string path, SoundType type)
 	}
 }
 
-void lm::SoundManager::load(std::string path, SoundType type)
+void fr::SoundManager::load(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
 	{
@@ -44,7 +44,7 @@ void lm::SoundManager::load(std::string path, SoundType type)
 	}
 }
 
-void lm::SoundManager::play(std::string path, SoundType type)
+void fr::SoundManager::play(std::string path, SoundType type)
 {
 	if (type == SOUNDTYPE_SFX)
 	{
@@ -57,18 +57,18 @@ void lm::SoundManager::play(std::string path, SoundType type)
 	}
 }
 
-void lm::SoundManager::play(std::string path, int time)
+void fr::SoundManager::play(std::string path, int time)
 {
 	Mix_PlayMusic(m_music[path], 0);
 	Mix_SetMusicPosition(double(time) / double(1000));
 }
 
-void lm::SoundManager::stop()
+void fr::SoundManager::stop()
 {
 	Mix_HaltMusic();
 }
 
-void lm::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
+void fr::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
 {
 	if (type == SOUNDTYPE_MUSIC)
 	{
@@ -83,7 +83,7 @@ void lm::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
 	}
 }
 
-bool lm::SoundManager::IsPlayingMusic()
+bool fr::SoundManager::IsPlayingMusic()
 {
 	return Mix_PlayingMusic();
 }

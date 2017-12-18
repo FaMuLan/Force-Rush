@@ -10,9 +10,9 @@
 #include "../loading/loading_state.h"
 #include "../user/character.h"
 
-lm::ResultState *lm::ResultState::m_instance = 0;
+fr::ResultState *fr::ResultState::m_instance = 0;
 
-void lm::ResultState::init()
+void fr::ResultState::init()
 {
 	song_base = new Sprite;
 	score_base = new Sprite;
@@ -66,12 +66,12 @@ void lm::ResultState::init()
 	}
 }
 
-void lm::ResultState::clear()
+void fr::ResultState::clear()
 {
 	
 }
 
-void lm::ResultState::update()
+void fr::ResultState::update()
 {
 	b_return->update();
 	b_retry->update();
@@ -157,7 +157,7 @@ void lm::ResultState::update()
 	delete [] score_ch;
 }
 
-void lm::ResultState::LoadScore(lm::SongInformation *load_information, lm::Score *load_score)
+void fr::ResultState::LoadScore(fr::SongInformation *load_information, fr::Score *load_score)
 {
 	m_information = load_information;
 	m_score = load_score;

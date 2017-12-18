@@ -1,14 +1,14 @@
 #include "timer.h"
 
-lm::Timer *lm::Timer::m_instance = 0;
+fr::Timer *fr::Timer::m_instance = 0;
 
-void lm::Timer::ResetTimer(std::string id)
+void fr::Timer::ResetTimer(std::string id)
 {
 	is_start[id] = false;
 	is_pause[id] = false;
 }
 
-void lm::Timer::RunTimer(std::string id)
+void fr::Timer::RunTimer(std::string id)
 {
 	if (is_pause[id])
 	{
@@ -23,13 +23,13 @@ void lm::Timer::RunTimer(std::string id)
 	}
 }
 
-void lm::Timer::PauseTimer(std::string id)
+void fr::Timer::PauseTimer(std::string id)
 {
 	pause_time[id] = SDL_GetTicks();
 	is_pause[id] = true;
 }
 
-unsigned long lm::Timer::GetTime(std::string id)
+unsigned long fr::Timer::GetTime(std::string id)
 {
 	Uint32 output = 0;
 	if (is_start[id])
@@ -47,7 +47,7 @@ unsigned long lm::Timer::GetTime(std::string id)
 	return output;
 }
 
-unsigned long lm::Timer::GetSystemTime()
+unsigned long fr::Timer::GetSystemTime()
 {
 	return SDL_GetTicks();
 }

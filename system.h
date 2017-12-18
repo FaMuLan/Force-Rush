@@ -1,5 +1,5 @@
-#ifndef LUNATIC_MELODY_SYSTEM_H
-#define LUNATIC_MELODY_SYSTEM_H
+#ifndef FORCE_RUSH_SYSTEM_H
+#define FORCE_RUSH_SYSTEM_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-namespace lm
+namespace fr
 {
 	class State;
 
@@ -60,6 +60,6 @@ namespace lm
 			WindowRotation rotation;
 			//用於縮放
 	};	//class System
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_SYSTEM_H
+#endif	//FORCE_RUSH_SYSTEM_H

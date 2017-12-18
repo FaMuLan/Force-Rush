@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include "texture_manager.h"
 
-void lm::TextArea::init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
+void fr::TextArea::init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
 {
 	m_text = text;
 	m_x = x;
@@ -17,60 +17,60 @@ void lm::TextArea::init(std::string text, int x, int y, std::string font_path, i
 	m_scale = 1;
 }
 
-void lm::TextArea::render()
+void fr::TextArea::render()
 {
 	TextureManager::instance()->render(m_text, m_x, m_y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
 }
 
-void lm::TextArea::render(int x, int y)
+void fr::TextArea::render(int x, int y)
 {
 	TextureManager::instance()->render(m_text, x, y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
 }
 
-void lm::TextArea::clear()
+void fr::TextArea::clear()
 {
 	
 }
 
-void lm::TextArea::SetPos(int x, int y)
+void fr::TextArea::SetPos(int x, int y)
 {
 	m_x = x;
 	m_y = y;
 }
 
-void lm::TextArea::SetText(std::string text)
+void fr::TextArea::SetText(std::string text)
 {
 	m_text = text;
 }
 
-void lm::TextArea::SetColor(char r, char g, char b)
+void fr::TextArea::SetColor(char r, char g, char b)
 {
 	m_r = r;
 	m_g = g;
 	m_b = b;
 }
 
-void lm::TextArea::SetScale(float scale)
+void fr::TextArea::SetScale(float scale)
 {
 	m_scale = scale;
 }
 
-int lm::TextArea::GetX()
+int fr::TextArea::GetX()
 {
 	return m_x;
 }
 
-int lm::TextArea::GetY()
+int fr::TextArea::GetY()
 {
 	return m_y;
 }
 
-std::string lm::TextArea::GetText()
+std::string fr::TextArea::GetText()
 {
 	return m_text;
 }
 
-float lm::TextArea::GetScale()
+float fr::TextArea::GetScale()
 {
 	return m_scale;
 }

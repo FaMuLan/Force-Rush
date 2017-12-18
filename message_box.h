@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_MESSAGE_BOX_H
-#define LINATIC_MELODY_MESSAGE_BOX_H
+#ifndef FORCE_RUSH_MESSAGE_BOX_H
+#define FORCE_RUSH_MESSAGE_BOX_H
 
 #include <string>
 #include <vector>
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 

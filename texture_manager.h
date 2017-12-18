@@ -1,5 +1,5 @@
-#ifndef LUNATIC_MELODY_TEXTURE_MANAGER_H
-#define LUNATIC_MELODY_TEXTURE_MANAGER_H
+#ifndef FORCE_RUSH_TEXTURE_MANAGER_H
+#define FORCE_RUSH_TEXTURE_MANAGER_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -10,7 +10,7 @@
 
 #include "text_area.h"
 
-namespace lm
+namespace fr
 {
 	class TextureManager
 	{
@@ -45,6 +45,6 @@ namespace lm
 			std::map<std::string, std::map<int, TTF_Font*> > font;
 			//storage font
 	};	//class TextureManager
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_TEXTURE_MANAGER_H
+#endif	//FORCE_RUSH_TEXTURE_MANAGER_H

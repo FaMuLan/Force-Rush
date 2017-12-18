@@ -1,9 +1,9 @@
-#ifndef LUNATIC_MELODY_SELECT_SONG_HEADER_H
-#define LUNATIC_MELODY_SELECT_SONG_HEADER_H
+#ifndef FORCE_RUSH_SELECT_SONG_HEADER_H
+#define FORCE_RUSH_SELECT_SONG_HEADER_H
 
 #include "song_list.h"
 
-namespace lm
+namespace fr
 {
 	class SongHeader
 	{
@@ -28,6 +28,6 @@ namespace lm
 			Sprite *header_base;
 			SongInformation *m_information;
 	};	//class SongHeader
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_SELECT_SONG_HEADER_H
+#endif	//FORCE_RUSH_SELECT_SONG_HEADER_H

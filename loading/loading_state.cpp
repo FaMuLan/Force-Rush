@@ -7,9 +7,9 @@
 #include "../sound_manager.h"
 #include "../animator.h"
 
-lm::LoadingState *lm::LoadingState::m_instance = 0;
+fr::LoadingState *fr::LoadingState::m_instance = 0;
 
-void lm::LoadingState::update()
+void fr::LoadingState::update()
 {
 	if (!is_entered)
 	{
@@ -87,7 +87,7 @@ void lm::LoadingState::update()
 	}
 }
 
-void lm::LoadingState::init()
+void fr::LoadingState::init()
 {
 	shutter_top = new Sprite;
 	shutter_bottom = new Sprite;
@@ -109,7 +109,7 @@ void lm::LoadingState::init()
 	is_exited = true;
 }
 
-void lm::LoadingState::init(State *load_next_state, State *load_last_state)
+void fr::LoadingState::init(State *load_next_state, State *load_last_state)
 {
 	is_entered = false;
 	is_loaded = false;
@@ -125,11 +125,11 @@ void lm::LoadingState::init(State *load_next_state, State *load_last_state)
 	//一開始就放音效
 }
 
-void lm::LoadingState::clear()
+void fr::LoadingState::clear()
 {
 }
 
-void lm::LoadingState::OnEnter()
+void fr::LoadingState::OnEnter()
 {
 	int shutter_top_x = System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 + shutter_top->GetW() - shutter_top->GetW() * Animator::instance()->GetProcess("loading_enter");
 	int shutter_bottom_x = System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2 - 2 * shutter_bottom->GetW() + shutter_bottom->GetW() * Animator::instance()->GetProcess("loading_enter");
@@ -153,7 +153,7 @@ void lm::LoadingState::OnEnter()
 	}
 }
 
-void lm::LoadingState::OnExit()
+void fr::LoadingState::OnExit()
 {
 	int shutter_top_x = System::instance()->GetWindowWidth() / 2 - (shutter_center->GetW() - 8) / 2 + shutter_top->GetW() * Animator::instance()->GetProcess("loading_exit");
 	int shutter_bottom_x = System::instance()->GetWindowWidth() / 2 + (shutter_center->GetW() - 8) / 2 - shutter_bottom->GetW() - shutter_bottom->GetW() * Animator::instance()->GetProcess("loading_exit");
@@ -177,7 +177,7 @@ void lm::LoadingState::OnExit()
 	}
 }
 
-void lm::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type)
+void fr::LoadingState::AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type)
 {
 	if (is_text_default)
 	{
@@ -197,7 +197,7 @@ void lm::LoadingState::AddText(std::string text, std::string font_path, int font
 	}
 }
 
-bool lm::LoadingState::IsSwitching()
+bool fr::LoadingState::IsSwitching()
 {
 	return !is_exited;
 }

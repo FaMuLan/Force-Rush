@@ -1,11 +1,11 @@
-#ifndef LUNATIC_MELODY_TIMER_H
-#define LUNATIC_MELODY_TIMER_H
+#ifndef FORCE_RUSH_TIMER_H
+#define FORCE_RUSH_TIMER_H
 
 #include <SDL2/SDL.h>
 #include <string>
 #include <map>
 
-namespace lm
+namespace fr
 {
 	class Timer
 	{
@@ -34,6 +34,6 @@ namespace lm
 			std::map<std::string, bool> is_pause;
 			static Timer *m_instance;
 	};	//class Timer
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_TIMER_H
+#endif	//FORCE_RUSH_TIMER_H

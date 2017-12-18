@@ -1,9 +1,9 @@
 #include "animator.h"
 #include "timer.h"
 
-lm::Animator *lm::Animator::m_instance = 0;
+fr::Animator *fr::Animator::m_instance = 0;
 
-void lm::Animator::AddAnimation(std::string id, AnimationType type, int duration)
+void fr::Animator::AddAnimation(std::string id, AnimationType type, int duration)
 {
 	Animation *new_animation = new Animation;
 	new_animation->type = type;
@@ -11,17 +11,17 @@ void lm::Animator::AddAnimation(std::string id, AnimationType type, int duration
 	m_anim[id] = new_animation;
 }
 
-void lm::Animator::Animate(std::string id)
+void fr::Animator::Animate(std::string id)
 {
 	Timer::instance()->RunTimer(std::string("animation_") + id);
 }
 
-void lm::Animator::ResetAnimation(std::string id)
+void fr::Animator::ResetAnimation(std::string id)
 {
 	Timer::instance()->ResetTimer(std::string("animation_") + id);
 }
 
-float lm::Animator::GetProcess(std::string id)
+float fr::Animator::GetProcess(std::string id)
 {
 	float output = 0;
 	if (!IsTimeUp(id))
@@ -54,7 +54,7 @@ float lm::Animator::GetProcess(std::string id)
 	return output;
 }
 
-bool lm::Animator::IsTimeUp(std::string id)
+bool fr::Animator::IsTimeUp(std::string id)
 {
 	return Timer::instance()->GetTime(std::string("animation_") + id) > m_anim[id]->duration;
 }

@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_SELECT_SONG_LIST_H
-#define LUNATIC_MELODY_SELECT_SONG_LIST_H
+#ifndef FORCE_RUSH_SELECT_SONG_LIST_H
+#define FORCE_RUSH_SELECT_SONG_LIST_H
 
 #include <vector>
 #include <string>
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 	class Button;
@@ -49,6 +49,6 @@ namespace lm
 			static bool is_refreshing;
 			static bool is_loaded;
 	};
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_SELECT_SONG_LIST_H
+#endif	//FORCE_RUSH_SELECT_SONG_LIST_H

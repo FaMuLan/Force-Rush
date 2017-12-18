@@ -3,9 +3,9 @@
 #include "sprite.h"
 #include "timer.h"
 
-lm::MessageBox *lm::MessageBox::m_instance = 0;
+fr::MessageBox *fr::MessageBox::m_instance = 0;
 
-void lm::MessageBox::init()
+void fr::MessageBox::init()
 {
 	base = new Sprite;
 	base->init("assets/base/message_box_base.png");
@@ -14,12 +14,12 @@ void lm::MessageBox::init()
 	is_base_text_showing = true;
 }
 
-void lm::MessageBox::clear()
+void fr::MessageBox::clear()
 {
 	
 }
 
-void lm::MessageBox::update()
+void fr::MessageBox::update()
 {
 	if (!is_base_text_showing)
 	{
@@ -32,7 +32,7 @@ void lm::MessageBox::update()
 	}
 }
 
-void lm::MessageBox::render()
+void fr::MessageBox::render()
 {
 	base->render();
 	if (is_base_text_showing)
@@ -45,7 +45,7 @@ void lm::MessageBox::render()
 	}
 }
 
-void lm::MessageBox::SetText(std::string text, int time)
+void fr::MessageBox::SetText(std::string text, int time)
 {
 	if (time != 0)
 	{

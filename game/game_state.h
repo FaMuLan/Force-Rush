@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_GAME_GAME_STATE_H
-#define LUNATIC_MELODY_GAME_GAME_STATE_H
+#ifndef FORCE_RUSH_GAME_GAME_STATE_H
+#define FORCE_RUSH_GAME_GAME_STATE_H
 
 #include "../state.h"
 #include <string>
 
-namespace lm
+namespace fr
 {
 	class Button;
 	class Sprite;
@@ -42,6 +42,6 @@ namespace lm
 			Sprite *background_r;
 			TextArea *score_text;
 	};	//class GameState : public State
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_GAME_GAME_STATE_H
+#endif	//FORCE_RUSH_GAME_GAME_STATE_H

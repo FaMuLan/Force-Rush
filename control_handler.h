@@ -1,5 +1,5 @@
-#ifndef LUNATIC_MELODY_CONTROL_HANDLER_H
-#define LUNATIC_MELODY_CONTROL_HANDLER_H
+#ifndef FORCE_RUSH_CONTROL_HANDLER_H
+#define FORCE_RUSH_CONTROL_HANDLER_H
 
 #include <SDL2/SDL.h>
 
@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-namespace lm
+namespace fr
 {
 	typedef SDL_FingerID FingerID;
 
@@ -75,6 +75,6 @@ namespace lm
 			bool has_touch;
 			//檢測外設是否有反應
 	};	//class ControlHandler
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_CONTROL_HANDLER_H
+#endif	//FORCE_RUSH_CONTROL_HANDLER_H

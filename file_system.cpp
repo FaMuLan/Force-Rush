@@ -3,7 +3,7 @@
 #include <fstream>
 #include <regex>
 
-bool lm::ReadFile(std::string path, std::string &output)
+bool fr::ReadFile(std::string path, std::string &output)
 {
 	std::ifstream file;
 	file.open(path);
@@ -19,7 +19,7 @@ bool lm::ReadFile(std::string path, std::string &output)
 	return true;
 }
 
-bool lm::WriteFile(std::string path, std::string &output)
+bool fr::WriteFile(std::string path, std::string &output)
 {
 	std::ofstream file;
 	file.open(path);
@@ -28,7 +28,7 @@ bool lm::WriteFile(std::string path, std::string &output)
 	return true;
 }
 
-bool lm::ListDir(std::string path, std::vector<lm::File*> &output)
+bool fr::ListDir(std::string path, std::vector<fr::File*> &output)
 {
 	DIR *dir = opendir(path.c_str());
 	if (dir == NULL)
@@ -49,7 +49,7 @@ bool lm::ListDir(std::string path, std::vector<lm::File*> &output)
 	return true;
 }
 
-void lm::FindFile(std::string path, std::string pattern_str, std::vector<File*> &output)
+void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> &output)
 {
 	std::vector<File*> current_list;
 	ListDir(path, current_list);
@@ -68,7 +68,7 @@ void lm::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 	}
 }
 
-std::string lm::GetParentDir(std::string path)
+std::string fr::GetParentDir(std::string path)
 {
 	std::regex parent_dir_pattern("(.*/)[^/]*");
 	return regex_replace(path, parent_dir_pattern, "$1");

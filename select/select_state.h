@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_SELECT_SELECT_STATE_H
-#define LUNATIC_MELODY_SELECT_SELECT_STATE_H
+#ifndef FORCE_RUSH_SELECT_SELECT_STATE_H
+#define FORCE_RUSH_SELECT_SELECT_STATE_H
 
 #include <string>
 #include "../state.h"
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 	class Button;
@@ -36,4 +36,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_SELECT_SELECT_STATE_H
+#endif	//FORCE_RUSH_SELECT_SELECT_STATE_H

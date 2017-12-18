@@ -9,9 +9,9 @@
 #include "../constructing/constructing_state.h"
 #include "../user/character.h"
 
-lm::MainState *lm::MainState::m_instance = 0;
+fr::MainState *fr::MainState::m_instance = 0;
 
-void lm::MainState::init()
+void fr::MainState::init()
 {
 	main_start = new Button;
 	main_about = new Button;
@@ -32,7 +32,7 @@ void lm::MainState::init()
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
 }
 
-void lm::MainState::clear()
+void fr::MainState::clear()
 {
 	main_start->clear();
 	main_about->clear();
@@ -40,7 +40,7 @@ void lm::MainState::clear()
 	TextureManager::instance()->clearfont("assets/fonts/Audiowide.ttf", 60);
 }
 
-void lm::MainState::update()
+void fr::MainState::update()
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
@@ -79,7 +79,7 @@ void lm::MainState::update()
 	}
 }
 
-void lm::MainState::lock(bool load)
+void fr::MainState::lock(bool load)
 {
 	is_locked = load;
 	//這樣鎖定和解鎖可以用在同一個函數。

@@ -11,9 +11,9 @@
 #include "song_header.h"
 #include "mod_widget.h"
 
-lm::SelectState *lm::SelectState::m_instance = 0;
+fr::SelectState *fr::SelectState::m_instance = 0;
 
-void lm::SelectState::init()
+void fr::SelectState::init()
 {
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 32);
@@ -52,16 +52,16 @@ void lm::SelectState::init()
 		select_mod->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 72);
 		select_refresh->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 144);
 	}
-}	//void lm::SelectState::init()
+}	//void fr::SelectState::init()
 
-void lm::SelectState::clear()
+void fr::SelectState::clear()
 {
 	SongList::instance()->clear();
 	select_back->clear();
 	background->clear();
 }
 
-void lm::SelectState::update()
+void fr::SelectState::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
@@ -107,8 +107,8 @@ void lm::SelectState::update()
 		}
 		if (select_refresh->IsReleased() && !SongList::instance()->IsRefreshing())
 		{
-			std::thread refresh_thread(&lm::SongList::RefreshList);
+			std::thread refresh_thread(&fr::SongList::RefreshList);
 			refresh_thread.detach();
 		}
 	}
-}	//void lm::SelectState::update()
+}	//void fr::SelectState::update()

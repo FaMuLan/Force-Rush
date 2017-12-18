@@ -1,14 +1,14 @@
 #include "texture_manager.h"
 #include "system.h"
 
-lm::TextureManager *lm::TextureManager::m_instance = 0;
+fr::TextureManager *fr::TextureManager::m_instance = 0;
 
-void lm::TextureManager::init(SDL_Renderer *load_renderer)
+void fr::TextureManager::init(SDL_Renderer *load_renderer)
 {
 	renderer = load_renderer;
 }
 
-void lm::TextureManager::load(std::string path, int &output_w, int &output_h)
+void fr::TextureManager::load(std::string path, int &output_w, int &output_h)
 {
 	SDL_Surface *load_surface = IMG_Load(path.c_str());
 	SDL_Texture *new_texture = SDL_CreateTextureFromSurface(renderer, load_surface);
@@ -18,35 +18,35 @@ void lm::TextureManager::load(std::string path, int &output_w, int &output_h)
 	SDL_FreeSurface(load_surface);
 }
 
-void lm::TextureManager::load(SDL_Texture *load_texture, std::string path)
+void fr::TextureManager::load(SDL_Texture *load_texture, std::string path)
 {
 	texture[path] = load_texture;
 }
 
-void lm::TextureManager::loadfont(std::string path, int size)
+void fr::TextureManager::loadfont(std::string path, int size)
 {
 	TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
 	font[path][size] = new_font;
 }
 
-void lm::TextureManager::clear()
+void fr::TextureManager::clear()
 {
 	texture.clear();
 }
 
-void lm::TextureManager::clear(std::string path)
+void fr::TextureManager::clear(std::string path)
 {
 	SDL_DestroyTexture(texture[path]);
 	texture[path] = NULL;
 }
 
-void lm::TextureManager::clearfont(std::string path, int size)
+void fr::TextureManager::clearfont(std::string path, int size)
 {
 	TTF_CloseFont(font[path][size]);
 	font[path][size] = NULL;
 }
 
-void lm::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
+void fr::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
 {
 	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
 	if (src_w == 0 || src_h == 0)
@@ -60,13 +60,13 @@ void lm::TextureManager::render(std::string path, int x, int y, int w, int h, in
 	}
 }
 
-void lm::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, int h)
+void fr::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, int h)
 {
 	SDL_Rect dest_rect = { x, y, w, h };
 	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
 }
 
-void lm::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, float scale)
+void fr::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, float scale)
 {
 	SDL_Color color = { char(r), char(g), char(b) };
 	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);

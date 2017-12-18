@@ -3,13 +3,13 @@
 #include "texture_manager.h"
 #include "loading/loading_state.h"
 
-void lm::Button::init(std::string path, int x, int y, int w, int h)
+void fr::Button::init(std::string path, int x, int y, int w, int h)
 {
 	Sprite::init(path, x, y, w, h);
 	is_pressed = false;
 }
 
-void lm::Button::update()
+void fr::Button::update()
 {
 	is_released = false;
 	int x, y;
@@ -80,9 +80,9 @@ void lm::Button::update()
 	{
 		current_index = base_index;
 	}
-}	//void lm::Button::update()
+}	//void fr::Button::update()
 
-void lm::Button::render()
+void fr::Button::render()
 {
 	Sprite::render();
 	for (int i = 0; i < text.size(); i++)
@@ -91,35 +91,35 @@ void lm::Button::render()
 	}
 }
 
-void lm::Button::clear()
+void fr::Button::clear()
 {
 	
 }
 
-void lm::Button::AddPressedFrame(std::string path)
+void fr::Button::AddPressedFrame(std::string path)
 {
 	Sprite::AddFrame(path);
 	pressed_index = frame.size() - 1;
 }
 
-bool lm::Button::IsPressed()
+bool fr::Button::IsPressed()
 {
 	return is_pressed;
 }
 
-bool lm::Button::IsReleased()
+bool fr::Button::IsReleased()
 {
 	return is_released && !LoadingState::instance()->IsSwitching();
 }
 
-void lm::Button::AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
+void fr::Button::AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
 {
 	TextArea *new_text = new TextArea;
 	new_text->init(load_text, x, y, font_path, font_size, r, g, b, format, limited_w);
 	text.push_back(new_text);
 }
 
-void lm::Button::ClearText()
+void fr::Button::ClearText()
 {
 	text.clear();
 }

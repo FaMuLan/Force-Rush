@@ -1,11 +1,11 @@
-#ifndef LUNATIC_MELODY_USER_SETTING_H
+#ifndef FORCE_RUSH_USER_SETTING_H
 #define LUNATIC_MEL0DY_USER_SETTING_H
 
 #include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 
-namespace lm
+namespace fr
 {
 	class Setting
 	{
@@ -44,4 +44,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_USER_SETTING_H
+#endif	//FORCE_RUSH_USER_SETTING_H

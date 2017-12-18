@@ -21,19 +21,19 @@
 #include "song_header.h"
 #include "mod_widget.h"
 
-lm::SongList *lm::SongList::m_instance = 0;
-std::vector<lm::Button*> lm::SongList::m_cell;
-std::vector<lm::SongInformation*> lm::SongList::m_information;
-lm::SongInformation *lm::SongList::null_information = 0;
-int lm::SongList::list_length = 0;
-int lm::SongList::list_process = 0;
-int lm::SongList::selected_index = 0;
-int lm::SongList::cell_heigh = 0;
-bool lm::SongList::is_list_moved = false;
-bool lm::SongList::is_refreshing = false;
-bool lm::SongList::is_loaded = false;
+fr::SongList *fr::SongList::m_instance = 0;
+std::vector<fr::Button*> fr::SongList::m_cell;
+std::vector<fr::SongInformation*> fr::SongList::m_information;
+fr::SongInformation *fr::SongList::null_information = 0;
+int fr::SongList::list_length = 0;
+int fr::SongList::list_process = 0;
+int fr::SongList::selected_index = 0;
+int fr::SongList::cell_heigh = 0;
+bool fr::SongList::is_list_moved = false;
+bool fr::SongList::is_refreshing = false;
+bool fr::SongList::is_loaded = false;
 
-void lm::SongList::init()
+void fr::SongList::init()
 {
 	cell_heigh = 64;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
@@ -69,14 +69,14 @@ void lm::SongList::init()
 		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 	}
 
-}	//void lm::SongList::inìt()
+}	//void fr::SongList::inìt()
 
-void lm::SongList::clear()
+void fr::SongList::clear()
 {
 	m_cell.clear();
 }
 
-void lm::SongList::update()
+void fr::SongList::update()
 {
 	static int roll_speed;
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
@@ -213,9 +213,9 @@ void lm::SongList::update()
 	{
 		exit(0);
 	}
-}	//void lm::SongList::update()
+}	//void fr::SongList::update()
 
-void lm::SongList::render()
+void fr::SongList::render()
 {
 	for (int i = 0; i < m_cell.size(); i++)
 	{
@@ -227,7 +227,7 @@ void lm::SongList::render()
 	}
 }
 
-bool lm::SongList::LoadList()
+bool fr::SongList::LoadList()
 {
 	m_information.clear();
 
@@ -268,7 +268,7 @@ bool lm::SongList::LoadList()
 	return true;
 }
 
-void lm::SongList::WriteList()
+void fr::SongList::WriteList()
 {
 	std::string output_text;
 	for (int i = 0; i < m_information.size(); i++)
@@ -315,7 +315,7 @@ void lm::SongList::WriteList()
 	WriteFile("/sdcard/data/song_list.fa", output_text);
 }
 
-void lm::SongList::RefreshList()
+void fr::SongList::RefreshList()
 {
 	is_refreshing = true;
 	MessageBox::instance()->SetText("Start Refresh!");
@@ -427,14 +427,14 @@ void lm::SongList::RefreshList()
 	MessageBox::instance()->SetText("Refresh Completed!");
 	is_refreshing = false;
 	is_loaded = true;
-}	//void lm::SongList::RefreshList()
+}	//void fr::SongList::RefreshList()
 
-bool lm::SongList::IsRefreshing()
+bool fr::SongList::IsRefreshing()
 {
 	return is_refreshing;
 }
 
-void lm::SongList::RefreshListSize()
+void fr::SongList::RefreshListSize()
 {
 	m_cell.clear();
 	int cell_count;

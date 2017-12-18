@@ -3,9 +3,9 @@
 #include <regex>
 #include "../file_system.h"
 
-lm::Setting *lm::Setting::m_instance = 0;
+fr::Setting *fr::Setting::m_instance = 0;
 
-void lm::Setting::init()
+void fr::Setting::init()
 {
 	is_auto = false;
 	duration = 800;
@@ -21,7 +21,7 @@ void lm::Setting::init()
 	}
 }
 
-bool lm::Setting::read()
+bool fr::Setting::read()
 {
 	std::string file;
 	if (!ReadFile("/sdcard/data/user_setting.fa", file))
@@ -57,7 +57,7 @@ bool lm::Setting::read()
 	return true;
 }
 
-void lm::Setting::write()
+void fr::Setting::write()
 {
 	std::string file;
 	char *duration_ch = new char[20];
@@ -65,7 +65,7 @@ void lm::Setting::write()
 	sprintf(duration_ch, "duration: %d\n", duration);
 	sprintf(offset_ch, "offset: %d\n", offset);
 
-	file = "Lunatic Melody user setting file\n";
+	file = "Force Rush user setting file\n";
 	file += is_auto ? "auto: on\n" : "auto: off\n";
 	file += duration_ch;
 	file += offset_ch;
@@ -87,50 +87,50 @@ void lm::Setting::write()
 	WriteFile("/sdcard/data/user_setting.fa", file);
 }
 
-bool lm::Setting::IsAuto()
+bool fr::Setting::IsAuto()
 {
 	return is_auto;
 }
 
-int lm::Setting::GetDuration()
+int fr::Setting::GetDuration()
 {
 	return duration;
 }
 
-int lm::Setting::GetOffset()
+int fr::Setting::GetOffset()
 {
 	return offset;
 }
 
-SDL_Scancode lm::Setting::GetKeycode(int index)
+SDL_Scancode fr::Setting::GetKeycode(int index)
 {
 	return key_code[index];
 }
 
-void lm::Setting::GetSongList(std::vector<std::string> &output)
+void fr::Setting::GetSongList(std::vector<std::string> &output)
 {
 	output = song_list;
 }
 
-void lm::Setting::SwitchAuto()
+void fr::Setting::SwitchAuto()
 {
 	is_auto = !is_auto;
 	write();
 }
 
-void lm::Setting::SetDuration(int input)
+void fr::Setting::SetDuration(int input)
 {
 	duration = input;
 	write();
 }
 
-void lm::Setting::SetOffset(int input)
+void fr::Setting::SetOffset(int input)
 {
 	offset = input;
 	write();
 }
 
-void lm::Setting::SetKeycode(SDL_Scancode input, int index)
+void fr::Setting::SetKeycode(SDL_Scancode input, int index)
 {
 	key_code[index] = input;
 	write();

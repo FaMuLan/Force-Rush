@@ -1,5 +1,5 @@
-#ifndef LUNATIC_MELODY_SOUND_MANAGER_H
-#define LUNATIC_MELODY_SOUND_MANAGER_H
+#ifndef FORCE_RUSH_SOUND_MANAGER_H
+#define FORCE_RUSH_SOUND_MANAGER_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 
-namespace lm
+namespace fr
 {
 	enum SoundType
 	{
@@ -44,6 +44,6 @@ namespace lm
 			Uint16 SoundVolume;
 			static SoundManager *m_instance;
 	};	//class SoundManager
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_SOUND_MANAGER_H
+#endif	//FORCE_RUSH_SOUND_MANAGER_H

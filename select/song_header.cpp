@@ -4,21 +4,21 @@
 #include "../system.h"
 #include "../song_data.h"
 
-lm::SongHeader *lm::SongHeader::m_instance = 0;
+fr::SongHeader *fr::SongHeader::m_instance = 0;
 
-void lm::SongHeader::init()
+void fr::SongHeader::init()
 {
 	header_base = new Sprite;
 	header_base->init("assets/select/song_header_base.png", 0, 0);
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 24);	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 156);
 }
 
-void lm::SongHeader::clear()
+void fr::SongHeader::clear()
 {
 	
 }
 
-void lm::SongHeader::render()
+void fr::SongHeader::render()
 {
 	char *difficulty_ch = new char[3];
 	char *duration_ch = new char[4];
@@ -75,9 +75,9 @@ void lm::SongHeader::render()
 		TextureManager::instance()->render(score_ch, System::instance()->GetWindowWidth() - 248, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 		TextureManager::instance()->render(rank_ch, System::instance()->GetWindowWidth() - 122, 126, "assets/fonts/Audiowide.ttf", 156, 0x00, 0x00, 0x00);
 	}
-}	//void lm::SongHeader::render()
+}	//void fr::SongHeader::render()
 
-void lm::SongHeader::SetInformation(SongInformation *information)
+void fr::SongHeader::SetInformation(SongInformation *information)
 {
 	m_information = information;
 }

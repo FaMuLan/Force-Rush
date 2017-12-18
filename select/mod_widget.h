@@ -1,7 +1,7 @@
-#ifndef LUNATIC_MELODY_SELECT_MOD_WIDGET_H
-#define LUNATIC_MELODY_SELECT_MOD_WIDGET_H
+#ifndef FORCE_RUSH_SELECT_MOD_WIDGET_H
+#define FORCE_RUSH_SELECT_MOD_WIDGET_H
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 	class Button;

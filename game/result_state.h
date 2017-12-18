@@ -1,9 +1,9 @@
-#ifndef LUNATIC_MELODY_RESULT_STATE_H
-#define LUNATIC_MELODY_RESULT_STATE_H
+#ifndef FORCE_RUSH_GAME_RESULT_STATE_H
+#define FORCE_RUSH_GAME_RESULT_STATE_H
 
 #include "../state.h"
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 	class Button;
@@ -43,4 +43,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_RESULT_STATE_H
+#endif	//FORCE_RUSH_GAME_RESULT_STATE_H

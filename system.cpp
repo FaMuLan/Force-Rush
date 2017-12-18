@@ -10,9 +10,9 @@
 #include "sound_manager.h"
 #include "message_box.h"
 
-lm::System *lm::System::m_instance = 0;
+fr::System *fr::System::m_instance = 0;
 
-void lm::System::init()
+void fr::System::init()
 {
 	window_width = 720;
 	window_heigh = 1280;
@@ -49,7 +49,7 @@ void lm::System::init()
 	//将理论分辨率的宽高比例与实际屏幕分辨率的宽高比例吻合
 }
 
-void lm::System::run()
+void fr::System::run()
 {
 	while (!ControlHandler::instance()->IsQuit())
 	{
@@ -67,7 +67,7 @@ void lm::System::run()
 	}
 }
 
-void lm::System::clear()
+void fr::System::clear()
 {
 	ControlHandler::instance()->clear();
 	TextureManager::instance()->clear();
@@ -79,7 +79,7 @@ void lm::System::clear()
 	IMG_Quit();
 }
 
-void lm::System::RefreshWindowSize()
+void fr::System::RefreshWindowSize()
 {
 	int w, h;
 	SDL_GetWindowSize(system_window, &w, &h);
@@ -94,39 +94,39 @@ void lm::System::RefreshWindowSize()
 	is_window_modified = true;
 }
 
-bool lm::System::IsWindowModified()
+bool fr::System::IsWindowModified()
 {
 	return is_window_modified;
 }
 
-void lm::System::SetBackgroundColor(char r, char g, char b)
+void fr::System::SetBackgroundColor(char r, char g, char b)
 {
 	bg_r = r;
 	bg_g = g;
 	bg_b = b;
 }
 
-int lm::System::GetWindowWidth()
+int fr::System::GetWindowWidth()
 {
 	return window_width;
 }
-int lm::System::GetWindowHeigh()
+int fr::System::GetWindowHeigh()
 {
 	return window_heigh;
 }
-int lm::System::GetScreenWidth()
+int fr::System::GetScreenWidth()
 {
 	return screen_width;
 }
-int lm::System::GetScreenHeigh()
+int fr::System::GetScreenHeigh()
 {
 	return screen_heigh;
 }
-float lm::System::GetScale()
+float fr::System::GetScale()
 {
 	return scale;
 }
-lm::WindowRotation lm::System::GetWindowRotation()
+fr::WindowRotation fr::System::GetWindowRotation()
 {
 	return rotation;
 }

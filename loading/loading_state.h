@@ -1,11 +1,11 @@
-#ifndef LUNATIC_MELODY_LOADING_LOADING_STATE_H
-#define LUNATIC_MELODY_LOADING_LOADING_STATE_H
+#ifndef FORCE_RUSH_LOADING_LOADING_STATE_H
+#define FORCE_RUSH_LOADING_LOADING_STATE_H
 
 #include <string>
 #include <vector>
 #include "../state.h"
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 	class TextArea;
@@ -60,4 +60,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_LOADING_LOADING_STATE_H
+#endif	//FORCE_RUSH_LOADING_LOADING_STATE_H

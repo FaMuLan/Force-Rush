@@ -1,11 +1,11 @@
-#ifndef LUNATIC_MELODY_GAME_BEATMAP_H
-#define LUNATIC_MELODY_GAME_BEATMAP_H
+#ifndef FORCE_RUSH_GAME_BEATMAP_H
+#define FORCE_RUSH_GAME_BEATMAP_H
 
 #include <map>
 #include <vector>
 #include <string>
 
-namespace lm
+namespace fr
 {
 	class Column;
 	class Sprite;
@@ -75,4 +75,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_GAME_BEATMAP_H
+#endif	//FORCE_RUSH_GAME_BEATMAP_H

@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_GAME_COLUMN_H
-#define LUNATIC_MELODY_GAME_COLUMN_H
+#ifndef FORCE_RUSH_GAME_COLUMN_H
+#define FORCE_RUSH_GAME_COLUMN_H
 
 #include <vector>
 #include <SDL2/SDL.h>
 
-namespace lm
+namespace fr
 {
 	struct Note;
 	class Sprite;

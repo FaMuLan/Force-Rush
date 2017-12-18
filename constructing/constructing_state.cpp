@@ -7,9 +7,9 @@
 #include "../loading/loading_state.h"
 #include "../text_area.h"
 
-lm::ConstructingState *lm::ConstructingState::m_instance = 0;
+fr::ConstructingState *fr::ConstructingState::m_instance = 0;
 
-void lm::ConstructingState::init()
+void fr::ConstructingState::init()
 {
 	b_back = new Button;
 	b_communicate = new Button;
@@ -56,12 +56,12 @@ void lm::ConstructingState::init()
 		b_communicate->AddText(dialog_user[text_index]->GetText(), b_communicate->GetW() / 2, b_communicate->GetH() / 2, "assets/fonts/Miui-Light.ttf", 20, 0x00, 0x00, 0x00);
 }
 
-void lm::ConstructingState::clear()
+void fr::ConstructingState::clear()
 {
 	
 }
 
-void lm::ConstructingState::update()
+void fr::ConstructingState::update()
 {
 	b_back->update();
 	b_communicate->update();

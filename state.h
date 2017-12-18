@@ -1,9 +1,9 @@
-#ifndef LUNATIC_MELODY_STATE_H
-#define LUNATIC_MELODY_STATE_H
+#ifndef FORCE_RUSH_STATE_H
+#define FORCE_RUSH_STATE_H
 
 #include <SDL2/SDL.h>
 
-namespace lm
+namespace fr
 {
 	class State
 	{
@@ -15,4 +15,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_STATE_H
+#endif	//FORCE_RUSH_STATE_H

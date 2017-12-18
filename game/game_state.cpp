@@ -12,9 +12,9 @@
 #include "../user/character.h"
 #include "beatmap.h"
 
-lm::GameState *lm::GameState::m_instance = 0;
+fr::GameState *fr::GameState::m_instance = 0;
 
-void lm::GameState::init()
+void fr::GameState::init()
 {
 	Beatmap::instance()->load(m_information);
 
@@ -46,13 +46,13 @@ void lm::GameState::init()
 	wall_r->SetSize(228.f * Beatmap::instance()->GetScaleW(), 584.f * Beatmap::instance()->GetScaleH());
 }
 
-void lm::GameState::clear()
+void fr::GameState::clear()
 {
 	title_base->clear();
 	Beatmap::instance()->clear();
 }
 
-void lm::GameState::update()
+void fr::GameState::update()
 {
 	char *score_ch = new char[6];
 	sprintf(score_ch, "%d", Beatmap::instance()->GetScore());
@@ -85,12 +85,12 @@ void lm::GameState::update()
 	}
 }
 
-void lm::GameState::SetFile(lm::SongInformation *load_information)
+void fr::GameState::SetFile(fr::SongInformation *load_information)
 {
 	m_information = load_information;
 }
 
-void lm::GameState::DrawWall()
+void fr::GameState::DrawWall()
 {
 	static const int start_x = 275;
 	static const int start_y = 328;

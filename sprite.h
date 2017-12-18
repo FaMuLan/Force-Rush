@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_SPRITE_H
-#define LUNATIC_MELODY_SPRITE_H
+#ifndef FORCE_RUSH_SPRITE_H
+#define FORCE_RUSH_SPRITE_H
 
 #include <string>
 #include <vector>
 
-namespace lm
+namespace fr
 {
 	class Sprite
 	{
@@ -38,6 +38,6 @@ namespace lm
 			int m_h;
 			float scale;
 	};	//class Sprite
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_SPRITE_H
+#endif	//FORCE_RUSH_SPRITE_H

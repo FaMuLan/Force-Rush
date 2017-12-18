@@ -6,7 +6,7 @@
 #include "../timer.h"
 #include "../user/setting.h"
 
-void lm::Column::init(int load_column_index)
+void fr::Column::init(int load_column_index)
 {
 	column_index = load_column_index;
 	m_h = 45;
@@ -91,14 +91,14 @@ void lm::Column::init(int load_column_index)
 	}
 
 	is_tapped = false;
-}	//void lm::Column::init(int column_index)
+}	//void fr::Column::init(int column_index)
 
-void lm::Column::clear()
+void fr::Column::clear()
 {
 	std::vector<Note*>(m_note).swap(m_note);
 }
 
-void lm::Column::update()
+void fr::Column::update()
 {
 	is_released = false;
 	is_tapped = false;
@@ -274,7 +274,7 @@ void lm::Column::update()
 	}
 }
 
-void lm::Column::render()
+void fr::Column::render()
 {
 	int i = current_note_index;
 	bool is_note_in_screen = i < m_note.size();
@@ -288,12 +288,12 @@ void lm::Column::render()
 	s_light->render();
 }
 
-void lm::Column::AddNote(Note *load_note)
+void fr::Column::AddNote(Note *load_note)
 {
 	m_note.push_back(load_note);
 }
 
-bool lm::Column::DrawNote(int time, int time_end)
+bool fr::Column::DrawNote(int time, int time_end)
 {
 	int time_diff = time - Timer::instance()->GetTime("game");
 	double process = double(Beatmap::instance()->GetDuration() - time_diff) / double(Beatmap::instance()->GetDuration());

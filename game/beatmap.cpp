@@ -18,9 +18,9 @@
 #include "../sprite.h"
 #include "../animator.h"
 
-lm::Beatmap *lm::Beatmap::m_instance = 0;
+fr::Beatmap *fr::Beatmap::m_instance = 0;
 
-void lm::Beatmap::load(lm::SongInformation *load_information)
+void fr::Beatmap::load(fr::SongInformation *load_information)
 {
 	m_information = load_information;
 	m_score = new Score;
@@ -95,7 +95,7 @@ void lm::Beatmap::load(lm::SongInformation *load_information)
 	Timer::instance()->RunTimer("game");
 }
 
-void lm::Beatmap::clear()
+void fr::Beatmap::clear()
 {
 	m_column.clear();
 	Timer::instance()->ResetTimer("game");
@@ -105,7 +105,7 @@ void lm::Beatmap::clear()
 	}
 }
 
-void lm::Beatmap::update()
+void fr::Beatmap::update()
 {
 	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 	{
@@ -132,7 +132,7 @@ void lm::Beatmap::update()
 	}
 }
 
-void lm::Beatmap::render()
+void fr::Beatmap::render()
 {
 	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
 	play_base->render();
@@ -142,7 +142,7 @@ void lm::Beatmap::render()
 	}
 }
 
-lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
+fr::Judgement fr::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
 {
 	int time_diff = note_time - Timer::instance()->GetTime("game");
 	if (is_pressed)
@@ -222,34 +222,34 @@ lm::Judgement lm::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 	sprintf(combo_ch, "%d", m_score->combo);
 	combo_text->SetText(combo_ch);
 	return JUDGEMENT_NONE;
-}	//Judgement lm::Beatmap::judge()
+}	//Judgement fr::Beatmap::judge()
 
-int lm::Beatmap::GetCombo()
+int fr::Beatmap::GetCombo()
 {
 	return m_score->combo;
 }
 
-int lm::Beatmap::GetScore()
+int fr::Beatmap::GetScore()
 {
 	return m_score->score;
 }
 
-int lm::Beatmap::GetDuration()
+int fr::Beatmap::GetDuration()
 {
 	return note_duration;
 }
 
-int lm::Beatmap::GetOffset()
+int fr::Beatmap::GetOffset()
 {
 	return offset;
 }
 
-float lm::Beatmap::GetScaleW()
+float fr::Beatmap::GetScaleW()
 {
 	return scale_w;
 }
 
-float lm::Beatmap::GetScaleH()
+float fr::Beatmap::GetScaleH()
 {
 	return scale_h;
 }

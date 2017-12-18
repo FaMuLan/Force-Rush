@@ -1,9 +1,9 @@
-#ifndef LUNATIC_MELODY_TEXT_AREA_H
-#define LUNATIC_MELODY_TEXT_AREA_H
+#ifndef FORCE_RUSH_TEXT_AREA_H
+#define FORCE_RUSH_TEXT_AREA_H
 
 #include <string>
 
-namespace lm
+namespace fr
 {
 	enum TextFormat
 	{
@@ -40,6 +40,6 @@ namespace lm
 			int m_limited_w;
 			float m_scale;
 	};	//class TextArea
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_TEXTAREA_H
+#endif	//FORCE_RUSH_TEXT_AREA_H

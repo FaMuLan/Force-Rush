@@ -7,9 +7,9 @@
 #include "../user/setting.h"
 #include "../control_handler.h"
 
-lm::ModWidget *lm::ModWidget::m_instance = 0;
+fr::ModWidget *fr::ModWidget::m_instance = 0;
 
-void lm::ModWidget::init()
+void fr::ModWidget::init()
 {
 	widget_base = new Sprite;
 
@@ -69,12 +69,12 @@ void lm::ModWidget::init()
 	Animator::instance()->AddAnimation("mod_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 }
 
-void lm::ModWidget::clear()
+void fr::ModWidget::clear()
 {
 	
 }
 
-void lm::ModWidget::update()
+void fr::ModWidget::update()
 {
 	if (is_shown && is_entered)
 	{
@@ -200,7 +200,7 @@ void lm::ModWidget::update()
 	}
 }
 
-void lm::ModWidget::render()
+void fr::ModWidget::render()
 {
 	if (!is_exited)
 	{
@@ -222,7 +222,7 @@ void lm::ModWidget::render()
 	}
 }
 
-void lm::ModWidget::SwitchShown()
+void fr::ModWidget::SwitchShown()
 {
 	is_shown = !is_shown;
 	if (is_shown)
@@ -236,12 +236,12 @@ void lm::ModWidget::SwitchShown()
 	}
 }
 
-bool lm::ModWidget::IsShown()
+bool fr::ModWidget::IsShown()
 {
 	return is_shown || !is_exited;
 }
 
-void lm::ModWidget::OnEnter()
+void fr::ModWidget::OnEnter()
 {
 	int widget_x = -widget_base->GetW() + (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_enter");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
@@ -266,7 +266,7 @@ void lm::ModWidget::OnEnter()
 	}
 }
 
-void lm::ModWidget::OnExit()
+void fr::ModWidget::OnExit()
 {
 	int widget_x = System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2 - (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_exit");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());

@@ -1,10 +1,10 @@
-#ifndef LUNATIC_MELODY_ANIMATOR_H
-#define LUNATIC_MELODY_ANIMATOR_H
+#ifndef FORCE_RUSH_ANIMATOR_H
+#define FORCE_RUSH_ANIMATOR_H
 
 #include <string>
 #include <map>
 
-namespace lm
+namespace fr
 {
 	enum AnimationType
 	{
@@ -44,4 +44,4 @@ namespace lm
 	};
 };
 
-#endif	//LUNATIC_MELODY_ANIMATOR
+#endif	//FORCE_RUSH_ANIMATOR_H

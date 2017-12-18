@@ -2,9 +2,9 @@
 #include "system.h"
 #include "texture_manager.h"
 
-lm::ControlHandler *lm::ControlHandler::m_instance = 0;
+fr::ControlHandler *fr::ControlHandler::m_instance = 0;
 
-void lm::ControlHandler::init()
+void fr::ControlHandler::init()
 {
 	quit = false;
 	has_keyboard = false;
@@ -13,12 +13,12 @@ void lm::ControlHandler::init()
 	mouse_pos.y = 0;
 }
 
-void lm::ControlHandler::clear()
+void fr::ControlHandler::clear()
 {
 	
 }
 
-bool lm::ControlHandler::IsKeyDown(SDL_Scancode k)
+bool fr::ControlHandler::IsKeyDown(SDL_Scancode k)
 {
 	if (has_keyboard)
 	{
@@ -27,33 +27,33 @@ bool lm::ControlHandler::IsKeyDown(SDL_Scancode k)
 	return false;
 }
 
-bool lm::ControlHandler::IsMouseButtonDown(MouseButton k)
+bool fr::ControlHandler::IsMouseButtonDown(MouseButton k)
 {
 	return mouse_state[k];
 }
 
-void lm::ControlHandler::GetMousePos(int &x, int &y)
+void fr::ControlHandler::GetMousePos(int &x, int &y)
 {
 	x = mouse_pos.x / System::instance()->GetScale();
 	y = mouse_pos.y / System::instance()->GetScale();
 }
 
-int lm::ControlHandler::GetFingerCount()
+int fr::ControlHandler::GetFingerCount()
 {
 	return finger_state.size();
 }
 
-lm::Finger lm::ControlHandler::GetFinger(int index)
+fr::Finger fr::ControlHandler::GetFinger(int index)
 {
 	return finger_state[index];
 }
 
-bool lm::ControlHandler::IsQuit()
+bool fr::ControlHandler::IsQuit()
 {
 	return quit;
 }
 
-void lm::ControlHandler::update()
+void fr::ControlHandler::update()
 {
 	for (std::vector<Finger>::iterator iter = finger_state.begin(); iter != finger_state.end();)
 	{
@@ -165,4 +165,4 @@ void lm::ControlHandler::update()
 			break;
 		}	//switch (e.type)
 	}	//while (SDL_PollEvent(&e))
-}	//void lm::ControlHandler::update()
+}	//void fr::ControlHandler::update()

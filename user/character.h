@@ -1,7 +1,7 @@
-#ifndef LUNATIC_MELODY_CHARACTER_H
-#define LUNATIC_MELODY_CHARACTER_H
+#ifndef FORCE_RUSH_CHARACTER_H
+#define FORCE_RUSH_CHARACTER_H
 
-namespace lm
+namespace fr
 {
 	class Sprite;
 

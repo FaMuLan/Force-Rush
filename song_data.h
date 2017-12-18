@@ -1,9 +1,9 @@
-#ifndef LUNATIC_MELODY_SONG_DATA_H
-#define LUNATIC_MELODY_SONG_DATA_H
+#ifndef FORCE_RUSH_SONG_DATA_H
+#define FORCE_RUSH_SONG_DATA_H
 
 #include <string>
 
-namespace lm
+namespace fr
 {
 	enum Rank
 	{

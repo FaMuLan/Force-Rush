@@ -1,5 +1,5 @@
-#ifndef LUNATIC_MELODY_BUTTON_H
-#define LUNATIC_MELODY_BUTTON_H
+#ifndef FORCE_RUSH_BUTTON_H
+#define FORCE_RUSH_BUTTON_H
 
 #include <SDL2/SDL.h>
 #include <string>
@@ -7,7 +7,7 @@
 #include "sprite.h"
 #include "text_area.h"
 
-namespace lm
+namespace fr
 {
 	typedef SDL_FingerID FingerID;
 	class TextArea;
@@ -35,6 +35,6 @@ namespace lm
 			std::vector<TextArea*> text;
 			//text & font
 	};	//class Button : public Sprite
-};	//namespace lm
+};	//namespace fr
 
-#endif	//LUNATIC_MELODY_BUTTON_H
+#endif	//FORCE_RUSH_BUTTON_H
