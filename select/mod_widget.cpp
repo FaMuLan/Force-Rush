@@ -15,9 +15,13 @@ void lm::ModWidget::init()
 
 	auto_switch = new Button;
 	duration_left = new Button;
+	duration_left_dual = new Button;
 	duration_right = new Button;
+	duration_right_dual = new Button;
 	offset_left = new Button;
+	offset_left_dual = new Button;
 	offset_right = new Button;
+	offset_right_dual = new Button;
 
 	auto_text = new TextArea;
 	duration_text = new TextArea;
@@ -31,12 +35,20 @@ void lm::ModWidget::init()
 	auto_switch->AddText(Setting::instance()->IsAuto() ? "ON" : "OFF", auto_switch->GetW() / 2, auto_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	duration_left->init("assets/base/arrow_left.png");
 	duration_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	duration_left_dual->init("assets/base/arrow_left_dual.png");
+	duration_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
 	duration_right->init("assets/base/arrow_right.png");
 	duration_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	duration_right_dual->init("assets/base/arrow_right_dual.png");
+	duration_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
 	offset_left->init("assets/base/arrow_left.png");
 	offset_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	offset_left_dual->init("assets/base/arrow_left_dual.png");
+	offset_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
 	offset_right->init("assets/base/arrow_right.png");
 	offset_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	offset_right_dual->init("assets/base/arrow_right_dual.png");
+	offset_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
 
 	auto_text->init("AUTO", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init("DURATION", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
@@ -70,10 +82,14 @@ void lm::ModWidget::update()
 		{
 			widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() - widget_base->GetH());
 			auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-			duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 156);
-			duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 156);
-			offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 260);
-			offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 260);
+			duration_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
+			duration_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 154);
+			duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
+			duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
+			offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 258);
+			offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+			offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
+			offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
 			auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 			duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 			offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
@@ -94,8 +110,12 @@ void lm::ModWidget::update()
 		auto_switch->update();
 		duration_left->update();
 		duration_right->update();
+		duration_left_dual->update();
+		duration_right_dual->update();
 		offset_left->update();
 		offset_right->update();
+		offset_left_dual->update();
+		offset_right_dual->update();
 
 		if (auto_switch->IsReleased())
 		{
@@ -106,13 +126,29 @@ void lm::ModWidget::update()
 
 		if (duration_left->IsReleased())
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 10);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 1);
 			char *duration_ch = new char[4];
 			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
 			duration_num->SetText(duration_ch);
 			delete [] duration_ch;
 		}
 		if (duration_right->IsReleased())
+		{
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 1);
+			char *duration_ch = new char[4];
+			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
+			duration_num->SetText(duration_ch);
+			delete [] duration_ch;
+		}
+		if (duration_left_dual->IsReleased())
+		{
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 10);
+			char *duration_ch = new char[4];
+			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
+			duration_num->SetText(duration_ch);
+			delete [] duration_ch;
+		}
+		if (duration_right_dual->IsReleased())
 		{
 			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 10);
 			char *duration_ch = new char[4];
@@ -123,13 +159,29 @@ void lm::ModWidget::update()
 
 		if (offset_left->IsReleased())
 		{
-			Setting::instance()->SetOffset(Setting::instance()->GetOffset() - 10);
+			Setting::instance()->SetOffset(Setting::instance()->GetOffset() - 1);
 			char *offset_ch = new char[4];
 			sprintf(offset_ch, "%d", Setting::instance()->GetOffset());
 			offset_num->SetText(offset_ch);
 			delete [] offset_ch;
 		}
 		if (offset_right->IsReleased())
+		{
+			Setting::instance()->SetOffset(Setting::instance()->GetOffset() + 1);
+			char *offset_ch = new char[4];
+			sprintf(offset_ch, "%d", Setting::instance()->GetOffset());
+			offset_num->SetText(offset_ch);
+			delete [] offset_ch;
+		}
+		if (offset_left_dual->IsReleased())
+		{
+			Setting::instance()->SetOffset(Setting::instance()->GetOffset() - 10);
+			char *offset_ch = new char[4];
+			sprintf(offset_ch, "%d", Setting::instance()->GetOffset());
+			offset_num->SetText(offset_ch);
+			delete [] offset_ch;
+		}
+		if (offset_right_dual->IsReleased())
 		{
 			Setting::instance()->SetOffset(Setting::instance()->GetOffset() + 10);
 			char *offset_ch = new char[4];
@@ -159,8 +211,12 @@ void lm::ModWidget::render()
 		auto_switch->render();
 		duration_left->render();
 		duration_right->render();
+		duration_left_dual->render();
+		duration_right_dual->render();
 		offset_left->render();
 		offset_right->render();
+		offset_left_dual->render();
+		offset_right_dual->render();
 		duration_num->render();
 		offset_num->render();
 	}
@@ -190,10 +246,14 @@ void lm::ModWidget::OnEnter()
 	int widget_x = -widget_base->GetW() + (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_enter");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 156);
-	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 156);
-	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 260);
-	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 260);
+	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 154);
+	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 154);
+	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
+	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
+	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 258);
+	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
+	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
+	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
@@ -211,10 +271,14 @@ void lm::ModWidget::OnExit()
 	int widget_x = System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2 - (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_exit");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 156);
-	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 156);
-	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 260);
-	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 260);
+	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 154);
+	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 154);
+	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
+	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
+	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 258);
+	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
+	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
+	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);

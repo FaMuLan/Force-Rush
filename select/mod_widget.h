@@ -42,11 +42,15 @@ namespace lm
 			Button *auto_switch;
 			TextArea *duration_text;
 			Button *duration_left;
+			Button *duration_left_dual;
 			Button *duration_right;
+			Button *duration_right_dual;
 			TextArea *duration_num;
 			TextArea *offset_text;
 			Button *offset_left;
+			Button *offset_left_dual;
 			Button *offset_right;
+			Button *offset_right_dual;
 			TextArea *offset_num;
 	};
 };
