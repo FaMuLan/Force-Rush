@@ -18,10 +18,64 @@
 #include "../sprite.h"
 #include "../animator.h"
 
-fr::Beatmap *fr::Beatmap::m_instance = 0;
+fr::GameBeatmap *fr::GameBeatmap::m_instance = 0;
 
-void fr::Beatmap::load(fr::SongInformation *load_information)
+void fr::Beatmap::init()
 {
+	play_base = new Sprite;
+	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+	note_duration = Setting::instance()->GetDuration();
+	offset = Setting::instance()->GetOffset();
+	scale_w = System::instance()->GetWindowWidth() / 720.f;
+	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+}
+
+void fr::Beatmap::clear()
+{
+	m_column.clear();
+	if (SoundManager::instance()->IsPlayingMusic())
+	{
+		SoundManager::instance()->stop();
+	}
+}
+
+void fr::Beatmap::update()
+{
+	if (System::instance()->IsWindowModified())
+	{
+		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+		scale_w = System::instance()->GetWindowWidth() / 720.f;
+		scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+	}
+
+	for (int i = 0; i < m_column.size(); i++)
+	{
+		m_column[i]->update();
+	}
+}
+
+void fr::Beatmap::render()
+{
+	play_base->render();
+	for (int i = 0; i < m_column.size(); i++)
+	{
+		m_column[i]->render();
+	}
+}
+
+float fr::Beatmap::GetScaleW()
+{
+	return scale_w;
+}
+
+float fr::Beatmap::GetScaleH()
+{
+	return scale_h;
+}
+
+void fr::GameBeatmap::load(fr::SongInformation *load_information)
+{
+	Beatmap::init();
 	m_information = load_information;
 	m_score = new Score;
 	m_score->pure = 0;
@@ -31,19 +85,13 @@ void fr::Beatmap::load(fr::SongInformation *load_information)
 	m_score->score = 0;
 	m_score->combo = 0;
 
-	play_base = new Sprite;
-	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
 	combo_text = new TextArea;
 	combo_text->init("", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 240, 0, 0, 0);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 240);
 	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);
 	Animator::instance()->ResetAnimation("combo");
-	scale_w = System::instance()->GetWindowWidth() / 720.f;
-	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
 
 	audio_path = GetParentDir(m_information->file_path);
-	note_duration = Setting::instance()->GetDuration();
-	offset = Setting::instance()->GetOffset();
 	bool is_mapped = false;
 	is_waiting = true;
 	is_ended = false;
@@ -95,18 +143,15 @@ void fr::Beatmap::load(fr::SongInformation *load_information)
 	Timer::instance()->RunTimer("game");
 }
 
-void fr::Beatmap::clear()
+void fr::GameBeatmap::clear()
 {
-	m_column.clear();
+	Beatmap::clear();
 	Timer::instance()->ResetTimer("game");
-	if (SoundManager::instance()->IsPlayingMusic())
-	{
-		SoundManager::instance()->stop();
-	}
 }
 
-void fr::Beatmap::update()
+void fr::GameBeatmap::update()
 {
+	Beatmap::update();
 	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 	{
 		SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
@@ -114,14 +159,7 @@ void fr::Beatmap::update()
 	}
 	if (System::instance()->IsWindowModified())
 	{
-		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
-		scale_w = System::instance()->GetWindowWidth() / 720.f;
-		scale_h = System::instance()->GetWindowHeigh() / 1280.f;
 		combo_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
-	}
-	for (int i = 0; i < m_column.size(); i++)
-	{
-		m_column[i]->update();
 	}
 
 	if (Timer::instance()->GetTime("game") >= m_information->duration + 5000 && !is_ended)
@@ -132,17 +170,13 @@ void fr::Beatmap::update()
 	}
 }
 
-void fr::Beatmap::render()
+void fr::GameBeatmap::render()
 {
+	Beatmap::render();
 	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
-	play_base->render();
-	for (int i = 0; i < m_column.size(); i++)
-	{
-		m_column[i]->render();
-	}
 }
 
-fr::Judgement fr::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
+fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
 {
 	int time_diff = note_time - Timer::instance()->GetTime("game");
 	if (is_pressed)
@@ -222,34 +256,24 @@ fr::Judgement fr::Beatmap::judge(int note_time, bool is_pressed, bool is_ln_pres
 	sprintf(combo_ch, "%d", m_score->combo);
 	combo_text->SetText(combo_ch);
 	return JUDGEMENT_NONE;
-}	//Judgement fr::Beatmap::judge()
+}	//Judgement fr::GameBeatmap::judge()
 
-int fr::Beatmap::GetCombo()
+int fr::GameBeatmap::GetCombo()
 {
 	return m_score->combo;
 }
 
-int fr::Beatmap::GetScore()
+int fr::GameBeatmap::GetScore()
 {
 	return m_score->score;
 }
 
-int fr::Beatmap::GetDuration()
+int fr::GameBeatmap::GetDuration()
 {
 	return note_duration;
 }
 
-int fr::Beatmap::GetOffset()
+int fr::GameBeatmap::GetOffset()
 {
 	return offset;
-}
-
-float fr::Beatmap::GetScaleW()
-{
-	return scale_w;
-}
-
-float fr::Beatmap::GetScaleH()
-{
-	return scale_h;
 }

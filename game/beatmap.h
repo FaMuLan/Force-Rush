@@ -33,11 +33,31 @@ namespace fr
 	class Beatmap
 	{
 		public:
-			static Beatmap *instance()
+			virtual void init();
+			virtual void clear();
+			virtual void update();
+			virtual void render();
+
+			virtual float GetScaleW();
+			virtual float GetScaleH();
+		protected:
+			std::map<int, int> column_mapper;
+			std::string audio_path;
+			Sprite *play_base;
+			int offset;
+			int note_duration;
+			std::vector<Column*> m_column;
+			float scale_w, scale_h;
+	};
+
+	class GameBeatmap : public Beatmap
+	{
+		public:
+			static GameBeatmap *instance()
 			{
 				if (m_instance == 0)
 				{
-					m_instance = new Beatmap;
+					m_instance = new GameBeatmap;
 					return m_instance;
 				}
 				return m_instance;
@@ -52,26 +72,16 @@ namespace fr
 			int GetScore();
 			int GetDuration();
 			int GetOffset();
-
-			float GetScaleW();
-			float GetScaleH();
 		private:
-			Beatmap() {}
-			~Beatmap() {}
-			static Beatmap *m_instance;
+			GameBeatmap() {}
+			~GameBeatmap() {}
+			static GameBeatmap *m_instance;
 			SongInformation *m_information;
 			Score *m_score;
-			std::vector<Column*> m_column;
 			std::map<Judgement, int> judge_count;
-			std::map<int, int> column_mapper;
-			std::string audio_path;
-			Sprite *play_base;
 			TextArea *combo_text;
-			float scale_w, scale_h;
 			bool is_waiting;
 			bool is_ended;
-			int offset;
-			int note_duration;
 	};
 };
 
