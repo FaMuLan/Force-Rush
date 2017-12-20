@@ -24,8 +24,6 @@ void fr::Beatmap::init()
 {
 	play_base = new Sprite;
 	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
-	note_duration = Setting::instance()->GetDuration();
-	offset = Setting::instance()->GetOffset();
 	scale_w = System::instance()->GetWindowWidth() / 720.f;
 	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
 }
@@ -109,9 +107,9 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	{
 		std::smatch line = *i;
 		Note *new_note = new Note;
-		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) - offset + 2000;
+		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + 2000;
 		int type = atoi(std::regex_replace(line.str(), note_pattern, "$3").c_str());
-		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) - offset + 2000 : new_note->time;
+		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
 		int column_index = atoi(std::regex_replace(line.str(), note_pattern, "$1").c_str());
 		if (!is_mapped)
 		{
@@ -178,7 +176,7 @@ void fr::GameBeatmap::render()
 
 fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
 {
-	int time_diff = note_time - Timer::instance()->GetTime("game");
+	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
 	{
 		if (time_diff > 500 && !is_ln_pressing)
@@ -266,14 +264,4 @@ int fr::GameBeatmap::GetCombo()
 int fr::GameBeatmap::GetScore()
 {
 	return m_score->score;
-}
-
-int fr::GameBeatmap::GetDuration()
-{
-	return note_duration;
-}
-
-int fr::GameBeatmap::GetOffset()
-{
-	return offset;
 }

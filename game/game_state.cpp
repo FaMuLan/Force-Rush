@@ -9,7 +9,7 @@
 #include "../select/select_state.h"
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
-#include "../user/character.h"
+#include "../user/setting.h"
 #include "beatmap.h"
 
 fr::GameState *fr::GameState::m_instance = 0;
@@ -97,7 +97,7 @@ void fr::GameState::DrawWall()
 	static const int end_x = 0;
 	static const int end_y = 365;
 	static const float start_scale = 0.254386f;
-	double process = double(Timer::instance()->GetSystemTime()) / double(GameBeatmap::instance()->GetDuration());
+	double process = double(Timer::instance()->GetSystemTime()) / double(Setting::instance()->GetDuration());
 //	process = process - int(process) + 1;
 	double process_sq = process * process * 1.5f;
 	background_l->render();

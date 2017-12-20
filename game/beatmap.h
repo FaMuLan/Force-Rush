@@ -44,8 +44,6 @@ namespace fr
 			std::map<int, int> column_mapper;
 			std::string audio_path;
 			Sprite *play_base;
-			int offset;
-			int note_duration;
 			std::vector<Column*> m_column;
 			float scale_w, scale_h;
 	};
@@ -70,8 +68,6 @@ namespace fr
 			//第三個參數中考慮到ln尾判的判定與一般note不一樣
 			int GetCombo();
 			int GetScore();
-			int GetDuration();
-			int GetOffset();
 		private:
 			GameBeatmap() {}
 			~GameBeatmap() {}

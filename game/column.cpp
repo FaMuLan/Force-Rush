@@ -167,12 +167,12 @@ void fr::Column::update()
 		{
 			if (is_pressing_ln)
 			{
-				if (m_note[current_note_index]->time_end < Timer::instance()->GetTime("game"))
+				if (m_note[current_note_index]->time_end - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game"))
 				{
 					is_released = true;
 				}
 			}
-			if (m_note[current_note_index]->time < Timer::instance()->GetTime("game") && !is_pressing_ln)
+			if (m_note[current_note_index]->time - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game") && !is_pressing_ln)
 			{
 				is_tapped = true;
 			}
@@ -295,15 +295,15 @@ void fr::Column::AddNote(Note *load_note)
 
 bool fr::Column::DrawNote(int time, int time_end)
 {
-	int time_diff = time - Timer::instance()->GetTime("game");
-	double process = double(GameBeatmap::instance()->GetDuration() - time_diff) / double(GameBeatmap::instance()->GetDuration());
+	int time_diff = time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
+	double process = double(Setting::instance()->GetDuration() - time_diff) / double(Setting::instance()->GetDuration());
 	double process_sq = process * process;
 	int current_x = start_x + (end_x - start_x) * process_sq;
 	int current_y = start_y + (end_y - start_y) * process_sq;
 	float current_scale = start_scale + (1.0f - start_scale) * process_sq;
 	//note時間與當前時間的時間差
 
-	if (time_diff > GameBeatmap::instance()->GetDuration())
+	if (time_diff > Setting::instance()->GetDuration())
 	{
 		//檢測當前note是否在屏幕外面
 		return false;
@@ -312,9 +312,9 @@ bool fr::Column::DrawNote(int time, int time_end)
 	if (time != time_end)
 	//是否長條
 	{
-		int time_diff_end = time_end - Timer::instance()->GetTime("game");
+		int time_diff_end = time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
-		double process_end = double(GameBeatmap::instance()->GetDuration() - time_diff_end) / double(GameBeatmap::instance()->GetDuration());
+		double process_end = double(Setting::instance()->GetDuration() - time_diff_end) / double(Setting::instance()->GetDuration());
 		double process_end_sq = process_end * process_end;
 		//時間差轉換成Y坐標 * 2
 
@@ -331,7 +331,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 
 		double ln_piece_process = process;
 		double ln_piece_process_sq = ln_piece_process * ln_piece_process;
-		while (ln_piece_process > (time_diff_end > GameBeatmap::instance()->GetDuration() ? 0 : process_end))
+		while (ln_piece_process > (time_diff_end > Setting::instance()->GetDuration() ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
