@@ -16,7 +16,7 @@ fr::GameState *fr::GameState::m_instance = 0;
 
 void fr::GameState::init()
 {
-	Beatmap::instance()->load(m_information);
+	GameBeatmap::instance()->load(m_information);
 
 	title_base = new Button;
 	score_base = new Sprite;
@@ -37,44 +37,44 @@ void fr::GameState::init()
 	wall_r->init("assets/game/wall_r.png");
 	background_l->init("assets/game/background_l.png");
 	background_r->init("assets/game/background_r.png");
-	background_l->SetSize(327.f * Beatmap::instance()->GetScaleW(), 625.f * Beatmap::instance()->GetScaleH());
-	background_r->SetSize(327.f * Beatmap::instance()->GetScaleW(), 625.f * Beatmap::instance()->GetScaleH());
-	background_l->SetPos(0, 328 * Beatmap::instance()->GetScaleH());
-	background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * Beatmap::instance()->GetScaleH());
+	background_l->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
+	background_r->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
+	background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH());
+	background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH());
 
-	wall_l->SetSize(228.f * Beatmap::instance()->GetScaleW(), 584.f * Beatmap::instance()->GetScaleH());
-	wall_r->SetSize(228.f * Beatmap::instance()->GetScaleW(), 584.f * Beatmap::instance()->GetScaleH());
+	wall_l->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
+	wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 }
 
 void fr::GameState::clear()
 {
 	title_base->clear();
-	Beatmap::instance()->clear();
+	GameBeatmap::instance()->clear();
 }
 
 void fr::GameState::update()
 {
 	char *score_ch = new char[6];
-	sprintf(score_ch, "%d", Beatmap::instance()->GetScore());
+	sprintf(score_ch, "%d", GameBeatmap::instance()->GetScore());
 	score_text->SetText(score_ch);
 	delete [] score_ch;
 
-	Beatmap::instance()->update();
+	GameBeatmap::instance()->update();
 	if (System::instance()->IsWindowModified())
 	{
 		title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 0);
-		background_l->SetSize(327.f * Beatmap::instance()->GetScaleW(), 625.f * Beatmap::instance()->GetScaleH());
-		background_r->SetSize(327.f * Beatmap::instance()->GetScaleW(), 625.f * Beatmap::instance()->GetScaleH());
-		background_l->SetPos(0, 328 * Beatmap::instance()->GetScaleH());
-		background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * Beatmap::instance()->GetScaleH());
-		wall_l->SetSize(228.f * Beatmap::instance()->GetScaleW(), 584.f * Beatmap::instance()->GetScaleH());
-		wall_r->SetSize(228.f * Beatmap::instance()->GetScaleW(), 584.f * Beatmap::instance()->GetScaleH());
+		background_l->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
+		background_r->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
+		background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH());
+		background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH());
+		wall_l->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
+		wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 	}
 
 	DrawWall();
 	title_base->update();
 
-	Beatmap::instance()->render();
+	GameBeatmap::instance()->render();
 
 	score_base->render();
 	score_text->render();
@@ -97,7 +97,7 @@ void fr::GameState::DrawWall()
 	static const int end_x = 0;
 	static const int end_y = 365;
 	static const float start_scale = 0.254386f;
-	double process = double(Timer::instance()->GetSystemTime()) / double(Beatmap::instance()->GetDuration());
+	double process = double(Timer::instance()->GetSystemTime()) / double(GameBeatmap::instance()->GetDuration());
 //	process = process - int(process) + 1;
 	double process_sq = process * process * 1.5f;
 	background_l->render();
@@ -109,10 +109,10 @@ void fr::GameState::DrawWall()
 			int current_x = start_x + (end_x - start_x) * process_sq;
 			int current_y = start_y + (end_y - start_y) * process_sq;
 			float current_scale = start_scale + (1.0f - start_scale) * process_sq;
-			wall_l->SetPos(current_x * Beatmap::instance()->GetScaleW(), current_y * Beatmap::instance()->GetScaleH());
+			wall_l->SetPos(current_x * GameBeatmap::instance()->GetScaleW(), current_y * GameBeatmap::instance()->GetScaleH());
 			wall_l->SetScale(current_scale);
 			wall_l->render();
-			wall_r->SetPos((System::instance()->GetWindowWidth() - current_x * Beatmap::instance()->GetScaleW() - wall_r->GetW() * current_scale), current_y * Beatmap::instance()->GetScaleH());
+			wall_r->SetPos((System::instance()->GetWindowWidth() - current_x * GameBeatmap::instance()->GetScaleW() - wall_r->GetW() * current_scale), current_y * GameBeatmap::instance()->GetScaleH());
 			wall_r->SetScale(current_scale);
 			wall_r->render();
 		}
