@@ -37,7 +37,7 @@ namespace fr
 			bool is_shown;
 			bool is_entered;
 			bool is_exited;
-			bool is_offset_wizard_running;
+			bool is_gameplay_wizard_running;
 
 			TextArea *auto_text;
 			Button *auto_switch;
@@ -53,8 +53,8 @@ namespace fr
 			Button *offset_right;
 			Button *offset_right_dual;
 			TextArea *offset_num;
-			TextArea *offset_wizard_text;
-			Button *offset_wizard_button;
+			TextArea *gameplay_wizard_text;
+			Button *gameplay_wizard_button;
 	};
 };
 

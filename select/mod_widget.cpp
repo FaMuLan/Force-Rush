@@ -5,6 +5,9 @@
 #include "../animator.h"
 #include "../system.h"
 #include "../user/setting.h"
+#include "../user/game_setting_state.h"
+#include "select_state.h"
+#include "../loading/loading_state.h"
 #include "../control_handler.h"
 
 fr::ModWidget *fr::ModWidget::m_instance = 0;
@@ -22,12 +25,12 @@ void fr::ModWidget::init()
 	offset_left_dual = new Button;
 	offset_right = new Button;
 	offset_right_dual = new Button;
-	offset_wizard_button = new Button;
+	gameplay_wizard_button = new Button;
 
 	auto_text = new TextArea;
 	duration_text = new TextArea;
 	offset_text = new TextArea;
-	offset_wizard_text = new TextArea;
+	gameplay_wizard_text = new TextArea;
 	duration_num = new TextArea;
 	offset_num = new TextArea;
 
@@ -51,14 +54,14 @@ void fr::ModWidget::init()
 	offset_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
 	offset_right_dual->init("assets/base/arrow_right_dual.png");
 	offset_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
-	offset_wizard_button->init("assets/base/sort_button.png");
-	offset_wizard_button->AddPressedFrame("assets/base/sort_button_pressed.png");
-	offset_wizard_button->AddText("START", offset_wizard_button->GetW() / 2, offset_wizard_button->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	gameplay_wizard_button->init("assets/base/sort_button.png");
+	gameplay_wizard_button->AddPressedFrame("assets/base/sort_button_pressed.png");
+	gameplay_wizard_button->AddText("START", gameplay_wizard_button->GetW() / 2, gameplay_wizard_button->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
 	auto_text->init("AUTO", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init("DURATION", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	offset_text->init("OFFSET", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	offset_wizard_text->init("OFFSET WIZARD", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	gameplay_wizard_text->init("GAMEPLAY WIZARD", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	char *duration_ch = new char[4];
 	char *offset_ch = new char[5];
 	sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
@@ -71,7 +74,7 @@ void fr::ModWidget::init()
 	is_shown = false;
 	is_entered = false;
 	is_exited = true;
-	is_offset_wizard_running = true;
+	is_gameplay_wizard_running = true;
 	Animator::instance()->AddAnimation("mod_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("mod_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 }
@@ -97,11 +100,11 @@ void fr::ModWidget::update()
 			offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
 			offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
 			offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-			offset_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+			gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
 			auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 			duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 			offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-			offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+			gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
 			duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
 			offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
 		}
@@ -125,7 +128,7 @@ void fr::ModWidget::update()
 		offset_right->update();
 		offset_left_dual->update();
 		offset_right_dual->update();
-		offset_wizard_button->update();
+		gameplay_wizard_button->update();
 
 		if (auto_switch->IsReleased())
 		{
@@ -200,9 +203,9 @@ void fr::ModWidget::update()
 			delete [] offset_ch;
 		}
 
-		if (offset_wizard_button->IsReleased())
+		if (gameplay_wizard_button->IsReleased())
 		{
-			
+			LoadingState::instance()->init(GameSettingState::instance(), SelectState::instance());
 		}
 	}
 	else if (is_shown)
@@ -223,7 +226,7 @@ void fr::ModWidget::render()
 		auto_text->render();
 		duration_text->render();
 		offset_text->render();
-		offset_wizard_text->render();
+		gameplay_wizard_text->render();
 		auto_switch->render();
 		duration_left->render();
 		duration_right->render();
@@ -233,7 +236,7 @@ void fr::ModWidget::render()
 		offset_right->render();
 		offset_left_dual->render();
 		offset_right_dual->render();
-		offset_wizard_button->render();
+		gameplay_wizard_button->render();
 		duration_num->render();
 		offset_num->render();
 	}
@@ -271,11 +274,11 @@ void fr::ModWidget::OnEnter()
 	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
 	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
 	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-	offset_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-	offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
 	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
 	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
 	if (Animator::instance()->IsTimeUp("mod_enter"))
@@ -298,11 +301,11 @@ void fr::ModWidget::OnExit()
 	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
 	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
 	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-	offset_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-	offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
 	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
 	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
 	if (Animator::instance()->IsTimeUp("mod_exit"))
