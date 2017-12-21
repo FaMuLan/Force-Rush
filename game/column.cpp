@@ -6,8 +6,9 @@
 #include "../timer.h"
 #include "../user/setting.h"
 
-void fr::Column::init(int load_column_index)
+void fr::Column::init(int load_column_index, Beatmap *parent)
 {
+	m_parent = parent;
 	column_index = load_column_index;
 	m_h = 45;
 	current_note_index = 0;
@@ -16,7 +17,7 @@ void fr::Column::init(int load_column_index)
 	s_light = new Sprite;
 	int current_w, current_h;
 
-	s_light->init("", 0, 0, 473 * GameBeatmap::instance()->GetScaleW(), 473 * GameBeatmap::instance()->GetScaleW());
+	s_light->init("", 0, 0, 473 * m_parent->GetScaleW(), 473 * m_parent->GetScaleW());
 	s_light->AddFrame("assets/game/lightingN-0.png");
 	s_light->AddFrame("assets/game/lightingN-1.png");
 	s_light->AddFrame("assets/game/lightingN-2.png");
@@ -33,60 +34,60 @@ void fr::Column::init(int load_column_index)
 	switch (column_index)
 	{
 		case 0:
-			current_w = 173.0f * GameBeatmap::instance()->GetScaleW();
-			current_h = 45.0f * GameBeatmap::instance()->GetScaleH();
+			current_w = 173.0f * m_parent->GetScaleW();
+			current_h = 45.0f * m_parent->GetScaleH();
 			start_x = 333;
 			start_y = 387;
 			end_x = 36;
 			end_y = 1088;
 			m_x = 0;
-			m_w = 166 * GameBeatmap::instance()->GetScaleW();
+			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
-			s_light->SetPos(-114 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
 		break;
 		case 1:
-			current_w = 165.0f * GameBeatmap::instance()->GetScaleW();
-			current_h = 45.0f * GameBeatmap::instance()->GetScaleH();
+			current_w = 165.0f * m_parent->GetScaleW();
+			current_h = 45.0f * m_parent->GetScaleH();
 			start_x = 347;
 			start_y = 387;
 			end_x = 197;
 			end_y = 1088;
-			m_x = 166 * GameBeatmap::instance()->GetScaleW();
-			m_w = 194 * GameBeatmap::instance()->GetScaleW();
+			m_x = 166 * m_parent->GetScaleW();
+			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
-			s_light->SetPos(43 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
 		break;
 		case 2:
-			current_w = 165.0f * GameBeatmap::instance()->GetScaleW();
-			current_h = 45.0f * GameBeatmap::instance()->GetScaleH();
+			current_w = 165.0f * m_parent->GetScaleW();
+			current_h = 45.0f * m_parent->GetScaleH();
 			start_x = 360;
 			start_y = 387;
 			end_x = 360;
 			end_y = 1088;
-			m_x = 360 * GameBeatmap::instance()->GetScaleW();
-			m_w = 194 * GameBeatmap::instance()->GetScaleW();
+			m_x = 360 * m_parent->GetScaleW();
+			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
-			s_light->SetPos(206 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
 		break;
 		case 3:
-			current_w = 173.0f * GameBeatmap::instance()->GetScaleW();
-			current_h = 45.0f * GameBeatmap::instance()->GetScaleH();
+			current_w = 173.0f * m_parent->GetScaleW();
+			current_h = 45.0f * m_parent->GetScaleH();
 			start_x = 371;
 			start_y = 387;
 			end_x = 515;
 			end_y = 1088;
-			m_x = 515 * GameBeatmap::instance()->GetScaleW();
-			m_w = 166 * GameBeatmap::instance()->GetScaleW();
+			m_x = 515 * m_parent->GetScaleW();
+			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
-			s_light->SetPos(367 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
 		break;
 	}
 
@@ -184,7 +185,7 @@ void fr::Column::update()
 	{
 		if (is_tapped)
 		{
-			Judgement current_judgement = GameBeatmap::instance()->judge(m_note[current_note_index]->time);
+			Judgement current_judgement = m_parent->judge(m_note[current_note_index]->time);
 			if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
 			{
 				if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
@@ -210,7 +211,7 @@ void fr::Column::update()
 		{
 			if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
 			{
-				if (GameBeatmap::instance()->judge(m_note[current_note_index]->time_end, true, true) != JUDGEMENT_ER)
+				if (m_parent->judge(m_note[current_note_index]->time_end, true, true) != JUDGEMENT_ER)
 				{
 					s_light->SetAnimate(1, 12, 300);
 				}
@@ -223,7 +224,7 @@ void fr::Column::update()
 		//以防檢測開頭而導致意外ERROR
 		//注意因為之前current_note_index可能執行過++所以還是需要做檢測
 		{
-			if (GameBeatmap::instance()->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
+			if (m_parent->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
 			{
 				current_note_index++;
 			}
@@ -231,7 +232,7 @@ void fr::Column::update()
 
 		if (is_pressing_ln)
 		{
-			if (GameBeatmap::instance()->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
+			if (m_parent->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
 			{
 				current_note_index++;
 				is_pressing_ln = false;
@@ -243,32 +244,32 @@ void fr::Column::update()
 
 	if (System::instance()->IsWindowModified())
 	{
-		s_light->SetSize(473 * GameBeatmap::instance()->GetScaleW(), 473 * GameBeatmap::instance()->GetScaleW());
+		s_light->SetSize(473 * m_parent->GetScaleW(), 473 * m_parent->GetScaleW());
 		switch (column_index)
 		{
 			case 0:
-				s_note->SetSize(173.0f * GameBeatmap::instance()->GetScaleW(), 45.0f * GameBeatmap::instance()->GetScaleH());
-				s_light->SetPos(-114 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
-				m_x = 0 * GameBeatmap::instance()->GetScaleW();
-				m_w = 166 * GameBeatmap::instance()->GetScaleW();
+				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				m_x = 0 * m_parent->GetScaleW();
+				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
-				s_note->SetSize(165.0f * GameBeatmap::instance()->GetScaleW(), 45.0f * GameBeatmap::instance()->GetScaleH());
-				s_light->SetPos(43 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
-				m_x = 166 * GameBeatmap::instance()->GetScaleW();
-				m_w = 194 * GameBeatmap::instance()->GetScaleW();
+				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				m_x = 166 * m_parent->GetScaleW();
+				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
-				s_note->SetSize(165.0f * GameBeatmap::instance()->GetScaleW(), 45.0f * GameBeatmap::instance()->GetScaleH());
-				s_light->SetPos(206 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
-				m_x = 360 * GameBeatmap::instance()->GetScaleW();
-				m_w = 194 * GameBeatmap::instance()->GetScaleW();
+				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				m_x = 360 * m_parent->GetScaleW();
+				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
-				s_note->SetSize(173.0f * GameBeatmap::instance()->GetScaleW(), 45.0f * GameBeatmap::instance()->GetScaleH());
-				s_light->SetPos(367 * GameBeatmap::instance()->GetScaleW(), 1108 * GameBeatmap::instance()->GetScaleH() - s_light->GetH() / 2);
-				m_x = 515 * GameBeatmap::instance()->GetScaleW();
-				m_w = 166 * GameBeatmap::instance()->GetScaleW();
+				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				m_x = 515 * m_parent->GetScaleW();
+				m_w = 166 * m_parent->GetScaleW();
 			break;
 		}
 	}
@@ -286,6 +287,11 @@ void fr::Column::render()
 		is_note_in_screen = is_note_in_screen && i < m_note.size();
 	}
 	s_light->render();
+}
+
+void fr::Column::reset()
+{
+	column_index = 0;
 }
 
 void fr::Column::AddNote(Note *load_note)
@@ -337,7 +343,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
 			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
 			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
-			s_note->SetPos(current_x_piece * GameBeatmap::instance()->GetScaleW(), current_y_piece * GameBeatmap::instance()->GetScaleH());
+			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH());
 			s_note->SetScale(current_scale_piece);
 			s_note->render();
 			//將長條身往上挪動
@@ -346,7 +352,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 		}
 /*
 		{
-			if (current_y * GameBeatmap::instance()->GetScaleH() < System::instance()->GetWindowHeigh())
+			if (current_y * m_parent->GetScaleH() < System::instance()->GetWindowHeigh())
 			{
 				s_note->SetPos(current_x, current_y);
 				s_note->SetScale(current_scale);
@@ -361,16 +367,16 @@ bool fr::Column::DrawNote(int time, int time_end)
 			int current_x_end = start_x + (end_x - start_x) * process_end_sq;
 			int current_y_end = start_y + (end_y - start_y) * process_end_sq;
 			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
-			s_note->SetPos(current_x_end * GameBeatmap::instance()->GetScaleW(), current_y_end * GameBeatmap::instance()->GetScaleH());
+			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH());
 			s_note->SetScale(current_scale_end);
 			s_note->render();
 		}
 		//畫長條尾
 	}
 
-	if (current_y * GameBeatmap::instance()->GetScaleH() < System::instance()->GetWindowHeigh())
+	if (current_y * m_parent->GetScaleH() < System::instance()->GetWindowHeigh())
 	{
-		s_note->SetPos(current_x * GameBeatmap::instance()->GetScaleW(), current_y * GameBeatmap::instance()->GetScaleH());
+		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH());
 		s_note->SetScale(current_scale);
 		s_note->render();
 	}

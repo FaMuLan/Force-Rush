@@ -8,18 +8,21 @@ namespace fr
 {
 	struct Note;
 	class Sprite;
+	class Beatmap;
 	typedef SDL_FingerID FingerID;
 
 	class Column
 	{
 		public:
-			void init(int load_column_index);
+			void init(int load_column_index, Beatmap *parent);
 			void clear();
 			void update();
 			void render();
+			void reset();
 			void AddNote(Note *load_note);
 			bool DrawNote(int time, int time_end);
 		private:
+			Beatmap *m_parent;
 			int column_index;
 			std::vector<Note*> m_note;
 			Sprite *s_note;
