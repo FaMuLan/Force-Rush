@@ -38,7 +38,9 @@ namespace fr
 			bool is_waiting;
 			bool is_running;
 			TextArea *hit_offset_num;
+			TextArea *current_offset_text;
 			int average_offset;
+			int beat_count;
 	};
 
 	class GameSettingState : public State
@@ -63,7 +65,6 @@ namespace fr
 			Sprite *play_base;
 			Button *back;
 			Button *offset_wizard_switch;
-			TextArea *offset_num;
 	};
 };
 

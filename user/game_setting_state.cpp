@@ -20,9 +20,13 @@ void fr::SettingBeatmap::init()
 	Beatmap::init();
 
 	hit_offset_num = new TextArea;
+	current_offset_text = new TextArea;
 	hit_offset_num->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 240, 0, 0, 0);
+	char *current_offset_ch = new char;
+	sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
+	current_offset_text->init(current_offset_ch, System::instance()->GetWindowWidth() / 2, 36, "assets/fonts/Audiowide.ttf", 36, 0, 0, 0);
+	delete current_offset_ch;
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 240);
-
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
@@ -35,6 +39,8 @@ void fr::SettingBeatmap::init()
 	}
 	Animator::instance()->AddAnimation("offset", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);
 	Animator::instance()->ResetAnimation("offset");
+	beat_count = 0;
+	average_offset = 0;
 }
 
 void fr::SettingBeatmap::clear()
@@ -61,11 +67,21 @@ void fr::SettingBeatmap::update()
 	{
 		stop();
 	}
+	if (beat_count > 4)
+	{
+		beat_count = 0;
+		Setting::instance()->SetOffset(Setting::instance()->GetOffset() + average_offset);
+		char *current_offset_ch = new char;
+		sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
+		current_offset_text->SetText(current_offset_ch);
+		delete current_offset_ch;
+	}
 }
 
 void fr::SettingBeatmap::render()
 {
 	Beatmap::render();
+	current_offset_text->render();
 	if (is_running)
 	{
 		hit_offset_num->render(hit_offset_num->GetX(), hit_offset_num->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("offset")));
@@ -81,67 +97,61 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 150 && is_ln_pressing)
+		else if (time_diff > 150 || time_diff < -150)
 		{
 			hit_offset_num->SetColor(0xEC, 0x6A, 0x5C);
-			char *offset_ch = new char[5];
+			char *offset_ch = new char;
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
+			delete offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
-			return JUDGEMENT_ER;
-		}
-		else if (time_diff > 150 && !is_ln_pressing)
-		{
-			hit_offset_num->SetColor(0xEC, 0x6A, 0x5C);
-			char *offset_ch = new char[5];
-			sprintf(offset_ch, "%dms", time_diff);
-			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
-			Animator::instance()->ResetAnimation("offset");
-			Animator::instance()->Animate("offset");
+			average_offset = (average_offset + time_diff) / 2;
+			beat_count++;
 			return JUDGEMENT_ER;
 		}
 		else if (time_diff > 100 || time_diff < -100)
 		{
 			hit_offset_num->SetColor(0x84, 0xB1, 0xED);
-			char *offset_ch = new char[5];
+			char *offset_ch = new char;
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
+			delete offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
+			average_offset = (average_offset + time_diff) / 2;
+			beat_count++;
 			return JUDGEMENT_GD;
 		}
 		else if (time_diff > 50 || time_diff < -50)
 		{
 			hit_offset_num->SetColor(0x81, 0xC7, 0x84);
-			char *offset_ch = new char[5];
+			char *offset_ch = new char;
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
+			delete offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
+			average_offset = (average_offset + time_diff) / 2;
+			beat_count++;
 			return JUDGEMENT_GR;
 		}
 		else
 		{
 			hit_offset_num->SetColor(0xFF, 0xEA, 0x00);
-			char *offset_ch = new char[5];
+			char *offset_ch = new char;
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
+			delete offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
+			average_offset = (average_offset + time_diff) / 2;
+			beat_count++;
 			return JUDGEMENT_PG;
 		}
 	}
-	else if (time_diff < -150)
+	else if (time_diff < -500)
 	{
-		hit_offset_num->SetColor(0xEC, 0x6A, 0x5C);
-		Animator::instance()->ResetAnimation("offset");
-		Animator::instance()->Animate("offset");
 		return JUDGEMENT_ER;
 	}
 	return JUDGEMENT_NONE;
@@ -149,6 +159,7 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 
 void fr::SettingBeatmap::start()
 {
+	hit_offset_num->SetText(" ");
 	Timer::instance()->RunTimer("game");
 	is_running = true;
 }
@@ -169,7 +180,6 @@ void fr::GameSettingState::init()
 {
 	back = new Button;
 	offset_wizard_switch = new Button;
-	offset_num = new TextArea;
 	SettingBeatmap::instance()->init();
 	back->init("assets/base/sort_button.png", 0, 0);
 	back->AddPressedFrame("assets/base/sort_button_pressed.png");
