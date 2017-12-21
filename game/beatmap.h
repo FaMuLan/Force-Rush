@@ -37,11 +37,11 @@ namespace fr
 			virtual void clear();
 			virtual void update();
 			virtual void render();
+			virtual Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false) = 0;
 
 			virtual float GetScaleW();
 			virtual float GetScaleH();
 		protected:
-			std::map<int, int> column_mapper;
 			std::string audio_path;
 			Sprite *play_base;
 			std::vector<Column*> m_column;

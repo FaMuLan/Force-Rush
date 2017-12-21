@@ -26,6 +26,12 @@ void fr::Beatmap::init()
 	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
 	scale_w = System::instance()->GetWindowWidth() / 720.f;
 	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+	for (int i = 0; i < 4; i++)
+	{
+		Column *new_column = new Column;
+		new_column->init(i, this);
+		m_column.push_back(new_column);
+	}
 }
 
 void fr::Beatmap::clear()
@@ -103,6 +109,12 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	std::regex_search(text, audio_path_line, audio_path_pattern);
 	audio_path += std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
 
+	std::map<int, int> column_mapper;
+	column_mapper[64] = 0;
+	column_mapper[192] = 1;
+	column_mapper[320] = 2;
+	column_mapper[448] = 3;
+
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch line = *i;
@@ -111,28 +123,6 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 		int type = atoi(std::regex_replace(line.str(), note_pattern, "$3").c_str());
 		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
 		int column_index = atoi(std::regex_replace(line.str(), note_pattern, "$1").c_str());
-		if (!is_mapped)
-		{
-			switch (column_index)
-			{
-				case 64:
-				case 192:
-				case 320:
-				case 448:
-					for (int i = 0; i < 4; i++)
-					{
-						Column *new_column = new Column;
-						new_column->init(i);
-						m_column.push_back(new_column);
-					}
-					column_mapper[64] = 0;
-					column_mapper[192] = 1;
-					column_mapper[320] = 2;
-					column_mapper[448] = 3;
-				break;
-			}
-			is_mapped = true;
-		}
 		m_column[column_mapper[column_index]]->AddNote(new_note);
 	}
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
