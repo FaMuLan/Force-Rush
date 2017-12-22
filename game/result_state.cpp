@@ -115,7 +115,7 @@ void fr::ResultState::update()
 			rank_ch = "B";
 		break;
 		case 4:
-			rank_ch = "W";
+			rank_ch = "A";
 		break;
 		case 5:
 			rank_ch = "S";
