@@ -74,6 +74,11 @@ void fr::SongList::init()
 void fr::SongList::clear()
 {
 	m_cell.clear();
+	if (SoundManager::instance()->IsPlayingMusic())
+	{
+		SoundManager::instance()->stop();
+	SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+	}
 }
 
 void fr::SongList::update()

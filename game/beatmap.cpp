@@ -41,6 +41,7 @@ void fr::Beatmap::clear()
 	{
 		SoundManager::instance()->stop();
 	}
+	SoundManager::instance()->clear(audio_path, SOUNDTYPE_MUSIC);
 }
 
 void fr::Beatmap::update()
