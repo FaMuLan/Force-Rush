@@ -109,7 +109,7 @@ void fr::Column::update()
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.x >= m_x && load_finger.x <= (m_x + m_w) && load_finger.y > System::instance()->GetWindowWidth() / 2)
+			if (load_finger.x >= m_x && load_finger.x <= (m_x + m_w) && load_finger.y > System::instance()->GetWindowHeigh() / 2)
 			{
 				if (!load_finger.moved)
 				{
@@ -138,7 +138,7 @@ void fr::Column::update()
 				Finger load_finger = ControlHandler::instance()->GetFinger(i);
 				if (load_finger.id == has_pressed_id)
 				{
-					if ((load_finger.x < m_x || load_finger.x > (m_x + m_w)) || load_finger.y < System::instance()->GetWindowWidth() / 2)
+					if ((load_finger.x < m_x || load_finger.x > (m_x + m_w)) || load_finger.y < System::instance()->GetWindowHeigh() / 2)
 					{
 						is_hold = false;
 						is_touch_pressed = false;
@@ -291,7 +291,7 @@ void fr::Column::render()
 
 void fr::Column::reset()
 {
-	column_index = 0;
+	current_note_index = 0;
 }
 
 void fr::Column::AddNote(Note *load_note)
