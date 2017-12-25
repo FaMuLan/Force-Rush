@@ -100,7 +100,7 @@ void fr::ResultState::update()
 	sprintf(error_ch, "ERROR %d", m_score->error);
 	sprintf(score_ch, "SCORE  %d", m_score->score);
 
-	switch (m_information->high_score->rank)
+	switch (m_score->rank)
 	{
 		case 0:
 			rank_ch = "?";
