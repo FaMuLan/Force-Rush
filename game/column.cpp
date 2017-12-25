@@ -45,7 +45,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
-			s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
 			current_w = 165.0f * m_parent->GetScaleW();
@@ -59,7 +59,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
-			s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
 			current_w = 165.0f * m_parent->GetScaleW();
@@ -73,7 +73,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
-			s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
 			current_w = 173.0f * m_parent->GetScaleW();
@@ -87,7 +87,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
-			s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+			s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
 
@@ -249,25 +249,25 @@ void fr::Column::update()
 		{
 			case 0:
 				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
 				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
 				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
 				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2);
+				s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
@@ -343,7 +343,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
 			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
 			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
-			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH());
+			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 			s_note->SetScale(current_scale_piece);
 			s_note->render();
 			//將長條身往上挪動
@@ -367,16 +367,16 @@ bool fr::Column::DrawNote(int time, int time_end)
 			int current_x_end = start_x + (end_x - start_x) * process_end_sq;
 			int current_y_end = start_y + (end_y - start_y) * process_end_sq;
 			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
-			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH());
+			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 			s_note->SetScale(current_scale_end);
 			s_note->render();
 		}
 		//畫長條尾
 	}
 
-	if (current_y * m_parent->GetScaleH() < System::instance()->GetWindowHeigh())
+	if (current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset() < System::instance()->GetWindowHeigh())
 	{
-		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH());
+		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 		s_note->SetScale(current_scale);
 		s_note->render();
 	}

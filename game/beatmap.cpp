@@ -23,9 +23,9 @@ fr::GameBeatmap *fr::GameBeatmap::m_instance = 0;
 void fr::Beatmap::init()
 {
 	play_base = new Sprite;
-	play_base->init("assets/game/play_base.png", 0, 0, System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+	play_base->init("assets/game/play_base.png", 0, Setting::instance()->GetDrawOffset(), System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
 	scale_w = System::instance()->GetWindowWidth() / 720.f;
-	scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
 	for (int i = 0; i < 4; i++)
 	{
 		Column *new_column = new Column;
@@ -48,9 +48,10 @@ void fr::Beatmap::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
-		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh());
+		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
+		play_base->SetPos(0, Setting::instance()->GetDrawOffset());
 		scale_w = System::instance()->GetWindowWidth() / 720.f;
-		scale_h = System::instance()->GetWindowHeigh() / 1280.f;
+		scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
 	}
 
 	for (int i = 0; i < m_column.size(); i++)

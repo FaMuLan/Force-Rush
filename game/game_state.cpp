@@ -39,8 +39,8 @@ void fr::GameState::init()
 	background_r->init("assets/game/background_r.png");
 	background_l->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
 	background_r->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
-	background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH());
-	background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH());
+	background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
+	background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
 
 	wall_l->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 	wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
@@ -65,8 +65,8 @@ void fr::GameState::update()
 		title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 0);
 		background_l->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
 		background_r->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
-		background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH());
-		background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH());
+		background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
+		background_r->SetPos(System::instance()->GetWindowWidth() - background_r->GetW(), 328 * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
 		wall_l->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 		wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 	}
@@ -109,10 +109,10 @@ void fr::GameState::DrawWall()
 			int current_x = start_x + (end_x - start_x) * process_sq;
 			int current_y = start_y + (end_y - start_y) * process_sq;
 			float current_scale = start_scale + (1.0f - start_scale) * process_sq;
-			wall_l->SetPos(current_x * GameBeatmap::instance()->GetScaleW(), current_y * GameBeatmap::instance()->GetScaleH());
+			wall_l->SetPos(current_x * GameBeatmap::instance()->GetScaleW(), current_y * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
 			wall_l->SetScale(current_scale);
 			wall_l->render();
-			wall_r->SetPos((System::instance()->GetWindowWidth() - current_x * GameBeatmap::instance()->GetScaleW() - wall_r->GetW() * current_scale), current_y * GameBeatmap::instance()->GetScaleH());
+			wall_r->SetPos((System::instance()->GetWindowWidth() - current_x * GameBeatmap::instance()->GetScaleW() - wall_r->GetW() * current_scale), current_y * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
 			wall_r->SetScale(current_scale);
 			wall_r->render();
 		}
