@@ -26,6 +26,8 @@ namespace fr
 			bool IsAuto();
 			int GetDuration();
 			int GetOffset();
+			float GetDrawScale();
+			int GetDrawOffset();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
 			void SwitchAuto();
@@ -39,6 +41,10 @@ namespace fr
 			bool is_auto;
 			int duration;
 			int offset;
+			int draw_scale_portrait;
+			int draw_offset_portrait;
+			int draw_scale_landscape;
+			int draw_offset_landscape;
 			SDL_Scancode key_code[4];
 			std::vector<std::string> song_list;
 	};
