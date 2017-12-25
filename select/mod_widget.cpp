@@ -34,7 +34,7 @@ void fr::ModWidget::init()
 	duration_num = new TextArea;
 	offset_num = new TextArea;
 
-	widget_base->init("assets/select/mod_widget.png");
+	widget_base->init("assets/base/widget_base.png");
 	auto_switch->init("assets/base/sort_button.png");
 	auto_switch->AddPressedFrame( "assets/base/sort_button_pressed.png");
 	auto_switch->AddText(Setting::instance()->IsAuto() ? "ON" : "OFF", auto_switch->GetW() / 2, auto_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
