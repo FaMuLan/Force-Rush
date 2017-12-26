@@ -144,7 +144,7 @@ void fr::GameBeatmap::update()
 	Beatmap::update();
 	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 	{
-		SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
+		SoundManager::instance()->play(audio_path, Timer::instance()->GetTime("game") - 2000);
 		is_waiting = false;
 	}
 	if (System::instance()->IsWindowModified())
