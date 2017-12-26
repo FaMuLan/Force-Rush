@@ -31,7 +31,7 @@ void fr::ConstructingState::init()
 	dialog_user[0]->SetText("開發者可以點這裡");
 	dialog_system[1]->SetText("哦？測試遊戲的可不算哦！");
 	dialog_user[1]->SetText("不是開發者就別點了x");
-	dialog_system[2]->SetText("開發者也就一個人，只想說這裡沒東西");
+	dialog_system[2]->SetText("算了你都點進去了……只想說這裡沒東西");
 	dialog_user[2]->SetText("你放屁！");
 	dialog_system[3]->SetText("所以你要幹蛤？");
 	dialog_user[3]->SetText("關於界面沒做好！");
@@ -43,9 +43,9 @@ void fr::ConstructingState::init()
 	dialog_user[6]->SetText("還有呢？");
 	dialog_system[7]->SetText("……程序是FaMuLan做的，就這樣");
 	dialog_user[7]->SetText("所以……");
-	dialog_system[8]->SetText("這就是關於界面了");
-	dialog_user[8]->SetText("所以開源協議不放出來？");
-	dialog_system[9]->SetText("遊戲是開源的你自己看代碼去到底用了啥庫");
+	dialog_system[8]->SetText("沒啥別的了orz");
+	dialog_user[8]->SetText("所以特別致謝不寫麼？");
+	dialog_system[9]->SetText("傻孩子，致謝難道不是感謝你麼<。)#)))<");
 	dialog_user[9]->SetText(">人<");
 //================= End =========================
 	b_back->init("assets/base/sort_button.png", 0, 0);
