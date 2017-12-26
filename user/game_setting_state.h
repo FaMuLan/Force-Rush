@@ -8,6 +8,7 @@ namespace fr
 {
 	class Sprite;
 	class Button;
+	class TextArea;
 
 	class SettingBeatmap : public Beatmap
 	{
@@ -30,6 +31,7 @@ namespace fr
 			void start();
 			void stop();
 			bool IsRunning();
+			void ResetScale();
 		private:
 
 			SettingBeatmap() {}
@@ -62,9 +64,23 @@ namespace fr
 			GameSettingState() {}
 			~GameSettingState() {}
 			static GameSettingState *m_instance;
-			Sprite *play_base;
+			Sprite *widget_base;
 			Button *back;
 			Button *offset_wizard_switch;
+			Button *draw_scale_left;
+			Button *draw_scale_right;
+			Button *draw_scale_left_dual;
+			Button *draw_scale_right_dual;
+			Button *draw_offset_left;
+			Button *draw_offset_right;
+			Button *draw_offset_left_dual;
+			Button *draw_offset_right_dual;
+			TextArea *offset_wizard_text;
+			TextArea *draw_scale_text;
+			TextArea *draw_offset_text;
+			TextArea *draw_scale_num;
+			TextArea *draw_offset_num;
+			
 	};
 };
 

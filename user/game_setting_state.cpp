@@ -21,12 +21,12 @@ void fr::SettingBeatmap::init()
 
 	hit_offset_num = new TextArea;
 	current_offset_text = new TextArea;
-	hit_offset_num->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 240, 0, 0, 0);
+	hit_offset_num->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 120, 0, 0, 0);
 	char *current_offset_ch = new char;
 	sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
 	current_offset_text->init(current_offset_ch, System::instance()->GetWindowWidth() / 2, 36, "assets/fonts/Audiowide.ttf", 36, 0, 0, 0);
 	delete current_offset_ch;
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 240);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 120);
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
@@ -62,6 +62,7 @@ void fr::SettingBeatmap::update()
 	if (System::instance()->IsWindowModified())
 	{
 		hit_offset_num->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+		current_offset_text->SetPos(System::instance()->GetWindowWidth() / 2, 36);
 	}
 	if (Timer::instance()->GetTime("game") >= 60000 + 1000 && is_running)
 	{
@@ -176,17 +177,72 @@ bool fr::SettingBeatmap::IsRunning()
 	return is_running;
 }
 
+void fr::SettingBeatmap::ResetScale()
+{
+	play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
+	play_base->SetPos(0, Setting::instance()->GetDrawOffset());
+	scale_w = System::instance()->GetWindowWidth() / 720.f;
+	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
+}
+
 void fr::GameSettingState::init()
 {
+	widget_base = new Sprite;
 	back = new Button;
 	offset_wizard_switch = new Button;
+	draw_scale_left = new Button;
+	draw_scale_right = new Button;
+	draw_scale_left_dual = new Button;
+	draw_scale_right_dual = new Button;
+	draw_offset_left = new Button;
+	draw_offset_right = new Button;
+	draw_offset_left_dual = new Button;
+	draw_offset_right_dual = new Button;
+	offset_wizard_text = new TextArea;
+	draw_scale_text = new TextArea;
+	draw_offset_text = new TextArea;
+	draw_scale_num = new TextArea;
+	draw_offset_num = new TextArea;
+
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	SettingBeatmap::instance()->init();
+	widget_base->init("assets/base/widget_base.png");
+	widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
 	back->init("assets/base/sort_button.png", 0, 0);
 	back->AddPressedFrame("assets/base/sort_button_pressed.png");
-	offset_wizard_switch->init("assets/base/sort_button.png", System::instance()->GetWindowWidth() - 160, 0);
+	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	offset_wizard_switch->init("assets/base/sort_button.png", widget_base->GetX() + 464, widget_base->GetY() + 32);
 	offset_wizard_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
 	offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	draw_scale_left->init("assets/base/arrow_left.png", widget_base->GetX() + 430,  widget_base->GetY() + 154);
+	draw_scale_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	draw_scale_left_dual->init("assets/base/arrow_left_dual.png", widget_base->GetX() + 382,  widget_base->GetY() + 154);
+	draw_scale_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	draw_scale_right->init("assets/base/arrow_right.png", widget_base->GetX() + 622, widget_base->GetY() + 154);
+	draw_scale_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	draw_scale_right_dual->init("assets/base/arrow_right_dual.png", widget_base->GetX() + 660, widget_base->GetY() + 154);
+	draw_scale_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+	draw_offset_left->init("assets/base/arrow_left.png", widget_base->GetX() + 430, widget_base->GetY() + 258);
+	draw_offset_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	draw_offset_left_dual->init("assets/base/arrow_left_dual.png", widget_base->GetX() + 382, widget_base->GetY() + 258);
+	draw_offset_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	draw_offset_right->init("assets/base/arrow_right.png", widget_base->GetX() + 622, widget_base->GetY() + 258);
+	draw_offset_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	draw_offset_right_dual->init("assets/base/arrow_right_dual.png", widget_base->GetX() + 660, widget_base->GetY() + 258);
+	draw_offset_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+
+	offset_wizard_text->init("OFFSET WIZARD", widget_base->GetX() + 32, widget_base->GetY() + 50, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	draw_scale_text->init("DRAW SCALE", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	draw_offset_text->init("DRAW OFFSET", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	char *draw_scale_ch = new char;
+	char *draw_offset_ch = new char;
+	sprintf(draw_scale_ch, "%.1f%%", Setting::instance()->GetDrawScale() * 100);
+	sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+	draw_scale_num->init(draw_scale_ch, widget_base->GetX() + 544, widget_base->GetY() + 172, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	draw_offset_num->init(draw_offset_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	delete draw_scale_ch;
+	delete draw_offset_ch;
+
 }
 
 void fr::GameSettingState::clear()
@@ -199,6 +255,14 @@ void fr::GameSettingState::update()
 	SettingBeatmap::instance()->update();
 	back->update();
 	offset_wizard_switch->update();
+	draw_scale_left->update();
+	draw_scale_right->update();
+	draw_scale_left_dual->update();
+	draw_scale_right_dual->update();
+	draw_offset_left->update();
+	draw_offset_right->update();
+	draw_offset_left_dual->update();
+	draw_offset_right_dual->update();
 
 	if (SettingBeatmap::instance()->IsRunning())
 	{
@@ -219,12 +283,118 @@ void fr::GameSettingState::update()
 		}
 	}
 
+	if (System::instance()->IsWindowModified())
+	{
+		widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
+		offset_wizard_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
+		draw_scale_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
+		draw_scale_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
+		draw_scale_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 154);
+		draw_scale_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
+		draw_offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 258);
+		draw_offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
+		draw_offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+		draw_offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+		offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
+		draw_scale_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+		draw_offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+		draw_scale_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
+		draw_offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+	}
+
 	if (back->IsReleased())
 	{
 		LoadingState::instance()->init(SelectState::instance(), this);
 	}
 
+	if (draw_scale_left->IsReleased())
+	{
+		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() - 0.001f);
+		char *draw_scale_ch = new char;
+		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
+		draw_scale_num->SetText(draw_scale_ch);
+		delete draw_scale_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_scale_left_dual->IsReleased())
+	{
+		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() - 0.01f);
+		char *draw_scale_ch = new char;
+		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
+		draw_scale_num->SetText(draw_scale_ch);
+		delete draw_scale_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_scale_right->IsReleased())
+	{
+		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() + 0.001f);
+		char *draw_scale_ch = new char;
+		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
+		draw_scale_num->SetText(draw_scale_ch);
+		delete draw_scale_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_scale_right_dual->IsReleased())
+	{
+		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() + 0.01f);
+		char *draw_scale_ch = new char;
+		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
+		draw_scale_num->SetText(draw_scale_ch);
+		delete draw_scale_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_offset_left->IsReleased())
+	{
+		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() - 1);
+		char *draw_offset_ch = new char;
+		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+		draw_offset_num->SetText(draw_offset_ch);
+		delete draw_offset_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_offset_left_dual->IsReleased())
+	{
+		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() - 10);
+		char *draw_offset_ch = new char;
+		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+		draw_offset_num->SetText(draw_offset_ch);
+		delete draw_offset_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_offset_right->IsReleased())
+	{
+		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() + 1);
+		char *draw_offset_ch = new char;
+		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+		draw_offset_num->SetText(draw_offset_ch);
+		delete draw_offset_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+	if (draw_offset_right_dual->IsReleased())
+	{
+		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() + 10);
+		char *draw_offset_ch = new char;
+		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+		draw_offset_num->SetText(draw_offset_ch);
+		delete draw_offset_ch;
+		SettingBeatmap::instance()->ResetScale();
+	}
+
 	SettingBeatmap::instance()->render();
+	widget_base->render();
 	back->render();
 	offset_wizard_switch->render();
+	draw_scale_left->render();
+	draw_scale_right->render();
+	draw_scale_left_dual->render();
+	draw_scale_right_dual->render();
+	draw_offset_left->render();
+	draw_offset_right->render();
+	draw_offset_left_dual->render();
+	draw_offset_right_dual->render();
+	offset_wizard_text->render();
+	draw_scale_text->render();
+	draw_offset_text->render();
+	draw_scale_num->render();
+	draw_offset_num->render();
 }
