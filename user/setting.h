@@ -33,6 +33,8 @@ namespace fr
 			void SwitchAuto();
 			void SetDuration(int input);
 			void SetOffset(int input);
+			void SetDrawScale(float input);
+			void SetDrawOffset(int input);
 			void SetKeycode(SDL_Scancode input, int index);
 		private:
 			Setting() {}

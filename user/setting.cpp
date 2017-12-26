@@ -90,13 +90,16 @@ void fr::Setting::write()
 	file += offset_ch;
 	file += column_portrait_ch;
 	file += column_landscape_ch;
-	delete [] duration_ch;
+	delete duration_ch;
+	delete offset_ch;
+//	delete column_portrait_ch;
+//	delete column_landscape_ch;
 	for (int i = 0; i < 4; i++)
 	{
 		char *key_code_ch = new char;
 		sprintf(key_code_ch, "Key %d:%d\n", i, key_code[i]);
 		file += key_code_ch;
-		delete [] key_code_ch;
+		delete key_code_ch;
 	}
 	for (int i = 0; i < song_list.size(); i++)
 	{
@@ -166,6 +169,32 @@ void fr::Setting::SetDuration(int input)
 void fr::Setting::SetOffset(int input)
 {
 	offset = input;
+	write();
+}
+
+void fr::Setting::SetDrawScale(float input)
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		draw_scale_portrait = input * 1000;
+	}
+	else
+	{
+		draw_scale_landscape = input * 1000;
+	}
+	write();
+}
+
+void fr::Setting::SetDrawOffset(int input)
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		draw_offset_portrait = input * 1000.f / System::instance()->GetWindowHeigh();
+	}
+	else
+	{
+		draw_offset_landscape = input * 1000.f / System::instance()->GetWindowHeigh();
+	}
 	write();
 }
 
