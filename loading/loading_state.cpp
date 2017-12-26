@@ -19,7 +19,7 @@ void fr::LoadingState::update()
 		shutter_left->render();
 		shutter_right->render();
 		shutter_center->render();
-
+/*
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
 			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
@@ -28,6 +28,7 @@ void fr::LoadingState::update()
 		{
 			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
 		}
+*/
 	}
 	else if (!is_loaded)
 	{
@@ -40,7 +41,7 @@ void fr::LoadingState::update()
 		shutter_left->render();
 		shutter_right->render();
 		shutter_center->render();
-
+/*
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
 			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
@@ -49,7 +50,7 @@ void fr::LoadingState::update()
 		{
 			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
 		}
-
+*/
 		Animator::instance()->Animate("loading_exit");
 		//SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
 		//加載完立刻放音效
@@ -62,7 +63,7 @@ void fr::LoadingState::update()
 		shutter_left->render();
 		shutter_right->render();
 		shutter_center->render();
-
+/*
 		for (int i = 0; i < text_area_top.size(); i++)
 		{
 			text_area_top[i]->render(text_area_top[i]->GetX(), text_area_top[i]->GetY() + shutter_top->GetY());
@@ -71,6 +72,7 @@ void fr::LoadingState::update()
 		{
 			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
 		}
+*/
 		if (is_exited)
 		{
 			for (int i = 0; i < text_area_top.size(); i++)
