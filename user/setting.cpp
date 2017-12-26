@@ -92,8 +92,8 @@ void fr::Setting::write()
 	file += column_landscape_ch;
 	delete duration_ch;
 	delete offset_ch;
-//	delete column_portrait_ch;
-//	delete column_landscape_ch;
+	delete column_portrait_ch;
+	delete column_landscape_ch;
 	for (int i = 0; i < 4; i++)
 	{
 		char *key_code_ch = new char;
