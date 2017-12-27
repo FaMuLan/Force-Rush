@@ -149,21 +149,25 @@ void fr::SongList::update()
 			{
 				current_index = 0;
 			}
-			m_cell[i]->ClearText();
+//			m_cell[i]->ClearText();
 			char *difficulty_ch = new char[3];
 			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
 
 			if (current_index == selected_index)
 			{
 				m_cell[i]->SetBaseFrame(2);
-				m_cell[i]->AddText(difficulty_ch, 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
-				m_cell[i]->AddText(m_information[current_index]->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
+				m_cell[i]->GetText(0)->SetText(difficulty_ch);
+				m_cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+				m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+				m_cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
 			}
 			else
 			{
 				m_cell[i]->SetBaseFrame(0);
-				m_cell[i]->AddText(difficulty_ch, 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 40);
-				m_cell[i]->AddText(m_information[current_index]->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 616);
+				m_cell[i]->GetText(0)->SetText(difficulty_ch);
+				m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+				m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+				m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
 			}
 
 			delete [] difficulty_ch;
@@ -207,8 +211,10 @@ void fr::SongList::update()
 		}
 		else
 		{
-			m_cell[i]->ClearText();
-			m_cell[i]->AddText(null_information->title, 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 640);
+			m_cell[i]->GetText(0)->SetText("??");
+			m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+			m_cell[i]->GetText(1)->SetText(null_information->title);
+			m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
 				SongHeader::instance()->SetInformation(null_information);
 			list_length = cell_heigh;
 		}
@@ -458,7 +464,9 @@ void fr::SongList::RefreshListSize()
 		Button *new_song_cell = new Button;
 		new_song_cell->init("assets/select/song_cell.png", 0, 0, 720, 64);
 		new_song_cell->AddPressedFrame( "assets/select/song_cell_pressed.png");
-		new_song_cell->AddFrame("assets/select/song_cell_selected.png");
+		new_song_cell->AddFrame("assets/select/song_cell_selected.png");		new_song_cell->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
+		new_song_cell->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
+	
 		m_cell.push_back(new_song_cell);
 	}
 }
