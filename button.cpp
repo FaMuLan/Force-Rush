@@ -123,3 +123,8 @@ void fr::Button::ClearText()
 {
 	text.clear();
 }
+
+fr::TextArea *fr::Button::GetText(int index)
+{
+	return text[index];
+}
