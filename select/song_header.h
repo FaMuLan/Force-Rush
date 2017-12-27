@@ -5,6 +5,10 @@
 
 namespace fr
 {
+	class TextArea;
+	class Sprite;
+	class SongInformation;
+	
 	class SongHeader
 	{
 		public:
@@ -27,6 +31,12 @@ namespace fr
 			static SongHeader *m_instance;
 			Sprite *header_base;
 			SongInformation *m_information;
+			TextArea *artist_text;
+			TextArea *noter_text;
+			TextArea *version_text;
+			TextArea *duration_text;
+			TextArea *score_text;
+			TextArea *rank_text;
 	};	//class SongHeader
 };	//namespace fr
 
