@@ -75,10 +75,10 @@ bool fr::Setting::read()
 void fr::Setting::write()
 {
 	std::string file;
-	char *duration_ch = new char;
-	char *offset_ch = new char;
-	char *column_portrait_ch = new char;
-	char *column_landscape_ch = new char;
+	char *duration_ch = new char[50];
+	char *offset_ch = new char[50];
+	char *column_portrait_ch = new char[50];
+	char *column_landscape_ch = new char[50];
 	sprintf(duration_ch, "duration:%d\n", duration);
 	sprintf(offset_ch, "offset:%d\n", offset);
 	sprintf(column_portrait_ch, "column_portrait:%d,%d\n", draw_scale_portrait, draw_offset_portrait);
@@ -90,10 +90,10 @@ void fr::Setting::write()
 	file += offset_ch;
 	file += column_portrait_ch;
 	file += column_landscape_ch;
-	delete duration_ch;
-	delete offset_ch;
-	delete column_portrait_ch;
-	delete column_landscape_ch;
+	delete [] duration_ch;
+	delete [] offset_ch;
+	delete [] column_portrait_ch;
+	delete [] column_landscape_ch;
 	for (int i = 0; i < 4; i++)
 	{
 		char *key_code_ch = new char;
