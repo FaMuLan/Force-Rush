@@ -243,32 +243,69 @@ bool fr::SongList::LoadList()
 	m_information.clear();
 
 	std::string text;
-	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
+//	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
+	std::regex song_pattern("\\[(.*?)\\]\\s*\\{[\\S\\s]*?\\}");
+	//包含ID信息在內，先截取其中一段再單獨進行提取
+	std::regex title_pattern("title:(.*)");
+	std::regex artist_pattern("artist:(.*)");
+	std::regex noter_pattern("noter:(.*)");
+	std::regex version_pattern("version:(.*)");
+	std::regex difficulty_pattern("difficulty:(\\d*)");
+	std::regex duration_pattern("duration:(\\d*)");
+	std::regex audio_path_pattern("audio_path:(.*)");
+	std::regex preview_time_pattern("preview_time:(\\d*)");
+	std::regex file_path_pattern("file_path:(.*)");
+	std::regex score_pattern("score:(\\d*)");
+	std::regex rank_pattern("rank:(\\d)");
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
 	}
-	if (!std::regex_search(text, pattern))
+//	if (!std::regex_search(text, pattern))
+//	{
+//		return false;
+//	}
+	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), song_pattern); i != std::sregex_iterator(); i++)
 	{
-		return false;
-	}
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch line = *i;
+		std::smatch paragraph_match = *i;
+		std::string paragraph = paragraph_match.str();
+		std::smatch title_line;
+		std::smatch artist_line;
+		std::smatch noter_line;
+		std::smatch version_line;
+		std::smatch difficulty_line;
+		std::smatch duration_line;
+		std::smatch audio_path_line;
+		std::smatch preview_time_line;
+		std::smatch file_path_line;
+		std::smatch score_line;
+		std::smatch rank_line;
+
+		std::regex_search(paragraph, title_line, title_pattern);
+		std::regex_search(paragraph, artist_line, artist_pattern);
+		std::regex_search(paragraph, noter_line, noter_pattern);
+		std::regex_search(paragraph, version_line, version_pattern);
+		std::regex_search(paragraph, difficulty_line, difficulty_pattern);
+		std::regex_search(paragraph, duration_line, duration_pattern);
+		std::regex_search(paragraph, audio_path_line, audio_path_pattern);
+		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
+		std::regex_search(paragraph, file_path_line, file_path_pattern);
+		std::regex_search(paragraph, score_line, score_pattern);
+		std::regex_search(paragraph, rank_line, rank_pattern);
 		SongInformation *new_information = new SongInformation;
 		Score *new_score = new Score;
-		new_information->id = std::regex_replace(line.str(), pattern, "$1");
-		new_information->title = std::regex_replace(line.str(), pattern, "$2");
-		new_information->artist = std::regex_replace(line.str(), pattern, "$3");
-		new_information->noter = std::regex_replace(line.str(), pattern, "$4");
-		new_information->version = std::regex_replace(line.str(), pattern, "$5");
-		new_information->difficulty = atoi(std::regex_replace(line.str(), pattern, "$6").c_str());
-		new_information->duration = atoi(std::regex_replace(line.str(), pattern, "$7").c_str());
-		new_information->audio_path = std::regex_replace(line.str(), pattern, "$8");
-		new_information->preview_time = atoi(std::regex_replace(line.str(), pattern, "$9").c_str());
-		new_information->file_path = std::regex_replace(line.str(), pattern, "$10");
-		new_score->score = atoi(std::regex_replace(line.str(), pattern, "$11").c_str());
-		new_score->rank = Rank(atoi(std::regex_replace(line.str(), pattern, "$12").c_str()));
+		new_information->id = std::regex_replace(paragraph, song_pattern, "$1");
+		new_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
+		new_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
+		new_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
+		new_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
+		new_information->difficulty = atoi(std::regex_replace(difficulty_line.str(), difficulty_pattern, "$1").c_str());
+		new_information->duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
+		new_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+		new_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
+		new_information->file_path = std::regex_replace(file_path_line.str(), file_path_pattern, "$1");
+		new_score->score = atoi(std::regex_replace(score_line.str(), score_pattern, "$1").c_str());
+		new_score->rank = Rank(atoi(std::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
 	}
