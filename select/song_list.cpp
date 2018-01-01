@@ -2,6 +2,7 @@
 #include <vector>
 #include <regex>
 #include <cstdlib>
+#include <thread>
 #include <dirent.h>
 #include "../button.h"
 #include "../control_handler.h"
@@ -39,16 +40,24 @@ void fr::SongList::init()
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
 
 	null_information = new SongInformation;
+	Score *null_score = new Score;
 	null_information->title = "null";
 	null_information->artist = "null";
 	null_information->noter = "null";
 	null_information->version = "null";
 	null_information->difficulty = 0;
 	null_information->duration = 0;
+	null_score->score = 0;
+	null_score->rank = RANK_NONE;
+	null_information->high_score = null_score;
 
 	if (!is_refreshing && !is_loaded)
 	{
-		LoadList();
+		if (!LoadList())
+		{
+			std::thread refresh_thread(&fr::SongList::RefreshList);
+			refresh_thread.detach();
+		}
 	}
 	//一定要在計算列表長度之前加載好信息
 	list_length = cell_heigh * m_information.size();
