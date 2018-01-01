@@ -9,6 +9,7 @@
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
 #include "../user/character.h"
+#include "../user/setting.h"
 
 fr::ResultState *fr::ResultState::m_instance = 0;
 
@@ -59,7 +60,7 @@ void fr::ResultState::init()
 		m_score->rank = RANK_D;
 	}
 
-	if (m_score->score > m_information->high_score->score)
+	if (m_score->score > m_information->high_score->score && !Setting::instance()->IsAuto())
 	{
 		m_information->high_score = m_score;
 		SongList::instance()->WriteList();
