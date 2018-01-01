@@ -17,9 +17,9 @@ void fr::Setting::init()
 	key_code[3] = SDL_SCANCODE_K;
 	draw_scale_portrait = 1000;
 	draw_offset_portrait = 0;
-	draw_scale_landscape = 1500;
-	draw_offset_landscape = -350;
-	song_list.push_back("/sdcard/data/malody/beatmap");
+	draw_scale_landscape = 1450;
+	draw_offset_landscape = -320;
+	song_list.push_back("assets/songs");
 	if (!read())
 	{
 		write();
