@@ -17,10 +17,12 @@ void fr::MainState::init()
 	main_about = new Button;
 	background = new Sprite;
 
-	main_start->init("assets/main/button.png", 162, System::instance()->GetWindowHeigh() - 580, 397, 108);
+	main_start->init("assets/main/button.png", 0, 0);
 	main_start->AddPressedFrame("assets/main/button_pressed.png");
-	main_about->init("assets/main/button.png", 162, System::instance()->GetWindowHeigh() - 380, 397, 108);
+	main_about->init("assets/main/button.png", 0, 0);
 	main_about->AddPressedFrame("assets/main/button_pressed.png");
+	main_start->SetPos(System::instance()->GetWindowWidth() / 2 - main_start->GetW() / 2, System::instance()->GetWindowHeigh() - 480);
+	main_about->SetPos(System::instance()->GetWindowWidth() / 2 - main_about->GetW() / 2, System::instance()->GetWindowHeigh() - 280);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 60);
 
 	is_locked = false;
@@ -42,15 +44,10 @@ void fr::MainState::clear()
 
 void fr::MainState::update()
 {
-	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	if (System::instance()->IsWindowModified())
 	{
-		main_start->SetPos(162, System::instance()->GetWindowHeigh() - 580);
-		main_about->SetPos(162, System::instance()->GetWindowHeigh() - 380);
-	}
-	else
-	{
-		main_start->SetPos(162, 200);
-		main_about->SetPos(162, 400);
+		main_start->SetPos(System::instance()->GetWindowWidth() / 2 - main_start->GetW() / 2, System::instance()->GetWindowHeigh() - 480);
+		main_about->SetPos(System::instance()->GetWindowWidth() / 2 - main_about->GetW() / 2, System::instance()->GetWindowHeigh() - 280);
 	}
 
 	if (!is_locked)
