@@ -22,7 +22,7 @@ void fr::SettingBeatmap::init()
 	hit_offset_num = new TextArea;
 	current_offset_text = new TextArea;
 	hit_offset_num->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 120, 0, 0, 0);
-	char *current_offset_ch = new char;
+	char *current_offset_ch = new char[30];
 	sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
 	current_offset_text->init(current_offset_ch, System::instance()->GetWindowWidth() / 2, 36, "assets/fonts/Audiowide.ttf", 36, 0, 0, 0);
 	delete current_offset_ch;
@@ -41,11 +41,12 @@ void fr::SettingBeatmap::init()
 	Animator::instance()->ResetAnimation("offset");
 	beat_count = 0;
 	average_offset = 0;
+	is_running = false;
 }
 
 void fr::SettingBeatmap::clear()
 {
-	
+	Beatmap::clear();
 }
 
 void fr::SettingBeatmap::update()
@@ -55,7 +56,7 @@ void fr::SettingBeatmap::update()
 	{
 		if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 		{
-			SoundManager::instance()->play(audio_path, SOUNDTYPE_MUSIC);
+			SoundManager::instance()->play(audio_path, Timer::instance()->GetTime("game") - 2000);
 			is_waiting = false;
 		}
 	}
@@ -72,10 +73,10 @@ void fr::SettingBeatmap::update()
 	{
 		beat_count = 0;
 		Setting::instance()->SetOffset(Setting::instance()->GetOffset() + average_offset);
-		char *current_offset_ch = new char;
+		char *current_offset_ch = new char[30];
 		sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
 		current_offset_text->SetText(current_offset_ch);
-		delete current_offset_ch;
+		delete [] current_offset_ch;
 	}
 }
 
@@ -101,10 +102,10 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 		else if (time_diff > 150 || time_diff < -150)
 		{
 			hit_offset_num->SetColor(0xEC, 0x6A, 0x5C);
-			char *offset_ch = new char;
+			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete offset_ch;
+			delete [] offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
 			average_offset = (average_offset + time_diff) / 2;
@@ -114,10 +115,10 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 		else if (time_diff > 100 || time_diff < -100)
 		{
 			hit_offset_num->SetColor(0x84, 0xB1, 0xED);
-			char *offset_ch = new char;
+			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete offset_ch;
+			delete [] offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
 			average_offset = (average_offset + time_diff) / 2;
@@ -127,10 +128,10 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 		else if (time_diff > 50 || time_diff < -50)
 		{
 			hit_offset_num->SetColor(0x81, 0xC7, 0x84);
-			char *offset_ch = new char;
+			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete offset_ch;
+			delete [] offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
 			average_offset = (average_offset + time_diff) / 2;
@@ -140,10 +141,10 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 		else
 		{
 			hit_offset_num->SetColor(0xFF, 0xEA, 0x00);
-			char *offset_ch = new char;
+			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
-			delete offset_ch;
+			delete [] offset_ch;
 			Animator::instance()->ResetAnimation("offset");
 			Animator::instance()->Animate("offset");
 			average_offset = (average_offset + time_diff) / 2;
@@ -163,6 +164,7 @@ void fr::SettingBeatmap::start()
 	hit_offset_num->SetText(" ");
 	Timer::instance()->RunTimer("game");
 	is_running = true;
+	is_waiting = true;
 }
 
 void fr::SettingBeatmap::stop()
@@ -247,7 +249,8 @@ void fr::GameSettingState::init()
 
 void fr::GameSettingState::clear()
 {
-	
+	SettingBeatmap::instance()->stop();
+	SettingBeatmap::instance()->clear();
 }
 
 void fr::GameSettingState::update()
@@ -300,6 +303,15 @@ void fr::GameSettingState::update()
 		draw_offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
 		draw_scale_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
 		draw_offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+
+		char *draw_scale_ch = new char;
+		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
+		draw_scale_num->SetText(draw_scale_ch);
+		delete draw_scale_ch;
+		char *draw_offset_ch = new char;
+		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
+		draw_offset_num->SetText(draw_offset_ch);
+		delete draw_offset_ch;
 	}
 
 	if (back->IsReleased())
