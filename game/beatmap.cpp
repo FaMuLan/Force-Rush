@@ -94,7 +94,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	combo_text = new TextArea;
 	combo_text->init("READY?", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
-	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);
+	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("combo");
 
 	audio_path = GetParentDir(m_information->file_path);
