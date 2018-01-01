@@ -71,11 +71,10 @@ void fr::GameState::update()
 		wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 	}
 
-	DrawWall();
 	title_base->update();
 
+	DrawWall();
 	GameBeatmap::instance()->render();
-
 	score_base->render();
 	score_text->render();
 	title_base->render();
