@@ -82,6 +82,7 @@ void fr::SelectState::update()
 	}
 
 	SongList::instance()->update();
+	SongHeader::instance()->update();
 	ModWidget::instance()->update();
 	select_back->update();
 	select_mod->update();

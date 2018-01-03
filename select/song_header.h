@@ -6,7 +6,7 @@
 namespace fr
 {
 	class TextArea;
-	class Sprite;
+	class Button;
 	class SongInformation;
 	
 	class SongHeader
@@ -23,13 +23,15 @@ namespace fr
 			}
 			void init();
 			void clear();
+			void update();
 			void render();
 			void SetInformation(SongInformation *information);
 		private:
 			SongHeader() {}
 			~SongHeader() {}
 			static SongHeader *m_instance;
-			Sprite *header_base;
+			Button *information_base;
+			Button *score_base;
 			SongInformation *m_information;
 			TextArea *artist_text;
 			TextArea *noter_text;
@@ -37,6 +39,11 @@ namespace fr
 			TextArea *duration_text;
 			TextArea *score_text;
 			TextArea *rank_text;
+			TextArea *pure_text;
+			TextArea *great_text;
+			TextArea *good_text;
+			TextArea *error_text;
+			bool is_score_detail_shown;
 	};	//class SongHeader
 };	//namespace fr
 
