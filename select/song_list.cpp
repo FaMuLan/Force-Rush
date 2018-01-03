@@ -49,6 +49,10 @@ void fr::SongList::init()
 	null_information->duration = 0;
 	null_score->score = 0;
 	null_score->rank = RANK_NONE;
+	null_score->pure = 0;
+	null_score->great = 0;
+	null_score->good = 0;
+	null_score->error = 0;
 	null_information->high_score = null_score;
 
 	if (!is_refreshing && !is_loaded)
@@ -264,8 +268,14 @@ bool fr::SongList::LoadList()
 	std::regex audio_path_pattern("audio_path:(.*)");
 	std::regex preview_time_pattern("preview_time:(\\d*)");
 	std::regex file_path_pattern("file_path:(.*)");
+
 	std::regex score_pattern("score:(\\d*)");
+	std::regex pure_pattern("pure:(\\d*)");
+	std::regex great_pattern("great:(\\d*)");
+	std::regex good_pattern("good:(\\d*)");
+	std::regex error_pattern("error:(\\d*)");
 	std::regex rank_pattern("rank:(\\d)");
+
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
@@ -288,6 +298,10 @@ bool fr::SongList::LoadList()
 		std::smatch preview_time_line;
 		std::smatch file_path_line;
 		std::smatch score_line;
+		std::smatch pure_line;
+		std::smatch great_line;
+		std::smatch good_line;
+		std::smatch error_line;
 		std::smatch rank_line;
 
 		std::regex_search(paragraph, title_line, title_pattern);
@@ -300,6 +314,10 @@ bool fr::SongList::LoadList()
 		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
 		std::regex_search(paragraph, file_path_line, file_path_pattern);
 		std::regex_search(paragraph, score_line, score_pattern);
+		std::regex_search(paragraph, pure_line, score_pattern);
+		std::regex_search(paragraph, great_line, score_pattern);
+		std::regex_search(paragraph, good_line, score_pattern);
+		std::regex_search(paragraph, error_line, score_pattern);
 		std::regex_search(paragraph, rank_line, rank_pattern);
 		SongInformation *new_information = new SongInformation;
 		Score *new_score = new Score;
@@ -314,6 +332,10 @@ bool fr::SongList::LoadList()
 		new_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
 		new_information->file_path = std::regex_replace(file_path_line.str(), file_path_pattern, "$1");
 		new_score->score = atoi(std::regex_replace(score_line.str(), score_pattern, "$1").c_str());
+		new_score->pure = atoi(std::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
+		new_score->great = atoi(std::regex_replace(great_line.str(), great_pattern, "$1").c_str());
+		new_score->good = atoi(std::regex_replace(good_line.str(), good_pattern, "$1").c_str());
+		new_score->error = atoi(std::regex_replace(error_line.str(), error_pattern, "$1").c_str());
 		new_score->rank = Rank(atoi(std::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
@@ -334,11 +356,19 @@ void fr::SongList::WriteList()
 		char *duration_ch = new char[4];
 		char *preview_time_ch = new char[10];
 		char *score_ch = new char[6];
+		char *pure_ch = new char[6];
+		char *great_ch = new char[6];
+		char *good_ch = new char[6];
+		char *error_ch = new char[6];
 		char *rank_ch = new char;
 		sprintf(difficulty_ch, "%d", m_information[i]->difficulty);
 		sprintf(duration_ch, "%d", m_information[i]->duration);
 		sprintf(preview_time_ch, "%d", m_information[i]->preview_time);
 		sprintf(score_ch, "%d", m_information[i]->high_score->score);
+		sprintf(pure_ch, "%d", m_information[i]->high_score->pure);
+		sprintf(great_ch, "%d", m_information[i]->high_score->great);
+		sprintf(good_ch, "%d", m_information[i]->high_score->good);
+		sprintf(error_ch, "%d", m_information[i]->high_score->error);
 		sprintf(rank_ch, "%d", m_information[i]->high_score->rank);
 		output_text += "[" + m_information[i]->id + "]\n{\n";
 		output_text += "\ttitle:" + m_information[i]->title + "\n";
@@ -359,6 +389,18 @@ void fr::SongList::WriteList()
 		output_text += "\tscore:";
 		output_text += score_ch;
 		output_text += "\n";
+		output_text += "\tpure:";
+		output_text += pure_ch;
+		output_text += "\n";
+		output_text += "\tgreat:";
+		output_text += great_ch;
+		output_text += "\n";
+		output_text += "\tgood:";
+		output_text += good_ch;
+		output_text += "\n";
+		output_text += "\terror:";
+		output_text += error_ch;
+		output_text += "\n";
 		output_text += "\trank:";
 		output_text += rank_ch;
 		output_text += "\n";
@@ -367,6 +409,10 @@ void fr::SongList::WriteList()
 		delete [] duration_ch;
 		delete [] preview_time_ch;
 		delete [] score_ch;
+		delete [] pure_ch;
+		delete [] great_ch;
+		delete [] good_ch;
+		delete [] error_ch;
 		delete [] rank_ch;
 	}
 	WriteFile("/sdcard/data/song_list.fa", output_text);
@@ -468,6 +514,10 @@ void fr::SongList::RefreshList()
 			Score *new_null_score = new Score;
 			new_null_score->rank = RANK_NONE;
 			new_null_score->score = 0;
+			new_null_score->pure = 0;
+			new_null_score->great = 0;
+			new_null_score->good = 0;
+			new_null_score->error = 0;
 			new_song_information->high_score = new_null_score;
 			m_information.push_back(new_song_information);
 
@@ -512,7 +562,6 @@ void fr::SongList::RefreshListSize()
 		new_song_cell->AddPressedFrame( "assets/select/song_cell_pressed.png");
 		new_song_cell->AddFrame("assets/select/song_cell_selected.png");		new_song_cell->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
 		new_song_cell->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
-	
 		m_cell.push_back(new_song_cell);
 	}
 }
