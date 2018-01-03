@@ -24,6 +24,7 @@ namespace fr
 			virtual bool IsPressed();
 			virtual bool IsReleased();
 			void AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
+			void AddText(TextArea *load_text);
 			void ClearText();
 			TextArea *GetText(int index);
 		protected:

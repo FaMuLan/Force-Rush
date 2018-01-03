@@ -119,6 +119,11 @@ void fr::Button::AddText(std::string load_text, int x, int y, std::string font_p
 	text.push_back(new_text);
 }
 
+void fr::Button::AddText(TextArea *load_text)
+{
+	text.push_back(load_text);
+}
+
 void fr::Button::ClearText()
 {
 	text.clear();
