@@ -91,14 +91,14 @@ void fr::GameState::SetFile(fr::SongInformation *load_information)
 
 void fr::GameState::DrawWall()
 {
-	static const int start_x = 275;
-	static const int start_y = 328;
+	static const int start_x = 334;
+	static const int start_y = 321;
 	static const int end_x = 0;
-	static const int end_y = 365;
-	static const float start_scale = 0.254386f;
+	static const int end_y = 364;
+	static const float start_scale = 0.08386f;
 	double process = double(Timer::instance()->GetSystemTime()) / double(Setting::instance()->GetDuration());
 //	process = process - int(process) + 1;
-	double process_sq = process * process * 1.5f;
+	double process_sq = process * process;
 	background_l->render();
 	background_r->render();
 	while (process > 0)
@@ -115,7 +115,7 @@ void fr::GameState::DrawWall()
 			wall_r->SetScale(current_scale);
 			wall_r->render();
 		}
-		process -= 0.54f;
-		process_sq = process * process;
+		process -= 0.28f;
+		process_sq = process * process * process;
 	}
 }
