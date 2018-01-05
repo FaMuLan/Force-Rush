@@ -92,7 +92,9 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_score->combo = 0;
 
 	combo_text = new TextArea;
+	s_light = new Sprite;
 	combo_text->init("READY?", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
+	s_light->init("assets/game/light.png", System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset(), 96, 96 * scale_h);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
 	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("combo");
@@ -150,6 +152,8 @@ void fr::GameBeatmap::update()
 	if (System::instance()->IsWindowModified())
 	{
 		combo_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+		s_light->SetPos(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset());
+		s_light->SetSize(96, 96 * scale_h);
 	}
 
 	if (Timer::instance()->GetTime("game") >= m_information->duration + 5000 && !is_ended)
@@ -163,6 +167,7 @@ void fr::GameBeatmap::update()
 void fr::GameBeatmap::render()
 {
 	Beatmap::render();
+	s_light->render();
 	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
 }
 
@@ -171,7 +176,7 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
 	{
-		if (time_diff > 500 && !is_ln_pressing)
+		if (time_diff > 250 && !is_ln_pressing)
 		{
 			return JUDGEMENT_NONE;
 		}
