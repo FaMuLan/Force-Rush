@@ -77,6 +77,11 @@ void fr::Sprite::SetAnimate(int load_start, int load_end, int load_duration)
 	start_time = Timer::instance()->GetSystemTime();
 }
 
+int fr::Sprite::GetCurrentIndex()
+{
+	return current_index;
+}
+
 void fr::Sprite::SetBaseFrame(int index)
 {
 	base_index = index;

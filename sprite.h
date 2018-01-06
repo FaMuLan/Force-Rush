@@ -16,6 +16,8 @@ namespace fr
 
 			void AddFrame(std::string path = "");
 			void SetAnimate(int load_start, int load_end, int load_duration);
+			int GetCurrentIndex();
+			//
 			void SetBaseFrame(int index);
 			void SetPos(int x, int y);
 			void SetScale(float load_scale);
