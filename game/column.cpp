@@ -303,7 +303,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 {
 	int time_diff = time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	double process = double(Setting::instance()->GetDuration() - time_diff) / double(Setting::instance()->GetDuration());
-	double process_sq = process * process;
+	double process_sq = process * process * process;
 	int current_x = start_x + (end_x - start_x) * process_sq;
 	int current_y = start_y + (end_y - start_y) * process_sq;
 	float current_scale = start_scale + (1.0f - start_scale) * process_sq;
@@ -321,7 +321,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 		int time_diff_end = time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
 		double process_end = double(Setting::instance()->GetDuration() - time_diff_end) / double(Setting::instance()->GetDuration());
-		double process_end_sq = process_end * process_end;
+		double process_end_sq = process_end * process_end * process_end;
 		//時間差轉換成Y坐標 * 2
 
 		if (is_pressing_ln && time == m_note[current_note_index]->time && time_end == m_note[current_note_index]->time_end)
@@ -336,7 +336,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 		}
 
 		double ln_piece_process = process;
-		double ln_piece_process_sq = ln_piece_process * ln_piece_process;
+		double ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;
 		while (ln_piece_process > (time_diff_end > Setting::instance()->GetDuration() ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
@@ -348,7 +348,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 			s_note->render();
 			//將長條身往上挪動
 			ln_piece_process -= 0.01f;
-			ln_piece_process_sq = ln_piece_process * ln_piece_process;
+			ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;
 		}
 /*
 		{
