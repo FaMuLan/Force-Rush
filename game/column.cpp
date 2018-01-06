@@ -14,6 +14,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	current_note_index = 0;
 	is_pressing_ln = false;
 	s_note = new Sprite;
+	s_note_l = new Sprite;
 	s_light = new Sprite;
 	int current_w, current_h;
 
@@ -45,6 +46,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
+			s_note_l->init("assets/game/note_l_1.png", 0, 0, current_w, current_h);
 			s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
@@ -59,6 +61,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
+			s_note_l->init("assets/game/note_l_2.png", 0, 0, current_w, current_h);
 			s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
@@ -73,6 +76,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
+			s_note_l->init("assets/game/note_l_3.png", 0, 0, current_w, current_h);
 			s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
@@ -87,6 +91,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
+			s_note_l->init("assets/game/note_l_4.png", 0, 0, current_w, current_h);
 			s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
@@ -213,7 +218,7 @@ void fr::Column::update()
 			{
 				if (m_parent->judge(m_note[current_note_index]->time_end, true, true) != JUDGEMENT_ER)
 				{
-					s_light->SetAnimate(1, 12, 300);
+					s_light->SetAnimate(1, 12, 150);
 				}
 				current_note_index++;
 			}
@@ -232,6 +237,10 @@ void fr::Column::update()
 
 		if (is_pressing_ln)
 		{
+			if (s_light->GetCurrentIndex() == 0)
+			{
+				s_light->SetAnimate(1, 12, 150);
+			}
 			if (m_parent->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
 			{
 				current_note_index++;
@@ -249,24 +258,28 @@ void fr::Column::update()
 		{
 			case 0:
 				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
 				s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
 				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
 				s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
 				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
 				s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
 				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
 				s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
@@ -343,9 +356,9 @@ bool fr::Column::DrawNote(int time, int time_end)
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
 			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
 			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
-			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-			s_note->SetScale(current_scale_piece);
-			s_note->render();
+			s_note_l->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+			s_note_l->SetScale(current_scale_piece);
+			s_note_l->render();
 			//將長條身往上挪動
 			ln_piece_process -= 0.01f;
 			ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;

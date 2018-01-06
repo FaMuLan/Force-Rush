@@ -26,6 +26,7 @@ namespace fr
 			int column_index;
 			std::vector<Note*> m_note;
 			Sprite *s_note;
+			Sprite *s_note_l;
 			Sprite *s_light;
 			int start_x;
 			int start_y;
