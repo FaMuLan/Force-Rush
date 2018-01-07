@@ -20,6 +20,7 @@ namespace fr
 			void render();
 			void reset();
 			void AddNote(Note *load_note);
+			void AddNote(std::vector<Note*> &load_note_list);
 			bool DrawNote(int time, int time_end);
 		private:
 			Beatmap *m_parent;

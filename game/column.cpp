@@ -5,6 +5,7 @@
 #include "../system.h"
 #include "../timer.h"
 #include "../user/setting.h"
+#include "../song_data.h"
 
 void fr::Column::init(int load_column_index, Beatmap *parent)
 {
@@ -310,6 +311,11 @@ void fr::Column::reset()
 void fr::Column::AddNote(Note *load_note)
 {
 	m_note.push_back(load_note);
+}
+
+void fr::Column::AddNote(std::vector<Note*> &load_note_list)
+{
+	m_note.swap(load_note_list);
 }
 
 bool fr::Column::DrawNote(int time, int time_end)
