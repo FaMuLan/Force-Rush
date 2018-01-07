@@ -15,6 +15,24 @@ namespace fr
 		RANK_S,
 	};
 
+	enum NoteType
+	{
+		NOTETYPE_NORMAL = 0,
+		NOTETYPE_SLIDE_IN_LEFT,
+		NOTETYPE_SLIDE_IN_RIGHT,
+		NOTETYPE_SLIDE_OUT_LEFT,
+		NOTETYPE_SLIDE_OUT_RIGHT,
+		NOTETYPE_SLIDE_THROUGH
+	};
+
+	struct Note
+	{
+		unsigned int time;
+		unsigned int time_end;
+		NoteType type;
+		NoteType type_end;
+	};
+
 	struct Score
 	{
 		int pure;
