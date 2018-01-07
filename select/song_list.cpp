@@ -421,21 +421,9 @@ void fr::SongList::WriteList()
 void fr::SongList::RefreshList()
 {
 	is_refreshing = true;
-	MessageBox::instance()->SetText("Start Refresh!");
-	char *output_ch = new char[50];
 
 	std::vector<File*> file;
 	std::vector<std::string> list_path;
-	std::regex id_pattern("BeatmapID:(.*)");
-	std::regex title_pattern("Title:(.*)");
-	std::regex artist_pattern("Artist:(.*)");
-	std::regex noter_pattern("Creator:(.*)");
-	std::regex version_pattern("Version:(.*)");
-	std::regex mode_pattern("Mode: (\\d)");
-	std::regex key_count_pattern("CircleSize:(\\d)");
-	std::regex audio_path_pattern("AudioFilename: (.*)");
-	std::regex preview_time_pattern("PreviewTime: (\\d*)");
-	std::regex note_pattern("\\d+,\\d+,(\\d+),\\d+,\\d+,\\d+:\\d+:\\d+:\\d+:(\\d+:)?");
 	Setting::instance()->GetSongList(list_path);
 	for (int i = 0; i < list_path.size(); i++)
 	{
@@ -459,66 +447,12 @@ void fr::SongList::RefreshList()
 			}
 		}
 	}
-	sprintf(output_ch, "Match %d files", file.size());
-	MessageBox::instance()->SetText(output_ch);
 	for (int i = 0; i < file.size(); i++)
 	{
 		SongInformation *new_song_information = new SongInformation;
-		bool success = true;
-		int note_count = 0;
-		int key_count = 0;
-		int mode = 0;
-		new_song_information->file_path = file[i]->name;
-		std::string text;
-		ReadFile(file[i]->name, text);
-		std::smatch id_line;
-		std::smatch title_line;
-		std::smatch artist_line;
-		std::smatch noter_line;
-		std::smatch version_line;
-		std::smatch mode_line;
-		std::smatch key_count_line;
-		std::smatch audio_path_line;
-		std::smatch preview_time_line;
 
-		std::regex_search(text, id_line, id_pattern);
-		std::regex_search(text, title_line, title_pattern);
-		std::regex_search(text, artist_line, artist_pattern);
-		std::regex_search(text, noter_line, noter_pattern);
-		std::regex_search(text, version_line, version_pattern);
-		std::regex_search(text, mode_line, mode_pattern);
-		std::regex_search(text, key_count_line, key_count_pattern);
-		std::regex_search(text, audio_path_line, audio_path_pattern);
-		std::regex_search(text, preview_time_line, preview_time_pattern);
-
-		new_song_information->id = std::regex_replace(id_line.str(), id_pattern, "$1");
-		new_song_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
-		new_song_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
-		new_song_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
-		new_song_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
-		new_song_information->audio_path = GetParentDir(new_song_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		new_song_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
-		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
-		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
-
-		for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
+		if (LoadOSUFile(file[i]->name, new_song_information, NULL, NULL, NULL, NULL))
 		{
-			std::smatch note_line = *i;
-			new_song_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
-			note_count++;
-		}
-		new_song_information->difficulty = note_count * 1000 / new_song_information->duration;
-
-		if (success)
-		{
-			Score *new_null_score = new Score;
-			new_null_score->rank = RANK_NONE;
-			new_null_score->score = 0;
-			new_null_score->pure = 0;
-			new_null_score->great = 0;
-			new_null_score->good = 0;
-			new_null_score->error = 0;
-			new_song_information->high_score = new_null_score;
 			m_information.push_back(new_song_information);
 
 			list_length = cell_heigh * m_information.size();
@@ -526,12 +460,8 @@ void fr::SongList::RefreshList()
 			WriteList();
 			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
 		}
-
-		sprintf(output_ch, "Loaded %d%%", int(float(i) / float(file.size()) * 100));
-		MessageBox::instance()->SetText(output_ch);
 	}
 
-	MessageBox::instance()->SetText("Refresh Completed!");
 	is_refreshing = false;
 	is_loaded = true;
 }	//void fr::SongList::RefreshList()

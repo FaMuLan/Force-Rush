@@ -1,6 +1,5 @@
 #include "beatmap.h"
 #include <string>
-#include <regex>
 #include "column.h"
 #include "game_state.h"
 #include "result_state.h"
@@ -90,6 +89,12 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_score->error = 0;
 	m_score->score = 0;
 	m_score->combo = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		Column *new_column = new Column;
+		new_column->init(i, this);
+		m_column.push_back(new_column);
+	}
 
 	combo_text = new TextArea;
 	s_light = new Sprite;
@@ -99,36 +104,24 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("combo");
 
-	audio_path = GetParentDir(m_information->file_path);
+	audio_path = m_information->audio_path;
 	bool is_mapped = false;
 	is_waiting = true;
 	is_ended = false;
 
 	std::string text;
 	ReadFile(m_information->file_path, text);
-	std::regex audio_path_pattern("AudioFilename: (.*)");
-	std::regex note_pattern("(\\d+),\\d+,(\\d+),(\\d+),\\d+,(\\d+):\\d+:\\d+:\\d+:(\\d+:)?");
+	std::vector<Note*> note_list1;
+	std::vector<Note*> note_list2;
+	std::vector<Note*> note_list3;
+	std::vector<Note*> note_list4;
 
-	std::smatch audio_path_line;
-	std::regex_search(text, audio_path_line, audio_path_pattern);
-	audio_path += std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+	LoadOSUFile(m_information->file_path, NULL, &note_list1, &note_list2, &note_list3, &note_list4);
 
-	std::map<int, int> column_mapper;
-	column_mapper[64] = 0;
-	column_mapper[192] = 1;
-	column_mapper[320] = 2;
-	column_mapper[448] = 3;
-
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch line = *i;
-		Note *new_note = new Note;
-		new_note->time = atoi(std::regex_replace(line.str(), note_pattern, "$2").c_str()) + 2000;
-		int type = atoi(std::regex_replace(line.str(), note_pattern, "$3").c_str());
-		new_note->time_end = (type % 16 == 0) ? atoi(std::regex_replace(line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
-		int column_index = atoi(std::regex_replace(line.str(), note_pattern, "$1").c_str());
-		m_column[column_mapper[column_index]]->AddNote(new_note);
-	}
+	m_column[0]->AddNote(note_list1);
+	m_column[1]->AddNote(note_list2);
+	m_column[2]->AddNote(note_list3);
+	m_column[3]->AddNote(note_list4);
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
 //	無需加載，因為在選曲界面的時候就加載好了
 

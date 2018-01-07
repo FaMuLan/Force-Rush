@@ -12,6 +12,7 @@ namespace fr
 	class TextArea;
 	struct SongInformation;
 	struct Score;
+	struct Note;
 
 	enum Judgement
 	{
@@ -23,12 +24,6 @@ namespace fr
 	};
 	//這樣枚舉就可以直接跟分數放一起運算了
 	//特別提醒:為了拉開分數差距，GOOD不加分，ERROR會扣分
-
-	struct Note
-	{
-		int time;
-		int time_end;
-	};
 
 	class Beatmap
 	{
