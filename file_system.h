@@ -28,8 +28,11 @@ namespace fr
 	bool ListDir(std::string path, std::vector<File*> &output);
 	void FindFile(std::string path, std::string pattern_str, std::vector<File*> &output);
 	std::string GetParentDir(std::string path);
+	
+	bool LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4);
 
 	bool LoadOSUFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4);
+	bool LoadIMDFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4);
 };
 
 #endif
