@@ -428,6 +428,7 @@ void fr::SongList::RefreshList()
 	for (int i = 0; i < list_path.size(); i++)
 	{
 		FindFile(list_path[i], ".*\\.osu", file);
+		FindFile(list_path[i], ".*\\.imd", file);
 	}
 	Setting::instance()->write();
 
@@ -451,7 +452,7 @@ void fr::SongList::RefreshList()
 	{
 		SongInformation *new_song_information = new SongInformation;
 
-		if (LoadOSUFile(file[i]->name, new_song_information, NULL, NULL, NULL, NULL))
+		if (LoadBeatmapFile(file[i]->name, new_song_information, NULL, NULL, NULL, NULL))
 		{
 			m_information.push_back(new_song_information);
 

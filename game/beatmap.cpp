@@ -116,7 +116,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	std::vector<Note*> note_list3;
 	std::vector<Note*> note_list4;
 
-	LoadOSUFile(m_information->file_path, NULL, &note_list1, &note_list2, &note_list3, &note_list4);
+	LoadBeatmapFile(m_information->file_path, NULL, &note_list1, &note_list2, &note_list3, &note_list4);
 
 	m_column[0]->AddNote(note_list1);
 	m_column[1]->AddNote(note_list2);
