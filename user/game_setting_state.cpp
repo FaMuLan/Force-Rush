@@ -10,6 +10,7 @@
 #include "../loading/loading_state.h"
 #include "../game/column.h"
 #include "../system.h"
+#include "../song_data.h"
 #include "setting.h"
 
 fr::SettingBeatmap *fr::SettingBeatmap::m_instance = 0;
