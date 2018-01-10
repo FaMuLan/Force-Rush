@@ -11,7 +11,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 {
 	m_parent = parent;
 	column_index = load_column_index;
-	m_h = 45;
+	m_h = 106;
 	current_note_index = 0;
 	is_pressing_ln = false;
 	s_note = new Sprite;
@@ -36,64 +36,92 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	switch (column_index)
 	{
 		case 0:
-			current_w = 173.0f * m_parent->GetScaleW();
-			current_h = 45.0f * m_parent->GetScaleH();
-			start_x = 333;
+			current_w = 185.0f * m_parent->GetScaleW();
+			current_h = 106.0f * m_parent->GetScaleH();
+			start_x = 331;
 			start_y = 387;
 			end_x = 36;
-			end_y = 1088;
+			end_y = 1028;
 			m_x = 0;
 			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_in_l_1.png");
+			s_note->AddFrame("");	//IN R
+			s_note->AddFrame("");	//OUT L
+			s_note->AddFrame("assets/game/note_out_r_1.png");
+			s_note->AddFrame("");	//THROUGH
+			s_note->AddFrame("assets/game/note_end_l_1.png");
+			s_note->AddFrame("");	//END R
 			s_note_l->init("assets/game/note_l_1.png", 0, 0, current_w, current_h);
-			s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(-114 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
-			current_w = 165.0f * m_parent->GetScaleW();
-			current_h = 45.0f * m_parent->GetScaleH();
+			current_w = 163.0f * m_parent->GetScaleW();
+			current_h = 106.0f * m_parent->GetScaleH();
 			start_x = 347;
 			start_y = 387;
 			end_x = 197;
-			end_y = 1088;
+			end_y = 1028;
 			m_x = 166 * m_parent->GetScaleW();
 			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_in_l_2.png");
+			s_note->AddFrame("assets/game/note_in_r_2.png");
+			s_note->AddFrame("assets/game/note_out_l_2.png");
+			s_note->AddFrame("assets/game/note_out_r_2.png");
+			s_note->AddFrame("assets/game/note_through_2.png");
+			s_note->AddFrame("assets/game/note_end_l_2.png");
+			s_note->AddFrame("assets/game/note_end_r_2.png");
 			s_note_l->init("assets/game/note_l_2.png", 0, 0, current_w, current_h);
-			s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(43 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
-			current_w = 165.0f * m_parent->GetScaleW();
-			current_h = 45.0f * m_parent->GetScaleH();
+			current_w = 163.0f * m_parent->GetScaleW();
+			current_h = 106.0f * m_parent->GetScaleH();
 			start_x = 360;
 			start_y = 387;
 			end_x = 360;
-			end_y = 1088;
+			end_y = 1028;
 			m_x = 360 * m_parent->GetScaleW();
 			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_in_l_3.png");
+			s_note->AddFrame("assets/game/note_in_r_3.png");
+			s_note->AddFrame("assets/game/note_out_l_3.png");
+			s_note->AddFrame("assets/game/note_out_r_3.png");
+			s_note->AddFrame("assets/game/note_through_3.png");
+			s_note->AddFrame("assets/game/note_end_l_3.png");
+			s_note->AddFrame("assets/game/note_end_r_3.png");
 			s_note_l->init("assets/game/note_l_3.png", 0, 0, current_w, current_h);
-			s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(206 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
-			current_w = 173.0f * m_parent->GetScaleW();
-			current_h = 45.0f * m_parent->GetScaleH();
-			start_x = 371;
+			current_w = 185.0f * m_parent->GetScaleW();
+			current_h = 106.0f * m_parent->GetScaleH();
+			start_x = 372;
 			start_y = 387;
-			end_x = 515;
-			end_y = 1088;
+			end_x = 502;
+			end_y = 1028;
 			m_x = 515 * m_parent->GetScaleW();
 			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
 			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("");	//IN L
+			s_note->AddFrame("assets/game/note_in_r_4.png");
+			s_note->AddFrame("assets/game/note_out_l_4.png");
+			s_note->AddFrame("");	//OUT R
+			s_note->AddFrame("");	//THROUGH
+			s_note->AddFrame("");	//END L
+			s_note->AddFrame("assets/game/note_end_r_4.png");
 			s_note_l->init("assets/game/note_l_4.png", 0, 0, current_w, current_h);
-			s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(367 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
 
@@ -109,6 +137,10 @@ void fr::Column::update()
 {
 	is_released = false;
 	is_tapped = false;
+	is_slide_in_l = false;
+	is_slide_in_r = false;
+	is_slide_out_l = false;
+	is_slide_out_r = false;
 	if (!is_hold)
 	{
 //================= Touch Device ====================
@@ -121,6 +153,20 @@ void fr::Column::update()
 				{
 					is_hold = true;
 					is_tapped = true;
+					is_touch_pressed = true;
+					has_pressed_id = load_finger.id;
+				}
+				else if (load_finger.dx >= 1)
+				{
+					is_slide_in_l = true;
+					is_hold = true;
+					is_touch_pressed = true;
+					has_pressed_id = load_finger.id;
+				}
+				else if (load_finger.dx <= -1)
+				{
+					is_slide_in_r = true;
+					is_hold = true;
 					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
 				}
@@ -148,6 +194,14 @@ void fr::Column::update()
 					{
 						is_hold = false;
 						is_touch_pressed = false;
+						if (load_finger.dx <= -1)
+						{
+							is_slide_out_l = true;
+						}
+						if (load_finger.dx >= 1)
+						{
+							is_slide_out_r = true;
+						}
 					}
 					if (load_finger.released)
 					{
@@ -177,11 +231,23 @@ void fr::Column::update()
 				if (m_note[current_note_index]->time_end - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game"))
 				{
 					is_released = true;
+					is_slide_out_l = true;
+					is_slide_out_r = true;
 				}
 			}
 			if (m_note[current_note_index]->time - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game") && !is_pressing_ln)
 			{
-				is_tapped = true;
+				if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH)
+				{
+					is_slide_out_l = true;
+					is_slide_out_r = true;
+				}
+				else
+				{
+					is_tapped = true;
+					is_slide_in_l = true;
+					is_slide_in_r = true;
+				}
 			}
 		}
 	}
@@ -189,9 +255,26 @@ void fr::Column::update()
 	if (current_note_index < m_note.size())
 	//檢測防止下標越界而導致段錯誤
 	{
-		if (is_tapped)
+		if (is_tapped || is_slide_in_l || is_slide_in_r || (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r)))
 		{
-			Judgement current_judgement = m_parent->judge(m_note[current_note_index]->time);
+			Judgement current_judgement;
+			if (m_note[current_note_index]->type == NOTETYPE_NORMAL)
+			{
+				current_judgement = m_parent->judge(m_note[current_note_index]->time);
+			}
+			else if (((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT || m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT) && is_slide_in_l) || ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT || m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT) && is_slide_in_r))
+			{
+				current_judgement = m_parent->judge(m_note[current_note_index]->time);
+			}
+			else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
+			{
+				current_judgement = m_parent->judge(m_note[current_note_index]->time);
+			}
+			else
+			{
+				current_judgement = JUDGEMENT_NONE;
+			}
+
 			if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
 			{
 				if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
@@ -213,11 +296,25 @@ void fr::Column::update()
 			}
 		}
 
-		if (is_released)
+		if (is_released || is_slide_out_l || is_slide_out_r)
 		{
 			if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
 			{
-				if (m_parent->judge(m_note[current_note_index]->time_end, true, true) != JUDGEMENT_ER)
+				Judgement current_judgement;
+				if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
+				{
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true);
+				}
+				else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
+				{
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true);
+				}
+				else
+				{
+					current_judgement = JUDGEMENT_ER;
+				}
+				
+				if (current_judgement != JUDGEMENT_ER)
 				{
 					s_light->SetAnimate(1, 12, 150);
 				}
@@ -258,30 +355,30 @@ void fr::Column::update()
 		switch (column_index)
 		{
 			case 0:
-				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(-114 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_light->SetPos(-114 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
-				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(43 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_light->SetPos(43 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
-				s_note->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(165.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(206 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_light->SetPos(206 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
-				s_note->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(173.0f * m_parent->GetScaleW(), 45.0f * m_parent->GetScaleH());
-				s_light->SetPos(367 * m_parent->GetScaleW(), 1108 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
+				s_light->SetPos(367 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
@@ -296,7 +393,7 @@ void fr::Column::render()
 
 	while (is_note_in_screen)
 	{
-		is_note_in_screen = DrawNote(m_note[i]->time, m_note[i]->time_end);
+		is_note_in_screen = DrawNote(m_note[i]);
 		i++;
 		is_note_in_screen = is_note_in_screen && i < m_note.size();
 	}
@@ -318,9 +415,9 @@ void fr::Column::AddNote(std::vector<Note*> &load_note_list)
 	m_note.swap(load_note_list);
 }
 
-bool fr::Column::DrawNote(int time, int time_end)
+bool fr::Column::DrawNote(Note *load_note)
 {
-	int time_diff = time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
+	int time_diff = load_note->time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	double process = double(Setting::instance()->GetDuration() - time_diff) / double(Setting::instance()->GetDuration());
 	double process_sq = process * process * process;
 	int current_x = start_x + (end_x - start_x) * process_sq;
@@ -334,16 +431,17 @@ bool fr::Column::DrawNote(int time, int time_end)
 		return false;
 	}
 
-	if (time != time_end)
+	if (load_note->time != load_note->time_end)
 	//是否長條
 	{
-		int time_diff_end = time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
+		int time_diff_end = load_note->time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
 		double process_end = double(Setting::instance()->GetDuration() - time_diff_end) / double(Setting::instance()->GetDuration());
 		double process_end_sq = process_end * process_end * process_end;
 		//時間差轉換成Y坐標 * 2
 
-		if (is_pressing_ln && time == m_note[current_note_index]->time && time_end == m_note[current_note_index]->time_end)
+//		if (is_pressing_ln && load_note->time == m_note[current_note_index]->time && load_note->time_end == m_note[current_note_index]->time_end)
+		if (is_pressing_ln && load_note == m_note[current_note_index])
 		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
@@ -388,7 +486,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
 			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 			s_note->SetScale(current_scale_end);
-			s_note->render();
+			s_note->render(load_note->type_end);
 		}
 		//畫長條尾
 	}
@@ -397,7 +495,7 @@ bool fr::Column::DrawNote(int time, int time_end)
 	{
 		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 		s_note->SetScale(current_scale);
-		s_note->render();
+		s_note->render(load_note->type);
 	}
 
 	return true;

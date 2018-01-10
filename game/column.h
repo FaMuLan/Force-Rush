@@ -21,7 +21,7 @@ namespace fr
 			void reset();
 			void AddNote(Note *load_note);
 			void AddNote(std::vector<Note*> &load_note_list);
-			bool DrawNote(int time, int time_end);
+			bool DrawNote(Note *load_note);
 		private:
 			Beatmap *m_parent;
 			int column_index;
@@ -42,6 +42,10 @@ namespace fr
 			bool is_hold;
 			bool is_released;
 			bool is_pressing_ln;
+			bool is_slide_in_l;
+			bool is_slide_in_r;
+			bool is_slide_out_l;
+			bool is_slide_out_r;
 			bool is_keyboard_pressed;
 			bool is_touch_pressed;
 			FingerID has_pressed_id;
