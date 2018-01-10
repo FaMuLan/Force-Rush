@@ -12,6 +12,7 @@ namespace fr
 			virtual void init(std::string path = "", int x = 0, int y = 0, int w = 0, int h = 0);
 			virtual void update();
 			virtual void render();
+			virtual void render(int index);
 			virtual void clear();
 
 			void AddFrame(std::string path = "");

@@ -49,6 +49,14 @@ void fr::Sprite::render()
 	}
 }
 
+void fr::Sprite::render(int index)
+{
+	if (frame[index] != "")
+	{
+		TextureManager::instance()->render(frame[index], m_x, m_y, m_w * scale, m_h * scale);
+	}
+}
+
 void fr::Sprite::clear()
 {
 //	TextureManager::instance()->clear(m_path);
