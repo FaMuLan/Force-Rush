@@ -417,7 +417,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						i += time_span > 0 ? 1 : -1;
 						if (i == track + time_span)
 						{
-							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_IN_LEFT : NOTETYPE_SLIDE_IN_RIGHT;
+							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_IN_RIGHT : NOTETYPE_SLIDE_IN_LEFT;
 						}
 						else
 						{
@@ -480,16 +480,16 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					switch (track)
 					{
 						case 0x00:
-							last_note1->type = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
+							last_note1->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 						break;
 						case 0x01:
-							last_note2->type = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
+							last_note2->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 						break;
 						case 0x02:
-							last_note3->type = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
+							last_note3->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 						break;
 						case 0x03:
-							last_note4->type = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
+							last_note4->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 						break;
 					}
 					for (char i = track; i != track + time_span;)
@@ -498,7 +498,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						i += time_span > 0 ? 1 : -1;
 						if (i == track + time_span)
 						{
-							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_IN_LEFT : NOTETYPE_SLIDE_IN_RIGHT;
+							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_IN_RIGHT : NOTETYPE_SLIDE_IN_LEFT;
 						}
 						else
 						{
@@ -568,7 +568,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						i += time_span > 0 ? 1 : -1;
 						if (i == track + time_span)
 						{
-							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_END_LEFT : NOTETYPE_SLIDE_END_RIGHT;
+							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_END_RIGHT : NOTETYPE_SLIDE_END_LEFT;
 						}
 						else
 						{
