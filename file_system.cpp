@@ -339,7 +339,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						i += time_span > 0 ? 1 : -1;
 						if (i == track + time_span)
 						{
-							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_END_LEFT : NOTETYPE_SLIDE_END_RIGHT;
+							new_slide_note->type = time_span > 0 ? NOTETYPE_SLIDE_END_RIGHT : NOTETYPE_SLIDE_END_LEFT;
 						}
 						else
 						{
@@ -423,6 +423,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						{
 							new_slide_note->type = NOTETYPE_SLIDE_THROUGH;
 						}
+						new_slide_note->type_end = NOTETYPE_NORMAL;
 						new_slide_note->time = time_stamp + 2000;
 						new_slide_note->time_end = new_start_note->time;
 						switch (i)

@@ -55,7 +55,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_end_l_1.png");
 			s_note->AddFrame("");	//END R
 			s_note_l->init("assets/game/note_l_1.png", 0, 0, current_w, current_h);
-			s_light->SetPos(-114 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
 			current_w = 163.0f * m_parent->GetScaleW();
@@ -77,7 +77,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_end_l_2.png");
 			s_note->AddFrame("assets/game/note_end_r_2.png");
 			s_note_l->init("assets/game/note_l_2.png", 0, 0, current_w, current_h);
-			s_light->SetPos(43 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
 			current_w = 163.0f * m_parent->GetScaleW();
@@ -99,7 +99,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_end_l_3.png");
 			s_note->AddFrame("assets/game/note_end_r_3.png");
 			s_note_l->init("assets/game/note_l_3.png", 0, 0, current_w, current_h);
-			s_light->SetPos(206 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
 			current_w = 185.0f * m_parent->GetScaleW();
@@ -121,7 +121,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("");	//END L
 			s_note->AddFrame("assets/game/note_end_r_4.png");
 			s_note_l->init("assets/game/note_l_4.png", 0, 0, current_w, current_h);
-			s_light->SetPos(367 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+			s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
 
@@ -158,14 +158,14 @@ void fr::Column::update()
 				}
 				else if (load_finger.dx >= 1)
 				{
-					is_slide_in_l = true;
+					is_slide_in_r = true;
 					is_hold = true;
 					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
 				}
 				else if (load_finger.dx <= -1)
 				{
-					is_slide_in_r = true;
+					is_slide_in_l = true;
 					is_hold = true;
 					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
@@ -196,11 +196,11 @@ void fr::Column::update()
 						is_touch_pressed = false;
 						if (load_finger.dx <= -1)
 						{
-							is_slide_out_l = true;
+							is_slide_out_r = true;
 						}
 						if (load_finger.dx >= 1)
 						{
-							is_slide_out_r = true;
+							is_slide_out_l = true;
 						}
 					}
 					if (load_finger.released)
@@ -357,28 +357,28 @@ void fr::Column::update()
 			case 0:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(-114 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(43 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(206 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(367 * m_parent->GetScaleW(), 1048 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
