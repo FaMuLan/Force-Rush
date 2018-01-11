@@ -54,7 +54,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("");	//THROUGH
 			s_note->AddFrame("assets/game/note_end_l_1.png");
 			s_note->AddFrame("");	//END R
-			s_note_l->init("assets/game/note_l_1.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_l_1.png");
+			s_note->AddFrame("assets/game/note_l_head_1.png");
+			s_note->AddFrame("assets/game/note_l_end_1.png");
 			s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
@@ -76,7 +78,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_through_2.png");
 			s_note->AddFrame("assets/game/note_end_l_2.png");
 			s_note->AddFrame("assets/game/note_end_r_2.png");
-			s_note_l->init("assets/game/note_l_2.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_l_2.png");
+			s_note->AddFrame("assets/game/note_l_head_2.png");
+			s_note->AddFrame("assets/game/note_l_end_2.png");
 			s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
@@ -98,7 +102,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_through_3.png");
 			s_note->AddFrame("assets/game/note_end_l_3.png");
 			s_note->AddFrame("assets/game/note_end_r_3.png");
-			s_note_l->init("assets/game/note_l_3.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_l_3.png");
+			s_note->AddFrame("assets/game/note_l_head_3.png");
+			s_note->AddFrame("assets/game/note_l_end_3.png");
 			s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
@@ -120,7 +126,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("");	//THROUGH
 			s_note->AddFrame("");	//END L
 			s_note->AddFrame("assets/game/note_end_r_4.png");
-			s_note_l->init("assets/game/note_l_4.png", 0, 0, current_w, current_h);
+			s_note->AddFrame("assets/game/note_l_4.png");
+			s_note->AddFrame("assets/game/note_l_head_4.png");
+			s_note->AddFrame("assets/game/note_l_end_4.png");
 			s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
@@ -356,28 +364,24 @@ void fr::Column::update()
 		{
 			case 0:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_note_l->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
@@ -460,9 +464,9 @@ bool fr::Column::DrawNote(Note *load_note)
 			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
 			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
 			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
-			s_note_l->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-			s_note_l->SetScale(current_scale_piece);
-			s_note_l->render();
+			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+			s_note->SetScale(current_scale_piece);
+			s_note->render(8);
 			//將長條身往上挪動
 			ln_piece_process -= 0.01f;
 			ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;
@@ -486,7 +490,7 @@ bool fr::Column::DrawNote(Note *load_note)
 			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
 			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 			s_note->SetScale(current_scale_end);
-			s_note->render(load_note->type_end);
+			s_note->render(load_note->type_end == NOTETYPE_NORMAL ? 10 : load_note->type_end);
 		}
 		//畫長條尾
 	}
@@ -495,7 +499,7 @@ bool fr::Column::DrawNote(Note *load_note)
 	{
 		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 		s_note->SetScale(current_scale);
-		s_note->render(load_note->type);
+		s_note->render(((load_note->time != load_note->time_end) && (load_note->type == NOTETYPE_NORMAL)) ? 9 : load_note->type);
 	}
 
 	return true;
