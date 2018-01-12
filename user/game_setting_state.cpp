@@ -36,6 +36,8 @@ void fr::SettingBeatmap::init()
 		Note *new_note = new Note;
 		new_note->time = i * 500 + 2000;
 		new_note->time_end = new_note->time;
+		new_note->type = NOTETYPE_NORMAL;
+		new_note->type_end = NOTETYPE_NORMAL;
 		m_column[3]->AddNote(new_note);
 	}
 	Animator::instance()->AddAnimation("offset", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);

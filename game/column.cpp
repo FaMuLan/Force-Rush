@@ -499,7 +499,7 @@ bool fr::Column::DrawNote(Note *load_note)
 	{
 		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 		s_note->SetScale(current_scale);
-		s_note->render(((load_note->time != load_note->time_end) && (load_note->type == NOTETYPE_NORMAL)) ? 9 : load_note->type);
+		s_note->render((is_pressing_ln && load_note == m_note[current_note_index]) ? NOTETYPE_NORMAL : load_note->type);
 	}
 
 	return true;
