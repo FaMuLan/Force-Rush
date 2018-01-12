@@ -1,6 +1,7 @@
 #include "file_system.h"
 #include <dirent.h>
 #include <fstream>
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <map>
 #include <regex>
@@ -190,6 +191,14 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		{
 			output_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
 			note_count++;
+		}
+		if (load_note)
+		{
+			std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
+			std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
+			std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
+			std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
+			//信不過來排序
 		}
 	}
 	if (load_information)
@@ -616,6 +625,11 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 				break;
 			}
 		}
+		std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
+		std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
+		std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
+		std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
+		//對於IMD格式的時間排列……不手動排序的話遊戲中某些配置連auto都救不了
 	}
 	SDL_FreeRW(file);
 	return success;

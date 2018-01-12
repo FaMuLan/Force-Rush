@@ -60,6 +60,12 @@ namespace fr
 		std::string file_path;
 		Score *high_score;
 	};
+
+	inline bool CompareNote(const Note *note1, const Note *note2)
+	{
+		return note1->time < note2->time;
+	}
+	//用於排序
 };
 
 #endif
