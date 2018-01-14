@@ -232,8 +232,9 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		output_information->file_path = path;
 		output_information->title = std::regex_replace(path, path_pattern, "$1");
 		std::string track_count = std::regex_replace(path, path_pattern, "$2");
-		output_information->version = std::regex_replace(path, path_pattern, "$3");
+		output_information->version = std::regex_replace(path, path_pattern, "IMD $3");
 		output_information->audio_path = GetParentDir(output_information->file_path) + output_information->title + ".mp3";
+		output_information->preview_time = 0;
 		if (track_count != "4")
 		{
 			success = false;
@@ -244,14 +245,16 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		SDL_RWread(file, &beat_count, 4, 1);
 		for (int i = 0; i < beat_count; i++)
 		{
-			SDL_RWread(file, &temp, 12, 1);
+			SDL_RWread(file, &temp, 4, 1);
+			SDL_RWread(file, &temp, 4, 1);
+			SDL_RWread(file, &temp, 4, 1);
 		}
 		SDL_RWread(file, &temp, 2, 1);
 
 		SDL_RWread(file, &note_count, 4, 1);
 		output_information->difficulty = note_count * 1000 / output_information->duration;
-		output_information->artist = "??";
-		output_information->noter = "??";
+		output_information->artist = "Unknown";
+		output_information->noter = "Unknown";
 
 		Score *new_null_score = new Score;
 		new_null_score->rank = RANK_NONE;

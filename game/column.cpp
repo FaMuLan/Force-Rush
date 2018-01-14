@@ -14,6 +14,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	m_h = 106;
 	current_note_index = 0;
 	is_pressing_ln = false;
+	is_hold = false;
+	is_touch_pressed = false;
+	is_keyboard_pressed = false;
 	s_note = new Sprite;
 	s_note_l = new Sprite;
 	s_light = new Sprite;
