@@ -5,6 +5,16 @@
 
 namespace fr
 {
+	enum StateID
+	{
+		STATE_MAIN,
+		STATE_SELECT,
+		STATE_GAME,
+		STATE_RESULT,
+		STATE_GAMEPLAY_WIZARD,
+		STATE_CONSTRUCTING
+	};
+
 	class State
 	{
 		public:
