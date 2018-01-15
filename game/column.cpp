@@ -18,7 +18,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	is_touch_pressed = false;
 	is_keyboard_pressed = false;
 	s_note = new Sprite;
-	s_note_l = new Sprite;
+	s_feedback = new Sprite;
 	s_light = new Sprite;
 	int current_w, current_h;
 
@@ -60,6 +60,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_1.png");
 			s_note->AddFrame("assets/game/note_l_head_1.png");
 			s_note->AddFrame("assets/game/note_l_end_1.png");
+			s_feedback->init("assets/game/feedback_1.png", 36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
 			s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
@@ -84,6 +85,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_2.png");
 			s_note->AddFrame("assets/game/note_l_head_2.png");
 			s_note->AddFrame("assets/game/note_l_end_2.png");
+			s_feedback->init("assets/game/feedback_2.png", 197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
 			s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
@@ -108,6 +110,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_3.png");
 			s_note->AddFrame("assets/game/note_l_head_3.png");
 			s_note->AddFrame("assets/game/note_l_end_3.png");
+			s_feedback->init("assets/game/feedback_3.png", 360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
 			s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
@@ -132,6 +135,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_4.png");
 			s_note->AddFrame("assets/game/note_l_head_4.png");
 			s_note->AddFrame("assets/game/note_l_end_4.png");
+			s_feedback->init("assets/game/feedback_4.png", 502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
 			s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
@@ -187,6 +191,8 @@ void fr::Column::update()
 		if (ControlHandler::instance()->IsKeyDown(keyboard_key))
 		{
 			is_hold = true;
+			is_slide_in_l = true;
+			is_slide_in_r = true;
 			is_tapped = true;
 			is_keyboard_pressed = true;
 		}
@@ -204,6 +210,7 @@ void fr::Column::update()
 					if ((load_finger.x < m_x || load_finger.x > (m_x + m_w)) || load_finger.y < System::instance()->GetWindowHeigh() / 2)
 					{
 						is_hold = false;
+						is_released = true;
 						is_touch_pressed = false;
 						if (load_finger.dx <= -1)
 						{
@@ -229,6 +236,8 @@ void fr::Column::update()
 		{
 			is_hold = false;
 			is_released = true;
+			is_slide_out_l = true;
+			is_slide_out_r = true;
 			is_keyboard_pressed = false;
 		}
 	}
@@ -368,24 +377,32 @@ void fr::Column::update()
 			case 0:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_feedback->SetPos(36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+				s_feedback->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				m_x = 0 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
 			case 1:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_feedback->SetPos(197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+				s_feedback->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				m_x = 166 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 2:
 				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_feedback->SetPos(360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+				s_feedback->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				m_x = 360 * m_parent->GetScaleW();
 				m_w = 194 * m_parent->GetScaleW();
 			break;
 			case 3:
 				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				s_feedback->SetPos(502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
+				s_feedback->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
 				m_x = 515 * m_parent->GetScaleW();
 				m_w = 166 * m_parent->GetScaleW();
 			break;
@@ -403,6 +420,10 @@ void fr::Column::render()
 		is_note_in_screen = DrawNote(m_note[i]);
 		i++;
 		is_note_in_screen = is_note_in_screen && i < m_note.size();
+	}
+	if (is_hold)
+	{
+		s_feedback->render();
 	}
 	s_light->render();
 }
