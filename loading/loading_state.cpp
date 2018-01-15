@@ -7,6 +7,13 @@
 #include "../sound_manager.h"
 #include "../animator.h"
 
+#include "../main/main_state.h"
+#include "../select/select_state.h"
+#include "../game/game_state.h"
+#include "../game/result_state.h"
+#include "../game/gameplay_wizard_state.h"
+#include "../constructing/constructing_state.h"
+
 fr::LoadingState *fr::LoadingState::m_instance = 0;
 
 void fr::LoadingState::update()
@@ -111,13 +118,33 @@ void fr::LoadingState::init()
 	is_exited = true;
 }
 
-void fr::LoadingState::init(State *load_next_state, State *load_last_state)
+void fr::LoadingState::init(StateID next_state_id)
 {
 	is_entered = false;
 	is_loaded = false;
 	is_exited = false;
-	next_state = load_next_state;
-	last_state = load_last_state;
+	switch (next_state_id)
+	{
+		case STATE_MAIN:
+			next_state = MainState::instance();
+		break;
+		case STATE_SELECT:
+			next_state = SelectState::instance();
+		break;
+		case STATE_GAME:
+			next_state = GameState::instance();
+		break;
+		case STATE_RESULT:
+			next_state = ResultState::instance();
+		break;
+		case STATE_GAMEPLAY_WIZARD:
+			next_state = GameplayWizardState::instance();
+		break;
+		case STATE_CONSTRUCTING:
+			next_state = ConstructingState::instance();
+		break;
+	}
+	last_state = System::instance()->current_state;
 	TextArea *new_text_area = new TextArea;
 	new_text_area->init("Loading...", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 80, 0x00, 0x00, 0x00);
 	text_area_bottom.push_back(new_text_area);

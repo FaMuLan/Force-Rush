@@ -32,7 +32,7 @@ namespace fr
 			}
 			void update();
 			void init();
-			void init(State *load_next_state, State *load_last_state);
+			void init(StateID next_state_id);
 			void clear();
 			void OnEnter();
 			void OnExit();
