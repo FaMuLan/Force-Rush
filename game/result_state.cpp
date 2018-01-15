@@ -147,7 +147,7 @@ void fr::ResultState::update()
 
 	if (b_return->IsReleased())
 	{
-		LoadingState::instance()->init(SelectState::instance(), this);
+		LoadingState::instance()->init(STATE_SELECT);
 	}
 
 	delete [] difficulty_ch;

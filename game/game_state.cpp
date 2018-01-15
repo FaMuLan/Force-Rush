@@ -6,7 +6,6 @@
 #include "../texture_manager.h"
 #include "../timer.h"
 #include "../song_data.h"
-#include "../select/select_state.h"
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
 #include "../user/setting.h"
@@ -80,7 +79,7 @@ void fr::GameState::update()
 	title_base->render();
 	if (title_base->IsReleased())
 	{
-		LoadingState::instance()->init(SelectState::instance(), this);
+		LoadingState::instance()->init(STATE_SELECT);
 	}
 }
 

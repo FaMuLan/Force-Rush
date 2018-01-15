@@ -3,7 +3,6 @@
 #include "../sprite.h"
 #include "../texture_manager.h"
 #include "../system.h"
-#include "../main/main_state.h"
 #include "../loading/loading_state.h"
 #include "../text_area.h"
 
@@ -72,7 +71,7 @@ void fr::ConstructingState::update()
 	
 	if (b_back->IsReleased())
 	{
-		LoadingState::instance()->init(MainState::instance(), this);
+		LoadingState::instance()->init(STATE_MAIN);
 	}
 	if (b_communicate->IsReleased())
 	{

@@ -4,7 +4,6 @@
 #include "../sprite.h"
 #include "../system.h"
 #include "../texture_manager.h"
-#include "../main/main_state.h"
 #include "../loading/loading_state.h"
 #include "../user/character.h"
 #include "song_list.h"
@@ -100,7 +99,7 @@ void fr::SelectState::update()
 	{
 		if (select_back->IsReleased())
 		{
-			LoadingState::instance()->init(MainState::instance(), this);
+			LoadingState::instance()->init(STATE_MAIN);
 		}
 		if (select_mod->IsReleased())
 		{

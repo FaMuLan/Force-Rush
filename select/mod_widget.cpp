@@ -5,7 +5,6 @@
 #include "../animator.h"
 #include "../system.h"
 #include "../user/setting.h"
-#include "../user/game_setting_state.h"
 #include "select_state.h"
 #include "../loading/loading_state.h"
 #include "../control_handler.h"
@@ -205,7 +204,7 @@ void fr::ModWidget::update()
 
 		if (gameplay_wizard_button->IsReleased())
 		{
-			LoadingState::instance()->init(GameSettingState::instance(), SelectState::instance());
+			LoadingState::instance()->init(STATE_GAMEPLAY_WIZARD);
 		}
 	}
 	else if (is_shown)

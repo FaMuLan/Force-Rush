@@ -1,4 +1,5 @@
-#include "game_setting_state.h"
+#include "gameplay_wizard_state.h"
+#include "column.h"
 #include "../sprite.h"
 #include "../button.h"
 #include "../text_area.h"
@@ -6,17 +7,15 @@
 #include "../timer.h"
 #include "../animator.h"
 #include "../texture_manager.h"
-#include "../select/select_state.h"
 #include "../loading/loading_state.h"
-#include "../game/column.h"
 #include "../system.h"
 #include "../song_data.h"
-#include "setting.h"
+#include "../user/setting.h"
 
-fr::SettingBeatmap *fr::SettingBeatmap::m_instance = 0;
-fr::GameSettingState *fr::GameSettingState::m_instance = 0;
+fr::GameplayWizardBeatmap *fr::GameplayWizardBeatmap::m_instance = 0;
+fr::GameplayWizardState *fr::GameplayWizardState::m_instance = 0;
 
-void fr::SettingBeatmap::init()
+void fr::GameplayWizardBeatmap::init()
 {
 	Beatmap::init();
 
@@ -47,12 +46,12 @@ void fr::SettingBeatmap::init()
 	is_running = false;
 }
 
-void fr::SettingBeatmap::clear()
+void fr::GameplayWizardBeatmap::clear()
 {
 	Beatmap::clear();
 }
 
-void fr::SettingBeatmap::update()
+void fr::GameplayWizardBeatmap::update()
 {
 	Beatmap::update();
 	if (is_running)
@@ -83,7 +82,7 @@ void fr::SettingBeatmap::update()
 	}
 }
 
-void fr::SettingBeatmap::render()
+void fr::GameplayWizardBeatmap::render()
 {
 	Beatmap::render();
 	current_offset_text->render();
@@ -93,7 +92,7 @@ void fr::SettingBeatmap::render()
 	}
 }
 
-fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
+fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
 {
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
@@ -162,7 +161,7 @@ fr::Judgement fr::SettingBeatmap::judge(int note_time, bool is_pressed, bool is_
 	return JUDGEMENT_NONE;
 }
 
-void fr::SettingBeatmap::start()
+void fr::GameplayWizardBeatmap::start()
 {
 	hit_offset_num->SetText(" ");
 	Timer::instance()->RunTimer("game");
@@ -170,19 +169,19 @@ void fr::SettingBeatmap::start()
 	is_waiting = true;
 }
 
-void fr::SettingBeatmap::stop()
+void fr::GameplayWizardBeatmap::stop()
 {
 	m_column[3]->reset();
 	Timer::instance()->ResetTimer("game");
 	is_running = false;
 }
 
-bool fr::SettingBeatmap::IsRunning()
+bool fr::GameplayWizardBeatmap::IsRunning()
 {
 	return is_running;
 }
 
-void fr::SettingBeatmap::ResetScale()
+void fr::GameplayWizardBeatmap::ResetScale()
 {
 	play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
 	play_base->SetPos(0, Setting::instance()->GetDrawOffset());
@@ -190,7 +189,7 @@ void fr::SettingBeatmap::ResetScale()
 	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
 }
 
-void fr::GameSettingState::init()
+void fr::GameplayWizardState::init()
 {
 	widget_base = new Sprite;
 	back = new Button;
@@ -210,7 +209,7 @@ void fr::GameSettingState::init()
 	draw_offset_num = new TextArea;
 
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
-	SettingBeatmap::instance()->init();
+	GameplayWizardBeatmap::instance()->init();
 	widget_base->init("assets/base/widget_base.png");
 	widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
 	back->init("assets/base/sort_button.png", 0, 0);
@@ -250,15 +249,15 @@ void fr::GameSettingState::init()
 
 }
 
-void fr::GameSettingState::clear()
+void fr::GameplayWizardState::clear()
 {
-	SettingBeatmap::instance()->stop();
-	SettingBeatmap::instance()->clear();
+	GameplayWizardBeatmap::instance()->stop();
+	GameplayWizardBeatmap::instance()->clear();
 }
 
-void fr::GameSettingState::update()
+void fr::GameplayWizardState::update()
 {
-	SettingBeatmap::instance()->update();
+	GameplayWizardBeatmap::instance()->update();
 	back->update();
 	offset_wizard_switch->update();
 	draw_scale_left->update();
@@ -270,13 +269,13 @@ void fr::GameSettingState::update()
 	draw_offset_left_dual->update();
 	draw_offset_right_dual->update();
 
-	if (SettingBeatmap::instance()->IsRunning())
+	if (GameplayWizardBeatmap::instance()->IsRunning())
 	{
 		offset_wizard_switch->ClearText();
 		offset_wizard_switch->AddText("STOP", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		if (offset_wizard_switch->IsReleased())
 		{
-			SettingBeatmap::instance()->stop();
+			GameplayWizardBeatmap::instance()->stop();
 		}
 	}
 	else
@@ -285,7 +284,7 @@ void fr::GameSettingState::update()
 		offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		if (offset_wizard_switch->IsReleased())
 		{
-			SettingBeatmap::instance()->start();
+			GameplayWizardBeatmap::instance()->start();
 		}
 	}
 
@@ -319,7 +318,7 @@ void fr::GameSettingState::update()
 
 	if (back->IsReleased())
 	{
-		LoadingState::instance()->init(SelectState::instance(), this);
+		LoadingState::instance()->init(STATE_SELECT);
 	}
 
 	if (draw_scale_left->IsReleased())
@@ -329,7 +328,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
 		draw_scale_num->SetText(draw_scale_ch);
 		delete draw_scale_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_scale_left_dual->IsReleased())
 	{
@@ -338,7 +337,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
 		draw_scale_num->SetText(draw_scale_ch);
 		delete draw_scale_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_scale_right->IsReleased())
 	{
@@ -347,7 +346,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
 		draw_scale_num->SetText(draw_scale_ch);
 		delete draw_scale_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_scale_right_dual->IsReleased())
 	{
@@ -356,7 +355,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
 		draw_scale_num->SetText(draw_scale_ch);
 		delete draw_scale_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_offset_left->IsReleased())
 	{
@@ -365,7 +364,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
 		draw_offset_num->SetText(draw_offset_ch);
 		delete draw_offset_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_offset_left_dual->IsReleased())
 	{
@@ -374,7 +373,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
 		draw_offset_num->SetText(draw_offset_ch);
 		delete draw_offset_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_offset_right->IsReleased())
 	{
@@ -383,7 +382,7 @@ void fr::GameSettingState::update()
 		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
 		draw_offset_num->SetText(draw_offset_ch);
 		delete draw_offset_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 	if (draw_offset_right_dual->IsReleased())
 	{
@@ -392,10 +391,10 @@ void fr::GameSettingState::update()
 		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
 		draw_offset_num->SetText(draw_offset_ch);
 		delete draw_offset_ch;
-		SettingBeatmap::instance()->ResetScale();
+		GameplayWizardBeatmap::instance()->ResetScale();
 	}
 
-	SettingBeatmap::instance()->render();
+	GameplayWizardBeatmap::instance()->render();
 	widget_base->render();
 	back->render();
 	offset_wizard_switch->render();

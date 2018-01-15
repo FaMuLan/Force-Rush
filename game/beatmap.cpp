@@ -151,7 +151,7 @@ void fr::GameBeatmap::update()
 
 	if (Timer::instance()->GetTime("game") >= m_information->duration + 5000 && !is_ended)
 	{
-		LoadingState::instance()->init(ResultState::instance(), GameState::instance());
+		LoadingState::instance()->init(STATE_RESULT);
 		ResultState::instance()->LoadScore(m_information, m_score);
 		is_ended = true;
 	}

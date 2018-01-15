@@ -1,8 +1,8 @@
-#ifndef FORCE_RUSH_USER_GAME_SETTING_STATE_H
-#define FORCE_RUSH_USER_GAME_SETTING_STATE_H
+#ifndef FORCE_RUSH_USER_GAMEPLAY_WIZARD_STATE_H
+#define FORCE_RUSH_USER_GAMEPLAY_WIZARD_STATE_H
 
 #include "../state.h"
-#include "../game/beatmap.h"
+#include "beatmap.h"
 
 namespace fr
 {
@@ -10,14 +10,14 @@ namespace fr
 	class Button;
 	class TextArea;
 
-	class SettingBeatmap : public Beatmap
+	class GameplayWizardBeatmap : public Beatmap
 	{
 		public:
-			static SettingBeatmap *instance()
+			static GameplayWizardBeatmap *instance()
 			{
 				if (m_instance == 0)
 				{
-					m_instance = new SettingBeatmap;
+					m_instance = new GameplayWizardBeatmap;
 					return m_instance;
 				}
 				return m_instance;
@@ -34,9 +34,9 @@ namespace fr
 			void ResetScale();
 		private:
 
-			SettingBeatmap() {}
-			~SettingBeatmap() {}
-			static SettingBeatmap *m_instance;
+			GameplayWizardBeatmap() {}
+			~GameplayWizardBeatmap() {}
+			static GameplayWizardBeatmap *m_instance;
 			bool is_waiting;
 			bool is_running;
 			TextArea *hit_offset_num;
@@ -45,14 +45,14 @@ namespace fr
 			int beat_count;
 	};
 
-	class GameSettingState : public State
+	class GameplayWizardState : public State
 	{
 		public:
-			static GameSettingState *instance()
+			static GameplayWizardState *instance()
 			{
 				if (m_instance == 0)
 				{
-					m_instance = new GameSettingState;
+					m_instance = new GameplayWizardState;
 					return m_instance;
 				}
 				return m_instance;
@@ -61,9 +61,9 @@ namespace fr
 			void clear();
 			void update();
 		private:
-			GameSettingState() {}
-			~GameSettingState() {}
-			static GameSettingState *m_instance;
+			GameplayWizardState() {}
+			~GameplayWizardState() {}
+			static GameplayWizardState *m_instance;
 			Sprite *widget_base;
 			Button *back;
 			Button *offset_wizard_switch;

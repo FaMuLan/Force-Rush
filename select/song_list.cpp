@@ -10,13 +10,10 @@
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../file_system.h"
-#include "../message_box.h"
 #include "../sound_manager.h"
 #include "../song_data.h"
 #include "../loading/loading_state.h"
-#include "../main/main_state.h"
 #include "../game/game_state.h"
-#include "../game/beatmap.h"
 #include "../user/setting.h"
 #include "select_state.h"
 #include "song_header.h"
@@ -196,7 +193,7 @@ void fr::SongList::update()
 			{
 				if (current_index == selected_index)
 				{
-					LoadingState::instance()->init(GameState::instance(), SelectState::instance());
+					LoadingState::instance()->init(STATE_GAME);
 					GameState::instance()->SetFile(m_information[selected_index]);
 					SoundManager::instance()->stop();
 				}
@@ -340,9 +337,6 @@ bool fr::SongList::LoadList()
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
 	}
-	char *output_ch = new char[50];
-	sprintf(output_ch, "Match %d files", m_information.size());
-	MessageBox::instance()->SetText(output_ch);
 	is_loaded = true;
 	return true;
 }
