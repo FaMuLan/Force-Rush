@@ -311,10 +311,10 @@ bool fr::SongList::LoadList()
 		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
 		std::regex_search(paragraph, file_path_line, file_path_pattern);
 		std::regex_search(paragraph, score_line, score_pattern);
-		std::regex_search(paragraph, pure_line, score_pattern);
-		std::regex_search(paragraph, great_line, score_pattern);
-		std::regex_search(paragraph, good_line, score_pattern);
-		std::regex_search(paragraph, error_line, score_pattern);
+		std::regex_search(paragraph, pure_line, pure_pattern);
+		std::regex_search(paragraph, great_line, great_pattern);
+		std::regex_search(paragraph, good_line, good_pattern);
+		std::regex_search(paragraph, error_line, error_pattern);
 		std::regex_search(paragraph, rank_line, rank_pattern);
 		SongInformation *new_information = new SongInformation;
 		Score *new_score = new Score;
