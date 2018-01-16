@@ -6,7 +6,7 @@
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
 #include "../user/setting.h"
-#include "../message_box.h"
+#include "../control_handler.h"
 #include "../sound_manager.h"
 #include "../song_data.h"
 #include "../texture_manager.h"
@@ -51,6 +51,15 @@ void fr::Beatmap::update()
 		play_base->SetPos(0, Setting::instance()->GetDrawOffset());
 		scale_w = System::instance()->GetWindowWidth() / 720.f;
 		scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
+	}
+
+	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+	{
+		Finger load_finger = ControlHandler::instance()->GetFinger(i);
+		if (load_finger.y < System::instance()->GetWindowHeigh() / 2)
+		{
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - load_finger.dy);
+		}
 	}
 
 	for (int i = 0; i < m_column.size(); i++)
@@ -186,7 +195,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
 
-			MessageBox::instance()->SetText("Error Early");
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_ER;
@@ -203,7 +211,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
 
-			MessageBox::instance()->SetText("Error Early");
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_ER;
@@ -220,7 +227,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
 
-			MessageBox::instance()->SetText("Good");
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_GD;
@@ -237,7 +243,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
 
-			MessageBox::instance()->SetText("Great");
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_GR;
@@ -254,7 +259,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
 
-			MessageBox::instance()->SetText("Pure");
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_PG;
@@ -272,7 +276,6 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 		combo_text->SetText(combo_ch);
 		delete combo_ch;
 
-		MessageBox::instance()->SetText("Error Late");
 		Animator::instance()->ResetAnimation("combo");
 		Animator::instance()->Animate("combo");
 		return JUDGEMENT_ER;
