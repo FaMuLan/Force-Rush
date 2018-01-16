@@ -8,6 +8,7 @@
 #include "../select/select_state.h"
 #include "../select/song_list.h"
 #include "../loading/loading_state.h"
+#include "game_state.h"
 #include "../user/character.h"
 #include "../user/setting.h"
 
@@ -148,6 +149,11 @@ void fr::ResultState::update()
 	if (b_return->IsReleased())
 	{
 		LoadingState::instance()->init(STATE_SELECT);
+	}
+	if (b_retry->IsReleased())
+	{
+		LoadingState::instance()->init(STATE_GAME);
+		GameState::instance()->SetFile(m_information);
 	}
 
 	delete [] difficulty_ch;
