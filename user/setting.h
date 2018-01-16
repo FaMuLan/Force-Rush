@@ -24,6 +24,7 @@ namespace fr
 			void write();
 
 			bool IsAuto();
+			bool IsSlideOut();
 			int GetDuration();
 			int GetOffset();
 			float GetDrawScale();
@@ -31,6 +32,7 @@ namespace fr
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
 			void SwitchAuto();
+			void SwitchSlideOut();
 			void SetDuration(int input);
 			void SetOffset(int input);
 			void SetDrawScale(float input);
@@ -41,6 +43,7 @@ namespace fr
 			~Setting() {}
 			static Setting *m_instance;
 			bool is_auto;
+			bool is_slide_out;
 			int duration;
 			int offset;
 			int draw_scale_portrait;

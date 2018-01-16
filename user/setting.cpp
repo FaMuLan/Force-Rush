@@ -9,6 +9,7 @@ fr::Setting *fr::Setting::m_instance = 0;
 void fr::Setting::init()
 {
 	is_auto = false;
+	is_slide_out = false;
 	duration = 800;
 	offset = -200;
 	key_code[0] = SDL_SCANCODE_D;
@@ -35,6 +36,7 @@ bool fr::Setting::read()
 	}
 	song_list.clear();
 	std::regex auto_pattern("auto:(.+)");
+	std::regex slide_out_pattern("slide_out:(.+)");
 	std::regex duration_pattern("duration:(\\d+)");
 	std::regex offset_pattern("offset:(-?\\d+)");
 	std::regex key_code_pattern("key (\\d+):(\\d+)");
@@ -42,16 +44,19 @@ bool fr::Setting::read()
 	std::regex column_portrait_pattern("column_portrait:(\\d+),(-?\\d+)");
 	std::regex column_landscape_pattern("column_landscape:(\\d+),(-?\\d+)");
 	std::smatch auto_line;
+	std::smatch slide_out_line;
 	std::smatch duration_line;
 	std::smatch offset_line;
 	std::smatch column_portrait_line;
 	std::smatch column_landscape_line;
 	std::regex_search(file, auto_line, auto_pattern);
+	std::regex_search(file, slide_out_line, slide_out_pattern);
 	std::regex_search(file, duration_line, duration_pattern);
 	std::regex_search(file, offset_line, offset_pattern);
 	std::regex_search(file, column_portrait_line, column_portrait_pattern);
 	std::regex_search(file, column_landscape_line, column_landscape_pattern);
 	is_auto = std::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
+	is_slide_out = std::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
 	duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
 	offset = atoi(std::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
 	draw_scale_portrait = atoi(std::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$1").c_str());
@@ -86,6 +91,7 @@ void fr::Setting::write()
 
 	file = "Force Rush user setting file\n";
 	file += is_auto ? "auto:on\n" : "auto:off\n";
+	file += is_slide_out ? "slide_out:on\n" : "slide_out:off\n";
 	file += duration_ch;
 	file += offset_ch;
 	file += column_portrait_ch;
@@ -114,6 +120,11 @@ void fr::Setting::write()
 bool fr::Setting::IsAuto()
 {
 	return is_auto;
+}
+
+bool fr::Setting::IsSlideOut()
+{
+	return is_slide_out;
 }
 
 int fr::Setting::GetDuration()
@@ -157,6 +168,12 @@ void fr::Setting::GetSongList(std::vector<std::string> &output)
 void fr::Setting::SwitchAuto()
 {
 	is_auto = !is_auto;
+	write();
+}
+
+void fr::Setting::SwitchSlideOut()
+{
+	is_slide_out = !is_slide_out;
 	write();
 }
 
