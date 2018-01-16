@@ -41,6 +41,7 @@ namespace fr
 			Sprite *background_l;
 			Sprite *background_r;
 			TextArea *score_text;
+			TextArea *duration_text;
 	};	//class GameState : public State
 };	//namespace fr
 
