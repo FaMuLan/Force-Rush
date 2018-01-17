@@ -16,6 +16,7 @@ void fr::ModWidget::init()
 	widget_base = new Sprite;
 
 	auto_switch = new Button;
+	slide_out_switch = new Button;
 	duration_left = new Button;
 	duration_left_dual = new Button;
 	duration_right = new Button;
@@ -27,6 +28,7 @@ void fr::ModWidget::init()
 	gameplay_wizard_button = new Button;
 
 	auto_text = new TextArea;
+	slide_out_text = new TextArea;
 	duration_text = new TextArea;
 	offset_text = new TextArea;
 	gameplay_wizard_text = new TextArea;
@@ -37,6 +39,9 @@ void fr::ModWidget::init()
 	auto_switch->init("assets/base/sort_button.png");
 	auto_switch->AddPressedFrame( "assets/base/sort_button_pressed.png");
 	auto_switch->AddText(Setting::instance()->IsAuto() ? "ON" : "OFF", auto_switch->GetW() / 2, auto_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	slide_out_switch->init("assets/base/sort_button.png");
+	slide_out_switch->AddPressedFrame( "assets/base/sort_button_pressed.png");
+	slide_out_switch->AddText(Setting::instance()->IsSlideOut() ? "ON" : "OFF", slide_out_switch->GetW() / 2, slide_out_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	duration_left->init("assets/base/arrow_left.png");
 	duration_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
 	duration_left_dual->init("assets/base/arrow_left_dual.png");
@@ -58,6 +63,7 @@ void fr::ModWidget::init()
 	gameplay_wizard_button->AddText("START", gameplay_wizard_button->GetW() / 2, gameplay_wizard_button->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
 	auto_text->init("AUTO", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	slide_out_text->init("SLIDE OUT", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init("DURATION", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	offset_text->init("OFFSET", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	gameplay_wizard_text->init("GAMEPLAY WIZARD", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
@@ -91,21 +97,23 @@ void fr::ModWidget::update()
 		{
 			widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() - widget_base->GetH());
 			auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-			duration_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
-			duration_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 154);
-			duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
-			duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
-			offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 258);
-			offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
-			offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
-			offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-			gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+			slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+			duration_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
+			duration_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+			duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
+			duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+			offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 362);
+			offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 362);
+			offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 362);
+			offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 362);
+			gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 448);
 			auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
-			duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
-			offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-			gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
-			duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
-			offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+			slide_out_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+			duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+			offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+			gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 466);
+			duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+			offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
 		}
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
@@ -119,6 +127,7 @@ void fr::ModWidget::update()
 			}
 		}
 		auto_switch->update();
+		slide_out_switch->update();
 		duration_left->update();
 		duration_right->update();
 		duration_left_dual->update();
@@ -134,6 +143,13 @@ void fr::ModWidget::update()
 			Setting::instance()->SwitchAuto();
 			auto_switch->ClearText();
 			auto_switch->AddText(Setting::instance()->IsAuto() ? "ON" : "OFF", auto_switch->GetW() / 2, auto_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+		}
+
+		if (slide_out_switch->IsReleased())
+		{
+			Setting::instance()->SwitchSlideOut();
+			slide_out_switch->ClearText();
+			slide_out_switch->AddText(Setting::instance()->IsSlideOut() ? "ON" : "OFF", slide_out_switch->GetW() / 2, slide_out_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		}
 
 		if (duration_left->IsReleased())
@@ -223,10 +239,12 @@ void fr::ModWidget::render()
 	{
 		widget_base->render();
 		auto_text->render();
+		slide_out_text->render();
 		duration_text->render();
 		offset_text->render();
 		gameplay_wizard_text->render();
 		auto_switch->render();
+		slide_out_switch->render();
 		duration_left->render();
 		duration_right->render();
 		duration_left_dual->render();
@@ -265,21 +283,23 @@ void fr::ModWidget::OnEnter()
 	int widget_x = -widget_base->GetW() + (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_enter");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 154);
-	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 154);
-	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
-	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
-	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 258);
-	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
-	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
-	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+	duration_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
+	duration_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
+	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+	offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 362);
+	offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 362);
+	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 362);
+	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 362);
+	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 448);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
-	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
-	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
-	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
-	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+	slide_out_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 466);
+	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
 	if (Animator::instance()->IsTimeUp("mod_enter"))
 	{
 		Animator::instance()->ResetAnimation("mod_enter");
@@ -292,21 +312,23 @@ void fr::ModWidget::OnExit()
 	int widget_x = System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2 - (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_exit");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	duration_left->SetPos(widget_base->GetX() + 432,  widget_base->GetY() + 154);
-	duration_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 154);
-	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
-	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
-	offset_left->SetPos(widget_base->GetX() + 432, widget_base->GetY() + 258);
-	offset_right->SetPos(widget_base->GetX() + 624, widget_base->GetY() + 258);
-	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
-	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
-	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 344);
+	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+	duration_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
+	duration_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+	duration_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
+	duration_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+	offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 362);
+	offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 362);
+	offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 362);
+	offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 362);
+	gameplay_wizard_button->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 448);
 	auto_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
-	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
-	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
-	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
-	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+	slide_out_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+	duration_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+	offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+	gameplay_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 466);
+	duration_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+	offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
 	if (Animator::instance()->IsTimeUp("mod_exit"))
 	{
 		Animator::instance()->ResetAnimation("mod_exit");

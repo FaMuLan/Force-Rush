@@ -41,6 +41,8 @@ namespace fr
 
 			TextArea *auto_text;
 			Button *auto_switch;
+			TextArea *slide_out_text;
+			Button *slide_out_switch;
 			TextArea *duration_text;
 			Button *duration_left;
 			Button *duration_left_dual;
