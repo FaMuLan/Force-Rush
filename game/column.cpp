@@ -170,6 +170,11 @@ void fr::Column::update()
 					is_tapped = true;
 					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
+					if (Setting::instance()->IsSlideOut())
+					{
+						is_slide_in_l = true;
+						is_slide_in_r = true;
+					}
 				}
 				else if (load_finger.dx >= 1)
 				{
@@ -191,8 +196,11 @@ void fr::Column::update()
 		if (ControlHandler::instance()->IsKeyDown(keyboard_key))
 		{
 			is_hold = true;
-			is_slide_in_l = true;
-			is_slide_in_r = true;
+			if (Setting::instance()->IsSlideOut())
+			{
+				is_slide_in_l = true;
+				is_slide_in_r = true;
+			}
 			is_tapped = true;
 			is_keyboard_pressed = true;
 		}
@@ -224,6 +232,11 @@ void fr::Column::update()
 					if (load_finger.released)
 					{
 						is_released = true;
+						if (Setting::instance()->IsSlideOut())
+						{
+							is_slide_out_l = true;
+							is_slide_out_r = true;
+						}
 						is_hold = false;
 						is_touch_pressed = false;
 					}
@@ -236,8 +249,11 @@ void fr::Column::update()
 		{
 			is_hold = false;
 			is_released = true;
-			is_slide_out_l = true;
-			is_slide_out_r = true;
+			if (Setting::instance()->IsSlideOut())
+			{
+				is_slide_out_l = true;
+				is_slide_out_r = true;
+			}
 			is_keyboard_pressed = false;
 		}
 	}
@@ -514,7 +530,7 @@ bool fr::Column::DrawNote(Note *load_note)
 			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
 			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 			s_note->SetScale(current_scale_end);
-			s_note->render(load_note->type_end == NOTETYPE_NORMAL ? 10 : load_note->type_end);
+			s_note->render((load_note->type_end == NOTETYPE_NORMAL || Setting::instance()->IsSlideOut()) ? 10 : load_note->type_end);
 		}
 		//畫長條尾
 	}
@@ -523,7 +539,7 @@ bool fr::Column::DrawNote(Note *load_note)
 	{
 		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
 		s_note->SetScale(current_scale);
-		s_note->render((is_pressing_ln && load_note == m_note[current_note_index]) ? NOTETYPE_NORMAL : load_note->type);
+		s_note->render(((is_pressing_ln && load_note == m_note[current_note_index]) || Setting::instance()->IsSlideOut()) ? NOTETYPE_NORMAL : load_note->type);
 	}
 
 	return true;
