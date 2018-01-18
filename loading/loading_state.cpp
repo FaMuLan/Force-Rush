@@ -8,7 +8,7 @@
 #include "../animator.h"
 
 #include "../main/main_state.h"
-#include "../select/select_state.h"
+#include "../prepare/prepare_state.h"
 #include "../game/game_state.h"
 #include "../game/result_state.h"
 #include "../game/gameplay_wizard_state.h"
@@ -128,8 +128,8 @@ void fr::LoadingState::init(StateID next_state_id)
 		case STATE_MAIN:
 			next_state = MainState::instance();
 		break;
-		case STATE_SELECT:
-			next_state = SelectState::instance();
+		case STATE_PREPARE:
+			next_state = PrepareState::instance();
 		break;
 		case STATE_GAME:
 			next_state = GameState::instance();

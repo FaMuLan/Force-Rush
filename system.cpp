@@ -2,7 +2,6 @@
 #include "control_handler.h"
 #include "state.h"
 #include "main/main_state.h"
-#include "select/select_state.h"
 #include "loading/loading_state.h"
 #include "user/character.h"
 #include "user/setting.h"

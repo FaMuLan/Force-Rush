@@ -15,7 +15,6 @@
 #include "../loading/loading_state.h"
 #include "../game/game_state.h"
 #include "../user/setting.h"
-#include "select_state.h"
 #include "song_header.h"
 #include "mod_widget.h"
 

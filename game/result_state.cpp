@@ -5,8 +5,8 @@
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../song_data.h"
-#include "../select/select_state.h"
-#include "../select/song_list.h"
+#include "../prepare/prepare_state.h"
+#include "../prepare/song_list.h"
 #include "../loading/loading_state.h"
 #include "game_state.h"
 #include "../user/character.h"
@@ -148,7 +148,7 @@ void fr::ResultState::update()
 
 	if (b_return->IsReleased())
 	{
-		LoadingState::instance()->init(STATE_SELECT);
+		LoadingState::instance()->init(STATE_PREPARE);
 	}
 	if (b_retry->IsReleased())
 	{

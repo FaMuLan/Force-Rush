@@ -62,7 +62,7 @@ void fr::MainState::update()
 
 	if (main_start->IsReleased())
 	{
-		LoadingState::instance()->init(STATE_SELECT);
+		LoadingState::instance()->init(STATE_PREPARE);
 //		SoundManager::instance()->stop();
 	}
 	if (main_about->IsReleased())

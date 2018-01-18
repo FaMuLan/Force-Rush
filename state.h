@@ -8,7 +8,7 @@ namespace fr
 	enum StateID
 	{
 		STATE_MAIN,
-		STATE_SELECT,
+		STATE_PREPARE,
 		STATE_GAME,
 		STATE_RESULT,
 		STATE_GAMEPLAY_WIZARD,

@@ -318,7 +318,7 @@ void fr::GameplayWizardState::update()
 
 	if (back->IsReleased())
 	{
-		LoadingState::instance()->init(STATE_SELECT);
+		LoadingState::instance()->init(STATE_PREPARE);
 	}
 
 	if (draw_scale_left->IsReleased())
