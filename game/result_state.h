@@ -6,6 +6,7 @@
 namespace fr
 {
 	class Sprite;
+	class TextArea;
 	class Button;
 	struct SongInformation;
 	struct Score;
@@ -40,6 +41,17 @@ namespace fr
 			Button *b_retry;
 			SongInformation *m_information;
 			Score *m_score;
+
+			TextArea *title_text;
+			TextArea *artist_text;
+			TextArea *version_text;
+			TextArea *difficulty_text;
+			TextArea *score_text;
+			TextArea *pure_text;
+			TextArea *great_text;
+			TextArea *good_text;
+			TextArea *error_text;
+			TextArea *rank_text;
 	};
 };
 

@@ -2,6 +2,7 @@
 #include "beatmap.h"
 #include "../button.h"
 #include "../sprite.h"
+#include "../text_area.h"
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../song_data.h"
@@ -23,6 +24,17 @@ void fr::ResultState::init()
 	user_base = new Sprite;
 	b_return = new Button;
 	b_retry = new Button;
+
+	title_text = new TextArea;
+	artist_text = new TextArea;
+	version_text = new TextArea;
+	difficulty_text = new TextArea;
+	score_text = new TextArea;
+	pure_text = new TextArea;
+	great_text = new TextArea;
+	good_text = new TextArea;
+	error_text = new TextArea;
+	rank_text = new TextArea;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 32);
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 24);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 168);
@@ -66,26 +78,6 @@ void fr::ResultState::init()
 		m_information->high_score = m_score;
 		SongList::instance()->WriteList();
 	}
-}
-
-void fr::ResultState::clear()
-{
-	
-}
-
-void fr::ResultState::update()
-{
-	b_return->update();
-	b_retry->update();
-
-	Character::instance()->render();
-	song_base->render();
-	score_base->render();
-	rank_base->render();
-	performance_base->render();
-	user_base->render();
-	b_return->render();
-	b_retry->render();
 
 	char *difficulty_ch = new char[10];
 	char *pure_ch = new char[10];
@@ -124,6 +116,35 @@ void fr::ResultState::update()
 		break;
 	}
 
+	title_text->init(m_information->title, 32, System::instance()->GetWindowHeigh() - 696, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
+	artist_text->init(m_information->artist, 32, System::instance()->GetWindowHeigh() - 648, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
+	version_text->init(m_information->version, 96, System::instance()->GetWindowHeigh() - 608, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
+	difficulty_text->init(difficulty_ch, 32, System::instance()->GetWindowHeigh() - 608, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 56);
+	score_text->init(score_ch, 32, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+	pure_text->init(pure_ch, 32, System::instance()->GetWindowHeigh() - 472, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+	great_text->init(great_ch, 32, System::instance()->GetWindowHeigh() - 432, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+	good_text->init(good_ch, 32, System::instance()->GetWindowHeigh() - 392, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+	error_text->init(error_ch, 32, System::instance()->GetWindowHeigh() - 352, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
+	rank_text->init(rank_ch, System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
+
+	delete [] difficulty_ch;
+	delete [] pure_ch;
+	delete [] great_ch;
+	delete [] good_ch;
+	delete [] error_ch;
+	delete [] score_ch;
+}
+
+void fr::ResultState::clear()
+{
+	
+}
+
+void fr::ResultState::update()
+{
+	b_return->update();
+	b_retry->update();
+
 	if (System::instance()->IsWindowModified())
 	{
 		song_base->SetPos(0, System::instance()->GetWindowHeigh() - 720);
@@ -133,18 +154,38 @@ void fr::ResultState::update()
 		user_base->SetPos(System::instance()->GetWindowWidth() - 232,  System::instance()->GetWindowHeigh() - 318);
 		b_return->SetPos(0, System::instance()->GetWindowHeigh() - 80);
 		b_retry->SetPos(System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80);
+
+		title_text->SetPos(32, System::instance()->GetWindowHeigh() - 696);
+		artist_text->SetPos(32, System::instance()->GetWindowHeigh() - 648);
+		version_text->SetPos(96, System::instance()->GetWindowHeigh() - 608);
+		difficulty_text->SetPos(32, System::instance()->GetWindowHeigh() - 608);
+		score_text->SetPos(32, System::instance()->GetWindowHeigh() - 520);
+		pure_text->SetPos(32, System::instance()->GetWindowHeigh() - 472);
+		great_text->SetPos(32, System::instance()->GetWindowHeigh() - 432);
+		good_text->SetPos(32, System::instance()->GetWindowHeigh() - 392);
+		error_text->SetPos(32, System::instance()->GetWindowHeigh() - 352);
+		rank_text->SetPos(System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604);
 	}
 
-	TextureManager::instance()->render(m_information->title, 32, System::instance()->GetWindowHeigh() - 696, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	TextureManager::instance()->render(m_information->artist, 32, System::instance()->GetWindowHeigh() - 648, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	TextureManager::instance()->render(m_information->version, 96, System::instance()->GetWindowHeigh() - 608, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	TextureManager::instance()->render(difficulty_ch, 32, System::instance()->GetWindowHeigh() - 608, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 56);
-	TextureManager::instance()->render(score_ch, 32, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	TextureManager::instance()->render(pure_ch, 32, System::instance()->GetWindowHeigh() - 472, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	TextureManager::instance()->render(great_ch, 32, System::instance()->GetWindowHeigh() - 432, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	TextureManager::instance()->render(good_ch, 32, System::instance()->GetWindowHeigh() - 392, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	TextureManager::instance()->render(error_ch, 32, System::instance()->GetWindowHeigh() - 352, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-		TextureManager::instance()->render(rank_ch, System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
+	Character::instance()->render();
+	song_base->render();
+	score_base->render();
+	rank_base->render();
+	performance_base->render();
+	user_base->render();
+	b_return->render();
+	b_retry->render();
+
+	title_text->render();
+	artist_text->render();
+	version_text->render();
+	difficulty_text->render();
+	score_text->render();
+	pure_text->render();
+	great_text->render();
+	good_text->render();
+	error_text->render();
+	rank_text->render();
 
 	if (b_return->IsReleased())
 	{
@@ -155,13 +196,6 @@ void fr::ResultState::update()
 		LoadingState::instance()->init(STATE_GAME);
 		GameState::instance()->SetFile(m_information);
 	}
-
-	delete [] difficulty_ch;
-	delete [] pure_ch;
-	delete [] great_ch;
-	delete [] good_ch;
-	delete [] error_ch;
-	delete [] score_ch;
 }
 
 void fr::ResultState::LoadScore(fr::SongInformation *load_information, fr::Score *load_score)
