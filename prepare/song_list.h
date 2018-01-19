@@ -1,5 +1,5 @@
-#ifndef FORCE_RUSH_SELECT_SONG_LIST_H
-#define FORCE_RUSH_SELECT_SONG_LIST_H
+#ifndef FORCE_RUSH_PREPARE_SONG_LIST_H
+#define FORCE_RUSH_PREPARE_SONG_LIST_H
 
 #include <vector>
 #include <string>
@@ -33,6 +33,11 @@ namespace fr
 			static void RefreshList();
 			static bool IsRefreshing();
 			static void RefreshListSize();
+
+			static void OnEnter();
+			static void OnExit();
+			static void SwitchShown();
+			static bool IsShown();
 		private:
 			SongList() {}
 			~SongList() {}
@@ -45,10 +50,15 @@ namespace fr
 			static int list_process;
 			static int selected_index;
 			static int cell_heigh;
+			static int cell_pos_offset_y;
 			static bool is_list_moved;
 			static bool is_refreshing;
 			static bool is_loaded;
+
+			static bool is_shown;
+			static bool is_entered;
+			static bool is_exited;
 	};
 };	//namespace fr
 
-#endif	//FORCE_RUSH_SELECT_SONG_LIST_H
+#endif	//FORCE_RUSH_PREPARE_SONG_LIST_H

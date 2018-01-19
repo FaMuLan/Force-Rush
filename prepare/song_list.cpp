@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <thread>
 #include <dirent.h>
+#include "../animator.h"
 #include "../button.h"
 #include "../control_handler.h"
 #include "../sprite.h"
@@ -26,9 +27,14 @@ int fr::SongList::list_length = 0;
 int fr::SongList::list_process = 0;
 int fr::SongList::selected_index = 0;
 int fr::SongList::cell_heigh = 0;
+int fr::SongList::cell_pos_offset_y = 0;
 bool fr::SongList::is_list_moved = false;
 bool fr::SongList::is_refreshing = false;
 bool fr::SongList::is_loaded = false;
+
+bool fr::SongList::is_shown = true;
+bool fr::SongList::is_entered = true;
+bool fr::SongList::is_exited = false;
 
 void fr::SongList::init()
 {
@@ -50,6 +56,9 @@ void fr::SongList::init()
 	null_score->good = 0;
 	null_score->error = 0;
 	null_information->high_score = null_score;
+
+	Animator::instance()->AddAnimation("song_list_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
+	Animator::instance()->AddAnimation("song_list_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 
 	if (!is_refreshing && !is_loaded)
 	{
@@ -92,15 +101,44 @@ void fr::SongList::clear()
 
 void fr::SongList::update()
 {
-	static int roll_speed;
-	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
+	if (is_entered)
 	{
-		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if ((load_finger.x >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280)) && (load_finger.x <= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000)) && (load_finger.y >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) && !ModWidget::instance()->IsShown())
+		static int roll_speed;
+		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
-			list_process -= load_finger.dy;
-			roll_speed = load_finger.dy;
+			Finger load_finger = ControlHandler::instance()->GetFinger(i);
+			if ((load_finger.x >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280)) && (load_finger.x <= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000)) && (load_finger.y >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) && !ModWidget::instance()->IsShown())
+			{
+				list_process -= load_finger.dy;
+				roll_speed = load_finger.dy;
 
+				while (list_process < 0)
+				{
+					list_process += list_length;
+				}
+				while (list_process >= list_length)
+				{
+					list_process -= list_length;
+				}
+				//把list_process盡量控制在[0,list_length)區間內
+				//艸有必要用一個笨方法來控制變量在範圍內了
+			}
+		}
+
+		if (ControlHandler::instance()->GetFingerCount() == 0)
+		{
+			if (roll_speed < 0)
+			{
+				roll_speed += 2;
+				roll_speed = roll_speed > 0 ? 0 : roll_speed;
+			}
+			else if (roll_speed > 0)
+			{
+				roll_speed -= 2;
+				roll_speed = roll_speed < 0 ? 0 : roll_speed;
+			}
+			//不包含 roll_speed == 0 這個情況
+			list_process -= roll_speed;
 			while (list_process < 0)
 			{
 				list_process += list_length;
@@ -109,123 +147,108 @@ void fr::SongList::update()
 			{
 				list_process -= list_length;
 			}
-			//把list_process盡量控制在[0,list_length)區間內
-			//艸有必要用一個笨方法來控制變量在範圍內了
 		}
-	}
 
-	if (ControlHandler::instance()->GetFingerCount() == 0)
-	{
-		if (roll_speed < 0)
-		{
-			roll_speed += 2;
-			roll_speed = roll_speed > 0 ? 0 : roll_speed;
-		}
-		else if (roll_speed > 0)
-		{
-			roll_speed -= 2;
-			roll_speed = roll_speed < 0 ? 0 : roll_speed;
-		}
-		//不包含 roll_speed == 0 這個情況
-		list_process -= roll_speed;
-		while (list_process < 0)
-		{
-			list_process += list_length;
-		}
-		while (list_process >= list_length)
-		{
-			list_process -= list_length;
-		}
-	}
-
-	is_list_moved = roll_speed != 0;
-	//检测列表是否移动。
+		is_list_moved = roll_speed != 0;
+		//检测列表是否移动。
+	}	//if (is_entered)
 
 	if (System::instance()->IsWindowModified())
 	{
 		RefreshListSize();
 	}
 
-	int current_index = list_process / cell_heigh;
-	for (int i = 0; i < m_cell.size(); i++)
+	if (is_shown && !is_entered)
 	{
-		int x = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280;
-		int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64);
-		m_cell[i]->SetPos(x, y);
-		if (m_information.size() != 0)
+		OnEnter();
+	}
+	else if (!is_shown && !is_exited)
+	{
+		OnExit();
+	}
+
+	if (!is_exited)
+	{
+		int current_index = list_process / cell_heigh;
+		for (int i = 0; i < m_cell.size(); i++)
 		{
-			if (current_index >= m_information.size())
+			int x = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280;
+			int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64) + cell_pos_offset_y;
+			m_cell[i]->SetPos(x, y);
+			if (m_information.size() != 0)
 			{
-				current_index = 0;
-			}
-//			m_cell[i]->ClearText();
-			char *difficulty_ch = new char[3];
-			sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
+				if (current_index >= m_information.size())
+				{
+					current_index = 0;
+				}
+				char *difficulty_ch = new char[3];
+				sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
 
-			if (current_index == selected_index)
-			{
-				m_cell[i]->SetBaseFrame(2);
-				m_cell[i]->GetText(0)->SetText(difficulty_ch);
-				m_cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
-				m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
-				m_cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
-			}
-			else
-			{
-				m_cell[i]->SetBaseFrame(0);
-				m_cell[i]->GetText(0)->SetText(difficulty_ch);
-				m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
-				m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
-				m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
-			}
-
-			delete [] difficulty_ch;
-
-			if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
-			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
-			!is_list_moved) && !ModWidget::instance()->IsShown())
-			//這個條件運算吃棗藥丸……
-			{
-				m_cell[i]->update();
-			}
-			if (m_cell[i]->IsReleased() && !ModWidget::instance()->IsShown())
-			{
 				if (current_index == selected_index)
 				{
-					LoadingState::instance()->init(STATE_GAME);
-					GameState::instance()->SetFile(m_information[selected_index]);
-					SoundManager::instance()->stop();
+					m_cell[i]->SetBaseFrame(2);
+					m_cell[i]->GetText(0)->SetText(difficulty_ch);	
+					m_cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+					m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+					m_cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
 				}
 				else
 				{
-					if (m_information[selected_index]->audio_path != m_information[current_index]->audio_path)
+					m_cell[i]->SetBaseFrame(0);
+					m_cell[i]->GetText(0)->SetText(difficulty_ch);
+					m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+					m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+					m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
+				}
+
+				delete [] difficulty_ch;
+
+				if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+				(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
+				!is_list_moved) && !ModWidget::instance()->IsShown())
+			//這個條件運算吃棗藥丸……
+				{
+					m_cell[i]->update();
+				}
+				if (m_cell[i]->IsReleased() && !ModWidget::instance()->IsShown())
+				{
+					if (current_index == selected_index)
 					{
-						if (SoundManager::instance()->IsPlayingMusic())
-						{
-							SoundManager::instance()->stop();
-							SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
-						}
-						selected_index = current_index;
-						SongHeader::instance()->SetInformation(m_information[selected_index]);
-						SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
-						SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
+						LoadingState::instance()->init(STATE_GAME);
+						GameState::instance()->SetFile(m_information[selected_index]);
+						SoundManager::instance()->stop();
 					}
 					else
 					{
-						selected_index = current_index;								SongHeader::instance()->SetInformation(m_information[selected_index]);
+						if (m_information[selected_index]->audio_path != m_information[current_index]->audio_path)
+						{
+							if (SoundManager::instance()->IsPlayingMusic())
+							{
+								SoundManager::instance()->stop();
+								SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+							}
+							selected_index = current_index;
+							SongHeader::instance()->SetInformation(m_information[selected_index]);
+							SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+							SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
+						}
+						else
+						{
+							selected_index = current_index;									SongHeader::instance()->SetInformation(m_information[selected_index]);
+						}
 					}
 				}
+				current_index++;
 			}
-			current_index++;
-		}
-		else
-		{
-			m_cell[i]->GetText(0)->SetText("??");
-			m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
-			m_cell[i]->GetText(1)->SetText(null_information->title);
-			m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
-				SongHeader::instance()->SetInformation(null_information);
-			list_length = cell_heigh;
+			else
+			{
+				m_cell[i]->GetText(0)->SetText("??");
+				m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+				m_cell[i]->GetText(1)->SetText(null_information->title);
+				m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
+					SongHeader::instance()->SetInformation(null_information);
+				list_length = cell_heigh;
+			}
 		}
 	}
 
@@ -239,8 +262,8 @@ void fr::SongList::render()
 {
 	for (int i = 0; i < m_cell.size(); i++)
 	{
-		if ((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
-		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE))
+		if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE)) && !is_exited)
 		{
 			m_cell[i]->render();
 		}
@@ -488,4 +511,44 @@ void fr::SongList::RefreshListSize()
 		new_song_cell->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
 		m_cell.push_back(new_song_cell);
 	}
+}
+
+void fr::SongList::OnEnter()
+{
+	cell_pos_offset_y = (System::instance()->GetWindowHeigh() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) * (1.f - Animator::instance()->GetProcess("song_list_enter"));
+	if (Animator::instance()->IsTimeUp("song_list_enter"))
+	{
+		Animator::instance()->ResetAnimation("song_list_enter");
+		is_entered = true;
+	}
+}
+
+void fr::SongList::OnExit()
+{
+	cell_pos_offset_y = (System::instance()->GetWindowHeigh() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) * Animator::instance()->GetProcess("song_list_exit");
+	if (Animator::instance()->IsTimeUp("song_list_exit"))
+	{
+		Animator::instance()->ResetAnimation("song_list_exit");
+		is_exited = true;
+		is_entered = false;
+	}
+}
+
+void fr::SongList::SwitchShown()
+{
+	is_shown = !is_shown;
+	if (is_shown)
+	{
+		Animator::instance()->Animate("song_list_enter");
+		is_exited = false;
+	}
+	else
+	{
+		Animator::instance()->Animate("song_list_exit");
+	}
+}
+
+bool fr::SongList::IsShown()
+{
+	return is_shown || !is_exited;
 }

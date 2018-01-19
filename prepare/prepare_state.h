@@ -32,6 +32,7 @@ namespace fr
 			Sprite *search_bar;
 			Button *prepare_back;
 			Button *prepare_mod;
+			Button *prepare_list;
 			Button *prepare_refresh;
 	};
 };
