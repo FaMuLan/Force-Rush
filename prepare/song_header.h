@@ -1,5 +1,5 @@
-#ifndef FORCE_RUSH_SELECT_SONG_HEADER_H
-#define FORCE_RUSH_SELECT_SONG_HEADER_H
+#ifndef FORCE_RUSH_PREPARE_SONG_HEADER_H
+#define FORCE_RUSH_PREPARE_SONG_HEADER_H
 
 #include "song_list.h"
 
@@ -47,4 +47,4 @@ namespace fr
 	};	//class SongHeader
 };	//namespace fr
 
-#endif	//FORCE_RUSH_SELECT_SONG_HEADER_H
+#endif	//FORCE_RUSH_PREPARE_SONG_HEADER_H
