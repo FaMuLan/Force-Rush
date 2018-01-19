@@ -1,5 +1,5 @@
-#ifndef FORCE_RUSH_SELECT_MOD_WIDGET_H
-#define FORCE_RUSH_SELECT_MOD_WIDGET_H
+#ifndef FORCE_RUSH_PREPARE_MOD_WIDGET_H
+#define FORCE_RUSH_PREPARE_MOD_WIDGET_H
 
 namespace fr
 {
@@ -37,7 +37,6 @@ namespace fr
 			bool is_shown;
 			bool is_entered;
 			bool is_exited;
-			bool is_gameplay_wizard_running;
 
 			TextArea *auto_text;
 			Button *auto_switch;

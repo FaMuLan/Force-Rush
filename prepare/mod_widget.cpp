@@ -79,7 +79,6 @@ void fr::ModWidget::init()
 	is_shown = false;
 	is_entered = false;
 	is_exited = true;
-	is_gameplay_wizard_running = true;
 	Animator::instance()->AddAnimation("mod_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("mod_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 }
