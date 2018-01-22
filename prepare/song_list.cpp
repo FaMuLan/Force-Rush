@@ -17,7 +17,7 @@
 #include "../loading/loading_state.h"
 #include "../game/game_state.h"
 #include "../user/setting.h"
-#include "song_header.h"
+#include "prepare_header.h"
 #include "mod_widget.h"
 
 fr::SongList *fr::SongList::m_instance = 0;
@@ -81,12 +81,12 @@ void fr::SongList::init()
 	if (m_information.size() == 0)
 	{
 		list_length = cell_heigh;
-		SongHeader::instance()->SetInformation(null_information);
+		PrepareHeader::instance()->SetInformation(null_information);
 	}
 	else
 	{
 		list_length = cell_heigh * m_information.size();
-		SongHeader::instance()->SetInformation(m_information[selected_index]);
+		PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 		SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
 		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 	}
@@ -233,13 +233,13 @@ void fr::SongList::update()
 								SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
 							}
 							selected_index = current_index;
-							SongHeader::instance()->SetInformation(m_information[selected_index]);
+							PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 							SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
 							SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 						}
 						else
 						{
-							selected_index = current_index;									SongHeader::instance()->SetInformation(m_information[selected_index]);
+							selected_index = current_index;									PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 						}
 					}
 				}
@@ -251,7 +251,7 @@ void fr::SongList::update()
 				m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
 				m_cell[i]->GetText(1)->SetText(null_information->title);
 				m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
-					SongHeader::instance()->SetInformation(null_information);
+					PrepareHeader::instance()->SetInformation(null_information);
 				list_length = cell_heigh;
 			}
 		}
@@ -482,7 +482,7 @@ void fr::SongList::RefreshList()
 			m_information.push_back(new_song_information);
 
 			list_length = cell_heigh * m_information.size();
-			SongHeader::instance()->SetInformation(m_information[selected_index]);
+			PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 			WriteList();
 			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
 		}

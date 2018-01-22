@@ -7,7 +7,7 @@
 #include "../loading/loading_state.h"
 #include "../user/character.h"
 #include "song_list.h"
-#include "song_header.h"
+#include "prepare_header.h"
 #include "mod_widget.h"
 
 fr::PrepareState *fr::PrepareState::m_instance = 0;
@@ -16,7 +16,7 @@ void fr::PrepareState::init()
 {
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 32);
-	SongHeader::instance()->init();
+	PrepareHeader::instance()->init();
 	SongList::instance()->init();
 	ModWidget::instance()->init();
 	prepare_back = new Button;
@@ -82,7 +82,7 @@ void fr::PrepareState::update()
 	}
 
 	SongList::instance()->update();
-	SongHeader::instance()->update();
+	PrepareHeader::instance()->update();
 	ModWidget::instance()->update();
 	prepare_back->update();
 	prepare_mod->update();
@@ -91,7 +91,7 @@ void fr::PrepareState::update()
 
 	Character::instance()->render();
 	SongList::instance()->render();
-	SongHeader::instance()->render();
+	PrepareHeader::instance()->render();
 	prepare_back->render();
 	prepare_mod->render();
 	prepare_list->render();

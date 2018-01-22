@@ -1,12 +1,12 @@
-#include "song_header.h"
+#include "prepare_header.h"
 #include "../texture_manager.h"
 #include "../button.h"
 #include "../system.h"
 #include "../song_data.h"
 
-fr::SongHeader *fr::SongHeader::m_instance = 0;
+fr::PrepareHeader *fr::PrepareHeader::m_instance = 0;
 
-void fr::SongHeader::init()
+void fr::PrepareHeader::init()
 {
 	information_base = new Button;
 	score_base = new Button;
@@ -21,10 +21,10 @@ void fr::SongHeader::init()
 	good_text = new TextArea;
 	error_text = new TextArea;
 
-	information_base->init("assets/select/song_header_base.png", 0, 0);
-	information_base->AddPressedFrame("assets/select/song_header_base_pressed.png");
-	score_base->init("assets/select/song_header_base.png", 0, 0);
-	score_base->AddPressedFrame("assets/select/song_header_base_pressed.png");
+	information_base->init("assets/prepare/song_header_base.png", 0, 0);
+	information_base->AddPressedFrame("assets/prepare/song_header_base_pressed.png");
+	score_base->init("assets/prepare/song_header_base.png", 0, 0);
+	score_base->AddPressedFrame("assets/prepare/song_header_base_pressed.png");
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
 		information_base->SetPos(160, 0);
@@ -55,12 +55,12 @@ void fr::SongHeader::init()
 	is_score_detail_shown = false;
 }
 
-void fr::SongHeader::clear()
+void fr::PrepareHeader::clear()
 {
 	
 }
 
-void fr::SongHeader::update()
+void fr::PrepareHeader::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
@@ -98,13 +98,13 @@ void fr::SongHeader::update()
 	}
 }
 
-void fr::SongHeader::render()
+void fr::PrepareHeader::render()
 {
 	information_base->render();
 	score_base->render();
-}	//void fr::SongHeader::render()
+}	//void fr::PrepareHeader::render()
 
-void fr::SongHeader::SetInformation(SongInformation *information)
+void fr::PrepareHeader::SetInformation(SongInformation *information)
 {
 	m_information = information;
 	char *duration_ch = new char[10];
