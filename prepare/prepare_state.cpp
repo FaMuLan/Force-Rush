@@ -24,7 +24,6 @@ void fr::PrepareState::init()
 	prepare_list = new Button;
 	prepare_refresh = new Button;
 	background = new Sprite;
-	search_bar = new Sprite;
 
 	prepare_back->init("assets/base/sort_button.png", 0, 0);
 	prepare_back->AddPressedFrame( "assets/base/sort_button_pressed.png");
@@ -35,7 +34,6 @@ void fr::PrepareState::init()
 	prepare_refresh->init("assets/base/sort_button.png", 0, 216);
 	prepare_refresh->AddPressedFrame( "assets/base/sort_button_pressed.png");
 
-	search_bar->init("assets/select/search_bar.png", 0, 288);
 	prepare_back->AddText("Back", prepare_back->GetW() / 2, prepare_back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	prepare_mod->AddText("Mod", prepare_mod->GetW() / 2, prepare_mod->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	prepare_list->AddText("List", prepare_list->GetW() / 2, prepare_list->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
@@ -43,7 +41,6 @@ void fr::PrepareState::init()
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		search_bar->SetPos(0, 288);
 		prepare_back->SetPos(0, 0);
 		prepare_mod->SetPos(0, 72);
 		prepare_list->SetPos(0, 144);
@@ -51,7 +48,6 @@ void fr::PrepareState::init()
 	}
 	else
 	{
-		search_bar->SetPos(280, 0);
 		prepare_back->SetPos(0, System::instance()->GetWindowHeigh() - 72);
 		prepare_mod->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 72);
 		prepare_list->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 144);
@@ -71,7 +67,6 @@ void fr::PrepareState::update()
 	{
 		if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 		{
-			search_bar->SetPos(0, 288);
 			prepare_back->SetPos(0, 0);
 			prepare_mod->SetPos(0, 72);
 			prepare_list->SetPos(0, 144);
@@ -79,7 +74,6 @@ void fr::PrepareState::update()
 		}
 		else
 		{
-			search_bar->SetPos(280, 0);
 			prepare_back->SetPos(0, System::instance()->GetWindowHeigh() - 72);
 			prepare_mod->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 72);
 			prepare_list->SetPos(System::instance()->GetWindowWidth() - 160, System::instance()->GetWindowHeigh() - 144);
@@ -102,7 +96,6 @@ void fr::PrepareState::update()
 	prepare_mod->render();
 	prepare_list->render();
 	prepare_refresh->render();
-	search_bar->render();
 	ModWidget::instance()->render();
 	if (!ModWidget::instance()->IsShown())
 	{

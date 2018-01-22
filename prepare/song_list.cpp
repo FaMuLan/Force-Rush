@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include "../animator.h"
 #include "../button.h"
+#include "../sprite.h"
 #include "../control_handler.h"
 #include "../sprite.h"
 #include "../system.h"
@@ -21,6 +22,7 @@
 
 fr::SongList *fr::SongList::m_instance = 0;
 std::vector<fr::Button*> fr::SongList::m_cell;
+fr::Sprite *fr::SongList::search_bar;
 std::vector<fr::SongInformation*> fr::SongList::m_information;
 fr::SongInformation *fr::SongList::null_information = 0;
 int fr::SongList::list_length = 0;
@@ -40,6 +42,8 @@ void fr::SongList::init()
 {
 	cell_heigh = 64;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
+	search_bar = new Sprite;
+	search_bar->init("assets/prepare/search_bar.png", 0, 288);
 
 	null_information = new SongInformation;
 	Score *null_score = new Score;
@@ -169,6 +173,7 @@ void fr::SongList::update()
 
 	if (!is_exited)
 	{
+		search_bar->SetPos(System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280, (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 288 : 0) + cell_pos_offset_y);
 		int current_index = list_process / cell_heigh;
 		for (int i = 0; i < m_cell.size(); i++)
 		{
@@ -260,13 +265,17 @@ void fr::SongList::update()
 
 void fr::SongList::render()
 {
-	for (int i = 0; i < m_cell.size(); i++)
+	if (!is_exited)
 	{
-		if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
-		(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE)) && !is_exited)
+		for (int i = 0; i < m_cell.size(); i++)
 		{
-			m_cell[i]->render();
+			if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
+			(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE)))
+			{
+				m_cell[i]->render();
+			}
 		}
+		search_bar->render();
 	}
 }
 
@@ -505,9 +514,9 @@ void fr::SongList::RefreshListSize()
 	for (int i = 0; i < cell_count; i++)
 	{
 		Button *new_song_cell = new Button;
-		new_song_cell->init("assets/select/song_cell.png", 0, 0, 720, 64);
-		new_song_cell->AddPressedFrame( "assets/select/song_cell_pressed.png");
-		new_song_cell->AddFrame("assets/select/song_cell_selected.png");		new_song_cell->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
+		new_song_cell->init("assets/prepare/song_cell.png", 0, 0, 720, 64);
+		new_song_cell->AddPressedFrame( "assets/prepare/song_cell_pressed.png");
+		new_song_cell->AddFrame("assets/prepare/song_cell_selected.png");		new_song_cell->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
 		new_song_cell->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
 		m_cell.push_back(new_song_cell);
 	}

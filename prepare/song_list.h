@@ -44,6 +44,7 @@ namespace fr
 			static SongList *m_instance;
 
 			static std::vector<Button*> m_cell;
+			static Sprite *search_bar;
 			static std::vector<SongInformation*> m_information;
 			static SongInformation *null_information;
 			static int list_length;
