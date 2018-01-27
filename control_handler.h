@@ -48,6 +48,11 @@ namespace fr
 
 			bool IsKeyDown(SDL_Scancode k);
 
+			std::string HearInputText();
+			bool IsTextInput();
+			bool IsBackspaceDown();
+			void SwitchTextInput();
+
 			bool IsMouseButtonDown(MouseButton k);
 			void GetMousePos(int &x, int &y);
 
@@ -66,6 +71,10 @@ namespace fr
 			//是否退出
 			const Uint8 *key_state;
 			//鍵盤狀態
+			std::string input_text;
+			bool is_text_input;
+			bool is_backspace_down;
+			//用於文本輸入
 			bool mouse_state[MOUSEBUTTON_TOTAL];
 			SDL_Point mouse_pos;
 			//鼠標狀態

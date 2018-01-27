@@ -11,6 +11,8 @@ void fr::ControlHandler::init()
 	has_touch = false;
 	mouse_pos.x = 0;
 	mouse_pos.y = 0;
+	input_text = "";
+	is_text_input = false;
 }
 
 void fr::ControlHandler::clear()
@@ -25,6 +27,35 @@ bool fr::ControlHandler::IsKeyDown(SDL_Scancode k)
 		return key_state[k];
 	}
 	return false;
+}
+
+std::string fr::ControlHandler::HearInputText()
+{
+	return input_text;
+}
+
+bool fr::ControlHandler::IsTextInput()
+{
+	return is_text_input;
+}
+
+bool fr::ControlHandler::IsBackspaceDown()
+{
+	return is_backspace_down;
+}
+
+void fr::ControlHandler::SwitchTextInput()
+{
+	if (is_text_input)
+	{
+		SDL_StopTextInput();
+		is_text_input = false;
+	}
+	else
+	{
+		SDL_StartTextInput();
+		is_text_input = true;
+	}
 }
 
 bool fr::ControlHandler::IsMouseButtonDown(MouseButton k)
@@ -55,6 +86,8 @@ bool fr::ControlHandler::IsQuit()
 
 void fr::ControlHandler::update()
 {
+	is_backspace_down = false;
+	input_text = "";
 	for (std::vector<Finger>::iterator iter = finger_state.begin(); iter != finger_state.end();)
 	{
 		if (iter->released)
@@ -114,6 +147,13 @@ void fr::ControlHandler::update()
 				{
 					quit = true;
 				}
+				if( e.key.keysym.sym == SDLK_BACKSPACE)
+				{
+					is_backspace_down = true;
+				}
+			break;
+			case SDL_TEXTINPUT:
+				input_text += e.text.text;
 			break;
 			case SDL_FINGERDOWN:
 			{
