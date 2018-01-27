@@ -7,6 +7,7 @@
 #include "../animator.h"
 #include "../button.h"
 #include "../sprite.h"
+#include "../text_input_box.h"
 #include "../control_handler.h"
 #include "../sprite.h"
 #include "../system.h"
@@ -22,7 +23,7 @@
 
 fr::SongList *fr::SongList::m_instance = 0;
 std::vector<fr::Button*> fr::SongList::m_cell;
-fr::Sprite *fr::SongList::search_bar;
+fr::TextInputBox *fr::SongList::search_bar;
 std::vector<fr::SongInformation*> fr::SongList::m_information;
 fr::SongInformation *fr::SongList::null_information = 0;
 int fr::SongList::list_length = 0;
@@ -42,8 +43,10 @@ void fr::SongList::init()
 {
 	cell_heigh = 64;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
-	search_bar = new Sprite;
+	search_bar = new TextInputBox;
 	search_bar->init("assets/prepare/search_bar.png", 0, 288);
+	search_bar->AddPressedFrame( "assets/prepare/search_bar.png");
+	search_bar->InitText(24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 688);
 
 	null_information = new SongInformation;
 	Score *null_score = new Score;
@@ -173,6 +176,8 @@ void fr::SongList::update()
 
 	if (!is_exited)
 	{
+		search_bar->update();
+
 		search_bar->SetPos(System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280, (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 288 : 0) + cell_pos_offset_y);
 		int current_index = list_process / cell_heigh;
 		for (int i = 0; i < m_cell.size(); i++)
