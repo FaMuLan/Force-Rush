@@ -19,12 +19,18 @@ void fr::TextArea::init(std::string text, int x, int y, std::string font_path, i
 
 void fr::TextArea::render()
 {
-	TextureManager::instance()->render(m_text, m_x, m_y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
+	if (m_text.length() > 0)
+	{
+		TextureManager::instance()->render(m_text, m_x, m_y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
+	}
 }
 
 void fr::TextArea::render(int x, int y)
 {
-	TextureManager::instance()->render(m_text, x, y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
+	if (m_text.length() > 0)
+	{
+		TextureManager::instance()->render(m_text, x, y, m_font_path, m_font_size, m_r, m_g, m_b, m_format, m_limited_w, m_scale);
+	}
 }
 
 void fr::TextArea::clear()
@@ -48,6 +54,12 @@ void fr::TextArea::SetColor(char r, char g, char b)
 	m_r = r;
 	m_g = g;
 	m_b = b;
+}
+
+void fr::TextArea::SetFont(std::string font_path, int font_size)
+{
+	m_font_path = font_path;
+	m_font_size = font_size;
 }
 
 void fr::TextArea::SetScale(float scale)

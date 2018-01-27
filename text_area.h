@@ -15,13 +15,14 @@ namespace fr
 	class TextArea
 	{
 		public:
-			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int m_limited_w = 0);
+			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
 			virtual void render();
 			virtual void render(int x, int y);
 			virtual void clear();
 			virtual void SetPos(int x, int y);
 			virtual void SetText(std::string text);
 			virtual void SetColor(char r, char g, char b);
+			virtual void SetFont(std::string font_path, int font_size);
 			virtual void SetScale(float scale);
 			virtual int GetX();
 			virtual int GetY();
