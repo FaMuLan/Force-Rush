@@ -23,6 +23,7 @@ namespace fr
 			bool read();
 			void write();
 
+			std::string GetUserProfilePath();
 			bool IsAuto();
 			bool IsSlideOut();
 			int GetDuration();
@@ -31,6 +32,7 @@ namespace fr
 			int GetDrawOffset();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
+			void SetUserProfilePath(std::string input);
 			void SwitchAuto();
 			void SwitchSlideOut();
 			void SetDuration(int input);
@@ -42,6 +44,7 @@ namespace fr
 			Setting() {}
 			~Setting() {}
 			static Setting *m_instance;
+			std::string user_profile_path;
 			bool is_auto;
 			bool is_slide_out;
 			int duration;

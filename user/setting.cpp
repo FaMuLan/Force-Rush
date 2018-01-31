@@ -8,6 +8,7 @@ fr::Setting *fr::Setting::m_instance = 0;
 
 void fr::Setting::init()
 {
+	user_profile_path = "/sdcard/data/default.fru";
 	is_auto = false;
 	is_slide_out = false;
 	duration = 800;
@@ -117,6 +118,11 @@ void fr::Setting::write()
 	WriteFile("/sdcard/data/user_setting.fa", file);
 }
 
+std::string fr::Setting::GetUserProfilePath()
+{
+	return user_profile_path;
+}
+
 bool fr::Setting::IsAuto()
 {
 	return is_auto;
@@ -163,6 +169,11 @@ SDL_Scancode fr::Setting::GetKeycode(int index)
 void fr::Setting::GetSongList(std::vector<std::string> &output)
 {
 	output = song_list;
+}
+
+void fr::Setting::SetUserProfilePath(std::string input)
+{
+	user_profile_path = input;
 }
 
 void fr::Setting::SwitchAuto()
