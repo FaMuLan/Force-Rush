@@ -5,7 +5,7 @@
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
-#include "../user/character.h"
+#include "../user/user_profile.h"
 #include "song_list.h"
 #include "prepare_header.h"
 #include "mod_widget.h"
@@ -89,7 +89,7 @@ void fr::PrepareState::update()
 	prepare_list->update();
 	prepare_refresh->update();
 
-	Character::instance()->render();
+	UserProfile::instance()->RenderCharacter();
 	SongList::instance()->render();
 	PrepareHeader::instance()->render();
 	prepare_back->render();
