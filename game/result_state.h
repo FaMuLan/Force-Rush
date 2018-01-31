@@ -52,6 +52,12 @@ namespace fr
 			TextArea *good_text;
 			TextArea *error_text;
 			TextArea *rank_text;
+			TextArea *user_name_text;
+			TextArea *performance_point_text;
+			TextArea *new_record_text;
+			bool is_new_record;
+			TextArea *new_performance_text;
+			bool is_new_performance;
 	};
 };
 
