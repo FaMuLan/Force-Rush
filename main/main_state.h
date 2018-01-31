@@ -6,6 +6,7 @@
 namespace fr
 {
 	class Button;
+	class TextArea;
 	class Sprite;
 
 	class MainState : public State
@@ -30,7 +31,9 @@ namespace fr
 			static MainState *m_instance;
 			Button *main_start;
 			Button *main_about;
-			Sprite *background;
+			Sprite *widget_base;
+			TextArea *user_name_text;
+			TextArea *performance_point_text;
 			bool is_locked;
 	};
 };
