@@ -3,7 +3,7 @@
 #include "state.h"
 #include "main/main_state.h"
 #include "loading/loading_state.h"
-#include "user/character.h"
+#include "user/user_profile.h"
 #include "user/setting.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
@@ -27,24 +27,25 @@ void fr::System::init()
 	screen_width = displayMode.w;
 	screen_heigh = displayMode.h;
 	//for fullscreen
-	system_window = SDL_CreateWindow("Lunatic Melody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_SHOWN);
+	scale = float(screen_width) / float(window_width);
+	window_heigh = screen_heigh / scale;
+	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
+
+	system_window = SDL_CreateWindow("Force Rush", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_SHOWN);
 	system_renderer = SDL_CreateRenderer(system_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	TTF_Init();
 	IMG_Init(0);
 	TextureManager::instance()->init(system_renderer);
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
-	Character::instance()->init();
-	MessageBox::instance()->init();
 	Setting::instance()->init();
+	UserProfile::instance()->init();
+	MessageBox::instance()->init();
 //	current_state_id = "main";
 //	PushState("main", main_state);
 	MainState::instance()->init();
 	LoadingState::instance()->init();
 	current_state = MainState::instance();
-	scale = float(screen_width) / float(window_width);
-	window_heigh = screen_heigh / scale;
-	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 	//将理论分辨率的宽高比例与实际屏幕分辨率的宽高比例吻合
 }
 
@@ -59,6 +60,7 @@ void fr::System::run()
 //		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
+		UserProfile::instance()->update();
 		MessageBox::instance()->update();
 //		MessageBox::instance()->render();
 //		ControlHandler::instance()->render();
