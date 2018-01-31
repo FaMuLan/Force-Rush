@@ -5,19 +5,15 @@ VPATH	:= main : prepare : game : loading : user : constructing
 
 all: run
 
-OBJ	:= animator.o beatmap.o button.o column.o constructing_state.o control_handler.o character.o file_system.o gameplay_wizard_state.o game_state.o loading_state.o main.o main_state.o message_box.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o
+OBJ	:= animator.o beatmap.o button.o column.o constructing_state.o control_handler.o file_system.o gameplay_wizard_state.o game_state.o loading_state.o main.o main_state.o message_box.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -O0 -o $@
 
-#about_sidedialog.o: main/about_sidedialog.cpp main/about_sidedialog.h
-#	$(CXX) main/about_sidedialog.cpp $(CFLAGS)
 animator.o: animator.cpp animator.h
 	$(CXX) $< $(CFLAGS)
 beatmap.o: beatmap.cpp beatmap.h
 	$(CXX) $< $(CFLAGS)
 button.o: button.cpp button.h sprite.h
-	$(CXX) $< $(CFLAGS)
-character.o: character.cpp character.h
 	$(CXX) $< $(CFLAGS)
 column.o: column.cpp column.h
 	$(CXX) $< $(CFLAGS)
@@ -25,8 +21,6 @@ control_handler.o: control_handler.cpp control_handler.h
 	$(CXX) $< $(CFLAGS)
 constructing_state.o: constructing_state.cpp constructing_state.h state.h
 	$(CXX) $< $(CFLAGS)
-#debug_widget.o: debug_widget.cpp debug_widget.h
-#	$(CXX) debug_widget.cpp $(CFLAGS)
 file_system.o: file_system.cpp file_system.h
 	$(CXX) $< $(CFLAGS)
 gameplay_wizard_state.o: gameplay_wizard_state.cpp gameplay_wizard_state.h
@@ -66,4 +60,6 @@ text_input_box.o: text_input_box.cpp text_input_box.h button.h
 texture_manager.o: texture_manager.cpp texture_manager.h
 	$(CXX) $< $(CFLAGS)
 timer.o: timer.cpp timer.h
+	$(CXX) $< $(CFLAGS)
+user_profile.o: user_profile.cpp user_profile.h
 	$(CXX) $< $(CFLAGS)
