@@ -41,8 +41,10 @@ void fr::ResultState::init()
 	new_performance_text = new TextArea;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 32);
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 24);
+	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 18);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 168);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 32);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 18);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 24);
 	song_base->init("assets/result/song_base.png", 0, System::instance()->GetWindowHeigh() - 720);
 	score_base->init("assets/result/score_base.png", 0, System::instance()->GetWindowHeigh() - 544);
 	rank_base->init("assets/result/rank_base.png", System::instance()->GetWindowWidth() - 232, System::instance()->GetWindowHeigh() - 720);
@@ -145,8 +147,8 @@ void fr::ResultState::init()
 	rank_text->init(rank_ch, System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
 	user_name_text->init(UserProfile::instance()->GetUserName(), System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 280, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_point_text->init(performance_ch, System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 224, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_record_text->init("Score Replaced", 216, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_performance_text->init("Driver Upgrade", System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 200, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	new_record_text->init("Score Replaced", 216, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	new_performance_text->init("Driver Upgrade", System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 174, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 
 	delete [] difficulty_ch;
 	delete [] pure_ch;
@@ -187,8 +189,10 @@ void fr::ResultState::update()
 		good_text->SetPos(32, System::instance()->GetWindowHeigh() - 392);
 		error_text->SetPos(32, System::instance()->GetWindowHeigh() - 352);
 		rank_text->SetPos(System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604);
-		user_name_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 200);
-		performance_point_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 144);
+		user_name_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 280);
+		performance_point_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 224);
+		new_record_text->SetPos(216, System::instance()->GetWindowHeigh() - 520);
+		new_performance_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 174);
 		
 	}
 
