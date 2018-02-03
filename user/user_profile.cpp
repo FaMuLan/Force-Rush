@@ -69,6 +69,7 @@ int fr::UserProfile::GetPerformancePoint()
 void fr::UserProfile::SetUserName(std::string input)
 {
 	m_user_name = input;
+	write();
 }
 
 int fr::UserProfile::CalculatePerformancePoint(int difficulty, double acc)
@@ -76,6 +77,7 @@ int fr::UserProfile::CalculatePerformancePoint(int difficulty, double acc)
 	int output = difficulty * 10000 * (acc - 0.6f) * (acc - 0.6f) * (acc - 0.6f);
 	output = output > 0 ? output : 0;
 	m_performance_point = output > m_performance_point ? output : m_performance_point;
+	write();
 	return output;
 }
 
