@@ -14,6 +14,7 @@ void fr::MainState::init()
 	main_start = new Button;
 	main_about = new Button;
 	widget_base = new Sprite;
+	performance_process_bar = new Sprite;
 	user_name_text = new TextArea;
 	performance_point_text = new TextArea;
 
@@ -22,6 +23,7 @@ void fr::MainState::init()
 	main_about->init("assets/main/button.png", 0, 0);
 	main_about->AddPressedFrame("assets/main/button_pressed.png");
 	widget_base->init("assets/base/widget_min_base.png", 0, 0);
+	performance_process_bar->init("assets/base/process_bar.png", 32, 94);
 	main_start->SetPos(System::instance()->GetWindowWidth() / 2 - main_start->GetW() / 2, System::instance()->GetWindowHeigh() - 480);
 	main_about->SetPos(System::instance()->GetWindowWidth() / 2 - main_about->GetW() / 2, System::instance()->GetWindowHeigh() - 280);
 
@@ -38,6 +40,9 @@ void fr::MainState::init()
 
 	main_start->AddText("Start", main_start->GetW() / 2, main_start->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
 	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
+
+	performance_process_bar->SetSrcRect(0, 0, (float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8);
+	performance_process_bar->SetSize((float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8);
 
 //	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
@@ -72,6 +77,7 @@ void fr::MainState::update()
 	widget_base->render();
 	user_name_text->render();
 	performance_point_text->render();
+	performance_process_bar->render();
 
 	if (main_start->IsReleased())
 	{
