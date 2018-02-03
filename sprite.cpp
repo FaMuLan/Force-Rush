@@ -4,12 +4,19 @@
 
 void fr::Sprite::init(std::string path, int x, int y, int w, int h)
 {
+	m_x = x;
+	m_y = y;
+	m_src_x = 0;
+	m_src_y = 0;
+	m_src_w = 0;
+	m_src_h = 0;
+	
 	if (path != "")
 	{
 		TextureManager::instance()->load(path, m_w, m_h);
+		m_src_w = m_w;
+		m_src_h = m_h;
 	}
-	m_x = x;
-	m_y = y;
 	if (w != 0 || h != 0)
 	{
 		m_w = w;
@@ -53,7 +60,7 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], m_x, m_y, m_w * scale, m_h * scale);
+		TextureManager::instance()->render(frame[index], m_x, m_y, m_w * scale, m_h * scale, m_src_x, m_src_y, m_src_w, m_src_h);
 	}
 }
 
@@ -73,6 +80,8 @@ void fr::Sprite::AddFrame(std::string path)
 	{
 		m_w = load_w;
 		m_h = load_h;
+		m_src_w = load_w;
+		m_src_h = load_h;
 	}
 	frame.push_back(path);
 }
@@ -106,6 +115,20 @@ void fr::Sprite::SetScale(float load_scale)
 	scale = load_scale;
 }
 
+void fr::Sprite::SetSize(int w, int h)
+{
+	m_w = w;
+	m_h = h;
+}
+
+void fr::Sprite::SetSrcRect(int x, int y, int w, int h)
+{
+	m_src_x = x;
+	m_src_y = y;
+	m_src_w = w;
+	m_src_h = h;
+}
+
 int fr::Sprite::GetX()
 {
 	return m_x;
@@ -124,10 +147,4 @@ int fr::Sprite::GetW()
 int fr::Sprite::GetH()
 {
 	return m_h;
-}
-
-void fr::Sprite::SetSize(int w, int h)
-{
-	m_w = w;
-	m_h = h;
 }

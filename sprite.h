@@ -23,6 +23,7 @@ namespace fr
 			void SetPos(int x, int y);
 			void SetScale(float load_scale);
 			void SetSize(int w, int h);
+			void SetSrcRect(int x, int y, int w, int h);
 			int GetX();
 			int GetY();
 			int GetW();
@@ -39,6 +40,10 @@ namespace fr
 			int m_y;
 			int m_w;
 			int m_h;
+			int m_src_x;
+			int m_src_y;
+			int m_src_w;
+			int m_src_h;
 			float scale;
 	};	//class Sprite
 };	//namespace fr
