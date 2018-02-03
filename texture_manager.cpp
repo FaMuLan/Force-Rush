@@ -49,7 +49,7 @@ void fr::TextureManager::clearfont(std::string path, int size)
 void fr::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
 {
 	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
-	if (src_w == 0 || src_h == 0)
+	if (src_w == 0 && src_h == 0)
 	{
 		SDL_RenderCopy(renderer, texture[path], NULL, &dest_rect);
 	}
