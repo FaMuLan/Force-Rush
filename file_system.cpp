@@ -116,6 +116,9 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	int note_count = 0;
 	int key_count = 0;
 	int mode = 0;
+	std::vector<float> note_piece_count;
+	int note_piece_index = 0;
+	note_piece_count.push_back(0);
 
 	std::string text;
 	ReadFile(path, text);
@@ -166,7 +169,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		{
 			Note *new_note = new Note;
 			new_note->time = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str()) + 2000;
-			int load_type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str()) ;
+			int load_type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
 			new_note->time_end = (load_type % 16 == 0) ? atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
 			new_note->type = NOTETYPE_NORMAL;
 			new_note->type_end = NOTETYPE_NORMAL;
@@ -190,7 +193,12 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		if (load_information)
 		{
 			output_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
-			note_count++;
+			while (note_piece_index * 1000 <  atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str()))
+			{
+				note_piece_index++;
+				note_piece_count.push_back(0);
+			}
+			note_piece_count[note_piece_index] += (atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str()) % 16 == 0) ? 1.1f : 1.f;
 		}
 		if (load_note)
 		{
@@ -203,7 +211,8 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	}
 	if (load_information)
 	{
-		output_information->difficulty = note_count * 1000 / output_information->duration;
+		std::sort(note_piece_count.begin(), note_piece_count.end());
+		output_information->difficulty = note_piece_count[int(note_piece_index * 0.6f)];
 		Score *new_null_score = new Score;
 		new_null_score->rank = RANK_NONE;
 		new_null_score->score = 0;
@@ -227,6 +236,11 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 	int note_count;
 	int beat_count;
 	int temp = 0;
+
+	std::vector<float> note_piece_count;
+	int note_piece_index = 0;
+	note_piece_count.push_back(0);
+
 	if (load_information)
 	{
 		output_information->file_path = path;
@@ -252,7 +266,6 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		SDL_RWread(file, &temp, 2, 1);
 
 		SDL_RWread(file, &note_count, 4, 1);
-		output_information->difficulty = note_count * 1000 / output_information->duration;
 		output_information->artist = "Unknown";
 		output_information->noter = "Unknown";
 
@@ -265,38 +278,48 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		new_null_score->error = 0;
 		output_information->high_score = new_null_score;
 	}
-	if (load_note)
+	else
 	{
-		if (!load_information)
+		SDL_RWread(file, &temp, 4, 1);
+
+		SDL_RWread(file, &beat_count, 4, 1);
+		for (int i = 0; i < beat_count; i++)
 		{
 			SDL_RWread(file, &temp, 4, 1);
-
-			SDL_RWread(file, &beat_count, 4, 1);
-			for (int i = 0; i < beat_count; i++)
-			{
-				SDL_RWread(file, &temp, 4, 1);
-				SDL_RWread(file, &temp, 4, 1);
-				SDL_RWread(file, &temp, 4, 1);
-			}
-			SDL_RWread(file, &temp, 2, 1);
-
-			SDL_RWread(file, &note_count, 4, 1);
+			SDL_RWread(file, &temp, 4, 1);
+			SDL_RWread(file, &temp, 4, 1);
 		}
-		Note *last_note1;
-		Note *last_note2;
-		Note *last_note3;
-		Note *last_note4;
-		for (int i = 0; i < note_count; i++)
-		{
-			int action;
-			int time_stamp;
-			char track;
-			int time_span;
-			SDL_RWread(file, &action, 2, 1);
-			SDL_RWread(file, &time_stamp, 4, 1);
-			SDL_RWread(file, &track, 1, 1);
-			SDL_RWread(file, &time_span, 4, 1);
+		SDL_RWread(file, &temp, 2, 1);
 
+		SDL_RWread(file, &note_count, 4, 1);
+	}
+	Note *last_note1;
+	Note *last_note2;
+	Note *last_note3;
+	Note *last_note4;
+	for (int i = 0; i < note_count; i++)
+	{
+		int action;
+		int time_stamp;
+		char track;
+		int time_span;
+		SDL_RWread(file, &action, 2, 1);
+		SDL_RWread(file, &time_stamp, 4, 1);
+		SDL_RWread(file, &track, 1, 1);
+		SDL_RWread(file, &time_span, 4, 1);
+
+		if (load_information)
+		{
+			while (note_piece_index * 1000 < time_stamp)
+			{
+				note_piece_index++;
+				note_piece_count.push_back(0);
+			}
+			note_piece_count[note_piece_index] += 1;
+		}
+
+		if (load_note)
+		{
 			switch (action)
 			{
 				case 0x0000:	//單鍵
@@ -628,12 +651,24 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 				break;
 			}
 		}
+
+	}
+
+	if (load_note)
+	{
 		std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
 		std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
 		std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
 		std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
 		//對於IMD格式的時間排列……不手動排序的話遊戲中某些配置連auto都救不了
 	}
+
+	if (load_information)
+	{
+		std::sort(note_piece_count.begin(), note_piece_count.end());
+		output_information->difficulty = note_piece_count[int(note_piece_index * 0.6f)];
+	}
+
 	SDL_FreeRW(file);
 	return success;
 }
