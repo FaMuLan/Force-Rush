@@ -153,6 +153,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		output_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
 		output_information->audio_path = GetParentDir(output_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
 		output_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
+		output_information->full_score = 0;
 		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
 		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
 
@@ -165,15 +166,17 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch note_line = *i;
+		int time = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
+		int type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
+		int time_end = (type % 16 == 0) ? atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str()) : time;
+		int column_index = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
 		if (load_note)
 		{
 			Note *new_note = new Note;
-			new_note->time = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str()) + 2000;
-			int load_type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
-			new_note->time_end = (load_type % 16 == 0) ? atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str()) + 2000 : new_note->time;
+			new_note->time = time + 2000;
+			new_note->time_end = time_end + 2000;
 			new_note->type = NOTETYPE_NORMAL;
 			new_note->type_end = NOTETYPE_NORMAL;
-			int column_index = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
 			switch (column_index)
 			{
 				case 64:
@@ -192,21 +195,14 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		}
 		if (load_information)
 		{
-			output_information->duration = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
-			while (note_piece_index * 1000 <  atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str()))
+			output_information->duration = time;
+			while (note_piece_index * 1000 < time)
 			{
 				note_piece_index++;
 				note_piece_count.push_back(0);
 			}
-			note_piece_count[note_piece_index] += (atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str()) % 16 == 0) ? 1.1f : 1.f;
-		}
-		if (load_note)
-		{
-			std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
-			std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
-			std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
-			std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
-			//信不過來排序
+			note_piece_count[note_piece_index]++;
+			output_information->full_score += (type % 16 == 0) ? 4 : 2;
 		}
 	}
 	if (load_information)
@@ -222,6 +218,14 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		new_null_score->error = 0;
 		output_information->high_score = new_null_score;
 	}
+	if (load_note)
+	{
+		std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
+		std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
+		std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
+		std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
+		//信不過來排序
+	}
 	return true;
 }
 
@@ -233,8 +237,8 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 	bool load_note = output_note_list1 != NULL && output_note_list2 != NULL && output_note_list3 != NULL && output_note_list4 != NULL;
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "r+b");
 	//死因:不會用fstream讀取二進制文件
-	int note_count;
-	int beat_count;
+	int note_count = 0;
+	int beat_count = 0;
 	int temp = 0;
 
 	std::vector<float> note_piece_count;
@@ -264,10 +268,10 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 			SDL_RWread(file, &temp, 4, 1);
 		}
 		SDL_RWread(file, &temp, 2, 1);
-
 		SDL_RWread(file, &note_count, 4, 1);
 		output_information->artist = "Unknown";
 		output_information->noter = "Unknown";
+		output_information->full_score = 0;
 
 		Score *new_null_score = new Score;
 		new_null_score->rank = RANK_NONE;
@@ -290,7 +294,6 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 			SDL_RWread(file, &temp, 4, 1);
 		}
 		SDL_RWread(file, &temp, 2, 1);
-
 		SDL_RWread(file, &note_count, 4, 1);
 	}
 	Note *last_note1;
@@ -299,7 +302,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 	Note *last_note4;
 	for (int i = 0; i < note_count; i++)
 	{
-		int action;
+		short action;
 		int time_stamp;
 		char track;
 		int time_span;
@@ -316,6 +319,21 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 				note_piece_count.push_back(0);
 			}
 			note_piece_count[note_piece_index] += 1;
+			switch (action)
+			{
+				case 0x0000:
+				case 0x0001:
+				case 0x0061:
+				case 0x0062:
+				case 0x0021:
+				case 0x00A1:
+				case 0x00A2:
+					output_information->full_score += 2;
+				break;
+				case 0x0002:
+					output_information->full_score += 4;
+				break;
+			}
 		}
 
 		if (load_note)
@@ -649,9 +667,8 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					}
 				}
 				break;
-			}
-		}
-
+			}	//switch (action)
+		}	//if (load_note)
 	}
 
 	if (load_note)
