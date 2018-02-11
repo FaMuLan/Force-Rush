@@ -298,13 +298,17 @@ void fr::Column::update()
 			{
 				current_judgement = m_parent->judge(m_note[current_note_index]->time);
 			}
-			else if (((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT || m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT) && is_slide_in_l) || ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT || m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT) && is_slide_in_r))
+			else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT && is_slide_in_r))
 			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time);
+				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+			}
+			else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r))
+			{
+				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
 			}
 			else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
 			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time);
+				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
 			}
 			else
 			{
@@ -339,11 +343,11 @@ void fr::Column::update()
 				Judgement current_judgement;
 				if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true);
 				}
 				else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true);
 				}
 				else
 				{
