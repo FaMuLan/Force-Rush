@@ -59,8 +59,7 @@ void fr::ResultState::init()
 	is_new_record = false;
 	is_new_performance = false;
 
-	int full_score = 2 * (m_score->pure + m_score->great + m_score->good + m_score->error);
-	double acc = double(m_score->score) / double(full_score);
+	double acc = double(m_score->score) / double(m_information->full_score);
 	if (acc >= 0.9)
 	{
 		m_score->rank = RANK_S;
