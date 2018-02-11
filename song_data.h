@@ -59,6 +59,7 @@ namespace fr
 		int preview_time;
 		std::string file_path;
 		Score *high_score;
+		int full_score;
 	};
 
 	inline bool CompareNote(const Note *note1, const Note *note2)
