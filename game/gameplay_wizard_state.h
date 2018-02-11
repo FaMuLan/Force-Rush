@@ -26,7 +26,7 @@ namespace fr
 			void clear();
 			void update();
 			void render();
-			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false);
+			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false);
 
 			void start();
 			void stop();

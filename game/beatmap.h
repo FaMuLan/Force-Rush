@@ -16,10 +16,11 @@ namespace fr
 
 	enum Judgement
 	{
-		JUDGEMENT_NONE = 0,
+		JUDGEMENT_NONE = -1,	//不與其他判定衝突
+		JUDGEMENT_SAFE = 0,	//與ERROR相對的判定
 		JUDGEMENT_PG = 2,	//P GREAT
 		JUDGEMENT_GR = 1,	//GREAT
-		JUDGEMENT_GD = 0,	//GOOD
+		JUDGEMENT_GD = -2,	//GOOD
 		JUDGEMENT_ER = -5	//ERROR
 	};
 	//這樣枚舉就可以直接跟分數放一起運算了
@@ -32,7 +33,7 @@ namespace fr
 			virtual void clear();
 			virtual void update();
 			virtual void render();
-			virtual Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false) = 0;
+			virtual Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false) = 0;
 
 			virtual float GetScaleW();
 			virtual float GetScaleH();
@@ -59,7 +60,7 @@ namespace fr
 			void clear();
 			void update();
 			void render();
-			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false);
+			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false);
 			//第三個參數中考慮到ln尾判的判定與一般note不一樣
 			int GetCombo();
 			int GetScore();

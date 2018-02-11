@@ -173,7 +173,7 @@ void fr::GameBeatmap::render()
 	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
 }
 
-fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
+fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing, bool error_only)
 {
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
@@ -215,53 +215,60 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			Animator::instance()->Animate("combo");
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 100 || time_diff < -100)
+		else if (!error_only)
 		{
-			m_score->score += JUDGEMENT_GD;
-			m_score->combo++;
-			m_score->good++;
+			if (time_diff > 100 || time_diff < -100)
+			{
+				m_score->score += JUDGEMENT_GD;
+				m_score->combo++;
+				m_score->good++;
 
-			combo_text->SetColor(0x84, 0xB1, 0xED);
-			char *combo_ch = new char;
-			sprintf(combo_ch, "%d", m_score->combo);
-			combo_text->SetText(combo_ch);
-			delete combo_ch;
+				combo_text->SetColor(0x84, 0xB1, 0xED);
+				char *combo_ch = new char;
+				sprintf(combo_ch, "%d", m_score->combo);
+				combo_text->SetText(combo_ch);
+				delete combo_ch;
 
-			Animator::instance()->ResetAnimation("combo");
-			Animator::instance()->Animate("combo");
-			return JUDGEMENT_GD;
-		}
-		else if (time_diff > 50 || time_diff < -50)
-		{
-			m_score->score += JUDGEMENT_GR;
-			m_score->combo++;
-			m_score->great++;
+				Animator::instance()->ResetAnimation("combo");
+				Animator::instance()->Animate("combo");
+				return JUDGEMENT_GD;
+			}
+			else if (time_diff > 50 || time_diff < -50)
+			{
+				m_score->score += JUDGEMENT_GR;
+				m_score->combo++;
+				m_score->great++;
 
-			combo_text->SetColor(0x81, 0xC7, 0x84);
-			char *combo_ch = new char;
-			sprintf(combo_ch, "%d", m_score->combo);
-			combo_text->SetText(combo_ch);
-			delete combo_ch;
+				combo_text->SetColor(0x81, 0xC7, 0x84);
+				char *combo_ch = new char;
+				sprintf(combo_ch, "%d", m_score->combo);
+				combo_text->SetText(combo_ch);
+				delete combo_ch;
 
-			Animator::instance()->ResetAnimation("combo");
-			Animator::instance()->Animate("combo");
-			return JUDGEMENT_GR;
+				Animator::instance()->ResetAnimation("combo");
+				Animator::instance()->Animate("combo");
+				return JUDGEMENT_GR;
+			}
+			else
+			{
+				m_score->score += JUDGEMENT_PG;
+				m_score->combo++;
+				m_score->pure++;
+
+				combo_text->SetColor(0xFF, 0xEA, 0x00);
+				char *combo_ch = new char;
+				sprintf(combo_ch, "%d", m_score->combo);
+				combo_text->SetText(combo_ch);
+				delete combo_ch;
+
+				Animator::instance()->ResetAnimation("combo");
+				Animator::instance()->Animate("combo");
+				return JUDGEMENT_PG;
+			}
 		}
 		else
 		{
-			m_score->score += JUDGEMENT_PG;
-			m_score->combo++;
-			m_score->pure++;
-
-			combo_text->SetColor(0xFF, 0xEA, 0x00);
-			char *combo_ch = new char;
-			sprintf(combo_ch, "%d", m_score->combo);
-			combo_text->SetText(combo_ch);
-			delete combo_ch;
-
-			Animator::instance()->ResetAnimation("combo");
-			Animator::instance()->Animate("combo");
-			return JUDGEMENT_PG;
+			return JUDGEMENT_SAFE;
 		}
 	}
 	else if (time_diff < -150)

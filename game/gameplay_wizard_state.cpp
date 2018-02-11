@@ -92,7 +92,7 @@ void fr::GameplayWizardBeatmap::render()
 	}
 }
 
-fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing)
+fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing, bool error_only)
 {
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
