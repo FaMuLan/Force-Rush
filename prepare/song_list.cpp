@@ -301,6 +301,7 @@ bool fr::SongList::LoadList()
 	std::regex audio_path_pattern("audio_path:(.*)");
 	std::regex preview_time_pattern("preview_time:(\\d*)");
 	std::regex file_path_pattern("file_path:(.*)");
+	std::regex full_score_pattern("full_score:(\\d*)");
 
 	std::regex score_pattern("score:(\\d*)");
 	std::regex pure_pattern("pure:(\\d*)");
@@ -330,6 +331,7 @@ bool fr::SongList::LoadList()
 		std::smatch audio_path_line;
 		std::smatch preview_time_line;
 		std::smatch file_path_line;
+		std::smatch full_score_line;
 		std::smatch score_line;
 		std::smatch pure_line;
 		std::smatch great_line;
@@ -346,6 +348,7 @@ bool fr::SongList::LoadList()
 		std::regex_search(paragraph, audio_path_line, audio_path_pattern);
 		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
 		std::regex_search(paragraph, file_path_line, file_path_pattern);
+		std::regex_search(paragraph, full_score_line, full_score_pattern);
 		std::regex_search(paragraph, score_line, score_pattern);
 		std::regex_search(paragraph, pure_line, pure_pattern);
 		std::regex_search(paragraph, great_line, great_pattern);
@@ -364,6 +367,7 @@ bool fr::SongList::LoadList()
 		new_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
 		new_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
 		new_information->file_path = std::regex_replace(file_path_line.str(), file_path_pattern, "$1");
+		new_information->full_score = atoi(std::regex_replace(full_score_line.str(), full_score_pattern, "$1").c_str());
 		new_score->score = atoi(std::regex_replace(score_line.str(), score_pattern, "$1").c_str());
 		new_score->pure = atoi(std::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
 		new_score->great = atoi(std::regex_replace(great_line.str(), great_pattern, "$1").c_str());
@@ -385,6 +389,7 @@ void fr::SongList::WriteList()
 		char *difficulty_ch = new char[3];
 		char *duration_ch = new char[4];
 		char *preview_time_ch = new char[10];
+		char *full_score_ch = new char[6];
 		char *score_ch = new char[6];
 		char *pure_ch = new char[6];
 		char *great_ch = new char[6];
@@ -394,6 +399,7 @@ void fr::SongList::WriteList()
 		sprintf(difficulty_ch, "%d", m_information[i]->difficulty);
 		sprintf(duration_ch, "%d", m_information[i]->duration);
 		sprintf(preview_time_ch, "%d", m_information[i]->preview_time);
+		sprintf(full_score_ch, "%d", m_information[i]->full_score);
 		sprintf(score_ch, "%d", m_information[i]->high_score->score);
 		sprintf(pure_ch, "%d", m_information[i]->high_score->pure);
 		sprintf(great_ch, "%d", m_information[i]->high_score->great);
@@ -416,6 +422,9 @@ void fr::SongList::WriteList()
 		output_text += preview_time_ch;
 		output_text += "\n";
 		output_text += "\tfile_path:" + m_information[i]->file_path + "\n";
+		output_text += "\tfull_score:";
+		output_text += full_score_ch;
+		output_text += "\n";
 		output_text += "\tscore:";
 		output_text += score_ch;
 		output_text += "\n";
@@ -438,6 +447,7 @@ void fr::SongList::WriteList()
 		delete [] difficulty_ch;
 		delete [] duration_ch;
 		delete [] preview_time_ch;
+		delete [] full_score_ch;
 		delete [] score_ch;
 		delete [] pure_ch;
 		delete [] great_ch;
