@@ -1,6 +1,6 @@
 #include "setting.h"
 #include <string>
-#include <regex>
+#include <boost/regex.hpp>
 #include "../file_system.h"
 #include "../system.h"
 
@@ -36,44 +36,44 @@ bool fr::Setting::read()
 		return false; 
 	}
 	song_list.clear();
-	std::regex auto_pattern("auto:(.+)");
-	std::regex slide_out_pattern("slide_out:(.+)");
-	std::regex duration_pattern("duration:(\\d+)");
-	std::regex offset_pattern("offset:(-?\\d+)");
-	std::regex key_code_pattern("key (\\d+):(\\d+)");
-	std::regex song_list_pattern("song_list:(.+)");
-	std::regex column_portrait_pattern("column_portrait:(\\d+),(-?\\d+)");
-	std::regex column_landscape_pattern("column_landscape:(\\d+),(-?\\d+)");
-	std::smatch auto_line;
-	std::smatch slide_out_line;
-	std::smatch duration_line;
-	std::smatch offset_line;
-	std::smatch column_portrait_line;
-	std::smatch column_landscape_line;
-	std::regex_search(file, auto_line, auto_pattern);
-	std::regex_search(file, slide_out_line, slide_out_pattern);
-	std::regex_search(file, duration_line, duration_pattern);
-	std::regex_search(file, offset_line, offset_pattern);
-	std::regex_search(file, column_portrait_line, column_portrait_pattern);
-	std::regex_search(file, column_landscape_line, column_landscape_pattern);
-	is_auto = std::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
-	is_slide_out = std::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
-	duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
-	offset = atoi(std::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
-	draw_scale_portrait = atoi(std::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$1").c_str());
-	draw_offset_portrait = atoi(std::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$2").c_str());
-	draw_scale_landscape = atoi(std::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$1").c_str());
-	draw_offset_landscape = atoi(std::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$2").c_str());
-	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), key_code_pattern); i != std::sregex_iterator(); i++)
+	boost::regex auto_pattern("auto:(.+?)\\n");
+	boost::regex slide_out_pattern("slide_out:(.+?)\\n");
+	boost::regex duration_pattern("duration:(\\d+?)\\n");
+	boost::regex offset_pattern("offset:(-?\\d+?)\\n");
+	boost::regex key_code_pattern("key (\\d+?):(\\d+?)\\n");
+	boost::regex song_list_pattern("song_list:(.+?)\\n");
+	boost::regex column_portrait_pattern("column_portrait:(\\d+?),(-?\\d+?)\\n");
+	boost::regex column_landscape_pattern("column_landscape:(\\d+?),(-?\\d+?)\\n");
+	boost::smatch auto_line;
+	boost::smatch slide_out_line;
+	boost::smatch duration_line;
+	boost::smatch offset_line;
+	boost::smatch column_portrait_line;
+	boost::smatch column_landscape_line;
+	boost::regex_search(file, auto_line, auto_pattern);
+	boost::regex_search(file, slide_out_line, slide_out_pattern);
+	boost::regex_search(file, duration_line, duration_pattern);
+	boost::regex_search(file, offset_line, offset_pattern);
+	boost::regex_search(file, column_portrait_line, column_portrait_pattern);
+	boost::regex_search(file, column_landscape_line, column_landscape_pattern);
+	is_auto = boost::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
+	is_slide_out = boost::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
+	duration = atoi(boost::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
+	offset = atoi(boost::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
+	draw_scale_portrait = atoi(boost::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$1").c_str());
+	draw_offset_portrait = atoi(boost::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$2").c_str());
+	draw_scale_landscape = atoi(boost::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$1").c_str());
+	draw_offset_landscape = atoi(boost::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$2").c_str());
+	for (boost::sregex_iterator i = boost::sregex_iterator(file.begin(), file.end(), key_code_pattern); i != boost::sregex_iterator(); i++)
 	{
-		std::smatch key_code_line = *i;
-		int column_index = atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$1").c_str());
-		key_code[column_index] = SDL_Scancode( atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$2").c_str()));
+		boost::smatch key_code_line = *i;
+		int column_index = atoi(boost::regex_replace(key_code_line.str(), key_code_pattern, "$1").c_str());
+		key_code[column_index] = SDL_Scancode( atoi(boost::regex_replace(key_code_line.str(), key_code_pattern, "$2").c_str()));
 	}
-	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), song_list_pattern); i != std::sregex_iterator(); i++)
+	for (boost::sregex_iterator i = boost::sregex_iterator(file.begin(), file.end(), song_list_pattern); i != boost::sregex_iterator(); i++)
 	{
-		std::smatch song_list_line = *i;
-		song_list.push_back(std::regex_replace(song_list_line.str(), song_list_pattern, "$1"));
+		boost::smatch song_list_line = *i;
+		song_list.push_back(boost::regex_replace(song_list_line.str(), song_list_pattern, "$1"));
 	}
 	return true;
 }

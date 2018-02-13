@@ -1,5 +1,5 @@
 #include "user_profile.h"
-#include <regex>
+#include <boost/regex.hpp>
 #include "../sprite.h"
 #include "../system.h"
 #include "../file_system.h"
@@ -84,29 +84,29 @@ int fr::UserProfile::CalculatePerformancePoint(int difficulty, double acc)
 bool fr::UserProfile::read()
 {
 	std::string file;
-	std::regex user_name_pattern("user_name:(.*)");
-	std::regex performance_point_pattern("performance_point:(\\d+)");
-	std::regex char_path_pattern("char_path:(.+)");
-	std::regex controller_path_pattern("controller_path:(.+)");
-	std::smatch user_name_line;
-	std::smatch performance_point_line;
-	std::smatch char_path_line;
-	std::smatch controller_path_line;
+	boost::regex user_name_pattern("user_name:(.+?)\\n");
+	boost::regex performance_point_pattern("performance_point:(\\d+?)\\n");
+	boost::regex char_path_pattern("char_path:(.+?)\\n");
+	boost::regex controller_path_pattern("controller_path:(.+?)\\n");
+	boost::smatch user_name_line;
+	boost::smatch performance_point_line;
+	boost::smatch char_path_line;
+	boost::smatch controller_path_line;
 
 	if (!ReadFile(Setting::instance()->GetUserProfilePath(), file))
 	{
 		return false;
 	}
 
-	std::regex_search(file, user_name_line, user_name_pattern);
-	std::regex_search(file, performance_point_line, performance_point_pattern);
-	std::regex_search(file, char_path_line, char_path_pattern);
-	std::regex_search(file, controller_path_line, controller_path_pattern);
+	boost::regex_search(file, user_name_line, user_name_pattern);
+	boost::regex_search(file, performance_point_line, performance_point_pattern);
+	boost::regex_search(file, char_path_line, char_path_pattern);
+	boost::regex_search(file, controller_path_line, controller_path_pattern);
 
-	m_user_name = std::regex_replace(user_name_line.str(), user_name_pattern, "$1");
-	m_performance_point = atoi(std::regex_replace(performance_point_line.str(), performance_point_pattern, "$1").c_str());
-	m_char_path = std::regex_replace(char_path_line.str(), char_path_pattern, "$1");
-	m_controller_path = std::regex_replace(controller_path_line.str(), controller_path_pattern, "$1");
+	m_user_name = boost::regex_replace(user_name_line.str(), user_name_pattern, "$1");
+	m_performance_point = atoi(boost::regex_replace(performance_point_line.str(), performance_point_pattern, "$1").c_str());
+	m_char_path = boost::regex_replace(char_path_line.str(), char_path_pattern, "$1");
+	m_controller_path = boost::regex_replace(controller_path_line.str(), controller_path_pattern, "$1");
 	return true;
 }
 
