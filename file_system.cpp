@@ -105,7 +105,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	static boost::regex mode_pattern("Mode: (\\d)");
 	static boost::regex key_count_pattern("CircleSize:(\\d)");
 	static boost::regex audio_path_pattern("AudioFilename: (.*?)\\n");
-	static boost::regex preview_time_pattern("PreviewTime: (\\d*?)\\n");
+	static boost::regex preview_time_pattern("PreviewTime: (\\d*)");
 	static boost::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
 
 	bool success = true;
