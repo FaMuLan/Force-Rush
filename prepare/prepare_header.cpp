@@ -21,9 +21,9 @@ void fr::PrepareHeader::init()
 	good_text = new TextArea;
 	error_text = new TextArea;
 
-	information_base->init("assets/prepare/song_header_base.png", 0, 0);
+	information_base->init("assets/prepare/song_header_base.png");
 	information_base->AddPressedFrame("assets/prepare/song_header_base_pressed.png");
-	score_base->init("assets/prepare/song_header_base.png", 0, 0);
+	score_base->init("assets/prepare/song_header_base.png");
 	score_base->AddPressedFrame("assets/prepare/song_header_base_pressed.png");
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{

@@ -21,8 +21,8 @@ void fr::UserProfile::init()
 		write();
 	}
 
-	m_char->init(m_char_path, 0, 0);
-	m_controller->init(m_controller_path, 0, 0, 718.f * (System::instance()->GetWindowWidth() / 720.f), 196.f * (System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale()));
+	m_char->init(m_char_path);
+	m_controller->init(m_controller_path, Rect(0, 0, 718.f * (System::instance()->GetWindowWidth() / 720.f), 196.f * (System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale())));
 	m_controller->SetPos(System::instance()->GetWindowWidth() / 2 - m_controller->GetW() / 2, System::instance()->GetWindowHeigh() - m_controller->GetH());
 
 	m_char->SetPos(System::instance()->GetWindowWidth() / 2 - (m_char->GetW() * (float(System::instance()->GetWindowHeigh()) / float(m_char->GetH()))) / 2, 0);

@@ -6,6 +6,7 @@
 #include <vector>
 #include "sprite.h"
 #include "text_area.h"
+#include "shape.h"
 
 namespace fr
 {
@@ -15,7 +16,7 @@ namespace fr
 	class Button : public Sprite
 	{
 		public:
-			virtual void init(std::string path, int x = 0, int y = 0, int w = 0, int h = 0);
+			virtual void init(std::string path, Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
 			virtual void clear();
 			virtual void update();
 			virtual void render();
@@ -36,6 +37,7 @@ namespace fr
 			//adden
 			std::vector<TextArea*> text;
 			//text & font
+			Shape press_area;
 	};	//class Button : public Sprite
 };	//namespace fr
 

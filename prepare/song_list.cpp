@@ -44,7 +44,7 @@ void fr::SongList::init()
 	cell_heigh = 64;
 	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
 	search_bar = new TextInputBox;
-	search_bar->init("assets/prepare/search_bar.png", 0, 288);
+	search_bar->init("assets/prepare/search_bar.png", Rect(0, 288, 0, 0));
 	search_bar->AddPressedFrame( "assets/prepare/search_bar.png");
 	search_bar->InitText(24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 688);
 
@@ -529,7 +529,7 @@ void fr::SongList::RefreshListSize()
 	for (int i = 0; i < cell_count; i++)
 	{
 		Button *new_song_cell = new Button;
-		new_song_cell->init("assets/prepare/song_cell.png", 0, 0, 720, 64);
+		new_song_cell->init("assets/prepare/song_cell.png", Rect(0, 0, 720, 64));
 		new_song_cell->AddPressedFrame( "assets/prepare/song_cell_pressed.png");
 		new_song_cell->AddFrame("assets/prepare/song_cell_selected.png");		new_song_cell->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
 		new_song_cell->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);

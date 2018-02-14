@@ -2,26 +2,26 @@
 #include "texture_manager.h"
 #include "timer.h"
 
-void fr::Sprite::init(std::string path, int x, int y, int w, int h)
+void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_rect)
 {
-	m_x = x;
-	m_y = y;
-	m_src_x = 0;
-	m_src_y = 0;
-	m_src_w = 0;
-	m_src_h = 0;
-	
+	dest_rect = load_dest_rect;
+	source_rect = load_source_rect;
+
 	if (path != "")
 	{
-		TextureManager::instance()->load(path, m_w, m_h);
-		m_src_w = m_w;
-		m_src_h = m_h;
+		TextureManager::instance()->load(path, dest_rect);
 	}
-	if (w != 0 || h != 0)
+	if (load_dest_rect.w != 0 || load_dest_rect.h != 0)
 	{
-		m_w = w;
-		m_h = h;
+		dest_rect.w = load_dest_rect.w;
+		dest_rect.h = load_dest_rect.h;
 	}
+	if (load_source_rect.w == 0 || load_source_rect.h == 0)
+	{
+		source_rect.w = dest_rect.w;
+		source_rect.h = dest_rect.h;
+	}
+
 	frame.push_back(path);
 	scale = 1;
 	base_index = 0;
@@ -52,7 +52,7 @@ void fr::Sprite::render()
 {
 	if (frame[current_index] != "")
 	{
-		TextureManager::instance()->render(frame[current_index], m_x, m_y, m_w * scale, m_h * scale);
+		TextureManager::instance()->render(frame[current_index], dest_rect, source_rect, scale);
 	}
 }
 
@@ -60,7 +60,7 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], m_x, m_y, m_w * scale, m_h * scale, m_src_x, m_src_y, m_src_w, m_src_h);
+		TextureManager::instance()->render(frame[index], dest_rect, source_rect, scale);
 	}
 }
 
@@ -71,17 +71,17 @@ void fr::Sprite::clear()
 
 void fr::Sprite::AddFrame(std::string path)
 {
-	int load_w, load_h;
+	Rect load_size;
 	if (path != "")
 	{
-		TextureManager::instance()->load(path, load_w, load_h);
+		TextureManager::instance()->load(path, load_size);
 	}
-	if (m_w == 0 && m_h == 0)
+	if (dest_rect.w == 0 && dest_rect.h == 0)
 	{
-		m_w = load_w;
-		m_h = load_h;
-		m_src_w = load_w;
-		m_src_h = load_h;
+		dest_rect.w = load_size.w;
+		dest_rect.h = load_size.h;
+		source_rect.w = load_size.w;
+		source_rect.h = load_size.h;
 	}
 	frame.push_back(path);
 }
@@ -106,8 +106,8 @@ void fr::Sprite::SetBaseFrame(int index)
 
 void fr::Sprite::SetPos(int x, int y)
 {
-	m_x = x;
-	m_y = y;
+	dest_rect.x = x;
+	dest_rect.y = y;
 }
 
 void fr::Sprite::SetScale(float load_scale)
@@ -117,34 +117,31 @@ void fr::Sprite::SetScale(float load_scale)
 
 void fr::Sprite::SetSize(int w, int h)
 {
-	m_w = w;
-	m_h = h;
+	dest_rect.w = w;
+	dest_rect.h = h;
 }
 
-void fr::Sprite::SetSrcRect(int x, int y, int w, int h)
+void fr::Sprite::SetSrcRect(Rect load_source_rect)
 {
-	m_src_x = x;
-	m_src_y = y;
-	m_src_w = w;
-	m_src_h = h;
+	source_rect = load_source_rect;
 }
 
 int fr::Sprite::GetX()
 {
-	return m_x;
+	return dest_rect.x;
 }
 
 int fr::Sprite::GetY()
 {
-	return m_y;
+	return dest_rect.y;
 }
 
 int fr::Sprite::GetW()
 {
-	return m_w;
+	return dest_rect.w;
 }
 
 int fr::Sprite::GetH()
 {
-	return m_h;
+	return dest_rect.h;
 }

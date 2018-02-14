@@ -3,13 +3,14 @@
 
 #include <string>
 #include <vector>
+#include "shape.h"
 
 namespace fr
 {
 	class Sprite
 	{
 		public:
-			virtual void init(std::string path = "", int x = 0, int y = 0, int w = 0, int h = 0);
+			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
 			virtual void update();
 			virtual void render();
 			virtual void render(int index);
@@ -18,12 +19,12 @@ namespace fr
 			void AddFrame(std::string path = "");
 			void SetAnimate(int load_start, int load_end, int load_duration);
 			int GetCurrentIndex();
-			//
 			void SetBaseFrame(int index);
 			void SetPos(int x, int y);
 			void SetScale(float load_scale);
 			void SetSize(int w, int h);
-			void SetSrcRect(int x, int y, int w, int h);
+			void SetSrcRect(Rect load_source_rect);
+			void SetRotation(int center_x, int center_y, float angle);
 			int GetX();
 			int GetY();
 			int GetW();
@@ -36,14 +37,8 @@ namespace fr
 			int duration;
 			int frame_start;
 			int frame_end;
-			int m_x;
-			int m_y;
-			int m_w;
-			int m_h;
-			int m_src_x;
-			int m_src_y;
-			int m_src_w;
-			int m_src_h;
+			Rect dest_rect;
+			Rect source_rect;
 			float scale;
 	};	//class Sprite
 };	//namespace fr

@@ -47,10 +47,10 @@ void fr::ConstructingState::init()
 	dialog_system[9]->SetText("傻孩子，致謝難道不是感謝你麼<。)#)))<");
 	dialog_user[9]->SetText(">人<");
 //================= End =========================
-	b_back->init("assets/base/sort_button.png", 0, 0);
+	b_back->init("assets/base/sort_button.png");
 	b_back->AddPressedFrame( "assets/base/sort_button_pressed.png");
 	b_back->AddText("Back", b_back->GetW() / 2, b_back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	b_communicate->init("", 0, System::instance()->GetWindowHeigh() - 100, System::instance()->GetWindowWidth(), 100);
+	b_communicate->init("", Rect(0, System::instance()->GetWindowHeigh() - 100, System::instance()->GetWindowWidth(), 100));
 	b_communicate->AddPressedFrame("");
 		b_communicate->AddText(dialog_user[text_index]->GetText(), b_communicate->GetW() / 2, b_communicate->GetH() / 2, "assets/fonts/Miui-Light.ttf", 20, 0x00, 0x00, 0x00);
 }

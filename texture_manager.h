@@ -9,9 +9,12 @@
 #include <map>
 
 #include "text_area.h"
+#include "shape.h"
 
 namespace fr
 {
+	class Rect;
+
 	class TextureManager
 	{
 		public:
@@ -25,14 +28,14 @@ namespace fr
 				return m_instance;
 			}
 			void init(SDL_Renderer *load_renderer);
-			void load(std::string path, int &output_w, int &output_h);
+			void load(std::string path, Rect &output_size);
 			void load(SDL_Texture *load_texture, std::string path);
 			void loadfont(std::string path, int size);
 			void clear();
 			void clear(std::string path);
 			void clearfont(std::string path, int size);
-			void render(std::string path, int x, int y, int w, int h, int src_x = 0, int src_y = 0, int src_w = 0, int src_h = 0);
-			void render(SDL_Texture *load_texture, int x, int y, int w, int h);
+			void render(std::string path, Rect dest_rect, Rect source_rect = Rect(0, 0, 0, 0), float scale = 1);
+			void render(SDL_Texture *load_texture, Rect dest_rect, Rect source_rect = Rect(0, 0, 0, 0), float scale = 1);
 			void render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0, float scale = 1);
 			//limit_w = 0 = NO_LIMIT
 		private: 

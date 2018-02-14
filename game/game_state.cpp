@@ -29,10 +29,10 @@ void fr::GameState::init()
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 56);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 16);
-	title_base->init("assets/game/title_base.png", System::instance()->GetWindowWidth() / 2 - 360, 0);
+	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
 	title_base->AddPressedFrame("assets/game/title_base_pressed.png");
 	title_base->AddText(m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	score_base->init("assets/base/widget_min_base.png", 0, 64);
+	score_base->init("assets/base/widget_min_base.png", Rect(0, 64, 0, 0));
 	score_text->init("0", 32, 80, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init("DURATION 0", 32, 152, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 

@@ -25,13 +25,13 @@ void fr::PrepareState::init()
 	prepare_refresh = new Button;
 	background = new Sprite;
 
-	prepare_back->init("assets/base/sort_button.png", 0, 0);
+	prepare_back->init("assets/base/sort_button.png");
 	prepare_back->AddPressedFrame( "assets/base/sort_button_pressed.png");
-	prepare_mod->init("assets/base/sort_button.png", 0, 72);
+	prepare_mod->init("assets/base/sort_button.png", Rect(0, 72, 0, 0));
 	prepare_mod->AddPressedFrame( "assets/base/sort_button_pressed.png");
-	prepare_list->init("assets/base/sort_button.png", 0, 144);
+	prepare_list->init("assets/base/sort_button.png", Rect(0, 144, 0, 0));
 	prepare_list->AddPressedFrame( "assets/base/sort_button_pressed.png");
-	prepare_refresh->init("assets/base/sort_button.png", 0, 216);
+	prepare_refresh->init("assets/base/sort_button.png", Rect(0, 216, 0, 0));
 	prepare_refresh->AddPressedFrame( "assets/base/sort_button_pressed.png");
 
 	prepare_back->AddText("Back", prepare_back->GetW() / 2, prepare_back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);

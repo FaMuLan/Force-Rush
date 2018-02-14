@@ -22,7 +22,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_light = new Sprite;
 	int current_w, current_h;
 
-	s_light->init("", 0, 0, 473 * m_parent->GetScaleW(), 473 * m_parent->GetScaleW());
+	s_light->init("", Rect(0, 0, 473 * m_parent->GetScaleW(), 473 * m_parent->GetScaleW()));
 	s_light->AddFrame("assets/game/lightingN-0.png");
 	s_light->AddFrame("assets/game/lightingN-1.png");
 	s_light->AddFrame("assets/game/lightingN-2.png");
@@ -49,7 +49,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
-			s_note->init("assets/game/note_1.png", 0, 0, current_w, current_h);
+			s_note->init("assets/game/note_1.png", Rect(0, 0, current_w, current_h));
 			s_note->AddFrame("assets/game/note_in_l_1.png");
 			s_note->AddFrame("");	//IN R
 			s_note->AddFrame("");	//OUT L
@@ -60,7 +60,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_1.png");
 			s_note->AddFrame("assets/game/note_l_head_1.png");
 			s_note->AddFrame("assets/game/note_l_end_1.png");
-			s_feedback->init("assets/game/feedback_1.png", 36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
+			s_feedback->init("assets/game/feedback_1.png", Rect(36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
 			s_light->SetPos(-114 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
@@ -74,7 +74,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
-			s_note->init("assets/game/note_2.png", 0, 0, current_w, current_h);
+			s_note->init("assets/game/note_2.png", Rect(0, 0, current_w, current_h));
 			s_note->AddFrame("assets/game/note_in_l_2.png");
 			s_note->AddFrame("assets/game/note_in_r_2.png");
 			s_note->AddFrame("assets/game/note_out_l_2.png");
@@ -85,7 +85,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_2.png");
 			s_note->AddFrame("assets/game/note_l_head_2.png");
 			s_note->AddFrame("assets/game/note_l_end_2.png");
-			s_feedback->init("assets/game/feedback_2.png", 197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
+			s_feedback->init("assets/game/feedback_2.png", Rect(197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
 			s_light->SetPos(43 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
@@ -99,7 +99,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			m_w = 194 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
-			s_note->init("assets/game/note_3.png", 0, 0, current_w, current_h);
+			s_note->init("assets/game/note_3.png", Rect(0, 0, current_w, current_h));
 			s_note->AddFrame("assets/game/note_in_l_3.png");
 			s_note->AddFrame("assets/game/note_in_r_3.png");
 			s_note->AddFrame("assets/game/note_out_l_3.png");
@@ -110,7 +110,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_3.png");
 			s_note->AddFrame("assets/game/note_l_head_3.png");
 			s_note->AddFrame("assets/game/note_l_end_3.png");
-			s_feedback->init("assets/game/feedback_3.png", 360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
+			s_feedback->init("assets/game/feedback_3.png", Rect(360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
 			s_light->SetPos(206 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
@@ -124,7 +124,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			m_w = 166 * m_parent->GetScaleW();
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
 			start_scale = 0.0828f;
-			s_note->init("assets/game/note_4.png", 0, 0, current_w, current_h);
+			s_note->init("assets/game/note_4.png", Rect(0, 0, current_w, current_h));
 			s_note->AddFrame("");	//IN L
 			s_note->AddFrame("assets/game/note_in_r_4.png");
 			s_note->AddFrame("assets/game/note_out_l_4.png");
@@ -135,7 +135,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			s_note->AddFrame("assets/game/note_l_4.png");
 			s_note->AddFrame("assets/game/note_l_head_4.png");
 			s_note->AddFrame("assets/game/note_l_end_4.png");
-			s_feedback->init("assets/game/feedback_4.png", 502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h);
+			s_feedback->init("assets/game/feedback_4.png", Rect(502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
 			s_light->SetPos(367 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}

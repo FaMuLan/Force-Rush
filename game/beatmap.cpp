@@ -22,7 +22,7 @@ fr::GameBeatmap *fr::GameBeatmap::m_instance = 0;
 void fr::Beatmap::init()
 {
 	play_base = new Sprite;
-	play_base->init("assets/game/play_base.png", 0, Setting::instance()->GetDrawOffset(), System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
+	play_base->init("assets/game/play_base.png", Rect(0, Setting::instance()->GetDrawOffset(), System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale()));
 	scale_w = System::instance()->GetWindowWidth() / 720.f;
 	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
 	for (int i = 0; i < 4; i++)
@@ -108,7 +108,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	combo_text = new TextArea;
 	s_light = new Sprite;
 	combo_text->init("READY?", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
-	s_light->init("assets/game/light.png", System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset(), 96, 96 * scale_h);
+	s_light->init("assets/game/light.png", Rect(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset(), 96, 96 * scale_h));
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
 	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("combo");

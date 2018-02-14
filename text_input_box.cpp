@@ -33,7 +33,7 @@ void fr::TextInputBox::update()
 void fr::TextInputBox::render()
 {
 	Button::render();
-	current_text->render(m_x + current_text->GetX(), m_y + current_text->GetY());
+	current_text->render(dest_rect.x + current_text->GetX(), dest_rect.y + current_text->GetY());
 }
 
 void fr::TextInputBox::InitText(int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)

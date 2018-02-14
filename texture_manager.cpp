@@ -1,5 +1,6 @@
 #include "texture_manager.h"
 #include "system.h"
+#include "shape.h"
 
 fr::TextureManager *fr::TextureManager::m_instance = 0;
 
@@ -8,13 +9,13 @@ void fr::TextureManager::init(SDL_Renderer *load_renderer)
 	renderer = load_renderer;
 }
 
-void fr::TextureManager::load(std::string path, int &output_w, int &output_h)
+void fr::TextureManager::load(std::string path, Rect &output_size)
 {
 	SDL_Surface *load_surface = IMG_Load(path.c_str());
 	SDL_Texture *new_texture = SDL_CreateTextureFromSurface(renderer, load_surface);
 	texture[path] = new_texture;
-	output_w = load_surface->w;
-	output_h = load_surface->h;
+	output_size.w = load_surface->w;
+	output_size.h = load_surface->h;
 	SDL_FreeSurface(load_surface);
 }
 
@@ -46,24 +47,32 @@ void fr::TextureManager::clearfont(std::string path, int size)
 	font[path][size] = NULL;
 }
 
-void fr::TextureManager::render(std::string path, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h)
+void fr::TextureManager::render(std::string path, Rect dest_rect, Rect source_rect, float scale)
 {
-	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
-	if (src_w == 0 && src_h == 0)
+	SDL_Rect sdl_dest_rect = { int(dest_rect.x * System::instance()->GetScale()), int(dest_rect.y * System::instance()->GetScale()), int(dest_rect.w * System::instance()->GetScale() * scale), int(dest_rect.h * System::instance()->GetScale() * scale) };
+	if (source_rect.w == 0 && source_rect.h == 0)
 	{
-		SDL_RenderCopy(renderer, texture[path], NULL, &dest_rect);
+		SDL_RenderCopy(renderer, texture[path], NULL, &sdl_dest_rect);
 	}
 	else
 	{
-		SDL_Rect src_rect = { src_x, src_y, src_w, src_h };
-		SDL_RenderCopy(renderer, texture[path], &src_rect, &dest_rect);
+		SDL_Rect sdl_source_rect = { source_rect.x, source_rect.y, source_rect.w, source_rect.h };
+		SDL_RenderCopy(renderer, texture[path], &sdl_source_rect, &sdl_dest_rect);
 	}
 }
 
-void fr::TextureManager::render(SDL_Texture *load_texture, int x, int y, int w, int h)
+void fr::TextureManager::render(SDL_Texture *load_texture, Rect dest_rect, Rect source_rect, float scale)
 {
-	SDL_Rect dest_rect = { x, y, w, h };
-	SDL_RenderCopy(renderer, load_texture, NULL, &dest_rect);
+	SDL_Rect sdl_dest_rect = { int(dest_rect.x * System::instance()->GetScale()), int(dest_rect.y * System::instance()->GetScale()), int(dest_rect.w * System::instance()->GetScale() * scale), int(dest_rect.h * System::instance()->GetScale() * scale) };
+	if (source_rect.w == 0 && source_rect.h == 0)
+	{
+		SDL_RenderCopy(renderer, load_texture, NULL, &sdl_dest_rect);
+	}
+	else
+	{
+		SDL_Rect sdl_source_rect = { source_rect.x, source_rect.y, source_rect.w, source_rect.h };
+		SDL_RenderCopy(renderer, load_texture, &sdl_source_rect, &sdl_dest_rect);
+	}
 }
 
 void fr::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, float scale)

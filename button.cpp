@@ -3,9 +3,9 @@
 #include "texture_manager.h"
 #include "loading/loading_state.h"
 
-void fr::Button::init(std::string path, int x, int y, int w, int h)
+void fr::Button::init(std::string path, Rect load_dest_rect, Rect load_source_rect)
 {
-	Sprite::init(path, x, y, w, h);
+	Sprite::init(path, load_dest_rect, load_source_rect);
 	is_pressed = false;
 }
 
@@ -40,7 +40,7 @@ void fr::Button::update()
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.x >= m_x && load_finger.y >= m_y && load_finger.x <= (m_x + m_w) && load_finger.y <= (m_y + m_h))
+			if (load_finger.x >= dest_rect.x && load_finger.y >= dest_rect.y && load_finger.x <= (dest_rect.x + dest_rect.w) && load_finger.y <= (dest_rect.y + dest_rect.h))
 			{
 				if (!load_finger.moved)
 				//從外側劃進來的是不會被檢測到的。
@@ -59,7 +59,7 @@ void fr::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.id == has_pressed_id)
 			{
-				if (load_finger.x < m_x || load_finger.y < m_y || load_finger.x > (m_x + m_w) || load_finger.y > (m_y + m_h))
+				if (load_finger.x < dest_rect.x || load_finger.y < dest_rect.y || load_finger.x > (dest_rect.x + dest_rect.w) || load_finger.y > (dest_rect.y + dest_rect.h))
 				{
 					is_pressed = false;
 				}
@@ -87,7 +87,7 @@ void fr::Button::render()
 	Sprite::render();
 	for (int i = 0; i < text.size(); i++)
 	{
-		text[i]->render(m_x + text[i]->GetX(), m_y + text[i]->GetY());
+		text[i]->render(dest_rect.x + text[i]->GetX(), dest_rect.y + text[i]->GetY());
 	}
 }
 
