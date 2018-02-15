@@ -164,7 +164,7 @@ void fr::Column::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.x >= m_x && load_finger.x <= (m_x + m_w) && load_finger.y > System::instance()->GetWindowHeigh() / 2)
 			{
-				if (!load_finger.moved)
+				if (!load_finger.moved && !load_finger.released)
 				{
 					is_hold = true;
 					is_tapped = true;
@@ -176,14 +176,14 @@ void fr::Column::update()
 						is_slide_in_r = true;
 					}
 				}
-				else if (load_finger.dx >= 1)
+				else if (load_finger.dx >= 1 && !load_finger.released)
 				{
 					is_slide_in_r = true;
 					is_hold = true;
 					is_touch_pressed = true;
 					has_pressed_id = load_finger.id;
 				}
-				else if (load_finger.dx <= -1)
+				else if (load_finger.dx <= -1 && !load_finger.released)
 				{
 					is_slide_in_l = true;
 					is_hold = true;
@@ -343,11 +343,11 @@ void fr::Column::update()
 				Judgement current_judgement;
 				if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, false, false);
 				}
 				else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, false, false);
 				}
 				else
 				{
