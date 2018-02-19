@@ -68,6 +68,18 @@ void fr::SoundManager::stop()
 	Mix_HaltMusic();
 }
 
+void fr::SoundManager::SwitchPause()
+{
+	if (!Mix_PausedMusic())
+	{
+		Mix_PauseMusic();
+	}
+	else
+	{
+		Mix_ResumeMusic();
+	}
+}
+
 void fr::SoundManager::SetVolume(Uint16 load_volume, SoundType type)
 {
 	if (type == SOUNDTYPE_MUSIC)

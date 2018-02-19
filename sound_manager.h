@@ -33,6 +33,7 @@ namespace fr
 			void play(std::string path, SoundType type);
 			void play(std::string path, int time);
 			void stop();	//music type only
+			void SwitchPause();	//music type only
 			void SetVolume(Uint16 load_volume, SoundType type);
 
 			bool IsPlayingMusic();
