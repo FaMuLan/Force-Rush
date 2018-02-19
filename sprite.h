@@ -10,7 +10,7 @@ namespace fr
 	class Sprite
 	{
 		public:
-			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
+			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0), Point load_center = Point(0, 0), double load_angle = 0);
 			virtual void update();
 			virtual void render();
 			virtual void render(int index);
@@ -24,7 +24,7 @@ namespace fr
 			void SetScale(float load_scale);
 			void SetSize(int w, int h);
 			void SetSrcRect(Rect load_source_rect);
-			void SetRotation(int center_x, int center_y, float angle);
+			void SetRotation(Point load_center, double load_angle);
 			int GetX();
 			int GetY();
 			int GetW();
@@ -40,6 +40,8 @@ namespace fr
 			Rect dest_rect;
 			Rect source_rect;
 			float scale;
+			Point center;
+			double angle;
 	};	//class Sprite
 };	//namespace fr
 

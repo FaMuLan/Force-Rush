@@ -2,24 +2,26 @@
 #include "texture_manager.h"
 #include "timer.h"
 
-void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_rect)
+void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_rect, Point load_center, double load_angle)
 {
 	dest_rect = load_dest_rect;
 	source_rect = load_source_rect;
+	center = load_center;
+	angle = load_angle;
 
 	if (path != "")
 	{
 		TextureManager::instance()->load(path, dest_rect);
+		if (load_source_rect.w == 0 || load_source_rect.h == 0)
+		{
+			source_rect.w = dest_rect.w;
+			source_rect.h = dest_rect.h;
+		}
 	}
 	if (load_dest_rect.w != 0 || load_dest_rect.h != 0)
 	{
 		dest_rect.w = load_dest_rect.w;
 		dest_rect.h = load_dest_rect.h;
-	}
-	if (load_source_rect.w == 0 || load_source_rect.h == 0)
-	{
-		source_rect.w = dest_rect.w;
-		source_rect.h = dest_rect.h;
 	}
 
 	frame.push_back(path);
@@ -52,7 +54,7 @@ void fr::Sprite::render()
 {
 	if (frame[current_index] != "")
 	{
-		TextureManager::instance()->render(frame[current_index], dest_rect, source_rect, scale);
+		TextureManager::instance()->render(frame[current_index], dest_rect, source_rect, center, angle, scale);
 	}
 }
 
@@ -60,7 +62,7 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], dest_rect, source_rect, scale);
+		TextureManager::instance()->render(frame[index], dest_rect, source_rect, center, angle, scale);
 	}
 }
 
@@ -124,6 +126,12 @@ void fr::Sprite::SetSize(int w, int h)
 void fr::Sprite::SetSrcRect(Rect load_source_rect)
 {
 	source_rect = load_source_rect;
+}
+
+void fr::Sprite::SetRotation(Point load_center, double load_angle)
+{
+	center = load_center;
+	angle = load_angle;
 }
 
 int fr::Sprite::GetX()
