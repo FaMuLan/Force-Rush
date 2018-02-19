@@ -27,6 +27,10 @@ void fr::TextInputBox::update()
 			current_text_str.pop_back();
 		}
 		current_text->SetText(current_text_str);
+		if (is_outside_pressed)
+		{
+			ControlHandler::instance()->SwitchTextInput();
+		}
 	}
 }
 
