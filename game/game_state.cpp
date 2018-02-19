@@ -6,17 +6,20 @@
 #include "../texture_manager.h"
 #include "../timer.h"
 #include "../song_data.h"
+#include "../sound_manager.h"
 #include "../prepare/song_list.h"
 #include "../loading/loading_state.h"
 #include "../user/setting.h"
 #include "../user/user_profile.h"
 #include "beatmap.h"
+#include "pause_widget.h"
 
 fr::GameState *fr::GameState::m_instance = 0;
 
 void fr::GameState::init()
 {
 	GameBeatmap::instance()->load(m_information);
+	PauseWidget::instance()->init();
 
 	title_base = new Button;
 	score_base = new Sprite;
@@ -67,7 +70,13 @@ void fr::GameState::update()
 	duration_text->SetText(duration_ch);
 	delete [] duration_ch;
 
-	GameBeatmap::instance()->update();
+	title_base->update();
+	if (!PauseWidget::instance()->IsShown())
+	{
+		GameBeatmap::instance()->update();
+	}
+	PauseWidget::instance()->update();
+
 	if (System::instance()->IsWindowModified())
 	{
 		title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 0);
@@ -79,18 +88,27 @@ void fr::GameState::update()
 		wall_r->SetSize(228.f * GameBeatmap::instance()->GetScaleW(), 584.f * GameBeatmap::instance()->GetScaleH());
 	}
 
-	title_base->update();
-
 	DrawWall();
 	GameBeatmap::instance()->render();
 	score_base->render();
 	score_text->render();
 	duration_text->render();
 	title_base->render();
-	UserProfile::instance()->RenderController();
+//	UserProfile::instance()->RenderController();
+	PauseWidget::instance()->render();
 	if (title_base->IsReleased())
 	{
-		LoadingState::instance()->init(STATE_PREPARE);
+//		LoadingState::instance()->init(STATE_PREPARE);
+		PauseWidget::instance()->SwitchShown();
+		SoundManager::instance()->SwitchPause();
+		if (PauseWidget::instance()->IsShown())
+		{
+			Timer::instance()->PauseTimer("game");
+		}
+		else
+		{
+			Timer::instance()->RunTimer("game");
+		}
 	}
 }
 
@@ -106,7 +124,7 @@ void fr::GameState::DrawWall()
 	static const int end_x = 0;
 	static const int end_y = 364;
 	static const float start_scale = 0.08386f;
-	double process = double(Timer::instance()->GetSystemTime()) / double(Setting::instance()->GetDuration());
+	double process = double(Timer::instance()->GetTime("game") + 2000) / double(Setting::instance()->GetDuration());
 //	process = process - int(process) + 1;
 	double process_sq = process * process;
 	background_l->render();
