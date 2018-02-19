@@ -12,7 +12,7 @@ void fr::Timer::RunTimer(std::string id)
 {
 	if (is_pause[id])
 	{
-		start_time[id] += SDL_GetTicks() - pause_time[id];
+		start_time[id] = SDL_GetTicks() - (pause_time[id] - start_time[id]);
 		is_pause[id] = false;
 	}
 	if (!is_start[id])
@@ -36,7 +36,7 @@ unsigned long fr::Timer::GetTime(std::string id)
 	{
 		if (is_pause[id])
 		{
-			output = start_time[id] - pause_time[id];
+			output = pause_time[id] - start_time[id];
 		}
 		else
 		{
