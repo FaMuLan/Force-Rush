@@ -146,7 +146,7 @@ void fr::ResultState::init()
 	rank_text->init(rank_ch, System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
 	user_name_text->init(UserProfile::instance()->GetUserName(), System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 280, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_point_text->init(performance_ch, System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 224, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_record_text->init("Score Replaced", 216, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	new_record_text->init("Score Replaced", 232, System::instance()->GetWindowHeigh() - 520, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	new_performance_text->init("Driver Upgrade", System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 174, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 
 	delete [] difficulty_ch;
@@ -190,7 +190,7 @@ void fr::ResultState::update()
 		rank_text->SetPos(System::instance()->GetWindowWidth() - 116, System::instance()->GetWindowHeigh() - 604);
 		user_name_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 280);
 		performance_point_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 224);
-		new_record_text->SetPos(216, System::instance()->GetWindowHeigh() - 520);
+		new_record_text->SetPos(232, System::instance()->GetWindowHeigh() - 520);
 		new_performance_text->SetPos(System::instance()->GetWindowWidth() - 200, System::instance()->GetWindowHeigh() - 174);
 		
 	}
