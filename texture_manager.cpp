@@ -47,31 +47,33 @@ void fr::TextureManager::clearfont(std::string path, int size)
 	font[path][size] = NULL;
 }
 
-void fr::TextureManager::render(std::string path, Rect dest_rect, Rect source_rect, float scale)
+void fr::TextureManager::render(std::string path, Rect dest_rect, Rect source_rect, Point center, double angle, float scale)
 {
 	SDL_Rect sdl_dest_rect = { int(dest_rect.x * System::instance()->GetScale()), int(dest_rect.y * System::instance()->GetScale()), int(dest_rect.w * System::instance()->GetScale() * scale), int(dest_rect.h * System::instance()->GetScale() * scale) };
+	SDL_Point sdl_center = { center.x, center.y };
 	if (source_rect.w == 0 && source_rect.h == 0)
 	{
-		SDL_RenderCopy(renderer, texture[path], NULL, &sdl_dest_rect);
+		SDL_RenderCopyEx(renderer, texture[path], NULL, &sdl_dest_rect, angle, &sdl_center, SDL_FLIP_NONE);
 	}
 	else
 	{
 		SDL_Rect sdl_source_rect = { source_rect.x, source_rect.y, source_rect.w, source_rect.h };
-		SDL_RenderCopy(renderer, texture[path], &sdl_source_rect, &sdl_dest_rect);
+		SDL_RenderCopyEx(renderer, texture[path], &sdl_source_rect, &sdl_dest_rect, angle, &sdl_center, SDL_FLIP_NONE);
 	}
 }
 
-void fr::TextureManager::render(SDL_Texture *load_texture, Rect dest_rect, Rect source_rect, float scale)
+void fr::TextureManager::render(SDL_Texture *load_texture, Rect dest_rect, Rect source_rect, Point center, double angle, float scale)
 {
 	SDL_Rect sdl_dest_rect = { int(dest_rect.x * System::instance()->GetScale()), int(dest_rect.y * System::instance()->GetScale()), int(dest_rect.w * System::instance()->GetScale() * scale), int(dest_rect.h * System::instance()->GetScale() * scale) };
+	SDL_Point sdl_center = { center.x, center.y };
 	if (source_rect.w == 0 && source_rect.h == 0)
 	{
-		SDL_RenderCopy(renderer, load_texture, NULL, &sdl_dest_rect);
+		SDL_RenderCopyEx(renderer, load_texture, NULL, &sdl_dest_rect, angle, &sdl_center, SDL_FLIP_NONE);
 	}
 	else
 	{
 		SDL_Rect sdl_source_rect = { source_rect.x, source_rect.y, source_rect.w, source_rect.h };
-		SDL_RenderCopy(renderer, load_texture, &sdl_source_rect, &sdl_dest_rect);
+		SDL_RenderCopyEx(renderer, load_texture, &sdl_source_rect, &sdl_dest_rect, angle, &sdl_center, SDL_FLIP_NONE);
 	}
 }
 
