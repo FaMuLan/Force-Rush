@@ -12,6 +12,7 @@ void fr::Button::init(std::string path, Rect load_dest_rect, Rect load_source_re
 void fr::Button::update()
 {
 	is_released = false;
+	is_outside_pressed = false;
 	int x, y;
 /*
 	ControlHandler::instance()->GetMousePos(x, y);
@@ -49,6 +50,10 @@ void fr::Button::update()
 					has_pressed_id = load_finger.id;
 					//防止干擾記錄下標
 				}
+			}
+			else
+			{
+				is_outside_pressed = true;
 			}
 		}
 	}
@@ -94,6 +99,11 @@ void fr::Button::render()
 void fr::Button::clear()
 {
 	
+}
+
+void fr::Button::SetRotation(Point load_center, double load_angle)
+{
+	Sprite::SetRotation(load_center, load_angle);
 }
 
 void fr::Button::AddPressedFrame(std::string path)

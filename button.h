@@ -20,6 +20,7 @@ namespace fr
 			virtual void clear();
 			virtual void update();
 			virtual void render();
+			virtual void SetRotation(Point load_centet, double load_angle);
 
 			virtual void AddPressedFrame(std::string path);
 			virtual bool IsPressed();
@@ -31,6 +32,7 @@ namespace fr
 		protected:
 			bool is_pressed;
 			bool is_released;
+			bool is_outside_pressed;
 			FingerID has_pressed_id;
 			//for touch
 			int pressed_index;
