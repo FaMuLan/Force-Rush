@@ -6,6 +6,7 @@
 #include "../timer.h"
 #include "../user/setting.h"
 #include "../song_data.h"
+#include "game_header.h"
 
 void fr::Column::init(int load_column_index, Beatmap *parent)
 {
@@ -220,11 +221,11 @@ void fr::Column::update()
 						is_hold = false;
 						is_released = true;
 						is_touch_pressed = false;
-						if (load_finger.dx <= -1)
+						if (load_finger.dx >= 1)
 						{
 							is_slide_out_r = true;
 						}
-						if (load_finger.dx >= 1)
+						if (load_finger.dx <= -1)
 						{
 							is_slide_out_l = true;
 						}
@@ -288,103 +289,106 @@ void fr::Column::update()
 		}
 	}
 //=================== End ===========
-	if (current_note_index < m_note.size())
-	//檢測防止下標越界而導致段錯誤
+	if (!GameHeader::instance()->IsPaused())
 	{
-		if (is_tapped || is_slide_in_l || is_slide_in_r || (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r)))
+		if (current_note_index < m_note.size())
+		//檢測防止下標越界而導致段錯誤
 		{
-			Judgement current_judgement;
-			if (m_note[current_note_index]->type == NOTETYPE_NORMAL)
-			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time);
-			}
-			else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT && is_slide_in_r))
-			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
-			}
-			else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r))
-			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
-			}
-			else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
-			{
-				current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
-			}
-			else
-			{
-				current_judgement = JUDGEMENT_NONE;
-			}
-
-			if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
-			{
-				if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
-				{
-					is_pressing_ln = true;
-					//有長條的情況下先不跳過
-				}
-				else
-				{
-					current_note_index++;
-					//正常note可跳過
-				}
-				s_light->SetAnimate(1, 12, 300);
-			}
-			else if (current_judgement == JUDGEMENT_ER)
-			{
-				current_note_index++;
-				//誤觸就ERROR的話，別說了，下一個note，請
-			}
-		}
-
-		if (is_released || is_slide_out_l || is_slide_out_r)
-		{
-			if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+			if (is_tapped || is_slide_in_l || is_slide_in_r || (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r)))
 			{
 				Judgement current_judgement;
-				if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
+				if (m_note[current_note_index]->type == NOTETYPE_NORMAL)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, false, false);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time);
 				}
-				else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
+				else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT && is_slide_in_r))
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, false, false);
+					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+				}
+				else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r))
+				{
+					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+				}
+				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
+				{
+					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
 				}
 				else
 				{
-					current_judgement = JUDGEMENT_ER;
+					current_judgement = JUDGEMENT_NONE;
 				}
-				
-				if (current_judgement != JUDGEMENT_ER)
+
+				if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
+				{
+					if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+					{
+						is_pressing_ln = true;
+						//有長條的情況下先不跳過
+					}
+					else
+					{
+						current_note_index++;
+						//正常note可跳過
+					}
+					s_light->SetAnimate(1, 12, 300);
+				}
+				else if (current_judgement == JUDGEMENT_ER)
+				{
+					current_note_index++;
+					//誤觸就ERROR的話，別說了，下一個note，請
+				}
+			}
+
+			if (is_released || is_slide_out_l || is_slide_out_r)
+			{
+				if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+				{
+					Judgement current_judgement;
+					if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
+					{
+						current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true, false);
+					}
+					else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
+					{
+						current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true, false);
+					}
+					else
+					{
+						current_judgement = JUDGEMENT_ER;
+					}
+
+					if (current_judgement != JUDGEMENT_ER)
+					{
+						s_light->SetAnimate(1, 12, 150);
+					}
+					current_note_index++;
+				}
+				is_pressing_ln = false;
+			}
+
+			if (!is_pressing_ln && current_note_index < m_note.size())
+			//以防檢測開頭而導致意外ERROR
+			//注意因為之前current_note_index可能執行過++所以還是需要做檢測
+			{
+				if (m_parent->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
+				{
+					current_note_index++;
+				}
+			}
+
+			if (is_pressing_ln)
+			{
+				if (s_light->GetCurrentIndex() == 0)
 				{
 					s_light->SetAnimate(1, 12, 150);
 				}
-				current_note_index++;
+				if (m_parent->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
+				{
+					current_note_index++;
+					is_pressing_ln = false;
+				}
+				//长条尾未松开手指
 			}
-			is_pressing_ln = false;
-		}
-
-		if (!is_pressing_ln && current_note_index < m_note.size())
-		//以防檢測開頭而導致意外ERROR
-		//注意因為之前current_note_index可能執行過++所以還是需要做檢測
-		{
-			if (m_parent->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
-			{
-				current_note_index++;
-			}
-		}
-
-		if (is_pressing_ln)
-		{
-			if (s_light->GetCurrentIndex() == 0)
-			{
-				s_light->SetAnimate(1, 12, 150);
-			}
-			if (m_parent->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
-			{
-				current_note_index++;
-				is_pressing_ln = false;
-			}
-			//长条尾未松开手指
 		}
 	}
 	s_light->update();
