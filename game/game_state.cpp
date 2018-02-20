@@ -12,32 +12,19 @@
 #include "../user/setting.h"
 #include "../user/user_profile.h"
 #include "beatmap.h"
-#include "pause_widget.h"
+#include "game_header.h"
 
 fr::GameState *fr::GameState::m_instance = 0;
 
 void fr::GameState::init()
 {
 	GameBeatmap::instance()->load(m_information);
-	PauseWidget::instance()->init();
+	GameHeader::instance()->init();
 
-	title_base = new Button;
-	score_base = new Sprite;
-	score_text = new TextArea;
-	duration_text = new TextArea;
 	wall_l = new Sprite;
 	wall_r = new Sprite;
 	background_l = new Sprite;
 	background_r = new Sprite;
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 56);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 16);
-	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
-	title_base->AddPressedFrame("assets/game/title_base_pressed.png");
-	title_base->AddText(m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	score_base->init("assets/base/widget_min_base.png", Rect(0, 64, 0, 0));
-	score_text->init("0", 32, 80, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	duration_text->init("DURATION 0", 32, 152, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 
 	wall_l->init("assets/game/wall_l.png");
 	wall_r->init("assets/game/wall_r.png");
@@ -54,32 +41,16 @@ void fr::GameState::init()
 
 void fr::GameState::clear()
 {
-	title_base->clear();
 	GameBeatmap::instance()->clear();
 }
 
 void fr::GameState::update()
 {
-	char *score_ch = new char[6];
-	sprintf(score_ch, "%d", GameBeatmap::instance()->GetScore());
-	score_text->SetText(score_ch);
-	delete [] score_ch;
-
-	char *duration_ch = new char[20];
-	sprintf(duration_ch, "DURATION %d", Setting::instance()->GetDuration());
-	duration_text->SetText(duration_ch);
-	delete [] duration_ch;
-
-	title_base->update();
-	if (!PauseWidget::instance()->IsShown())
-	{
-		GameBeatmap::instance()->update();
-	}
-	PauseWidget::instance()->update();
+	GameBeatmap::instance()->update();
+	GameHeader::instance()->update();
 
 	if (System::instance()->IsWindowModified())
 	{
-		title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 0);
 		background_l->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
 		background_r->SetSize(327.f * GameBeatmap::instance()->GetScaleW(), 625.f * GameBeatmap::instance()->GetScaleH());
 		background_l->SetPos(0, 328 * GameBeatmap::instance()->GetScaleH() + Setting::instance()->GetDrawOffset());
@@ -90,26 +61,8 @@ void fr::GameState::update()
 
 	DrawWall();
 	GameBeatmap::instance()->render();
-	score_base->render();
-	score_text->render();
-	duration_text->render();
-	title_base->render();
 //	UserProfile::instance()->RenderController();
-	PauseWidget::instance()->render();
-	if (title_base->IsReleased())
-	{
-//		LoadingState::instance()->init(STATE_PREPARE);
-		PauseWidget::instance()->SwitchShown();
-		SoundManager::instance()->SwitchPause();
-		if (PauseWidget::instance()->IsShown())
-		{
-			Timer::instance()->PauseTimer("game");
-		}
-		else
-		{
-			Timer::instance()->RunTimer("game");
-		}
-	}
+	GameHeader::instance()->render();
 }
 
 void fr::GameState::SetFile(fr::SongInformation *load_information)

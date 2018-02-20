@@ -8,7 +8,6 @@ namespace fr
 {
 	class Button;
 	class Sprite;
-	class TextArea;
 	struct SongInformation;
 
 	class GameState : public State
@@ -29,19 +28,15 @@ namespace fr
 
 			void SetFile(SongInformation *load_information);
 			void DrawWall();
+			SongInformation *m_information;
 		private:
 			GameState() {}
 			~GameState() {}
 			static GameState *m_instance;
-			SongInformation *m_information;
-			Button *title_base;
-			Sprite *score_base;
 			Sprite *wall_l;
 			Sprite *wall_r;
 			Sprite *background_l;
 			Sprite *background_r;
-			TextArea *score_text;
-			TextArea *duration_text;
 	};	//class GameState : public State
 };	//namespace fr
 
