@@ -10,14 +10,6 @@ namespace fr
 	class Sprite;
 	class TextArea;
 
-	enum ShutterType
-	{
-		SHUTTER_TOP = 0,
-		SHUTTER_BOTTOM,
-		SHUTTER_LEFT,
-		SHUTTER_RIGHT
-	};
-
 	class LoadingState : public State
 	{
 		public:
@@ -31,32 +23,32 @@ namespace fr
 				return m_instance;
 			}
 			void update();
+			void render();
 			void init();
 			void init(StateID next_state_id);
 			void clear();
 			void OnEnter();
 			void OnExit();
-			void AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type);
+			static void OnLoad();	//要扔到其他線程裡面
+//			void AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type);
 			bool IsSwitching();
 		private:
 			LoadingState() {}
 			~LoadingState() {}
 			static LoadingState *m_instance;
-			Sprite *shutter_top;
-			Sprite *shutter_bottom;
-			Sprite *shutter_left;
-			Sprite *shutter_right;
-			Sprite *shutter_center;
-			std::vector<TextArea*> text_area_top;
-			std::vector<TextArea*> text_area_bottom;
-			std::vector<TextArea*> text_area_left;
-			std::vector<TextArea*> text_area_right;
+			Sprite *shutter_arrow_front_portrait;
+			Sprite *shutter_arrow_front_landscape;
+			Sprite *shutter_arrow_back_portrait;
+			Sprite *shutter_arrow_back_landscape;
+			std::vector<int> arrow_front_pos;
+			std::vector<int> arrow_back_pos;
+			int background_length;
 			bool is_entered;
-			bool is_loaded;
+			static bool is_loaded;
 			bool is_exited;
 			bool is_text_default;
-			State* next_state;
-			State* last_state;
+			static State *next_state;
+			static State *last_state;
 	};
 };
 
