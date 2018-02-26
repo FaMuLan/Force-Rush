@@ -72,6 +72,11 @@ namespace fr
 			Score *m_score;
 			std::map<Judgement, int> judge_count;
 			TextArea *combo_text;
+			TextArea *judge_text;
+			TextArea *early_text;
+			TextArea *late_text;
+			bool show_early;
+			bool show_late;
 			Sprite *s_light;
 			bool is_waiting;
 			bool is_ended;

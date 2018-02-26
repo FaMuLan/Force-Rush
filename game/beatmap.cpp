@@ -106,10 +106,19 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	}
 
 	combo_text = new TextArea;
+	judge_text = new TextArea;
+	early_text = new TextArea;
+	late_text = new TextArea;
+	show_early = false;
+	show_late = false;
 	s_light = new Sprite;
-	combo_text->init("READY?", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
+	combo_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
+	judge_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
+	early_text->init("EARLY", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
+	late_text->init("LATE", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
 	s_light->init("assets/game/light.png", Rect(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset(), 96, 96 * scale_h));
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
+	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 40);
 	Animator::instance()->AddAnimation("combo", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("combo");
 
@@ -154,6 +163,9 @@ void fr::GameBeatmap::update()
 	if (System::instance()->IsWindowModified())
 	{
 		combo_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+		judge_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120);
+		early_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80);
+		late_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160);
 		s_light->SetPos(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset());
 		s_light->SetSize(96, 96 * scale_h);
 	}
@@ -164,6 +176,17 @@ void fr::GameBeatmap::update()
 		ResultState::instance()->LoadScore(m_information, m_score);
 		is_ended = true;
 	}
+
+	if (show_early && Timer::instance()->GetTime("show_early") > 200)
+	{
+		show_early = false;
+		Timer::instance()->ResetTimer("show_early");
+	}
+	if (show_late && Timer::instance()->GetTime("show_late") > 200)
+	{
+		show_late = false;
+		Timer::instance()->ResetTimer("show_late");
+	}
 }
 
 void fr::GameBeatmap::render()
@@ -171,6 +194,15 @@ void fr::GameBeatmap::render()
 	Beatmap::render();
 	s_light->render();
 	combo_text->render(combo_text->GetX(), combo_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("combo")));
+	if (show_early)
+	{
+		early_text->render();
+	}
+	if (show_late)
+	{
+		late_text->render();
+	}
+	judge_text->render();
 }
 
 fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_pressing, bool error_only)
@@ -189,11 +221,14 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			m_score->combo = 0;
 			m_score->error++;
 
-			combo_text->SetColor(0xEC, 0x6A, 0x5C);
 			char *combo_ch = new char;
 			sprintf(combo_ch, "%d", m_score->combo);
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
+			show_early = true;
+			Timer::instance()->ResetTimer("show_early");
+			Timer::instance()->RunTimer("show_early");
+			judge_text->SetText("ERROR");
 
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
@@ -205,11 +240,14 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			m_score->combo = 0;
 			m_score->error++;
 
-			combo_text->SetColor(0xEC, 0x6A, 0x5C);
 			char *combo_ch = new char;
 			sprintf(combo_ch, "%d", m_score->combo);
 			combo_text->SetText(combo_ch);
 			delete combo_ch;
+			show_early = true;
+			Timer::instance()->ResetTimer("show_early");
+			Timer::instance()->RunTimer("show_early");
+			judge_text->SetText("ERROR");
 
 			Animator::instance()->ResetAnimation("combo");
 			Animator::instance()->Animate("combo");
@@ -219,15 +257,30 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 		{
 			if (time_diff > 100 || time_diff < -100)
 			{
-				m_score->score += JUDGEMENT_GD;
+				m_score->score += (m_score->score + JUDGEMENT_GD) > 0 ? JUDGEMENT_GD : -m_score->score;
 				m_score->combo++;
 				m_score->good++;
 
-				combo_text->SetColor(0x84, 0xB1, 0xED);
 				char *combo_ch = new char;
+				char *judge_ch = new char[20];
 				sprintf(combo_ch, "%d", m_score->combo);
+				sprintf(judge_ch, "WARNING %dms", time_diff);
 				combo_text->SetText(combo_ch);
+				judge_text->SetText(judge_ch);
 				delete combo_ch;
+				delete judge_ch;
+				if (time_diff > 0)
+				{	
+					show_early = true;
+					Timer::instance()->ResetTimer("show_early");
+					Timer::instance()->RunTimer("show_early");
+				}
+				else
+				{
+					show_late = true;
+					Timer::instance()->ResetTimer("show_late");
+					Timer::instance()->RunTimer("show_late");
+				}
 
 				Animator::instance()->ResetAnimation("combo");
 				Animator::instance()->Animate("combo");
@@ -239,11 +292,26 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 				m_score->combo++;
 				m_score->great++;
 
-				combo_text->SetColor(0x81, 0xC7, 0x84);
 				char *combo_ch = new char;
+				char *judge_ch = new char[20];
 				sprintf(combo_ch, "%d", m_score->combo);
+				sprintf(judge_ch, "SAFE %dms", time_diff);
 				combo_text->SetText(combo_ch);
+				judge_text->SetText(judge_ch);
 				delete combo_ch;
+				delete judge_ch;
+				if (time_diff > 0)
+				{	
+					show_early = true;
+					Timer::instance()->ResetTimer("show_early");
+					Timer::instance()->RunTimer("show_early");
+				}
+				else
+				{
+					show_late = true;
+					Timer::instance()->ResetTimer("show_late");
+					Timer::instance()->RunTimer("show_late");
+				}
 
 				Animator::instance()->ResetAnimation("combo");
 				Animator::instance()->Animate("combo");
@@ -255,11 +323,11 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 				m_score->combo++;
 				m_score->pure++;
 
-				combo_text->SetColor(0xFF, 0xEA, 0x00);
 				char *combo_ch = new char;
 				sprintf(combo_ch, "%d", m_score->combo);
 				combo_text->SetText(combo_ch);
 				delete combo_ch;
+				judge_text->SetText("PURE");
 
 				Animator::instance()->ResetAnimation("combo");
 				Animator::instance()->Animate("combo");
@@ -277,11 +345,14 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 		m_score->combo = 0;
 		m_score->error++;
 
-		combo_text->SetColor(0xEC, 0x6A, 0x5C);
 		char *combo_ch = new char;
 		sprintf(combo_ch, "%d", m_score->combo);
 		combo_text->SetText(combo_ch);
 		delete combo_ch;
+		judge_text->SetText("ERROR");
+		show_late = true;
+		Timer::instance()->ResetTimer("show_late");
+		Timer::instance()->RunTimer("show_late");
 
 		Animator::instance()->ResetAnimation("combo");
 		Animator::instance()->Animate("combo");
