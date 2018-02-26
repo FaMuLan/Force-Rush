@@ -39,6 +39,7 @@ namespace fr
 			Button *title_base;
 			Sprite *score_base;
 			Sprite *user_base;
+			Sprite *duration_process_bar;
 
 			Button *pause_resume;
 			Button *pause_retry;

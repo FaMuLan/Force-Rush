@@ -19,6 +19,7 @@ void fr::GameHeader::init()
 	pause_widget_base = new Sprite;
 	score_base = new Sprite;
 	user_base = new Sprite;
+	duration_process_bar = new Sprite;
 	title_base = new Button;
 	pause_resume = new Button;
 	pause_retry = new Button;
@@ -48,6 +49,8 @@ void fr::GameHeader::init()
 	score_base->SetPos(0, title_base->GetX() >= score_base->GetW() ? 0 : 64);
 	user_base->init("assets/base/widget_min_base.png");
 	user_base->SetPos(System::instance()->GetWindowWidth() - user_base->GetW(), title_base->GetX() >= user_base->GetW() ? 0 : 64);
+	duration_process_bar->init("assets/base/process_bar.png");
+	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->init("0", score_base->GetX() + 32, score_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init(" ", score_base->GetX() + 32, score_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	Animator::instance()->AddAnimation("pause_widget_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
@@ -82,6 +85,11 @@ void fr::GameHeader::update()
 	sprintf(duration_ch, "%d:%02d / %d:%02d", current_min, current_sec, song_length_min, song_length_sec);
 	duration_text->SetText(duration_ch);
 	delete [] duration_ch;
+	float process = float(Timer::instance()->GetTime("game") - 2000) / GameState::instance()->m_information->duration;
+	process = Timer::instance()->GetTime("game") - 2000 < 0 ? 0 : process;
+	process = Timer::instance()->GetTime("game") - 2000 > GameState::instance()->m_information->duration ? 1 : process;
+	duration_process_bar->SetSrcRect(Rect(0, 0, process * 216.f, 8));
+	duration_process_bar->SetSize(process * 216.f, 8);
 
 	if (title_base->IsReleased())
 	{
@@ -104,6 +112,7 @@ void fr::GameHeader::update()
 			title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 0);
 			score_base->SetPos(0, title_base->GetX() >= score_base->GetW() ? 0 : 64);
 			user_base->SetPos(System::instance()->GetWindowWidth() - user_base->GetW(), title_base->GetX() >= user_base->GetW() ? 0 : 64);
+			duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 			score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 			duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
 		}
@@ -115,6 +124,7 @@ void fr::GameHeader::update()
 			title_base->SetPos(System::instance()->GetWindowWidth() / 2 - title_base->GetW() / 2, 320);
 			score_base->SetPos(0, title_base->GetX() >= score_base->GetW() ? 0 : 384);
 			user_base->SetPos(System::instance()->GetWindowWidth() - user_base->GetW(), title_base->GetX() >= user_base->GetW() ? 0 : 384);
+			duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 			score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 			duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
 			pause_widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - pause_widget_base->GetW() / 2, 0);
@@ -166,6 +176,7 @@ void fr::GameHeader::render()
 	score_text->render();
 	duration_text->render();
 	title_base->render();
+	duration_process_bar->render();
 }
 
 void fr::GameHeader::PauseOnEnter()
@@ -179,6 +190,7 @@ void fr::GameHeader::PauseOnEnter()
 	pause_resume->SetPos(pause_widget_base->GetX() + 32, pause_widget_base->GetY() + 32);
 	pause_retry->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2 - pause_retry->GetW() / 2, pause_widget_base->GetY() + 32);
 	pause_retire->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() - pause_retire->GetW() - 32, pause_widget_base->GetY() + 32);
+	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 	duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
 	if (Animator::instance()->IsTimeUp("pause_widget_enter"))
@@ -198,6 +210,7 @@ void fr::GameHeader::PauseOnExit()
 	pause_resume->SetPos(pause_widget_base->GetX() + 32, pause_widget_base->GetY() + 32);
 	pause_retry->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2 - pause_retry->GetW() / 2, pause_widget_base->GetY() + 32);
 	pause_retire->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() - pause_retire->GetW() - 32, pause_widget_base->GetY() + 32);
+	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 	duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
 	if (Animator::instance()->IsTimeUp("pause_widget_exit"))
