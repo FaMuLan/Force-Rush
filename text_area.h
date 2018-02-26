@@ -2,6 +2,7 @@
 #define FORCE_RUSH_TEXT_AREA_H
 
 #include <string>
+#include "texture_manager.h"
 
 namespace fr
 {
@@ -12,10 +13,12 @@ namespace fr
 		TEXTFORMAT_RIGHT
 	};
 
+	struct TextureCache;
+
 	class TextArea
 	{
 		public:
-			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
+			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0, bool wrapped = false);
 			virtual void render();
 			virtual void render(int x, int y);
 			virtual void clear();
@@ -39,7 +42,9 @@ namespace fr
 			int m_b;
 			TextFormat m_format;
 			int m_limited_w;
+			bool m_wrapped;
 			float m_scale;
+			TextureCache *cache;
 	};	//class TextArea
 };	//namespace fr
 
