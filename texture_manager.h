@@ -14,6 +14,12 @@
 namespace fr
 {
 	class Rect;
+	struct TextureCache
+	{
+		SDL_Texture *texture;
+		int w;
+		int h;
+	};
 
 	class TextureManager
 	{
@@ -36,7 +42,7 @@ namespace fr
 			void clearfont(std::string path, int size);
 			void render(std::string path, Rect dest_rect, Rect source_rect = Rect(0, 0, 0, 0), Point center = Point(0, 0), double angle = 0, float scale = 1);
 			void render(SDL_Texture *load_texture, Rect dest_rect, Rect source_rect = Rect(0, 0, 0, 0), Point center = Point(0, 0), double angle = 0, float scale = 1);
-			void render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0, float scale = 1);
+			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0, bool wrapper = false, float scale = 1);
 			//limit_w = 0 = NO_LIMIT
 		private: 
 			TextureManager() {}

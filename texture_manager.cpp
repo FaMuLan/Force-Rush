@@ -77,28 +77,39 @@ void fr::TextureManager::render(SDL_Texture *load_texture, Rect dest_rect, Rect 
 	}
 }
 
-void fr::TextureManager::render(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, float scale)
+fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper, float scale)
 {
 	SDL_Color color = { char(r), char(g), char(b) };
-	SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
+	SDL_Surface *text_surface;
+	if (wrapper)
+	{
+		std::string text_line;
+		for (int i = 0; i < text.length(); i++)
+		{
+			text_line += text[i];
+			int load_w, load_h;
+			TTF_SizeUTF8(font[font_path][font_size], text_line.c_str(), &load_w, &load_h);
+			if (load_w > limited_w)
+			{
+				text.insert(i, "\n");
+				text_line.clear();
+			}
+		}
+		text_surface = TTF_RenderUTF8_Blended_Wrapped(font[font_path][font_size], text.c_str(), color, limited_w);
+	}
+	else
+	{
+		text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
+	}
 	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 	int w = text_surface->w;
 	int h = text_surface->h * scale;
 	w = (limited_w == 0 || limited_w > w) ? w * scale : limited_w * scale;
-	switch (format)
-	{
-		case TEXTFORMAT_MIDDLE:
-			x -= w / 2;
-			y -= h / 2;
-		break;
-		case TEXTFORMAT_RIGHT:
-			x -= w;
-			y -= h;
-		break;
-	}
-	SDL_Rect dest_rect = { int(x * System::instance()->GetScale()), int(y * System::instance()->GetScale()), int(w * System::instance()->GetScale()), int(h * System::instance()->GetScale()) };
-	SDL_RenderCopy(renderer, text_texture, NULL, &dest_rect);
+	TextureCache *output_cache = new TextureCache;
+	output_cache->texture = text_texture;
+	output_cache->w = w;
+	output_cache->h = h;
 
-	SDL_DestroyTexture(text_texture);
 	SDL_FreeSurface(text_surface);
+	return output_cache;
 }
