@@ -1,5 +1,5 @@
 #ifndef FORCE_RUSH_USER_SETTING_H
-#define LUNATIC_MEL0DY_USER_SETTING_H
+#define FORCE_RUSH_USER_SETTING_H
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -32,6 +32,7 @@ namespace fr
 			int GetDrawOffset();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
+			std::string GetRandomTips();
 			void SetUserProfilePath(std::string input);
 			void SwitchAuto();
 			void SwitchSlideOut();
@@ -55,6 +56,7 @@ namespace fr
 			int draw_offset_landscape;
 			SDL_Scancode key_code[4];
 			std::vector<std::string> song_list;
+			std::vector<std::string> tips_text;
 	};
 };
 

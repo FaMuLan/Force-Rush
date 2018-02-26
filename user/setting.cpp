@@ -3,6 +3,7 @@
 #include <boost/regex.hpp>
 #include "../file_system.h"
 #include "../system.h"
+#include "../timer.h"
 
 fr::Setting *fr::Setting::m_instance = 0;
 
@@ -22,6 +23,13 @@ void fr::Setting::init()
 	draw_scale_landscape = 1450;
 	draw_offset_landscape = -320;
 	song_list.push_back("assets/songs");
+	tips_text.push_back("适当休息。在这里我更建议您的是对手部进行放松");
+	tips_text.push_back("在游戏时，可以在屏幕上半部分以竖直方向滑动手指，来进行快速调节音符下落速度");
+	tips_text.push_back("在游戏时若发现音画不同步的现象，可以尝试调节一下偏移，本游戏内置偏移调节向导");
+	tips_text.push_back("如果您是音乐游戏新手，那么请最好不要一下子尝试高难度谱面，也最好不要尝试无法接受的音符下落速度");
+	tips_text.push_back("Performance数值不同于传统游戏的经验值，这个数值能大致反映您在这个游戏的实力");
+	tips_text.push_back("要想提高Performance数值，您需要选择您能接受的适中难度的谱面(不能过于简单)，并打出较好的成绩");
+
 	if (!read())
 	{
 		write();
@@ -36,6 +44,7 @@ bool fr::Setting::read()
 		return false; 
 	}
 	song_list.clear();
+	tips_text.clear();
 	boost::regex auto_pattern("auto:(.+?)\\n");
 	boost::regex slide_out_pattern("slide_out:(.+?)\\n");
 	boost::regex duration_pattern("duration:(\\d+?)\\n");
@@ -44,6 +53,7 @@ bool fr::Setting::read()
 	boost::regex song_list_pattern("song_list:(.+?)\\n");
 	boost::regex column_portrait_pattern("column_portrait:(\\d+?),(-?\\d+?)\\n");
 	boost::regex column_landscape_pattern("column_landscape:(\\d+?),(-?\\d+?)\\n");
+	boost::regex tips_pattern("tips:(.+?)\\n");
 	boost::smatch auto_line;
 	boost::smatch slide_out_line;
 	boost::smatch duration_line;
@@ -74,6 +84,11 @@ bool fr::Setting::read()
 	{
 		boost::smatch song_list_line = *i;
 		song_list.push_back(boost::regex_replace(song_list_line.str(), song_list_pattern, "$1"));
+	}
+	for (boost::sregex_iterator i = boost::sregex_iterator(file.begin(), file.end(), tips_pattern); i != boost::sregex_iterator(); i++)
+	{
+		boost::smatch tips_line = *i;
+		tips_text.push_back(boost::regex_replace(tips_line.str(), tips_pattern, "$1"));
 	}
 	return true;
 }
@@ -112,6 +127,12 @@ void fr::Setting::write()
 	{
 		file += "song_list:";
 		file += song_list[i];
+		file += "\n";
+	}
+	for (int i = 0; i < tips_text.size(); i++)
+	{
+		file += "tips:";
+		file += tips_text[i];
 		file += "\n";
 	}
 	file += "End of file\n";
@@ -169,6 +190,13 @@ SDL_Scancode fr::Setting::GetKeycode(int index)
 void fr::Setting::GetSongList(std::vector<std::string> &output)
 {
 	output = song_list;
+}
+
+std::string fr::Setting::GetRandomTips()
+{
+	srand(Timer::instance()->GetSystemTime());
+	int index = rand() / tips_text.size();
+	return tips_text[index];
 }
 
 void fr::Setting::SetUserProfilePath(std::string input)
