@@ -42,7 +42,7 @@ void fr::MainState::init()
 	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
 
 	performance_process_bar->SetSrcRect(Rect(0, 0, (float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8));
-	performance_process_bar->SetSize((float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8);
+	performance_process_bar->SetSize((UserProfile::instance()->GetPerformancePoint() < 10000.f ? float(UserProfile::instance()->GetPerformancePoint()) / 10000.f : 1) * 216.f, 8);
 
 //	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);

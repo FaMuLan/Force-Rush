@@ -12,7 +12,7 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 	if (path != "")
 	{
 		TextureManager::instance()->load(path, dest_rect);
-		if (load_source_rect.w == 0 || load_source_rect.h == 0)
+		if (load_source_rect.w == 0 && load_source_rect.h == 0)
 		{
 			source_rect.w = dest_rect.w;
 			source_rect.h = dest_rect.h;
