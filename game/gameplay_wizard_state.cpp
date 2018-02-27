@@ -271,19 +271,19 @@ void fr::GameplayWizardState::update()
 
 	if (GameplayWizardBeatmap::instance()->IsRunning())
 	{
-		offset_wizard_switch->ClearText();
-		offset_wizard_switch->AddText("STOP", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		if (offset_wizard_switch->IsReleased())
 		{
+			offset_wizard_switch->ClearText();
+			offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 			GameplayWizardBeatmap::instance()->stop();
 		}
 	}
 	else
 	{
-		offset_wizard_switch->ClearText();
-		offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		if (offset_wizard_switch->IsReleased())
 		{
+			offset_wizard_switch->ClearText();
+			offset_wizard_switch->AddText("STOP", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 			GameplayWizardBeatmap::instance()->start();
 		}
 	}
