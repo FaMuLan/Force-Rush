@@ -9,6 +9,8 @@
 #include "../timer.h"
 #include "../song_data.h"
 #include "../loading/loading_state.h"
+#include "../user/user_profile.h"
+#include "../user/setting.h"
 #include "game_state.h"
 #include "beatmap.h"
 
@@ -26,10 +28,8 @@ void fr::GameHeader::init()
 	pause_retire = new Button;
 	score_text = new TextArea;
 	duration_text = new TextArea;
-
-		TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 56);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 20);
+	user_name_text = new TextArea;
+	tips_text = new TextArea;
 
 	pause_widget_base->init("assets/game/pause_widget_base.png");
 	pause_resume->init("assets/base/sort_button.png");
@@ -42,6 +42,8 @@ void fr::GameHeader::init()
 	pause_retire->AddPressedFrame("assets/base/sort_button_pressed.png");
 	pause_retire->AddText("Retire", pause_retire->GetW() / 2, pause_retire->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
+	tips_text->init(Setting::instance()->GetRandomTips(), pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188, "assets/fonts/Miui-Regular.ttf", 25, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560, true);
+
 	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
 	title_base->AddPressedFrame("assets/game/title_base_pressed.png");
 	title_base->AddText(GameState::instance()->m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
@@ -53,6 +55,7 @@ void fr::GameHeader::init()
 	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->init("0", score_base->GetX() + 32, score_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init(" ", score_base->GetX() + 32, score_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	user_name_text->init(UserProfile::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	Animator::instance()->AddAnimation("pause_widget_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("pause_widget_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 	pause_is_shown = false;
@@ -115,6 +118,7 @@ void fr::GameHeader::update()
 			duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 			score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 			duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
+			user_name_text->SetPos(user_base->GetX() + 32, user_base->GetY() + 16);
 		}
 	}
 	if (pause_is_shown && pause_is_entered)
@@ -127,10 +131,12 @@ void fr::GameHeader::update()
 			duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 			score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 			duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
+			user_name_text->SetPos(user_base->GetX() + 32, user_base->GetY() + 16);
 			pause_widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - pause_widget_base->GetW() / 2, 0);
 			pause_resume->SetPos(pause_widget_base->GetX() + 32, pause_widget_base->GetY() + 32);
 			pause_retry->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2 - pause_retry->GetW() / 2, pause_widget_base->GetY() + 32);
 			pause_retire->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() - pause_retire->GetW() - 32, pause_widget_base->GetY() + 32);
+			tips_text->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188);
 		}
 		pause_resume->update();
 		pause_retry->update();
@@ -170,6 +176,7 @@ void fr::GameHeader::render()
 		pause_resume->render();
 		pause_retry->render();
 		pause_retire->render();
+		tips_text->render();
 	}
 	score_base->render();
 	user_base->render();
@@ -177,6 +184,7 @@ void fr::GameHeader::render()
 	duration_text->render();
 	title_base->render();
 	duration_process_bar->render();
+	user_name_text->render();
 }
 
 void fr::GameHeader::PauseOnEnter()
@@ -190,9 +198,11 @@ void fr::GameHeader::PauseOnEnter()
 	pause_resume->SetPos(pause_widget_base->GetX() + 32, pause_widget_base->GetY() + 32);
 	pause_retry->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2 - pause_retry->GetW() / 2, pause_widget_base->GetY() + 32);
 	pause_retire->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() - pause_retire->GetW() - 32, pause_widget_base->GetY() + 32);
+	tips_text->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188);
 	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 	duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
+	user_name_text->SetPos(user_base->GetX() + 32, user_base->GetY() + 16);
 	if (Animator::instance()->IsTimeUp("pause_widget_enter"))
 	{		Animator::instance()->ResetAnimation("pause_widget_enter");
 		pause_is_entered = true;
@@ -210,9 +220,11 @@ void fr::GameHeader::PauseOnExit()
 	pause_resume->SetPos(pause_widget_base->GetX() + 32, pause_widget_base->GetY() + 32);
 	pause_retry->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2 - pause_retry->GetW() / 2, pause_widget_base->GetY() + 32);
 	pause_retire->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() - pause_retire->GetW() - 32, pause_widget_base->GetY() + 32);
+	tips_text->SetPos(pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188);
 	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	score_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 16);
 	duration_text->SetPos(score_base->GetX() + 32, score_base->GetY() + 88);
+	user_name_text->SetPos(user_base->GetX() + 32, user_base->GetY() + 16);
 	if (Animator::instance()->IsTimeUp("pause_widget_exit"))
 	{
 		Animator::instance()->ResetAnimation("pause_widget_exit");

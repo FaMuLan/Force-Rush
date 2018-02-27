@@ -47,6 +47,8 @@ namespace fr
 
 			TextArea *score_text;
 			TextArea *duration_text;
+			TextArea *user_name_text;
+			TextArea *tips_text;
 	};
 };
 
