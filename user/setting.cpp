@@ -195,7 +195,7 @@ void fr::Setting::GetSongList(std::vector<std::string> &output)
 std::string fr::Setting::GetRandomTips()
 {
 	srand(Timer::instance()->GetSystemTime());
-	int index = rand() / tips_text.size();
+	int index = rand() % tips_text.size();
 	return tips_text[index];
 }
 
