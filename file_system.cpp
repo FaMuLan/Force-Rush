@@ -97,14 +97,14 @@ bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, 
 bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
 {
 
-	static boost::regex id_pattern("BeatmapID:(.*?)\\n");
-	static boost::regex title_pattern("Title:(.*?)\\n");
-	static boost::regex artist_pattern("Artist:(.*?)\\n");
-	static boost::regex noter_pattern("Creator:(.*?)\\n");
-	static boost::regex version_pattern("Version:(.*?)\\n");
+	static boost::regex id_pattern("BeatmapID:(.*?)[\\n\\r]");
+	static boost::regex title_pattern("Title:(.*?)[\\n\\r]");
+	static boost::regex artist_pattern("Artist:(.*?)[\\n\\r]");
+	static boost::regex noter_pattern("Creator:(.*?)[\\n\\r]");
+	static boost::regex version_pattern("Version:(.*?)[\\n\\r]");
 	static boost::regex mode_pattern("Mode: (\\d)");
 	static boost::regex key_count_pattern("CircleSize:(\\d)");
-	static boost::regex audio_path_pattern("AudioFilename: (.*?)\\n");
+	static boost::regex audio_path_pattern("AudioFilename: (.*?)[\\n\\r]");
 	static boost::regex preview_time_pattern("PreviewTime: (\\d*)");
 	static boost::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
 
@@ -146,7 +146,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		boost::regex_search(text, audio_path_line, audio_path_pattern);
 		boost::regex_search(text, preview_time_line, preview_time_pattern);
 
-		output_information->id = boost::regex_replace(id_line.str(), id_pattern, "$1");
+		output_information->id = "osu" +  boost::regex_replace(id_line.str(), id_pattern, "$1");
 		output_information->title = boost::regex_replace(title_line.str(), title_pattern, "$1");
 		output_information->artist = boost::regex_replace(artist_line.str(), artist_pattern, "$1");
 		output_information->noter = boost::regex_replace(noter_line.str(), noter_pattern, "$1");
@@ -213,9 +213,10 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		new_null_score->rank = RANK_NONE;
 		new_null_score->score = 0;
 		new_null_score->pure = 0;
-		new_null_score->great = 0;
-		new_null_score->good = 0;
+		new_null_score->safe = 0;
+		new_null_score->warning = 0;
 		new_null_score->error = 0;
+		new_null_score->chain = 0;
 		output_information->high_score = new_null_score;
 	}
 	if (load_note)
@@ -277,9 +278,10 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		new_null_score->rank = RANK_NONE;
 		new_null_score->score = 0;
 		new_null_score->pure = 0;
-		new_null_score->great = 0;
-		new_null_score->good = 0;
+		new_null_score->safe = 0;
+		new_null_score->warning = 0;
 		new_null_score->error = 0;
+		new_null_score->chain = 0;
 		output_information->high_score = new_null_score;
 	}
 	else
