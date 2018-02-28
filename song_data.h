@@ -38,10 +38,10 @@ namespace fr
 	struct Score
 	{
 		int pure;
-		int great;
-		int good;
+		int safe;
+		int warning;
 		int error;
-		int combo;
+		int chain;
 		int score;
 		Rank rank;
 	};

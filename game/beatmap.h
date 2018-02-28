@@ -62,7 +62,7 @@ namespace fr
 			void render();
 			Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false);
 			//第三個參數中考慮到ln尾判的判定與一般note不一樣
-			int GetCombo();
+			int GetChain();
 			int GetScore();
 		private:
 			GameBeatmap() {}
@@ -71,7 +71,7 @@ namespace fr
 			SongInformation *m_information;
 			Score *m_score;
 			std::map<Judgement, int> judge_count;
-			TextArea *combo_text;
+			TextArea *chain_text;
 			TextArea *judge_text;
 			TextArea *early_text;
 			TextArea *late_text;
@@ -80,6 +80,7 @@ namespace fr
 			Sprite *s_light;
 			bool is_waiting;
 			bool is_ended;
+			int current_chain;
 	};
 };
 

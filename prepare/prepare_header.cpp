@@ -17,8 +17,8 @@ void fr::PrepareHeader::init()
 	score_text = new TextArea;
 	rank_text = new TextArea;
 	pure_text = new TextArea;
-	great_text = new TextArea;
-	good_text = new TextArea;
+	safe_text = new TextArea;
+	warning_text = new TextArea;
 	error_text = new TextArea;
 
 	information_base->init("assets/prepare/song_header_base.png");
@@ -43,8 +43,8 @@ void fr::PrepareHeader::init()
 	score_text->init("NULL", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	rank_text->init("?", 138, 126, "assets/fonts/Audiowide.ttf", 156, 0x00, 0x00, 0x00);
 	pure_text->init("PURE      ??", 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	great_text->init("GREAT     ??", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	good_text->init("GOOD      ??", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+	safe_text->init("GREAT     ??", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+	warning_text->init("GOOD      ??", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	error_text->init("ERROR     ??", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	information_base->AddText(artist_text);
 	information_base->AddText(noter_text);
@@ -86,8 +86,8 @@ void fr::PrepareHeader::update()
 		if (is_score_detail_shown)
 		{
 			score_base->AddText(pure_text);
-			score_base->AddText(great_text);
-			score_base->AddText(good_text);
+			score_base->AddText(safe_text);
+			score_base->AddText(warning_text);
 			score_base->AddText(error_text);
 		}
 		else
@@ -110,15 +110,15 @@ void fr::PrepareHeader::SetInformation(SongInformation *information)
 	char *duration_ch = new char[10];
 	char *score_ch = new char[15];
 	char *pure_ch = new char[15];
-	char *great_ch = new char[15];
-	char *good_ch = new char[15];
+	char *safe_ch = new char[15];
+	char *warning_ch = new char[15];
 	char *error_ch = new char[15];
 	std::string rank_ch;
 	sprintf(duration_ch, "%ds", m_information->duration / 1000);
 	sprintf(score_ch, "score %d", m_information->high_score->score);
 	sprintf(pure_ch, "PURE     %d", m_information->high_score->pure);
-	sprintf(great_ch, "GREAT    %d", m_information->high_score->great);
-	sprintf(good_ch, "GOOD     %d", m_information->high_score->good);
+	sprintf(safe_ch, "SAFE     %d", m_information->high_score->safe);
+	sprintf(warning_ch, "WARNING  %d", m_information->high_score->warning);
 	sprintf(error_ch, "ERROR    %d", m_information->high_score->error);
 	switch (m_information->high_score->rank)
 	{
@@ -148,13 +148,13 @@ void fr::PrepareHeader::SetInformation(SongInformation *information)
 	score_text->SetText(score_ch);
 	rank_text->SetText(rank_ch);
 	pure_text->SetText(pure_ch);
-	great_text->SetText(great_ch);
-	good_text->SetText(good_ch);
+	safe_text->SetText(safe_ch);
+	warning_text->SetText(warning_ch);
 	error_text->SetText(error_ch);
 	delete [] duration_ch;
 	delete [] score_ch;
 	delete [] pure_ch;
-	delete [] great_ch;
-	delete [] good_ch;
+	delete [] safe_ch;
+	delete [] warning_ch;
 	delete [] error_ch;
 }

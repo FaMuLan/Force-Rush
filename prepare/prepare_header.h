@@ -40,8 +40,8 @@ namespace fr
 			TextArea *score_text;
 			TextArea *rank_text;
 			TextArea *pure_text;
-			TextArea *great_text;
-			TextArea *good_text;
+			TextArea *safe_text;
+			TextArea *warning_text;
 			TextArea *error_text;
 			bool is_score_detail_shown;
 	};	//class PrepareHeader

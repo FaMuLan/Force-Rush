@@ -59,8 +59,8 @@ void fr::SongList::init()
 	null_score->score = 0;
 	null_score->rank = RANK_NONE;
 	null_score->pure = 0;
-	null_score->great = 0;
-	null_score->good = 0;
+	null_score->safe = 0;
+	null_score->warning = 0;
 	null_score->error = 0;
 	null_information->high_score = null_score;
 
@@ -305,9 +305,10 @@ bool fr::SongList::LoadList()
 
 	boost::regex score_pattern("\\tscore:(\\d*?)\\n");
 	boost::regex pure_pattern("\\tpure:(\\d*?)\\n");
-	boost::regex great_pattern("\\tgreat:(\\d*?)\\n");
-	boost::regex good_pattern("\\tgood:(\\d*?)\\n");
+	boost::regex safe_pattern("\\tsafe:(\\d*?)\\n");
+	boost::regex warning_pattern("\\twarning:(\\d*?)\\n");
 	boost::regex error_pattern("\\terror:(\\d*?)\\n");
+	boost::regex chain_pattern("\\tchain:(\\d*?)\\n");
 	boost::regex rank_pattern("\\trank:(\\d)");
 
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
@@ -334,9 +335,10 @@ bool fr::SongList::LoadList()
 		boost::smatch full_score_line;
 		boost::smatch score_line;
 		boost::smatch pure_line;
-		boost::smatch great_line;
-		boost::smatch good_line;
+		boost::smatch safe_line;
+		boost::smatch warning_line;
 		boost::smatch error_line;
+		boost::smatch chain_line;
 		boost::smatch rank_line;
 
 		boost::regex_search(paragraph, title_line, title_pattern);
@@ -351,9 +353,10 @@ bool fr::SongList::LoadList()
 		boost::regex_search(paragraph, full_score_line, full_score_pattern);
 		boost::regex_search(paragraph, score_line, score_pattern);
 		boost::regex_search(paragraph, pure_line, pure_pattern);
-		boost::regex_search(paragraph, great_line, great_pattern);
-		boost::regex_search(paragraph, good_line, good_pattern);
+		boost::regex_search(paragraph, safe_line, safe_pattern);
+		boost::regex_search(paragraph, warning_line, warning_pattern);
 		boost::regex_search(paragraph, error_line, error_pattern);
+		boost::regex_search(paragraph, chain_line, chain_pattern);
 		boost::regex_search(paragraph, rank_line, rank_pattern);
 		SongInformation *new_information = new SongInformation;
 		Score *new_score = new Score;
@@ -370,9 +373,10 @@ bool fr::SongList::LoadList()
 		new_information->full_score = atoi(boost::regex_replace(full_score_line.str(), full_score_pattern, "$1").c_str());
 		new_score->score = atoi(boost::regex_replace(score_line.str(), score_pattern, "$1").c_str());
 		new_score->pure = atoi(boost::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
-		new_score->great = atoi(boost::regex_replace(great_line.str(), great_pattern, "$1").c_str());
-		new_score->good = atoi(boost::regex_replace(good_line.str(), good_pattern, "$1").c_str());
+		new_score->safe = atoi(boost::regex_replace(safe_line.str(), safe_pattern, "$1").c_str());
+		new_score->warning = atoi(boost::regex_replace(warning_line.str(), warning_pattern, "$1").c_str());
 		new_score->error = atoi(boost::regex_replace(error_line.str(), error_pattern, "$1").c_str());
+		new_score->chain = atoi(boost::regex_replace(chain_line.str(), chain_pattern, "$1").c_str());
 		new_score->rank = Rank(atoi(boost::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
@@ -392,9 +396,10 @@ void fr::SongList::WriteList()
 		char *full_score_ch = new char[6];
 		char *score_ch = new char[6];
 		char *pure_ch = new char[6];
-		char *great_ch = new char[6];
-		char *good_ch = new char[6];
+		char *safe_ch = new char[6];
+		char *warning_ch = new char[6];
 		char *error_ch = new char[6];
+		char *chain_ch = new char[6];
 		char *rank_ch = new char;
 		sprintf(difficulty_ch, "%d", m_information[i]->difficulty);
 		sprintf(duration_ch, "%d", m_information[i]->duration);
@@ -402,11 +407,14 @@ void fr::SongList::WriteList()
 		sprintf(full_score_ch, "%d", m_information[i]->full_score);
 		sprintf(score_ch, "%d", m_information[i]->high_score->score);
 		sprintf(pure_ch, "%d", m_information[i]->high_score->pure);
-		sprintf(great_ch, "%d", m_information[i]->high_score->great);
-		sprintf(good_ch, "%d", m_information[i]->high_score->good);
+		sprintf(safe_ch, "%d", m_information[i]->high_score->safe);
+		sprintf(warning_ch, "%d", m_information[i]->high_score->warning);
 		sprintf(error_ch, "%d", m_information[i]->high_score->error);
+		sprintf(chain_ch, "%d", m_information[i]->high_score->chain);
 		sprintf(rank_ch, "%d", m_information[i]->high_score->rank);
-		output_text += "[" + m_information[i]->id + "]\n{\n";
+		output_text += "[";
+		output_text += m_information[i]->id;
+		output_text += "]\n{\n";
 		output_text += "\ttitle:" + m_information[i]->title + "\n";
 		output_text += "\tartist:" +  m_information[i]->artist + "\n";
 		output_text += "\tnoter:" + m_information[i]->noter + "\n";
@@ -431,14 +439,17 @@ void fr::SongList::WriteList()
 		output_text += "\tpure:";
 		output_text += pure_ch;
 		output_text += "\n";
-		output_text += "\tgreat:";
-		output_text += great_ch;
+		output_text += "\tsafe:";
+		output_text += safe_ch;
 		output_text += "\n";
-		output_text += "\tgood:";
-		output_text += good_ch;
+		output_text += "\twarning:";
+		output_text += warning_ch;
 		output_text += "\n";
 		output_text += "\terror:";
 		output_text += error_ch;
+		output_text += "\n";
+		output_text += "\tchain:";
+		output_text += chain_ch;
 		output_text += "\n";
 		output_text += "\trank:";
 		output_text += rank_ch;
@@ -450,9 +461,10 @@ void fr::SongList::WriteList()
 		delete [] full_score_ch;
 		delete [] score_ch;
 		delete [] pure_ch;
-		delete [] great_ch;
-		delete [] good_ch;
+		delete [] safe_ch;
+		delete [] warning_ch;
 		delete [] error_ch;
+		delete [] chain_ch;
 		delete [] rank_ch;
 	}
 	WriteFile("/sdcard/data/song_list.fa", output_text);
