@@ -35,7 +35,6 @@ namespace fr
 			Sprite *song_base;
 			Sprite *score_base;
 			Sprite *rank_base;
-			Sprite *performance_base;
 			Sprite *user_base;
 			Button *b_return;
 			Button *b_retry;
@@ -48,9 +47,11 @@ namespace fr
 			TextArea *difficulty_text;
 			TextArea *score_text;
 			TextArea *pure_text;
-			TextArea *great_text;
-			TextArea *good_text;
+			TextArea *safe_text;
+			TextArea *warning_text;
 			TextArea *error_text;
+			TextArea *chain_text;
+			TextArea *acc_text;
 			TextArea *rank_text;
 			TextArea *user_name_text;
 			TextArea *performance_point_text;
