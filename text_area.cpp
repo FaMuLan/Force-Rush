@@ -76,11 +76,14 @@ void fr::TextArea::SetText(std::string text)
 {
 	if (m_text != text)
 	{
-		m_text = text;
 		if (m_text != "")
 		{
 			SDL_DestroyTexture(cache->texture);
 			delete cache;
+		}
+		m_text = text;
+		if (m_text != "")
+		{
 			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
 		}
 	}
