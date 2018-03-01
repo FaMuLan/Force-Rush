@@ -5,11 +5,13 @@ VPATH	:= main : prepare : game : loading : user : constructing
 
 all: run
 
-OBJ	:= animator.o beatmap.o button.o column.o constructing_state.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o loading_state.o main.o main_state.o message_box.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
+OBJ	:= animator.o background.o beatmap.o button.o column.o constructing_state.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o loading_state.o main.o main_state.o message_box.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -O0 -o $@
 
 animator.o: animator.cpp animator.h
+	$(CXX) $< $(CFLAGS)
+background.o: background.cpp background.h
 	$(CXX) $< $(CFLAGS)
 beatmap.o: beatmap.cpp beatmap.h
 	$(CXX) $< $(CFLAGS)
