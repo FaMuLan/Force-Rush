@@ -12,6 +12,7 @@
 #include "game_state.h"
 #include "../user/user_profile.h"
 #include "../user/setting.h"
+#include "../background.h"
 
 fr::ResultState *fr::ResultState::m_instance = 0;
 
@@ -187,7 +188,7 @@ void fr::ResultState::update()
 		new_performance_text->SetPos(user_base->GetX() + 32, user_base->GetY() + 128);
 	}
 
-	UserProfile::instance()->RenderCharacter();
+	Background::instance()->render();
 	song_base->render();
 	score_base->render();
 	rank_base->render();

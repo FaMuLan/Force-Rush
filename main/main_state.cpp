@@ -6,6 +6,7 @@
 #include "../system.h"
 #include "../loading/loading_state.h"
 #include "../user/user_profile.h"
+#include "../background.h"
 
 fr::MainState *fr::MainState::m_instance = 0;
 
@@ -32,9 +33,6 @@ void fr::MainState::init()
 	user_name_text->init(UserProfile::instance()->GetUserName(), 32, 32, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_point_text->init(performance_point_ch, 32, 120, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	delete [] performance_point_ch;
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 60);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 18);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 32);
 
 	is_locked = false;
 
@@ -71,7 +69,7 @@ void fr::MainState::update()
 	//鎖定按鈕在打開側邊欄或彈窗時不進行檢測
 
 //	background->render();
-	UserProfile::instance()->RenderCharacter();
+	Background::instance()->render();
 	main_start->render();
 	main_about->render();
 	widget_base->render();
