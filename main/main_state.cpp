@@ -1,8 +1,10 @@
 #include "main_state.h"
 #include "../sprite.h"
 #include "../button.h"
+#include "../text_area.h"
 #include "../sound_manager.h"
 #include "../texture_manager.h"
+#include "../text_input_box.h"
 #include "../system.h"
 #include "../loading/loading_state.h"
 #include "../user/user_profile.h"
@@ -16,7 +18,7 @@ void fr::MainState::init()
 	main_about = new Button;
 	widget_base = new Sprite;
 	performance_process_bar = new Sprite;
-	user_name_text = new TextArea;
+	user_name_text = new TextInputBox;
 	performance_point_text = new TextArea;
 
 	main_start->init("assets/main/button.png");
@@ -30,7 +32,9 @@ void fr::MainState::init()
 
 	char *performance_point_ch = new char[50];
 	sprintf(performance_point_ch, "Performance:%d", UserProfile::instance()->GetPerformancePoint());
-	user_name_text->init(UserProfile::instance()->GetUserName(), 32, 32, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	user_name_text->init("", Rect(32, 32, 216, 32));
+	user_name_text->InitText(0, 0, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+	user_name_text->SetText(UserProfile::instance()->GetUserName());
 	performance_point_text->init(performance_point_ch, 32, 120, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	delete [] performance_point_ch;
 
@@ -65,6 +69,7 @@ void fr::MainState::update()
 	{
 		main_start->update();
 		main_about->update();
+		user_name_text->update();
 	}
 	//鎖定按鈕在打開側邊欄或彈窗時不進行檢測
 
@@ -87,6 +92,8 @@ void fr::MainState::update()
 		LoadingState::instance()->init(STATE_ABOUT);
 //		SoundManager::instance()->stop();
 	}
+
+	UserProfile::instance()->SetUserName(user_name_text->GetText());
 }
 
 void fr::MainState::lock(bool load)

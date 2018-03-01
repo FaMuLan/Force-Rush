@@ -8,6 +8,7 @@ namespace fr
 	class Button;
 	class TextArea;
 	class Sprite;
+	class TextInputBox;
 
 	class MainState : public State
 	{
@@ -33,7 +34,7 @@ namespace fr
 			Button *main_about;
 			Sprite *widget_base;
 			Sprite *performance_process_bar;
-			TextArea *user_name_text;
+			TextInputBox *user_name_text;
 			TextArea *performance_point_text;
 			bool is_locked;
 	};
