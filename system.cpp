@@ -7,7 +7,7 @@
 #include "user/setting.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
-#include "message_box.h"
+#include "background.h"
 
 fr::System *fr::System::m_instance = 0;
 
@@ -40,9 +40,7 @@ void fr::System::init()
 	ControlHandler::instance()->init();
 	Setting::instance()->init();
 	UserProfile::instance()->init();
-	MessageBox::instance()->init();
-//	current_state_id = "main";
-//	PushState("main", main_state);
+	Background::instance()->init();
 	MainState::instance()->init();
 	LoadingState::instance()->init();
 	current_state = MainState::instance();
@@ -57,13 +55,9 @@ void fr::System::run()
 		ControlHandler::instance()->update();
 		SDL_SetRenderDrawColor(system_renderer, bg_r, bg_g, bg_b, 0xFF);
 		SDL_RenderClear(system_renderer);
-//		m_state[current_state_id]->update();
 		current_state->update();
 		LoadingState::instance()->update();
 		UserProfile::instance()->update();
-		MessageBox::instance()->update();
-//		MessageBox::instance()->render();
-//		ControlHandler::instance()->render();
 		SDL_RenderPresent(system_renderer);
 	}
 }

@@ -5,7 +5,7 @@ VPATH	:= main : prepare : game : loading : user : about
 
 all: run
 
-OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o loading_state.o main.o main_state.o message_box.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
+OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -O0 -o $@
 
@@ -36,8 +36,6 @@ loading_state.o: loading_state.cpp loading_state.h state.h
 main.o: main.cpp
 	$(CXX) $< $(CFLAGS)
 main_state.o: main_state.cpp main_state.h state.h
-	$(CXX) $< $(CFLAGS)
-message_box.o: message_box.cpp message_box.h
 	$(CXX) $< $(CFLAGS)
 mod_widget.o: mod_widget.cpp mod_widget.h
 	$(CXX) $< $(CFLAGS)
