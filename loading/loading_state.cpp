@@ -12,7 +12,7 @@
 #include "../game/game_state.h"
 #include "../game/result_state.h"
 #include "../game/gameplay_wizard_state.h"
-#include "../constructing/constructing_state.h"
+#include "../about/about_state.h"
 
 fr::LoadingState *fr::LoadingState::m_instance = 0;
 fr::State *fr::LoadingState::next_state = 0;
@@ -182,8 +182,8 @@ void fr::LoadingState::init(StateID next_state_id)
 		case STATE_GAMEPLAY_WIZARD:
 			next_state = GameplayWizardState::instance();
 		break;
-		case STATE_CONSTRUCTING:
-			next_state = ConstructingState::instance();
+		case STATE_ABOUT:
+			next_state = AboutState::instance();
 		break;
 	}
 	last_state = System::instance()->current_state;

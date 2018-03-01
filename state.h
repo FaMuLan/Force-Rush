@@ -12,7 +12,7 @@ namespace fr
 		STATE_GAME,
 		STATE_RESULT,
 		STATE_GAMEPLAY_WIZARD,
-		STATE_CONSTRUCTING
+		STATE_ABOUT
 	};
 
 	class State

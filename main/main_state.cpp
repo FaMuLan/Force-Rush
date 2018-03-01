@@ -84,7 +84,7 @@ void fr::MainState::update()
 	}
 	if (main_about->IsReleased())
 	{
-		LoadingState::instance()->init(STATE_CONSTRUCTING);
+		LoadingState::instance()->init(STATE_ABOUT);
 //		SoundManager::instance()->stop();
 	}
 }
