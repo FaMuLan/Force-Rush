@@ -58,7 +58,7 @@ void fr::Beatmap::update()
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
 		if (load_finger.y < System::instance()->GetWindowHeigh() / 2)
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - load_finger.dy);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + load_finger.dy);
 		}
 	}
 
@@ -98,6 +98,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_score->error = 0;
 	m_score->score = 0;
 	m_score->chain = 0;
+	current_chain = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		Column *new_column = new Column;
