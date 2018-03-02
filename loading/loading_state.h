@@ -30,6 +30,7 @@ namespace fr
 			void OnEnter();
 			void OnExit();
 			static void OnLoad();	//要扔到其他線程裡面
+			bool IsLoading();
 //			void AddText(std::string text, std::string font_path, int font_size, int x, int y, char r, char g, char b, ShutterType type);
 			bool IsSwitching();
 		private:

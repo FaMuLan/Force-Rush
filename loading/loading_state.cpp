@@ -1,4 +1,5 @@
 #include "loading_state.h"
+#include <thread>
 #include "../system.h"
 #include "../sprite.h"
 #include "../text_area.h"
@@ -52,6 +53,8 @@ void fr::LoadingState::update()
 	}
 	else if (!is_loaded)
 	{
+//		std::thread refresh_thread(&fr::LoadingState::OnLoad);
+//		refresh_thread.detach();
 		OnLoad();
 /*
 		for (int i = 0; i < text_area_top.size(); i++)
@@ -63,10 +66,13 @@ void fr::LoadingState::update()
 			text_area_bottom[i]->render(text_area_bottom[i]->GetX(), text_area_bottom[i]->GetY() + shutter_bottom->GetY());
 		}
 */
-		Animator::instance()->Animate("loading_exit");
+		if (is_loaded)
+		{
+			Animator::instance()->Animate("loading_exit");
+		}
+		render();
 		//SoundManager::instance()->play("assets/shutter_open.wav", SOUNDTYPE_SFX);
 		//加載完立刻放音效
-		render();
 	}
 	else if (!is_exited)
 	{
@@ -237,6 +243,8 @@ void fr::LoadingState::OnExit()
 //		shutter_bottom->SetPos(0, -848);
 		Animator::instance()->ResetAnimation("loading_exit");
 		is_exited = true;
+		is_entered = false;
+		is_loaded = false;
 	}
 }
 
@@ -272,4 +280,9 @@ void fr::LoadingState::AddText(std::string text, std::string font_path, int font
 bool fr::LoadingState::IsSwitching()
 {
 	return !is_exited;
+}
+
+bool fr::LoadingState::IsLoading()
+{
+	return is_entered && !is_loaded;
 }

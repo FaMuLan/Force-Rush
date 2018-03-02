@@ -55,7 +55,10 @@ void fr::System::run()
 		ControlHandler::instance()->update();
 		SDL_SetRenderDrawColor(system_renderer, bg_r, bg_g, bg_b, 0xFF);
 		SDL_RenderClear(system_renderer);
-		current_state->update();
+		if (!LoadingState::instance()->IsLoading())
+		{
+			current_state->update();
+		}
 		LoadingState::instance()->update();
 		UserProfile::instance()->update();
 		SDL_RenderPresent(system_renderer);
