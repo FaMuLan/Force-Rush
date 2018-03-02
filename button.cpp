@@ -114,7 +114,12 @@ void fr::Button::AddPressedFrame(std::string path)
 
 bool fr::Button::IsPressed()
 {
-	return is_pressed;
+	return is_pressed && !LoadingState::instance()->IsSwitching();
+}
+
+bool fr::Button::IsOutsidePressed()
+{
+	return is_outside_pressed && !LoadingState::instance()->IsSwitching();
 }
 
 bool fr::Button::IsReleased()
