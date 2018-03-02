@@ -84,7 +84,7 @@ void fr::ResultState::init()
 	}
 
 	int previous_performance = UserProfile::instance()->GetPerformancePoint();
-	int current_performance = UserProfile::instance()->CalculatePerformancePoint(m_information->difficulty, acc);
+	int current_performance = UserProfile::instance()->CalculatePerformancePoint(m_information->difficulty, acc, !Setting::instance()->IsAuto());
 	if (previous_performance < current_performance)
 	{
 		is_new_performance = true;
