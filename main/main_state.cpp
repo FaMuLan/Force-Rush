@@ -14,21 +14,21 @@ fr::MainState *fr::MainState::m_instance = 0;
 
 void fr::MainState::init()
 {
-	main_start = new Button;
 	main_about = new Button;
 	widget_base = new Sprite;
 	performance_process_bar = new Sprite;
+	logo = new Sprite;
 	user_name_text = new TextInputBox;
 	performance_point_text = new TextArea;
+	start_text = new TextArea;
 
-	main_start->init("assets/main/button.png");
-	main_start->AddPressedFrame("assets/main/button_pressed.png");
-	main_about->init("assets/main/button.png");
-	main_about->AddPressedFrame("assets/main/button_pressed.png");
+	main_about->init("assets/base/sort_button.png");
+	main_about->AddPressedFrame("assets/base/sort_button_pressed.png");
 	widget_base->init("assets/base/widget_min_base.png");
 	performance_process_bar->init("assets/base/process_bar.png", Rect(32, 94, 0, 0));
-	main_start->SetPos(System::instance()->GetWindowWidth() / 2 - main_start->GetW() / 2, System::instance()->GetWindowHeigh() - 480);
-	main_about->SetPos(System::instance()->GetWindowWidth() / 2 - main_about->GetW() / 2, System::instance()->GetWindowHeigh() - 280);
+	main_about->SetPos(0, System::instance()->GetWindowHeigh() - main_about->GetH());
+	logo->init("assets/logo.png", Rect(0, 0, 560, 560));
+	logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, 320);
 
 	char *performance_point_ch = new char[50];
 	sprintf(performance_point_ch, "Performance:%d", UserProfile::instance()->GetPerformancePoint());
@@ -36,12 +36,12 @@ void fr::MainState::init()
 	user_name_text->InitText(0, 0, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	user_name_text->SetText(UserProfile::instance()->GetUserName());
 	performance_point_text->init(performance_point_ch, 32, 120, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	start_text->init("Touch anywhere to activiate", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
 	delete [] performance_point_ch;
 
 	is_locked = false;
 
-	main_start->AddText("Start", main_start->GetW() / 2, main_start->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
-	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 60, 0x00, 0x00, 0x00);
+	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00);
 
 	performance_process_bar->SetSrcRect(Rect(0, 0, (float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8));
 	performance_process_bar->SetSize((UserProfile::instance()->GetPerformancePoint() < 10000.f ? float(UserProfile::instance()->GetPerformancePoint()) / 10000.f : 1) * 216.f, 8);
@@ -52,7 +52,6 @@ void fr::MainState::init()
 
 void fr::MainState::clear()
 {
-	main_start->clear();
 	main_about->clear();
 	TextureManager::instance()->clearfont("assets/fonts/Audiowide.ttf", 60);
 }
@@ -61,13 +60,13 @@ void fr::MainState::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
-		main_start->SetPos(System::instance()->GetWindowWidth() / 2 - main_start->GetW() / 2, System::instance()->GetWindowHeigh() - 480);
-		main_about->SetPos(System::instance()->GetWindowWidth() / 2 - main_about->GetW() / 2, System::instance()->GetWindowHeigh() - 280);
+		main_about->SetPos(0, System::instance()->GetWindowHeigh() - main_about->GetH());
+		start_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180);
+		logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, 320);
 	}
 
 	if (!is_locked)
 	{
-		main_start->update();
 		main_about->update();
 		user_name_text->update();
 	}
@@ -75,14 +74,15 @@ void fr::MainState::update()
 
 //	background->render();
 	Background::instance()->render();
-	main_start->render();
 	main_about->render();
+	start_text->render();
+	logo->render();
 	widget_base->render();
 	user_name_text->render();
 	performance_point_text->render();
 	performance_process_bar->render();
 
-	if (main_start->IsReleased())
+	if (main_about->IsOutsidePressed())
 	{
 		LoadingState::instance()->init(STATE_PREPARE);
 //		SoundManager::instance()->stop();

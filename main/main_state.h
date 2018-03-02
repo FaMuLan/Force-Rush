@@ -30,12 +30,13 @@ namespace fr
 			MainState() {}
 			~MainState() {}
 			static MainState *m_instance;
-			Button *main_start;
 			Button *main_about;
 			Sprite *widget_base;
 			Sprite *performance_process_bar;
+			Sprite *logo;
 			TextInputBox *user_name_text;
 			TextArea *performance_point_text;
+			TextArea *start_text;
 			bool is_locked;
 	};
 };
