@@ -43,6 +43,10 @@ namespace fr
 			TextArea *safe_text;
 			TextArea *warning_text;
 			TextArea *error_text;
+			TextArea *artist_label;
+			TextArea *noter_label;
+			TextArea *version_label;
+			TextArea *duration_label;
 			bool is_score_detail_shown;
 	};	//class PrepareHeader
 };	//namespace fr

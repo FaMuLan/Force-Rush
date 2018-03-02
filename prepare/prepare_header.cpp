@@ -20,6 +20,10 @@ void fr::PrepareHeader::init()
 	safe_text = new TextArea;
 	warning_text = new TextArea;
 	error_text = new TextArea;
+	artist_label = new TextArea;
+	noter_label = new TextArea;
+	version_label = new TextArea;
+	duration_label = new TextArea;
 
 	information_base->init("assets/prepare/song_header_base.png");
 	information_base->AddPressedFrame("assets/prepare/song_header_base_pressed.png");
@@ -46,10 +50,18 @@ void fr::PrepareHeader::init()
 	safe_text->init("GREAT     ??", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	warning_text->init("GOOD      ??", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	error_text->init("ERROR     ??", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
+	artist_label->init("Artist", 32, 16, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	noter_label->init("Noter", 32, 76, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	version_label->init("Version", 32, 136, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	duration_label->init("Length", 32, 196, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	information_base->AddText(artist_text);
 	information_base->AddText(noter_text);
 	information_base->AddText(version_text);
 	information_base->AddText(duration_text);
+	information_base->AddText(artist_label);
+	information_base->AddText(noter_label);
+	information_base->AddText(version_label);
+	information_base->AddText(duration_label);
 	score_base->AddText(score_text);
 	score_base->AddText(rank_text);
 	is_score_detail_shown = false;
