@@ -59,7 +59,7 @@ void fr::GameHeader::init()
 	performance_process_bar->SetPos(user_base->GetX() + 32, user_base->GetY() + 124);
 	score_text->init("0", score_base->GetX() + 32, score_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init(" ", score_base->GetX() + 32, score_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	performance_text->init(" ", user_base->GetX() + 32, user_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	performance_text->init(" ", user_base->GetX() + 32, user_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 14, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	user_name_text->init(UserProfile::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	Animator::instance()->AddAnimation("pause_widget_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("pause_widget_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
@@ -80,7 +80,7 @@ void fr::GameHeader::update()
 	char *score_ch = new char[6];
 	char *performance_ch = new char[20];
 	sprintf(score_ch, "%d", GameBeatmap::instance()->GetScore());
-	sprintf(performance_ch, "performance:%d", current_performance_point);
+	sprintf(performance_ch, "performance:%d / %d", current_performance_point, UserProfile::instance()->GetPerformancePoint());
 	score_text->SetText(score_ch);
 	performance_text->SetText(performance_ch);
 	delete [] score_ch;

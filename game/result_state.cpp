@@ -105,7 +105,7 @@ void fr::ResultState::init()
 	sprintf(warning_ch, "WARNING  %d", m_score->warning);
 	sprintf(error_ch, "ERROR %d", m_score->error);
 	sprintf(score_ch, "SCORE  %d", m_score->score);
-	sprintf(performance_ch, "Performance:%d", current_performance);
+	sprintf(performance_ch, "performance:%d", current_performance);
 
 	switch (m_score->rank)
 	{
@@ -142,7 +142,7 @@ void fr::ResultState::init()
 	user_name_text->init(UserProfile::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_point_text->init(performance_ch, user_base->GetX() + 32, user_base->GetY() + 80, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	new_record_text->init("Score Replaced", score_base->GetX() + 32, score_base->GetY() + 272, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_performance_text->init("Driver Upgrade", user_base->GetX() + 32, user_base->GetY() + 128, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	new_performance_text->init("Performance Break", user_base->GetX() + 32, user_base->GetY() + 128, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 
 	delete [] difficulty_ch;
 	delete [] pure_ch;
