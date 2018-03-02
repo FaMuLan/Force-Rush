@@ -27,7 +27,7 @@ namespace fr
 			std::string GetUserName();
 			int GetPerformancePoint();
 			void SetUserName(std::string input);
-			int CalculatePerformancePoint(int difficulty, double acc);
+			int CalculatePerformancePoint(int difficulty, double acc, bool record = false);
 			bool read();
 			bool write();
 		private:
