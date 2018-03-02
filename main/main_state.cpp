@@ -82,7 +82,7 @@ void fr::MainState::update()
 	performance_point_text->render();
 	performance_process_bar->render();
 
-	if (main_about->IsOutsidePressed())
+	if (main_about->IsOutsidePressed() && user_name_text->IsOutsidePressed())
 	{
 		LoadingState::instance()->init(STATE_PREPARE);
 //		SoundManager::instance()->stop();
