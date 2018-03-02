@@ -40,6 +40,7 @@ namespace fr
 			Sprite *score_base;
 			Sprite *user_base;
 			Sprite *duration_process_bar;
+			Sprite *performance_process_bar;
 
 			Button *pause_resume;
 			Button *pause_retry;
@@ -47,6 +48,7 @@ namespace fr
 
 			TextArea *score_text;
 			TextArea *duration_text;
+			TextArea *performance_text;
 			TextArea *user_name_text;
 			TextArea *tips_text;
 	};
