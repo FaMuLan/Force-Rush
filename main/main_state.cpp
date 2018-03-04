@@ -28,7 +28,7 @@ void fr::MainState::init()
 	performance_process_bar->init("assets/base/process_bar.png", Rect(32, 94, 0, 0));
 	main_about->SetPos(0, System::instance()->GetWindowHeigh() - main_about->GetH());
 	logo->init("assets/logo.png", Rect(0, 0, 560, 560));
-	logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, 320);
+	logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - logo->GetH() / 2);
 
 	char *performance_point_ch = new char[50];
 	sprintf(performance_point_ch, "Performance:%d", UserProfile::instance()->GetPerformancePoint());
@@ -62,7 +62,7 @@ void fr::MainState::update()
 	{
 		main_about->SetPos(0, System::instance()->GetWindowHeigh() - main_about->GetH());
 		start_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180);
-		logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, 320);
+		logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - logo->GetH() / 2);
 	}
 
 	if (!is_locked)

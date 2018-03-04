@@ -12,7 +12,7 @@ void fr::Setting::init()
 	user_profile_path = "/sdcard/data/default.fru";
 	is_auto = false;
 	is_slide_out = false;
-	duration = 800;
+	duration = 3000;
 	offset = -200;
 	key_code[0] = SDL_SCANCODE_D;
 	key_code[1] = SDL_SCANCODE_F;
@@ -219,6 +219,8 @@ void fr::Setting::SwitchSlideOut()
 void fr::Setting::SetDuration(int input)
 {
 	duration = input;
+	duration = duration < 500 ? 500 : duration;
+	duration = duration > 3000 ? 3000 : duration;
 	write();
 }
 

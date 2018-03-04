@@ -153,7 +153,7 @@ void fr::ModWidget::update()
 
 		if (duration_left->IsReleased())
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 1);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 10);
 			char *duration_ch = new char[4];
 			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
 			duration_num->SetText(duration_ch);
@@ -161,7 +161,7 @@ void fr::ModWidget::update()
 		}
 		if (duration_right->IsReleased())
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 1);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 10);
 			char *duration_ch = new char[4];
 			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
 			duration_num->SetText(duration_ch);
@@ -169,7 +169,7 @@ void fr::ModWidget::update()
 		}
 		if (duration_left_dual->IsReleased())
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 10);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() - 100);
 			char *duration_ch = new char[4];
 			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
 			duration_num->SetText(duration_ch);
@@ -177,7 +177,7 @@ void fr::ModWidget::update()
 		}
 		if (duration_right_dual->IsReleased())
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 10);
+			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + 100);
 			char *duration_ch = new char[4];
 			sprintf(duration_ch, "%d", Setting::instance()->GetDuration());
 			duration_num->SetText(duration_ch);
