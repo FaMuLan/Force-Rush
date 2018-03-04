@@ -101,9 +101,8 @@ fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, b
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 150 || time_diff < -150)
+		else if (time_diff > 150 || time_diff < -500)
 		{
-			hit_offset_num->SetColor(0xEC, 0x6A, 0x5C);
 			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
@@ -114,35 +113,8 @@ fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, b
 			beat_count++;
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 100 || time_diff < -100)
-		{
-			hit_offset_num->SetColor(0x84, 0xB1, 0xED);
-			char *offset_ch = new char[10];
-			sprintf(offset_ch, "%dms", time_diff);
-			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
-			Animator::instance()->ResetAnimation("offset");
-			Animator::instance()->Animate("offset");
-			average_offset = (average_offset + time_diff) / 2;
-			beat_count++;
-			return JUDGEMENT_GD;
-		}
-		else if (time_diff > 50 || time_diff < -50)
-		{
-			hit_offset_num->SetColor(0x81, 0xC7, 0x84);
-			char *offset_ch = new char[10];
-			sprintf(offset_ch, "%dms", time_diff);
-			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
-			Animator::instance()->ResetAnimation("offset");
-			Animator::instance()->Animate("offset");
-			average_offset = (average_offset + time_diff) / 2;
-			beat_count++;
-			return JUDGEMENT_GR;
-		}
 		else
 		{
-			hit_offset_num->SetColor(0xFF, 0xEA, 0x00);
 			char *offset_ch = new char[10];
 			sprintf(offset_ch, "%dms", time_diff);
 			hit_offset_num->SetText(offset_ch);
@@ -173,6 +145,10 @@ void fr::GameplayWizardBeatmap::stop()
 {
 	m_column[3]->reset();
 	Timer::instance()->ResetTimer("game");
+	if (SoundManager::instance()->IsPlayingMusic())
+	{
+		SoundManager::instance()->stop();
+	}
 	is_running = false;
 }
 
