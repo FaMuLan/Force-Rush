@@ -97,21 +97,9 @@ fr::Judgement fr::GameplayWizardBeatmap::judge(int note_time, bool is_pressed, b
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
 	{
-		if (time_diff > 500 && !is_ln_pressing)
+		if (time_diff > 500)
 		{
 			return JUDGEMENT_NONE;
-		}
-		else if (time_diff > 150 || time_diff < -500)
-		{
-			char *offset_ch = new char[10];
-			sprintf(offset_ch, "%dms", time_diff);
-			hit_offset_num->SetText(offset_ch);
-			delete [] offset_ch;
-			Animator::instance()->ResetAnimation("offset");
-			Animator::instance()->Animate("offset");
-			average_offset = (average_offset + time_diff) / 2;
-			beat_count++;
-			return JUDGEMENT_ER;
 		}
 		else
 		{
