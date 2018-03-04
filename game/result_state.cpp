@@ -76,7 +76,7 @@ void fr::ResultState::init()
 		m_score->rank = RANK_D;
 	}
 
-	if (m_score->score > m_information->high_score->score && !Setting::instance()->IsAuto())
+	if (m_score->score > m_information->high_score->score && !Setting::instance()->IsAuto() && !Setting::instance()->IsSlideOut())
 	{
 		m_information->high_score = m_score;
 		SongList::instance()->WriteList();
@@ -84,7 +84,7 @@ void fr::ResultState::init()
 	}
 
 	int previous_performance = UserProfile::instance()->GetPerformancePoint();
-	int current_performance = UserProfile::instance()->CalculatePerformancePoint(m_information->difficulty, acc, !Setting::instance()->IsAuto());
+	int current_performance = UserProfile::instance()->CalculatePerformancePoint(m_information->difficulty, acc, !Setting::instance()->IsAuto() && !Setting::instance()->IsSlideOut());
 	if (previous_performance < current_performance)
 	{
 		is_new_performance = true;
