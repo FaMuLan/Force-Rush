@@ -89,7 +89,11 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 			text_line += text[i];
 			int load_w, load_h;
 			TTF_SizeUTF8(font[font_path][font_size], text_line.c_str(), &load_w, &load_h);
-			if (load_w > limited_w)
+			if (text[i] == '\n')
+			{
+				text_line.clear();
+			}
+			else if (load_w > limited_w)
 			{
 				text.insert(i, "\n");
 				text_line.clear();
