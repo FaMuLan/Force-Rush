@@ -12,8 +12,11 @@ void fr::TextureManager::init(SDL_Renderer *load_renderer)
 void fr::TextureManager::load(std::string path, Rect &output_size)
 {
 	SDL_Surface *load_surface = IMG_Load(path.c_str());
-	SDL_Texture *new_texture = SDL_CreateTextureFromSurface(renderer, load_surface);
-	texture[path] = new_texture;
+	if (!texture[path])
+	{
+		SDL_Texture *new_texture = SDL_CreateTextureFromSurface(renderer, load_surface);
+		texture[path] = new_texture;
+	}
 	output_size.w = load_surface->w;
 	output_size.h = load_surface->h;
 	SDL_FreeSurface(load_surface);
@@ -26,8 +29,11 @@ void fr::TextureManager::load(SDL_Texture *load_texture, std::string path)
 
 void fr::TextureManager::loadfont(std::string path, int size)
 {
-	TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
-	font[path][size] = new_font;
+	if (!font[path][size])
+	{
+		TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
+		font[path][size] = new_font;
+	}
 }
 
 void fr::TextureManager::clear()
