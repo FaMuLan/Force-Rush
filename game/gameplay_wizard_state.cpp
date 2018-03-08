@@ -26,7 +26,6 @@ void fr::GameplayWizardBeatmap::init()
 	sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
 	current_offset_text->init(current_offset_ch, System::instance()->GetWindowWidth() / 2, 36, "assets/fonts/Audiowide.ttf", 36, 0, 0, 0);
 	delete current_offset_ch;
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 120);
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
@@ -172,7 +171,6 @@ void fr::GameplayWizardState::init()
 	draw_scale_num = new TextArea;
 	draw_offset_num = new TextArea;
 
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
 	GameplayWizardBeatmap::instance()->init();
 	widget_base->init("assets/base/widget_base.png");
 	widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
