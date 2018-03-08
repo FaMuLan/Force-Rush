@@ -1,6 +1,6 @@
 LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS	:= -O0 -c -g
-LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lmad -lSDL2_ttf -lboost_regex
+LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lmad -lSDL2_ttf
 VPATH	:= main : prepare : game : loading : user : about
 
 all: run

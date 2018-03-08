@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <SDL2/SDL.h>
 #include <map>
-#include <boost/regex.hpp>
+#include <regex>
 #include "song_data.h"
 
 bool fr::ReadFile(std::string path, std::string &output)
@@ -57,10 +57,10 @@ void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 {
 	std::vector<File*> current_list;
 	ListDir(path, current_list);
-	boost::regex pattern(pattern_str); 
+	std::regex pattern(pattern_str); 
 	for (int i = 0; i < current_list.size(); i++)
 	{
-		if (boost::regex_match(current_list[i]->name, pattern))
+		if (std::regex_match(current_list[i]->name, pattern))
 		{
 			output.push_back(current_list[i]);
 		}
@@ -74,14 +74,14 @@ void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 
 std::string fr::GetParentDir(std::string path)
 {
-	boost::regex parent_dir_pattern("(.*/)[^/]*");
+	std::regex parent_dir_pattern("(.*/)[^/]*");
 	return regex_replace(path, parent_dir_pattern, "$1");
 }
 
 bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
 {
-	boost::regex path_pattern(".*\\.(.*)");
-	std::string format = boost::regex_replace(path, path_pattern, "$1");
+	std::regex path_pattern(".*\\.(.*)");
+	std::string format = std::regex_replace(path, path_pattern, "$1");
 	bool success = true;
 	if (format == "imd")
 	{
@@ -97,16 +97,16 @@ bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, 
 bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
 {
 
-	static boost::regex id_pattern("BeatmapID:(.*?)[\\n\\r]");
-	static boost::regex title_pattern("Title:(.*?)[\\n\\r]");
-	static boost::regex artist_pattern("Artist:(.*?)[\\n\\r]");
-	static boost::regex noter_pattern("Creator:(.*?)[\\n\\r]");
-	static boost::regex version_pattern("Version:(.*?)[\\n\\r]");
-	static boost::regex mode_pattern("Mode: (\\d)");
-	static boost::regex key_count_pattern("CircleSize:(\\d)");
-	static boost::regex audio_path_pattern("AudioFilename: (.*?)[\\n\\r]");
-	static boost::regex preview_time_pattern("PreviewTime: (\\d*)");
-	static boost::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
+	static std::regex id_pattern("BeatmapID:(.*?)[\\n\\r]");
+	static std::regex title_pattern("Title:(.*?)[\\n\\r]");
+	static std::regex artist_pattern("Artist:(.*?)[\\n\\r]");
+	static std::regex noter_pattern("Creator:(.*?)[\\n\\r]");
+	static std::regex version_pattern("Version:(.*?)[\\n\\r]");
+	static std::regex mode_pattern("Mode: (\\d)");
+	static std::regex key_count_pattern("CircleSize:(\\d)");
+	static std::regex audio_path_pattern("AudioFilename: (.*?)[\\n\\r]");
+	static std::regex preview_time_pattern("PreviewTime: (\\d*)");
+	static std::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
 
 	bool success = true;
 
@@ -126,36 +126,36 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	if (load_information)
 	{
 		output_information->file_path = path;
-		boost::smatch id_line;
-		boost::smatch title_line;
-		boost::smatch artist_line;
-		boost::smatch noter_line;
-		boost::smatch version_line;
-		boost::smatch mode_line;
-		boost::smatch key_count_line;
-		boost::smatch audio_path_line;
-		boost::smatch preview_time_line;
+		std::smatch id_line;
+		std::smatch title_line;
+		std::smatch artist_line;
+		std::smatch noter_line;
+		std::smatch version_line;
+		std::smatch mode_line;
+		std::smatch key_count_line;
+		std::smatch audio_path_line;
+		std::smatch preview_time_line;
 
-		boost::regex_search(text, id_line, id_pattern);
-		boost::regex_search(text, title_line, title_pattern);
-		boost::regex_search(text, artist_line, artist_pattern);
-		boost::regex_search(text, noter_line, noter_pattern);
-		boost::regex_search(text, version_line, version_pattern);
-		boost::regex_search(text, mode_line, mode_pattern);
-		boost::regex_search(text, key_count_line, key_count_pattern);
-		boost::regex_search(text, audio_path_line, audio_path_pattern);
-		boost::regex_search(text, preview_time_line, preview_time_pattern);
+		std::regex_search(text, id_line, id_pattern);
+		std::regex_search(text, title_line, title_pattern);
+		std::regex_search(text, artist_line, artist_pattern);
+		std::regex_search(text, noter_line, noter_pattern);
+		std::regex_search(text, version_line, version_pattern);
+		std::regex_search(text, mode_line, mode_pattern);
+		std::regex_search(text, key_count_line, key_count_pattern);
+		std::regex_search(text, audio_path_line, audio_path_pattern);
+		std::regex_search(text, preview_time_line, preview_time_pattern);
 
-		output_information->id = "osu" +  boost::regex_replace(id_line.str(), id_pattern, "$1");
-		output_information->title = boost::regex_replace(title_line.str(), title_pattern, "$1");
-		output_information->artist = boost::regex_replace(artist_line.str(), artist_pattern, "$1");
-		output_information->noter = boost::regex_replace(noter_line.str(), noter_pattern, "$1");
-		output_information->version = boost::regex_replace(version_line.str(), version_pattern, "$1");
-		output_information->audio_path = GetParentDir(output_information->file_path) + boost::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		output_information->preview_time = atoi(boost::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
+		output_information->id = "osu" +  std::regex_replace(id_line.str(), id_pattern, "$1");
+		output_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
+		output_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
+		output_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
+		output_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
+		output_information->audio_path = GetParentDir(output_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+		output_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
 		output_information->full_score = 0;
-		success = success && (atoi(boost::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
-		success = success && (atoi(boost::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
+		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
+		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
 
 		if (!success)
 		{
@@ -163,13 +163,13 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		}
 	}
 
-	for (boost::sregex_iterator i = boost::sregex_iterator(text.begin(), text.end(), note_pattern); i != boost::sregex_iterator(); i++)
+	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 	{
-		boost::smatch note_line = *i;
-		int time = atoi(boost::regex_replace(note_line.str(), note_pattern, "$2").c_str());
-		int type = atoi(boost::regex_replace(note_line.str(), note_pattern, "$3").c_str());
-		int time_end = (type % 16 == 0) ? atoi(boost::regex_replace(note_line.str(), note_pattern, "$4").c_str()) : time;
-		int column_index = atoi(boost::regex_replace(note_line.str(), note_pattern, "$1").c_str());
+		std::smatch note_line = *i;
+		int time = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
+		int type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
+		int time_end = (type % 16 == 0) ? atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str()) : time;
+		int column_index = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
 		if (load_note)
 		{
 			Note *new_note = new Note;
@@ -232,7 +232,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 
 bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
 {
-	static boost::regex path_pattern(".*/(.*?)_(\\d)k_(.*?)\\.imd");
+	static std::regex path_pattern(".*/(.*?)_(\\d)k_(.*?)\\.imd");
 	bool success = true;
 	bool load_information = output_information != NULL;
 	bool load_note = output_note_list1 != NULL && output_note_list2 != NULL && output_note_list3 != NULL && output_note_list4 != NULL;
@@ -249,9 +249,9 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 	if (load_information)
 	{
 		output_information->file_path = path;
-		output_information->title = boost::regex_replace(path, path_pattern, "$1");
-		std::string track_count = boost::regex_replace(path, path_pattern, "$2");
-		output_information->version = boost::regex_replace(path, path_pattern, "IMD $3");
+		output_information->title = std::regex_replace(path, path_pattern, "$1");
+		std::string track_count = std::regex_replace(path, path_pattern, "$2");
+		output_information->version = std::regex_replace(path, path_pattern, "IMD $3");
 		output_information->audio_path = GetParentDir(output_information->file_path) + output_information->title + ".mp3";
 		output_information->preview_time = 0;
 		if (track_count != "4")

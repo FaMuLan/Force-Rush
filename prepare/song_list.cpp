@@ -1,6 +1,6 @@
 #include "song_list.h"
 #include <vector>
-#include <boost/regex.hpp>
+#include <regex>
 #include <cstdlib>
 #include <thread>
 #include <dirent.h>
@@ -289,95 +289,95 @@ bool fr::SongList::LoadList()
 	m_information.clear();
 
 	std::string text;
-//	boost::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
-	boost::regex song_pattern("\\[(.*?)\\]\\s*?\\{[\\S\\s]*?\\}");
+//	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
+	std::regex song_pattern("\\[(.*?)\\]\\s*?\\{[\\S\\s]*?\\}");
 	//包含ID信息在內，先截取其中一段再單獨進行提取
-	boost::regex title_pattern("\\ttitle:(.*?)\\n");
-	boost::regex artist_pattern("\\tartist:(.*?)\\n");
-	boost::regex noter_pattern("\\tnoter:(.*?)\\n");
-	boost::regex version_pattern("\\tversion:(.*?)\\n");
-	boost::regex difficulty_pattern("\\tdifficulty:(\\d*?)\\n");
-	boost::regex duration_pattern("\\tduration:(\\d*?)\\n");
-	boost::regex audio_path_pattern("\\taudio_path:(.*?)\\n");
-	boost::regex preview_time_pattern("\\tpreview_time:(\\d*?)\\n");
-	boost::regex file_path_pattern("\\tfile_path:(.*?)\\n");
-	boost::regex full_score_pattern("\\tfull_score:(\\d*?)\\n");
+	std::regex title_pattern("\\ttitle:(.*?)\\n");
+	std::regex artist_pattern("\\tartist:(.*?)\\n");
+	std::regex noter_pattern("\\tnoter:(.*?)\\n");
+	std::regex version_pattern("\\tversion:(.*?)\\n");
+	std::regex difficulty_pattern("\\tdifficulty:(\\d*?)\\n");
+	std::regex duration_pattern("\\tduration:(\\d*?)\\n");
+	std::regex audio_path_pattern("\\taudio_path:(.*?)\\n");
+	std::regex preview_time_pattern("\\tpreview_time:(\\d*?)\\n");
+	std::regex file_path_pattern("\\tfile_path:(.*?)\\n");
+	std::regex full_score_pattern("\\tfull_score:(\\d*?)\\n");
 
-	boost::regex score_pattern("\\tscore:(\\d*?)\\n");
-	boost::regex pure_pattern("\\tpure:(\\d*?)\\n");
-	boost::regex safe_pattern("\\tsafe:(\\d*?)\\n");
-	boost::regex warning_pattern("\\twarning:(\\d*?)\\n");
-	boost::regex error_pattern("\\terror:(\\d*?)\\n");
-	boost::regex chain_pattern("\\tchain:(\\d*?)\\n");
-	boost::regex rank_pattern("\\trank:(\\d)");
+	std::regex score_pattern("\\tscore:(\\d*?)\\n");
+	std::regex pure_pattern("\\tpure:(\\d*?)\\n");
+	std::regex safe_pattern("\\tsafe:(\\d*?)\\n");
+	std::regex warning_pattern("\\twarning:(\\d*?)\\n");
+	std::regex error_pattern("\\terror:(\\d*?)\\n");
+	std::regex chain_pattern("\\tchain:(\\d*?)\\n");
+	std::regex rank_pattern("\\trank:(\\d)");
 
 	if (!ReadFile("/sdcard/data/song_list.fa", text))
 	{
 		return false;
 	}
-//	if (!boost::regex_search(text, pattern))
+//	if (!std::regex_search(text, pattern))
 //	{
 //		return false;
 //	}
-	for (boost::sregex_iterator i = boost::sregex_iterator(text.begin(), text.end(), song_pattern); i != boost::sregex_iterator(); i++)
+	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), song_pattern); i != std::sregex_iterator(); i++)
 	{
-		boost::smatch paragraph_match = *i;
+		std::smatch paragraph_match = *i;
 		std::string paragraph = paragraph_match.str();
-		boost::smatch title_line;
-		boost::smatch artist_line;
-		boost::smatch noter_line;
-		boost::smatch version_line;
-		boost::smatch difficulty_line;
-		boost::smatch duration_line;
-		boost::smatch audio_path_line;
-		boost::smatch preview_time_line;
-		boost::smatch file_path_line;
-		boost::smatch full_score_line;
-		boost::smatch score_line;
-		boost::smatch pure_line;
-		boost::smatch safe_line;
-		boost::smatch warning_line;
-		boost::smatch error_line;
-		boost::smatch chain_line;
-		boost::smatch rank_line;
+		std::smatch title_line;
+		std::smatch artist_line;
+		std::smatch noter_line;
+		std::smatch version_line;
+		std::smatch difficulty_line;
+		std::smatch duration_line;
+		std::smatch audio_path_line;
+		std::smatch preview_time_line;
+		std::smatch file_path_line;
+		std::smatch full_score_line;
+		std::smatch score_line;
+		std::smatch pure_line;
+		std::smatch safe_line;
+		std::smatch warning_line;
+		std::smatch error_line;
+		std::smatch chain_line;
+		std::smatch rank_line;
 
-		boost::regex_search(paragraph, title_line, title_pattern);
-		boost::regex_search(paragraph, artist_line, artist_pattern);
-		boost::regex_search(paragraph, noter_line, noter_pattern);
-		boost::regex_search(paragraph, version_line, version_pattern);
-		boost::regex_search(paragraph, difficulty_line, difficulty_pattern);
-		boost::regex_search(paragraph, duration_line, duration_pattern);
-		boost::regex_search(paragraph, audio_path_line, audio_path_pattern);
-		boost::regex_search(paragraph, preview_time_line, preview_time_pattern);
-		boost::regex_search(paragraph, file_path_line, file_path_pattern);
-		boost::regex_search(paragraph, full_score_line, full_score_pattern);
-		boost::regex_search(paragraph, score_line, score_pattern);
-		boost::regex_search(paragraph, pure_line, pure_pattern);
-		boost::regex_search(paragraph, safe_line, safe_pattern);
-		boost::regex_search(paragraph, warning_line, warning_pattern);
-		boost::regex_search(paragraph, error_line, error_pattern);
-		boost::regex_search(paragraph, chain_line, chain_pattern);
-		boost::regex_search(paragraph, rank_line, rank_pattern);
+		std::regex_search(paragraph, title_line, title_pattern);
+		std::regex_search(paragraph, artist_line, artist_pattern);
+		std::regex_search(paragraph, noter_line, noter_pattern);
+		std::regex_search(paragraph, version_line, version_pattern);
+		std::regex_search(paragraph, difficulty_line, difficulty_pattern);
+		std::regex_search(paragraph, duration_line, duration_pattern);
+		std::regex_search(paragraph, audio_path_line, audio_path_pattern);
+		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
+		std::regex_search(paragraph, file_path_line, file_path_pattern);
+		std::regex_search(paragraph, full_score_line, full_score_pattern);
+		std::regex_search(paragraph, score_line, score_pattern);
+		std::regex_search(paragraph, pure_line, pure_pattern);
+		std::regex_search(paragraph, safe_line, safe_pattern);
+		std::regex_search(paragraph, warning_line, warning_pattern);
+		std::regex_search(paragraph, error_line, error_pattern);
+		std::regex_search(paragraph, chain_line, chain_pattern);
+		std::regex_search(paragraph, rank_line, rank_pattern);
 		SongInformation *new_information = new SongInformation;
 		Score *new_score = new Score;
-		new_information->id = boost::regex_replace(paragraph, song_pattern, "$1");
-		new_information->title = boost::regex_replace(title_line.str(), title_pattern, "$1");
-		new_information->artist = boost::regex_replace(artist_line.str(), artist_pattern, "$1");
-		new_information->noter = boost::regex_replace(noter_line.str(), noter_pattern, "$1");
-		new_information->version = boost::regex_replace(version_line.str(), version_pattern, "$1");
-		new_information->difficulty = atoi(boost::regex_replace(difficulty_line.str(), difficulty_pattern, "$1").c_str());
-		new_information->duration = atoi(boost::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
-		new_information->audio_path = boost::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		new_information->preview_time = atoi(boost::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
-		new_information->file_path = boost::regex_replace(file_path_line.str(), file_path_pattern, "$1");
-		new_information->full_score = atoi(boost::regex_replace(full_score_line.str(), full_score_pattern, "$1").c_str());
-		new_score->score = atoi(boost::regex_replace(score_line.str(), score_pattern, "$1").c_str());
-		new_score->pure = atoi(boost::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
-		new_score->safe = atoi(boost::regex_replace(safe_line.str(), safe_pattern, "$1").c_str());
-		new_score->warning = atoi(boost::regex_replace(warning_line.str(), warning_pattern, "$1").c_str());
-		new_score->error = atoi(boost::regex_replace(error_line.str(), error_pattern, "$1").c_str());
-		new_score->chain = atoi(boost::regex_replace(chain_line.str(), chain_pattern, "$1").c_str());
-		new_score->rank = Rank(atoi(boost::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
+		new_information->id = std::regex_replace(paragraph, song_pattern, "$1");
+		new_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
+		new_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
+		new_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
+		new_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
+		new_information->difficulty = atoi(std::regex_replace(difficulty_line.str(), difficulty_pattern, "$1").c_str());
+		new_information->duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
+		new_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
+		new_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
+		new_information->file_path = std::regex_replace(file_path_line.str(), file_path_pattern, "$1");
+		new_information->full_score = atoi(std::regex_replace(full_score_line.str(), full_score_pattern, "$1").c_str());
+		new_score->score = atoi(std::regex_replace(score_line.str(), score_pattern, "$1").c_str());
+		new_score->pure = atoi(std::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
+		new_score->safe = atoi(std::regex_replace(safe_line.str(), safe_pattern, "$1").c_str());
+		new_score->warning = atoi(std::regex_replace(warning_line.str(), warning_pattern, "$1").c_str());
+		new_score->error = atoi(std::regex_replace(error_line.str(), error_pattern, "$1").c_str());
+		new_score->chain = atoi(std::regex_replace(chain_line.str(), chain_pattern, "$1").c_str());
+		new_score->rank = Rank(atoi(std::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
 	}
