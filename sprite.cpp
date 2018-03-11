@@ -11,17 +11,22 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 
 	if (path != "")
 	{
-		TextureManager::instance()->load(path, dest_rect);
+		TextureManager::instance()->load(path, texture_size);
 		if (load_source_rect.w == 0 && load_source_rect.h == 0)
 		{
-			source_rect.w = dest_rect.w;
-			source_rect.h = dest_rect.h;
+			source_rect.w = texture_size.w;
+			source_rect.h = texture_size.h;
 		}
 	}
 	if (load_dest_rect.w != 0 || load_dest_rect.h != 0)
 	{
 		dest_rect.w = load_dest_rect.w;
 		dest_rect.h = load_dest_rect.h;
+	}
+	else
+	{
+		dest_rect.w = texture_size.w;
+		dest_rect.h = texture_size.h;
 	}
 
 	frame.push_back(path);
@@ -54,7 +59,7 @@ void fr::Sprite::render()
 {
 	if (frame[current_index] != "")
 	{
-		TextureManager::instance()->render(frame[current_index], dest_rect, source_rect, center, angle, scale);
+		TextureManager::instance()->render(frame[current_index], dest_rect, texture_size, source_rect, center, angle, scale);
 	}
 }
 
@@ -62,7 +67,7 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], dest_rect, source_rect, center, angle, scale);
+		TextureManager::instance()->render(frame[index], dest_rect, texture_size, source_rect, center, angle, scale);
 	}
 }
 
@@ -78,8 +83,10 @@ void fr::Sprite::AddFrame(std::string path)
 	{
 		TextureManager::instance()->load(path, load_size);
 	}
-	if (dest_rect.w == 0 && dest_rect.h == 0)
+	if (texture_size.w == 0 && texture_size.h == 0)
 	{
+		texture_size.w = load_size.w;
+		texture_size.h = load_size.h;
 		dest_rect.w = load_size.w;
 		dest_rect.h = load_size.h;
 		source_rect.w = load_size.w;

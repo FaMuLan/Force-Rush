@@ -38,6 +38,7 @@ namespace fr
 			int frame_start;
 			int frame_end;
 			Rect dest_rect;
+			Rect texture_size;
 			Rect source_rect;
 			float scale;
 			Point center;

@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
 #include <map>
 #include <string>
 
@@ -47,7 +49,8 @@ namespace fr
 			~System() {}
 			static System *m_instance;
 			SDL_Window *system_window;
-			SDL_Renderer *system_renderer;
+			EGLContext gles_context;
+			GLuint program_object;
 			int window_width;
 			int window_heigh;
 			int screen_width;

@@ -22,6 +22,9 @@ void fr::System::init()
 
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 	screen_width = displayMode.w;
@@ -31,11 +34,53 @@ void fr::System::init()
 	window_heigh = screen_heigh / scale;
 	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 
-	system_window = SDL_CreateWindow("Force Rush", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_SHOWN);
-	system_renderer = SDL_CreateRenderer(system_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	system_window = SDL_CreateWindow("Force Rush", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	gles_context = SDL_GL_CreateContext(system_window);
+
+	std::string vertex_shader_src_str =
+		"attribute vec4 a_position;\n"
+		"attribute vec2 a_texCoord;\n"
+		"varying vec2 v_texCoord;\n"
+		"uniform mat4 mvp_matrix;\n"
+		"void main()\n"
+		"{\n"
+		"	gl_Position = mvp_matrix * a_position;\n"
+		"	v_texCoord = a_texCoord;\n"
+		"}\n";
+	std::string fragment_shader_src_str =
+		"precision mediump float;\n"
+		"varying vec2 v_texCoord;\n"
+		"uniform sampler2D s_texture;\n"
+		"void main()\n"
+		"{\n"
+		"	gl_FragColor = texture2D(s_texture, v_texCoord);\n"
+		"}\n";
+	const char *vertex_shader_src = vertex_shader_src_str.c_str();
+	const char *fragment_shader_src = fragment_shader_src_str.c_str();
+	GLuint vertex_shader;
+	GLuint fragment_shader;
+	GLuint vertex_compiled;
+	GLuint fragment_compiled;
+	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
+	glShaderSource(fragment_shader, 1, &fragment_shader_src, NULL);
+	glCompileShader(vertex_shader);
+	glCompileShader(fragment_shader);
+
+	program_object = glCreateProgram();
+	glAttachShader(program_object, vertex_shader);
+	glAttachShader(program_object, fragment_shader);
+	glLinkProgram(program_object);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	TTF_Init();
 	IMG_Init(0);
-	TextureManager::instance()->init(system_renderer);
+	TextureManager::instance()->init(program_object);
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
 	Setting::instance()->init();
@@ -51,17 +96,19 @@ void fr::System::run()
 {
 	while (!ControlHandler::instance()->IsQuit())
 	{
+		glViewport(0, 0, screen_width, screen_heigh);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glUseProgram(program_object);
 		is_window_modified = false;
 		ControlHandler::instance()->update();
-		SDL_SetRenderDrawColor(system_renderer, bg_r, bg_g, bg_b, 0xFF);
-		SDL_RenderClear(system_renderer);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		if (!LoadingState::instance()->IsLoading())
 		{
 			current_state->update();
 		}
 		LoadingState::instance()->update();
 		UserProfile::instance()->update();
-		SDL_RenderPresent(system_renderer);
+		SDL_GL_SwapWindow(system_window);
 	}
 }
 
@@ -69,9 +116,7 @@ void fr::System::clear()
 {
 	ControlHandler::instance()->clear();
 	TextureManager::instance()->clear();
-	SDL_DestroyRenderer(system_renderer);
 	SDL_DestroyWindow(system_window);
-	system_renderer = NULL;
 	system_window = NULL;
 	TTF_Quit();
 	IMG_Quit();
