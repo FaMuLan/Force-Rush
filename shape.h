@@ -24,6 +24,18 @@ namespace fr
 			double length;
 			double angle;
 	};
+	
+	class Matrix
+	{
+		public:
+			Matrix operator*(Matrix &m2);
+			void LoadIdentity();
+			void Translate(float tx, float ty, float tz);
+			void Rotate(float angle, float x, float y, float z);
+			void Frustum(float left, float right, float bottom, float top, float near_z, float far_z);
+			void Perspective(float fovy, float aspect, float near_z, float far_z);
+			float m[4][4];
+	};
 
 	class Point
 	{
