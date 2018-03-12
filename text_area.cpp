@@ -19,7 +19,7 @@ void fr::TextArea::init(std::string text, int x, int y, std::string font_path, i
 	TextureManager::instance()->loadfont(font_path, font_size);
 	if (m_text != "")
 	{
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 	}
 }
 
@@ -39,7 +39,7 @@ void fr::TextArea::render()
 	}
 	if (m_text != "")
 	{
-		TextureManager::instance()->render(cache->texture, Rect(x, y, cache->w, cache->h), Rect(0, 0, cache->w, cache->h));
+		TextureManager::instance()->render(cache->texture, Rect(x, y, (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w, cache->h), Rect(0, 0, cache->w, cache->h), Rect(0, 0, cache->w, cache->h));
 	}
 }
 
@@ -48,16 +48,16 @@ void fr::TextArea::render(int x, int y)
 	switch (m_format)
 	{
 		case TEXTFORMAT_MIDDLE:
-			x -= cache->w / 2;
+			x -= ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
 			y -= cache->h / 2;
 		break;
 		case TEXTFORMAT_RIGHT:
-			x -= cache->w;
+			x -= (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
 		break;
 	}
 	if (m_text != "")
 	{
-		TextureManager::instance()->render(cache->texture, Rect(x, y, cache->w, cache->h), Rect(0, 0, cache->w, cache->h));
+		TextureManager::instance()->render(cache->texture, Rect(x, y, (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w, cache->h), Rect(0, 0, cache->w, cache->h), Rect(0, 0, cache->w, cache->h));
 	}
 }
 
@@ -83,7 +83,7 @@ void fr::TextArea::SetText(std::string text)
 		m_text = text;
 		if (m_text != "")
 		{
-			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
+			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 		}
 	}
 }
@@ -96,7 +96,7 @@ void fr::TextArea::SetColor(char r, char g, char b)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 	}
 }
 
@@ -107,7 +107,7 @@ void fr::TextArea::SetFont(std::string font_path, int font_size)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 	}
 }
 
@@ -117,7 +117,7 @@ void fr::TextArea::SetScale(float scale)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped, m_scale);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 	}
 }
 

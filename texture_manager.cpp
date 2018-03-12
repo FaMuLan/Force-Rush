@@ -66,6 +66,13 @@ void fr::TextureManager::clearfont(std::string path, int size)
 	font[path][size] = NULL;
 }
 
+void fr::TextureManager::update()
+{
+	glEnableVertexAttribArray(position_location);
+	glEnableVertexAttribArray(texture_coord_location);
+	glActiveTexture(GL_TEXTURE0);
+}
+
 void fr::TextureManager::render(std::string path, Rect dest_rect, Rect texture_size, Rect source_rect, Point center, double angle, float scale)
 {
 	GLfloat gles_vectrices[] =
@@ -100,9 +107,6 @@ void fr::TextureManager::render(std::string path, Rect dest_rect, Rect texture_s
 	//顶点顺序
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), gles_vectrices);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
-	glEnableVertexAttribArray(position_location);
-	glEnableVertexAttribArray(texture_coord_location);
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(null_matrix));
@@ -139,20 +143,17 @@ void fr::TextureManager::render(GLuint *load_texture, Rect dest_rect, Rect textu
 		//bottom right
 	};
 	//二维图像顶点数据，毕竟不需要z轴
-	GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
+	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
 	//顶点顺序
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), gles_vectrices);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
-	glEnableVertexAttribArray(position_location);
-	glEnableVertexAttribArray(texture_coord_location);
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(null_matrix));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper, float scale)
+fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper)
 {
 	SDL_Color color = { char(r), char(g), char(b) };
 	SDL_Surface *text_surface;
@@ -188,8 +189,7 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int w = text_surface->w;
-	int h = text_surface->h * scale;
-	w = (limited_w == 0 || limited_w > w) ? w * scale : limited_w * scale;
+	int h = text_surface->h;
 	TextureCache *output_cache = new TextureCache;
 	output_cache->texture = new_texture;
 	output_cache->w = w;

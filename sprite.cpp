@@ -8,6 +8,8 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 	source_rect = load_source_rect;
 	center = load_center;
 	angle = load_angle;
+	texture_size.w = 0;
+	texture_size.h = 0;
 
 	if (path != "")
 	{

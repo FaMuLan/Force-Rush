@@ -99,6 +99,7 @@ void fr::System::run()
 		glViewport(0, 0, screen_width, screen_heigh);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(program_object);
+		TextureManager::instance()->update();
 		is_window_modified = false;
 		ControlHandler::instance()->update();
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
