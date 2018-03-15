@@ -39,6 +39,7 @@ namespace fr
 			void SetBackgroundColor(char r, char g, char b);
 			int GetWindowWidth();
 			int GetWindowHeigh();
+			int GetWindowDepth();
 			int GetScreenWidth();
 			int GetScreenHeigh();
 			float GetScale();
@@ -53,6 +54,7 @@ namespace fr
 			GLuint program_object;
 			int window_width;
 			int window_heigh;
+			int window_depth;
 			int screen_width;
 			int screen_heigh;
 			char bg_r, bg_g, bg_b;

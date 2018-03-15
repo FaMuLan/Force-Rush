@@ -24,6 +24,7 @@ void fr::System::init()
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 20);
 
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
@@ -32,6 +33,7 @@ void fr::System::init()
 	//for fullscreen
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
+	window_depth = 1980;
 	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 
 	system_window = SDL_CreateWindow("Force Rush", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -135,6 +137,7 @@ void fr::System::RefreshWindowSize()
 	//是720 * 1280的分辨率
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
+	window_depth = 1980;
 	is_window_modified = true;
 }
 
@@ -157,6 +160,10 @@ int fr::System::GetWindowWidth()
 int fr::System::GetWindowHeigh()
 {
 	return window_heigh;
+}
+int fr::System::GetWindowDepth()
+{
+	return window_depth;
 }
 int fr::System::GetScreenWidth()
 {
