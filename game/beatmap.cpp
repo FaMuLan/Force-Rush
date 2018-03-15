@@ -22,9 +22,104 @@ fr::GameBeatmap *fr::GameBeatmap::m_instance = 0;
 void fr::Beatmap::init()
 {
 	play_base = new Sprite;
-	play_base->init("assets/game/play_base.png", Rect(0, Setting::instance()->GetDrawOffset(), System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale()));
-	scale_w = System::instance()->GetWindowWidth() / 720.f;
-	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
+	wall = new Sprite;
+	ground = new Sprite;
+	play_base->init("assets/game/play_base.png");
+	wall->init("assets/game/wall.png");
+	ground->init("assets/game/ground.png");
+	wall_vectrices = new int[24];
+	ground_vectrices = new int[24];
+	play_base_vectrices = new int [24];
+
+	wall_vectrices[0] = 0;
+	wall_vectrices[1] = 0;
+	wall_vectrices[2] = 0;
+	wall_vectrices[3] = 1;
+	wall_vectrices[4] = 0;
+	wall_vectrices[5] = 0;
+	//top left
+	wall_vectrices[6] = 0;
+	wall_vectrices[7] = 0;
+	wall_vectrices[8] = wall->GetW();
+	wall_vectrices[9] = 1;
+	wall_vectrices[10] = wall->GetW();
+	wall_vectrices[11] = 0;
+	//top right
+	wall_vectrices[12] = 0;
+	wall_vectrices[13] = System::instance()->GetWindowHeigh();
+	wall_vectrices[14] = 0;
+	wall_vectrices[15] = 1;
+	wall_vectrices[16] = 0;
+	wall_vectrices[17] = wall->GetH();
+	//bottom left
+	wall_vectrices[18] = 0;
+	wall_vectrices[19] = System::instance()->GetWindowHeigh();
+	wall_vectrices[20] = wall->GetW();
+	wall_vectrices[21] = 1;
+	wall_vectrices[22] = wall->GetW();
+	wall_vectrices[23] = wall->GetH();
+	//bottom right
+	wall->SetVectrices(wall_vectrices);
+
+	ground_vectrices[0] = 0;
+	ground_vectrices[1] = 0;
+	ground_vectrices[2] = 0;
+	ground_vectrices[3] = 1;
+	ground_vectrices[4] = 0;
+	ground_vectrices[5] = 0;
+	//top left
+	ground_vectrices[6] = System::instance()->GetWindowWidth();
+	ground_vectrices[7] = 0;
+	ground_vectrices[8] = 0;
+	ground_vectrices[9] = 1;
+	ground_vectrices[10] = ground->GetW();
+	ground_vectrices[11] = 0;
+	//top right
+	ground_vectrices[12] = 0;
+	ground_vectrices[13] = 0;
+	ground_vectrices[14] = ground->GetH();
+	ground_vectrices[15] = 1;
+	ground_vectrices[16] = 0;
+	ground_vectrices[17] = ground->GetH();
+	//bottom left
+	ground_vectrices[18] = System::instance()->GetWindowWidth();
+	ground_vectrices[19] = 0;
+	ground_vectrices[20] = ground->GetH();
+	ground_vectrices[21] = 1;
+	ground_vectrices[22] = ground->GetW();
+	ground_vectrices[23] = ground->GetH();
+	//bottom right
+
+	play_base_vectrices[0] = 0;
+	play_base_vectrices[1] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[2] = play_base->GetH();
+	play_base_vectrices[3] = 1;
+	play_base_vectrices[4] = 0;
+	play_base_vectrices[5] = 0;
+	//top left
+	play_base_vectrices[6] = System::instance()->GetWindowWidth();
+	play_base_vectrices[7] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[8] = play_base->GetH();
+	play_base_vectrices[9] = 1;
+	play_base_vectrices[10] = play_base->GetW();
+	play_base_vectrices[11] = 0;
+	//top right
+	play_base_vectrices[12] = 0;
+	play_base_vectrices[13] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[14] = 0;
+	play_base_vectrices[15] = 1;
+	play_base_vectrices[16] = 0;
+	play_base_vectrices[17] = play_base->GetH();
+	//bottom left
+	play_base_vectrices[18] = System::instance()->GetWindowWidth();
+	play_base_vectrices[19] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[20] = 0;
+	play_base_vectrices[21] = 1;
+	play_base_vectrices[22] = play_base->GetW();
+	play_base_vectrices[23] = play_base->GetH();
+	//bottom right
+	ground->SetVectrices(ground_vectrices);
+	play_base->SetVectrices(play_base_vectrices);
 	for (int i = 0; i < 4; i++)
 	{
 		Column *new_column = new Column;
@@ -47,10 +142,17 @@ void fr::Beatmap::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
-		play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
-		play_base->SetPos(0, Setting::instance()->GetDrawOffset());
-		scale_w = System::instance()->GetWindowWidth() / 720.f;
-		scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
+		wall_vectrices[13] = System::instance()->GetWindowHeigh();
+		wall_vectrices[19] = System::instance()->GetWindowHeigh();
+		ground_vectrices[6] = System::instance()->GetWindowWidth();
+		ground_vectrices[18] = System::instance()->GetWindowWidth();
+		play_base_vectrices[1] = System::instance()->GetWindowHeigh();
+		play_base_vectrices[6] = System::instance()->GetWindowWidth();
+		play_base_vectrices[7] = System::instance()->GetWindowHeigh();
+		play_base_vectrices[13] = System::instance()->GetWindowHeigh();
+		play_base_vectrices[18] = System::instance()->GetWindowWidth();
+		play_base_vectrices[19] = System::instance()->GetWindowHeigh();
+		play_base->SetVectrices(play_base_vectrices);
 	}
 
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
@@ -70,21 +172,40 @@ void fr::Beatmap::update()
 
 void fr::Beatmap::render()
 {
+	int wall_z;
+	float background_process = float(Timer::instance()->GetTime("game") % Setting::instance()->GetDuration()) / float(Setting::instance()->GetDuration());
+	wall_z = -background_process * wall->GetW();
+	while (wall_z < System::instance()->GetWindowDepth())
+	{
+		wall_vectrices[2] = wall_z;
+		wall_vectrices[8] = wall_z + wall->GetW();
+		wall_vectrices[14] = wall_z;
+		wall_vectrices[20] = wall_z + wall->GetW();
+		ground_vectrices[2] = wall_z;
+		ground_vectrices[8] = wall_z + ground->GetH();
+		ground_vectrices[14] = wall_z;
+		ground_vectrices[20] = wall_z + ground->GetH();
+		wall_vectrices[0] = 0;
+		wall_vectrices[6] = 0;
+		wall_vectrices[12] = 0;
+		wall_vectrices[18] = 0;
+		wall->SetVectrices(wall_vectrices);
+		wall->render();
+		wall_vectrices[0] = System::instance()->GetWindowWidth();
+		wall_vectrices[6] = System::instance()->GetWindowWidth();
+		wall_vectrices[12] = System::instance()->GetWindowWidth();
+		wall_vectrices[18] = System::instance()->GetWindowWidth();
+		wall->SetVectrices(wall_vectrices);
+		wall->render();
+		ground->SetVectrices(ground_vectrices);
+		ground->render();
+		wall_z += wall->GetW();
+	}
 	play_base->render();
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->render();
 	}
-}
-
-float fr::Beatmap::GetScaleW()
-{
-	return scale_w;
-}
-
-float fr::Beatmap::GetScaleH()
-{
-	return scale_h;
 }
 
 void fr::GameBeatmap::load(fr::SongInformation *load_information)
@@ -112,12 +233,10 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	late_text = new TextArea;
 	show_early = false;
 	show_late = false;
-	s_light = new Sprite;
 	chain_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
 	judge_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
 	early_text->init("EARLY", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
 	late_text->init("LATE", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
-	s_light->init("assets/game/light.png", Rect(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset(), 96, 96 * scale_h));
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
 	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 40);
 	Animator::instance()->AddAnimation("chain", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
@@ -167,8 +286,6 @@ void fr::GameBeatmap::update()
 		judge_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120);
 		early_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80);
 		late_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160);
-		s_light->SetPos(System::instance()->GetWindowWidth() / 2 - 48, 302 * scale_h + Setting::instance()->GetDrawOffset());
-		s_light->SetSize(96, 96 * scale_h);
 	}
 
 	if (Timer::instance()->GetTime("game") >= m_information->duration + 5000 && !is_ended)
@@ -193,7 +310,6 @@ void fr::GameBeatmap::update()
 void fr::GameBeatmap::render()
 {
 	Beatmap::render();
-	s_light->render();
 	chain_text->render(chain_text->GetX(), chain_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("chain")));
 	if (show_early)
 	{

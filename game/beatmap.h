@@ -34,12 +34,14 @@ namespace fr
 			virtual void update();
 			virtual void render();
 			virtual Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false) = 0;
-
-			virtual float GetScaleW();
-			virtual float GetScaleH();
 		protected:
 			std::string audio_path;
 			Sprite *play_base;
+			Sprite *wall;
+			Sprite *ground;
+			int *wall_vectrices;
+			int *ground_vectrices;
+			int *play_base_vectrices;
 			std::vector<Column*> m_column;
 			float scale_w, scale_h;
 	};
@@ -75,9 +77,9 @@ namespace fr
 			TextArea *judge_text;
 			TextArea *early_text;
 			TextArea *late_text;
+			
 			bool show_early;
 			bool show_late;
-			Sprite *s_light;
 			bool is_waiting;
 			bool is_ended;
 			int current_chain;
