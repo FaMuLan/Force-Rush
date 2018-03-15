@@ -33,10 +33,6 @@ namespace fr
 			GameState() {}
 			~GameState() {}
 			static GameState *m_instance;
-			Sprite *wall_l;
-			Sprite *wall_r;
-			Sprite *background_l;
-			Sprite *background_r;
 	};	//class GameState : public State
 };	//namespace fr
 
