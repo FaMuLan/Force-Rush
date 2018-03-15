@@ -19,11 +19,11 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	is_touch_pressed = false;
 	is_keyboard_pressed = false;
 	s_note = new Sprite;
-	s_feedback = new Sprite;
+//	s_feedback = new Sprite;
 	s_light = new Sprite;
-	int current_w, current_h;
+	note_vectrices = new int[24];
 
-	s_light->init("", Rect(0, 0, 320 * m_parent->GetScaleW(), 320 * m_parent->GetScaleW()));
+	s_light->init("", Rect(0, 0, 320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f)));
 	s_light->AddFrame("assets/game/lighting-1.png");
 	s_light->AddFrame("assets/game/lighting-2.png");
 	s_light->AddFrame("assets/game/lighting-3.png");
@@ -37,107 +37,80 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_light->AddFrame("assets/game/lighting-11.png");
 	s_light->AddFrame("assets/game/lighting-12.png");
 
+	s_note->init("assets/game/note.png");
+	s_note->AddFrame("assets/game/note_slide_in_left.png");
+	s_note->AddFrame("assets/game/note_slide_in_right.png");
+	s_note->AddFrame("assets/game/note_slide_out_left.png");
+	s_note->AddFrame("assets/game/note_slide_out_right.png");
+	s_note->AddFrame("assets/game/note_slide_through.png");
+	s_note->AddFrame("assets/game/note_slide_end_left.png");
+	s_note->AddFrame("assets/game/note_slide_end_right.png");
+	s_note->AddFrame("assets/game/note_long_body.png");
+	s_note->AddFrame("assets/game/note_long_head.png");
+	s_note->AddFrame("assets/game/note_long_end.png");
+
+	note_vectrices[1] = System::instance()->GetWindowHeigh();
+	note_vectrices[3] = 1;
+	note_vectrices[4] = 0;
+	note_vectrices[5] = 0;
+	//top left
+	note_vectrices[7] = System::instance()->GetWindowHeigh();
+	note_vectrices[9] = 1;
+	note_vectrices[10] = s_note->GetW();
+	note_vectrices[11] = 0;
+	//top right
+	note_vectrices[13] = System::instance()->GetWindowHeigh();
+	note_vectrices[15] = 1;
+	note_vectrices[16] = 0;
+	note_vectrices[17] = s_note->GetH();
+	//bottom left
+	note_vectrices[19] = System::instance()->GetWindowHeigh();
+	note_vectrices[21] = 1;
+	note_vectrices[22] = s_note->GetW();
+	note_vectrices[23] = s_note->GetH();
+	//bottom right
+
 	switch (column_index)
 	{
 		case 0:
-			current_w = 185.0f * m_parent->GetScaleW();
-			current_h = 106.0f * m_parent->GetScaleH();
-			start_x = 331;
-			start_y = 387;
-			end_x = 36;
-			end_y = 1028;
+			note_vectrices[0] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x = 0;
-			m_w = 166 * m_parent->GetScaleW();
+			m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-			start_scale = 0.0828f;
-			s_note->init("assets/game/note_1.png", Rect(0, 0, current_w, current_h));
-			s_note->AddFrame("assets/game/note_in_l_1.png");
-			s_note->AddFrame("");	//IN R
-			s_note->AddFrame("");	//OUT L
-			s_note->AddFrame("assets/game/note_out_r_1.png");
-			s_note->AddFrame("");	//THROUGH
-			s_note->AddFrame("assets/game/note_end_l_1.png");
-			s_note->AddFrame("");	//END R
-			s_note->AddFrame("assets/game/note_l_1.png");
-			s_note->AddFrame("assets/game/note_l_head_1.png");
-			s_note->AddFrame("assets/game/note_l_end_1.png");
-			s_feedback->init("assets/game/feedback_1.png", Rect(36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
-			s_light->SetPos(-38 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+//			s_light->SetPos(-38 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
-			current_w = 163.0f * m_parent->GetScaleW();
-			current_h = 106.0f * m_parent->GetScaleH();
-			start_x = 347;
-			start_y = 387;
-			end_x = 197;
-			end_y = 1028;
-			m_x = 166 * m_parent->GetScaleW();
-			m_w = 194 * m_parent->GetScaleW();
+			note_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_x = 166 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-			start_scale = 0.0828f;
-			s_note->init("assets/game/note_2.png", Rect(0, 0, current_w, current_h));
-			s_note->AddFrame("assets/game/note_in_l_2.png");
-			s_note->AddFrame("assets/game/note_in_r_2.png");
-			s_note->AddFrame("assets/game/note_out_l_2.png");
-			s_note->AddFrame("assets/game/note_out_r_2.png");
-			s_note->AddFrame("assets/game/note_through_2.png");
-			s_note->AddFrame("assets/game/note_end_l_2.png");
-			s_note->AddFrame("assets/game/note_end_r_2.png");
-			s_note->AddFrame("assets/game/note_l_2.png");
-			s_note->AddFrame("assets/game/note_l_head_2.png");
-			s_note->AddFrame("assets/game/note_l_end_2.png");
-			s_feedback->init("assets/game/feedback_2.png", Rect(197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
-			s_light->SetPos(119 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+//			s_light->SetPos(119 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
-			current_w = 163.0f * m_parent->GetScaleW();
-			current_h = 106.0f * m_parent->GetScaleH();
-			start_x = 360;
-			start_y = 387;
-			end_x = 360;
-			end_y = 1028;
-			m_x = 360 * m_parent->GetScaleW();
-			m_w = 194 * m_parent->GetScaleW();
+			note_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_x = 360 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-			start_scale = 0.0828f;
-			s_note->init("assets/game/note_3.png", Rect(0, 0, current_w, current_h));
-			s_note->AddFrame("assets/game/note_in_l_3.png");
-			s_note->AddFrame("assets/game/note_in_r_3.png");
-			s_note->AddFrame("assets/game/note_out_l_3.png");
-			s_note->AddFrame("assets/game/note_out_r_3.png");
-			s_note->AddFrame("assets/game/note_through_3.png");
-			s_note->AddFrame("assets/game/note_end_l_3.png");
-			s_note->AddFrame("assets/game/note_end_r_3.png");
-			s_note->AddFrame("assets/game/note_l_3.png");
-			s_note->AddFrame("assets/game/note_l_head_3.png");
-			s_note->AddFrame("assets/game/note_l_end_3.png");
-			s_feedback->init("assets/game/feedback_3.png", Rect(360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
-			s_light->SetPos(282 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+//			s_light->SetPos(282 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
-			current_w = 185.0f * m_parent->GetScaleW();
-			current_h = 106.0f * m_parent->GetScaleH();
-			start_x = 372;
-			start_y = 387;
-			end_x = 502;
-			end_y = 1028;
-			m_x = 515 * m_parent->GetScaleW();
-			m_w = 166 * m_parent->GetScaleW();
+			note_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+			note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_x = 515 * float(System::instance()->GetWindowWidth() / 720.f);
+			m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-			start_scale = 0.0828f;
-			s_note->init("assets/game/note_4.png", Rect(0, 0, current_w, current_h));
-			s_note->AddFrame("");	//IN L
-			s_note->AddFrame("assets/game/note_in_r_4.png");
-			s_note->AddFrame("assets/game/note_out_l_4.png");
-			s_note->AddFrame("");	//OUT R
-			s_note->AddFrame("");	//THROUGH
-			s_note->AddFrame("");	//END L
-			s_note->AddFrame("assets/game/note_end_r_4.png");
-			s_note->AddFrame("assets/game/note_l_4.png");
-			s_note->AddFrame("assets/game/note_l_head_4.png");
-			s_note->AddFrame("assets/game/note_l_end_4.png");
-			s_feedback->init("assets/game/feedback_4.png", Rect(502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset(), current_w, current_h));
-			s_light->SetPos(443 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+//			s_light->SetPos(443 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
 
@@ -395,40 +368,48 @@ void fr::Column::update()
 
 	if (System::instance()->IsWindowModified())
 	{
-		s_light->SetSize(320 * m_parent->GetScaleW(), 320 * m_parent->GetScaleW());
+		s_light->SetSize(320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f));
+		note_vectrices[1] = System::instance()->GetWindowHeigh();
+		note_vectrices[7] = System::instance()->GetWindowHeigh();
+		note_vectrices[13] = System::instance()->GetWindowHeigh();
+		note_vectrices[19] = System::instance()->GetWindowHeigh();
 		switch (column_index)
 		{
 			case 0:
-				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(-38 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
-				s_feedback->SetPos(36 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-				s_feedback->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				m_x = 0 * m_parent->GetScaleW();
-				m_w = 166 * m_parent->GetScaleW();
+//				s_light->SetPos(-38 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				note_vectrices[0] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_x = 0 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 1:
-				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(119 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
-				s_feedback->SetPos(197 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-				s_feedback->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				m_x = 166 * m_parent->GetScaleW();
-				m_w = 194 * m_parent->GetScaleW();
+//				s_light->SetPos(119 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				note_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_x = 166 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 2:
-				s_note->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(282 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
-				s_feedback->SetPos(360 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-				s_feedback->SetSize(163.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				m_x = 360 * m_parent->GetScaleW();
-				m_w = 194 * m_parent->GetScaleW();
+//				s_light->SetPos(282 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				note_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_x = 360 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 3:
-				s_note->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				s_light->SetPos(443 * m_parent->GetScaleW(), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
-				s_feedback->SetPos(502 * m_parent->GetScaleW(), 1028 * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-				s_feedback->SetSize(185.0f * m_parent->GetScaleW(), 106.0f * m_parent->GetScaleH());
-				m_x = 515 * m_parent->GetScaleW();
-				m_w = 166 * m_parent->GetScaleW();
+//				s_light->SetPos(443 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
+				note_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+				note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_x = 515 * float(System::instance()->GetWindowWidth() / 720.f);
+				m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 		}
 	}
@@ -447,7 +428,7 @@ void fr::Column::render()
 	}
 	if (is_hold)
 	{
-		s_feedback->render();
+//		s_feedback->render();
 	}
 	s_light->render();
 }
@@ -471,10 +452,7 @@ bool fr::Column::DrawNote(Note *load_note)
 {
 	int time_diff = load_note->time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	double process = double(Setting::instance()->GetDuration() - time_diff) / double(Setting::instance()->GetDuration());
-	double process_sq = process * process * process;
-	int current_x = start_x + (end_x - start_x) * process_sq;
-	int current_y = start_y + (end_y - start_y) * process_sq;
-	float current_scale = start_scale + (1.0f - start_scale) * process_sq;
+	int note_z = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process) + 20 + s_note->GetH();
 	//note時間與當前時間的時間差
 
 	if (time_diff > Setting::instance()->GetDuration())
@@ -489,35 +467,31 @@ bool fr::Column::DrawNote(Note *load_note)
 		int time_diff_end = load_note->time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
 		double process_end = double(Setting::instance()->GetDuration() - time_diff_end) / double(Setting::instance()->GetDuration());
-		double process_end_sq = process_end * process_end * process_end;
-		//時間差轉換成Y坐標 * 2
+		int note_z_end = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process_end) + 20 + s_note->GetH();
+		//時間差轉換成Z坐標 * 2
 
 //		if (is_pressing_ln && load_note->time == m_note[current_note_index]->time && load_note->time_end == m_note[current_note_index]->time_end)
 		if (is_pressing_ln && load_note == m_note[current_note_index])
 		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
-			process_sq = 1;
 			time_diff = 0;
-			current_x = start_x + (end_x - start_x) * process_sq;
-			current_y = start_y + (end_y - start_y) * process_sq;
-			current_scale = start_scale + (1.0f - start_scale) * process_sq;
+			note_z = 20 + s_note->GetH();
 		}
 
 		double ln_piece_process = process;
-		double ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;
 		while (ln_piece_process > (time_diff_end > Setting::instance()->GetDuration() ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
-			int current_x_piece = start_x + (end_x - start_x) * ln_piece_process_sq;
-			int current_y_piece = start_y + (end_y - start_y) * ln_piece_process_sq;
-			float current_scale_piece = start_scale + (1.0f - start_scale) * ln_piece_process_sq;
-			s_note->SetPos(current_x_piece * m_parent->GetScaleW(), current_y_piece * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-			s_note->SetScale(current_scale_piece);
+			int note_z_piece = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - ln_piece_process) + 20 + s_note->GetH();
+			note_vectrices[2] = note_z_piece;
+			note_vectrices[8] = note_z_piece;
+			note_vectrices[14] = note_z_piece - s_note->GetH();
+			note_vectrices[20] = note_z_piece - s_note->GetH();
+			s_note->SetVectrices(note_vectrices);
 			s_note->render(8);
 			//將長條身往上挪動
-			ln_piece_process -= 0.01f;
-			ln_piece_process_sq = ln_piece_process * ln_piece_process * ln_piece_process;
+			ln_piece_process -= s_note->GetH() / float(System::instance()->GetWindowDepth() - 20 - s_note->GetH());
 		}
 /*
 		{
@@ -533,22 +507,22 @@ bool fr::Column::DrawNote(Note *load_note)
 */
 		if (ln_piece_process > 0)
 		{
-			int current_x_end = start_x + (end_x - start_x) * process_end_sq;
-			int current_y_end = start_y + (end_y - start_y) * process_end_sq;
-			float current_scale_end = start_scale + (1.0f - start_scale) * process_end_sq;
-			s_note->SetPos(current_x_end * m_parent->GetScaleW(), current_y_end * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-			s_note->SetScale(current_scale_end);
+			note_vectrices[2] = note_z_end;
+			note_vectrices[8] = note_z_end;
+			note_vectrices[14] = note_z_end - s_note->GetH();
+			note_vectrices[20] = note_z_end - s_note->GetH();
+			s_note->SetVectrices(note_vectrices);
 			s_note->render((load_note->type_end == NOTETYPE_NORMAL || Setting::instance()->IsSlideOut()) ? 10 : load_note->type_end);
 		}
 		//畫長條尾
 	}
 
-	if (current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset() < System::instance()->GetWindowHeigh())
-	{
-		s_note->SetPos(current_x * m_parent->GetScaleW(), current_y * m_parent->GetScaleH() + Setting::instance()->GetDrawOffset());
-		s_note->SetScale(current_scale);
-		s_note->render(((is_pressing_ln && load_note == m_note[current_note_index]) || Setting::instance()->IsSlideOut()) ? NOTETYPE_NORMAL : load_note->type);
-	}
+	note_vectrices[2] = note_z;
+	note_vectrices[8] = note_z;
+	note_vectrices[14] = note_z - s_note->GetH();
+	note_vectrices[20] = note_z - s_note->GetH();
+	s_note->SetVectrices(note_vectrices);
+	s_note->render(((is_pressing_ln && load_note == m_note[current_note_index]) || Setting::instance()->IsSlideOut()) ? NOTETYPE_NORMAL : load_note->type);
 
 	return true;
 	//畫note

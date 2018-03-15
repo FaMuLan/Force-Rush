@@ -29,11 +29,7 @@ namespace fr
 			Sprite *s_note;
 			Sprite *s_feedback;
 			Sprite *s_light;
-			int start_x;
-			int start_y;
-			float start_scale;
-			int end_x;
-			int end_y;
+			int *note_vectrices;
 			int m_x;
 			int m_w;
 			int m_h;
