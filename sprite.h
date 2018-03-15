@@ -25,6 +25,7 @@ namespace fr
 			void SetSize(int w, int h);
 			void SetSrcRect(Rect load_source_rect);
 			void SetRotation(Point load_center, double load_angle);
+			void SetVectrices(int *load_vectrices);
 			int GetX();
 			int GetY();
 			int GetW();
@@ -43,6 +44,7 @@ namespace fr
 			float scale;
 			Point center;
 			double angle;
+			float *vectrices;
 	};	//class Sprite
 };	//namespace fr
 

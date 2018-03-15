@@ -1,6 +1,7 @@
 #include "sprite.h"
 #include "texture_manager.h"
 #include "timer.h"
+#include "system.h"
 
 void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_rect, Point load_center, double load_angle)
 {
@@ -10,6 +11,7 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 	angle = load_angle;
 	texture_size.w = 0;
 	texture_size.h = 0;
+	vectrices = NULL;
 
 	if (path != "")
 	{
@@ -61,7 +63,14 @@ void fr::Sprite::render()
 {
 	if (frame[current_index] != "")
 	{
-		TextureManager::instance()->render(frame[current_index], dest_rect, texture_size, source_rect, center, angle, scale);
+		if (vectrices == NULL)
+		{
+			TextureManager::instance()->render(frame[current_index], dest_rect, texture_size, source_rect, center, angle, scale);
+		}
+		else
+		{
+			TextureManager::instance()->render(frame[current_index], vectrices);
+		}
 	}
 }
 
@@ -69,7 +78,14 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], dest_rect, texture_size, source_rect, center, angle, scale);
+		if (vectrices == NULL)
+		{
+			TextureManager::instance()->render(frame[index], dest_rect, texture_size, source_rect, center, angle, scale);
+		}
+		else
+		{
+			TextureManager::instance()->render(frame[index], vectrices);
+		}
 	}
 }
 
@@ -141,6 +157,42 @@ void fr::Sprite::SetRotation(Point load_center, double load_angle)
 {
 	center = load_center;
 	angle = load_angle;
+}
+
+void fr::Sprite::SetVectrices(int *load_vectrices)
+{
+	if (vectrices == NULL)
+	{
+		vectrices = new float[24];
+	}
+	vectrices[0] = (float(load_vectrices[0]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
+	vectrices[1] = (1.f - float(load_vectrices[1]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
+	vectrices[2] = -float(load_vectrices[2]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[3] = 1.f;
+	vectrices[4] = float(load_vectrices[4]) / float(texture_size.w);
+	vectrices[5] = float(load_vectrices[5]) / float(texture_size.h);
+	//top left
+	vectrices[6] = (float(load_vectrices[6]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
+	vectrices[7] = (1.f - float(load_vectrices[7]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
+	vectrices[8] = -float(load_vectrices[8]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[9] = 1.f;
+	vectrices[10] = float(load_vectrices[10]) / float(texture_size.w);
+	vectrices[11] = float(load_vectrices[11]) / float(texture_size.h);
+	//top right
+	vectrices[12] = (float(load_vectrices[12]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
+	vectrices[13] = (1.f - float(load_vectrices[13]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
+	vectrices[14] = -float(load_vectrices[14]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[15] = 1.f;
+	vectrices[16] = float(load_vectrices[16]) / float(texture_size.w);
+	vectrices[17] = float(load_vectrices[17]) / float(texture_size.h);
+	//bottom left
+	vectrices[18] = (float(load_vectrices[18]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
+	vectrices[19] = (1.f - float(load_vectrices[19]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
+	vectrices[20] = -float(load_vectrices[20]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[21] = 1.f;
+	vectrices[22] = float(load_vectrices[22]) / float(texture_size.w);
+	vectrices[23] = float(load_vectrices[23]) / float(texture_size.h);
+	//bottom right
 }
 
 int fr::Sprite::GetX()
