@@ -167,28 +167,28 @@ void fr::Sprite::SetVectrices(int *load_vectrices)
 	}
 	vectrices[0] = (float(load_vectrices[0]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
 	vectrices[1] = (1.f - float(load_vectrices[1]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[2] = -float(load_vectrices[2]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[2] = -float(load_vectrices[2]) / float(360);
 	vectrices[3] = 1.f;
 	vectrices[4] = float(load_vectrices[4]) / float(texture_size.w);
 	vectrices[5] = float(load_vectrices[5]) / float(texture_size.h);
 	//top left
 	vectrices[6] = (float(load_vectrices[6]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
 	vectrices[7] = (1.f - float(load_vectrices[7]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[8] = -float(load_vectrices[8]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[8] = -float(load_vectrices[8]) / float(360);
 	vectrices[9] = 1.f;
 	vectrices[10] = float(load_vectrices[10]) / float(texture_size.w);
 	vectrices[11] = float(load_vectrices[11]) / float(texture_size.h);
 	//top right
 	vectrices[12] = (float(load_vectrices[12]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
 	vectrices[13] = (1.f - float(load_vectrices[13]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[14] = -float(load_vectrices[14]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[14] = -float(load_vectrices[14]) / float(360);
 	vectrices[15] = 1.f;
 	vectrices[16] = float(load_vectrices[16]) / float(texture_size.w);
 	vectrices[17] = float(load_vectrices[17]) / float(texture_size.h);
 	//bottom left
 	vectrices[18] = (float(load_vectrices[18]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
 	vectrices[19] = (1.f - float(load_vectrices[19]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[20] = -float(load_vectrices[20]) / float(System::instance()->GetWindowDepth()) * 10;
+	vectrices[20] = -float(load_vectrices[20]) / float(360);
 	vectrices[21] = 1.f;
 	vectrices[22] = float(load_vectrices[22]) / float(texture_size.w);
 	vectrices[23] = float(load_vectrices[23]) / float(texture_size.h);

@@ -33,7 +33,7 @@ void fr::System::init()
 	//for fullscreen
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
-	window_depth = 1980;
+	window_depth = 7200;
 	rotation = window_width > window_heigh ? WINDOWROTATION_LANDSCAPE : WINDOWROTATION_PORTRAIT;
 
 	system_window = SDL_CreateWindow("Force Rush", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_heigh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -110,7 +110,6 @@ void fr::System::run()
 			current_state->update();
 		}
 		LoadingState::instance()->update();
-		UserProfile::instance()->update();
 		SDL_GL_SwapWindow(system_window);
 	}
 }
@@ -137,7 +136,7 @@ void fr::System::RefreshWindowSize()
 	//是720 * 1280的分辨率
 	scale = float(screen_width) / float(window_width);
 	window_heigh = screen_heigh / scale;
-	window_depth = 1980;
+	window_depth = 7200;
 	is_window_modified = true;
 }
 
