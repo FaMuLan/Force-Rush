@@ -28,8 +28,9 @@ namespace fr
 			bool IsSlideOut();
 			int GetDuration();
 			int GetOffset();
-			float GetDrawScale();
-			int GetDrawOffset();
+			int GetCameraPosY();
+			int GetCameraPosZ();
+			int GetCameraRotateX();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
 			std::string GetRandomTips();
@@ -38,8 +39,9 @@ namespace fr
 			void SwitchSlideOut();
 			void SetDuration(int input);
 			void SetOffset(int input);
-			void SetDrawScale(float input);
-			void SetDrawOffset(int input);
+			void SetCameraPosY(int input);
+			void SetCameraPosZ(int input);
+			void SetCameraRotateX(int input);
 			void SetKeycode(SDL_Scancode input, int index);
 		private:
 			Setting() {}
@@ -50,10 +52,12 @@ namespace fr
 			bool is_slide_out;
 			int duration;
 			int offset;
-			int draw_scale_portrait;
-			int draw_offset_portrait;
-			int draw_scale_landscape;
-			int draw_offset_landscape;
+			int camera_pos_y_portrait;
+			int camera_pos_z_portrait;
+			int camera_rotate_x_portrait;
+			int camera_pos_y_landscape;
+			int camera_pos_z_landscape;
+			int camera_rotate_x_landscape;
 			SDL_Scancode key_code[4];
 			std::vector<std::string> song_list;
 			std::vector<std::string> tips_text;

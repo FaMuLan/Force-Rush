@@ -18,10 +18,12 @@ void fr::Setting::init()
 	key_code[1] = SDL_SCANCODE_F;
 	key_code[2] = SDL_SCANCODE_J;
 	key_code[3] = SDL_SCANCODE_K;
-	draw_scale_portrait = 1000;
-	draw_offset_portrait = 0;
-	draw_scale_landscape = 1450;
-	draw_offset_landscape = -320;
+	camera_pos_y_portrait = 0;
+	camera_pos_z_portrait = 720;
+	camera_rotate_x_portrait = 0;
+	camera_pos_y_landscape = 0;
+	camera_pos_z_landscape = 720;
+	camera_rotate_x_landscape = 0;
 	song_list.push_back("assets/songs");
 	tips_text.push_back("适当休息。在这里我更建议您的是对手部进行放松");
 	tips_text.push_back("在游戏时，可以在屏幕上半部分以竖直方向滑动手指，来进行快速调节音符下落速度");
@@ -51,29 +53,31 @@ bool fr::Setting::read()
 	std::regex offset_pattern("offset:(-?\\d+?)\\n");
 	std::regex key_code_pattern("key (\\d+?):(\\d+?)\\n");
 	std::regex song_list_pattern("song_list:(.+?)\\n");
-	std::regex column_portrait_pattern("column_portrait:(\\d+?),(-?\\d+?)\\n");
-	std::regex column_landscape_pattern("column_landscape:(\\d+?),(-?\\d+?)\\n");
+	std::regex camera_portrait_pattern("camera_portrait:(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
+	std::regex camera_landscape_pattern("camera_landscape:(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
 	std::regex tips_pattern("tips:(.+?)\\n");
 	std::smatch auto_line;
 	std::smatch slide_out_line;
 	std::smatch duration_line;
 	std::smatch offset_line;
-	std::smatch column_portrait_line;
-	std::smatch column_landscape_line;
+	std::smatch camera_portrait_line;
+	std::smatch camera_landscape_line;
 	std::regex_search(file, auto_line, auto_pattern);
 	std::regex_search(file, slide_out_line, slide_out_pattern);
 	std::regex_search(file, duration_line, duration_pattern);
 	std::regex_search(file, offset_line, offset_pattern);
-	std::regex_search(file, column_portrait_line, column_portrait_pattern);
-	std::regex_search(file, column_landscape_line, column_landscape_pattern);
+	std::regex_search(file, camera_portrait_line, camera_portrait_pattern);
+	std::regex_search(file, camera_landscape_line, camera_landscape_pattern);
 	is_auto = std::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
 	is_slide_out = std::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
 	duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
 	offset = atoi(std::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
-	draw_scale_portrait = atoi(std::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$1").c_str());
-	draw_offset_portrait = atoi(std::regex_replace(column_portrait_line.str(), column_portrait_pattern, "$2").c_str());
-	draw_scale_landscape = atoi(std::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$1").c_str());
-	draw_offset_landscape = atoi(std::regex_replace(column_landscape_line.str(), column_landscape_pattern, "$2").c_str());
+	camera_pos_y_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$1").c_str());
+	camera_pos_z_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$2").c_str());
+	camera_rotate_x_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$3").c_str());
+	camera_pos_y_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$1").c_str());
+	camera_pos_z_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$2").c_str());
+	camera_rotate_x_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$3").c_str());
 	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), key_code_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch key_code_line = *i;
@@ -98,24 +102,24 @@ void fr::Setting::write()
 	std::string file;
 	char *duration_ch = new char[50];
 	char *offset_ch = new char[50];
-	char *column_portrait_ch = new char[50];
-	char *column_landscape_ch = new char[50];
+	char *camera_portrait_ch = new char[50];
+	char *camera_landscape_ch = new char[50];
 	sprintf(duration_ch, "duration:%d\n", duration);
 	sprintf(offset_ch, "offset:%d\n", offset);
-	sprintf(column_portrait_ch, "column_portrait:%d,%d\n", draw_scale_portrait, draw_offset_portrait);
-	sprintf(column_landscape_ch, "column_landscape:%d,%d\n", draw_scale_landscape, draw_offset_landscape);
+	sprintf(camera_portrait_ch, "camera_portrait:%d,%d,%d\n", camera_pos_y_portrait, camera_pos_z_portrait, camera_rotate_x_portrait);
+	sprintf(camera_landscape_ch, "camera_landscape:%d,%d,%d\n", camera_pos_y_landscape, camera_pos_z_landscape, camera_rotate_x_landscape);
 
 	file = "Force Rush user setting file\n";
 	file += is_auto ? "auto:on\n" : "auto:off\n";
 	file += is_slide_out ? "slide_out:on\n" : "slide_out:off\n";
 	file += duration_ch;
 	file += offset_ch;
-	file += column_portrait_ch;
-	file += column_landscape_ch;
+	file += camera_portrait_ch;
+	file += camera_landscape_ch;
 	delete [] duration_ch;
 	delete [] offset_ch;
-	delete [] column_portrait_ch;
-	delete [] column_landscape_ch;
+	delete [] camera_portrait_ch;
+	delete [] camera_landscape_ch;
 	for (int i = 0; i < 4; i++)
 	{
 		char *key_code_ch = new char;
@@ -164,22 +168,31 @@ int fr::Setting::GetOffset()
 	return offset;
 }
 
-float fr::Setting::GetDrawScale()
+int fr::Setting::GetCameraPosY()
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		return float(draw_scale_portrait) / 1000.f;
+		return camera_pos_y_portrait;
 	}
-	return float(draw_scale_landscape) / 1000.f;
+	return camera_pos_y_landscape;
 }
 
-int fr::Setting::GetDrawOffset()
+int fr::Setting::GetCameraPosZ()
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		return float(draw_offset_portrait) / 1000.f * System::instance()->GetWindowHeigh();
+		return camera_pos_z_portrait;
 	}
-	return float(draw_offset_landscape) / 1000.f * System::instance()->GetWindowHeigh();
+	return camera_pos_z_landscape;
+}
+
+int fr::Setting::GetCameraRotateX()
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		return camera_rotate_x_portrait;
+	}
+	return camera_rotate_x_landscape;
 }
 
 SDL_Scancode fr::Setting::GetKeycode(int index)
@@ -230,28 +243,41 @@ void fr::Setting::SetOffset(int input)
 	write();
 }
 
-void fr::Setting::SetDrawScale(float input)
+void fr::Setting::SetCameraPosY(int input)
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		draw_scale_portrait = input * 1000;
+		camera_pos_y_portrait = input;
 	}
 	else
 	{
-		draw_scale_landscape = input * 1000;
+		camera_pos_y_landscape = input;
 	}
 	write();
 }
 
-void fr::Setting::SetDrawOffset(int input)
+void fr::Setting::SetCameraPosZ(int input)
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		draw_offset_portrait = input * 1000.f / System::instance()->GetWindowHeigh();
+		camera_pos_z_portrait = input;
 	}
 	else
 	{
-		draw_offset_landscape = input * 1000.f / System::instance()->GetWindowHeigh();
+		camera_pos_z_landscape = input;
+	}
+	write();
+}
+
+void fr::Setting::SetCameraRotateX(int input)
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		camera_rotate_x_portrait = input;
+	}
+	else
+	{
+		camera_rotate_x_landscape = input;
 	}
 	write();
 }
