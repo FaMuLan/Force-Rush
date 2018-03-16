@@ -24,7 +24,8 @@ void fr::Beatmap::init()
 	play_base = new Sprite;
 	wall = new Sprite;
 	ground = new Sprite;
-	play_base->init("assets/game/play_base.png");
+	play_base->init("assets/game/play_base_header.png");
+	play_base->AddFrame("assets/game/play_base_body.png");
 	wall->init("assets/game/wall.png");
 	ground->init("assets/game/ground.png");
 	wall_vectrices = new int[24];
@@ -168,23 +169,36 @@ void fr::Beatmap::update()
 	{
 		m_column[i]->update();
 	}
+
+	Matrix perspective_matrix;
+	Matrix model_view_matrix;
+	perspective_matrix.LoadIdentity();
+	model_view_matrix.LoadIdentity();
+
+	perspective_matrix.Perspective(70, float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 1.f, 20.f);
+	model_view_matrix.Translate(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 720.f);
+	model_view_matrix.Rotate(Setting::instance()->GetCameraRotateX(), 1.0, 0.0, 0.0);
+	Matrix *mvp_matrix = new Matrix;
+	*mvp_matrix = model_view_matrix * perspective_matrix;
+	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
 }
 
 void fr::Beatmap::render()
 {
 	int wall_z;
+	int play_base_z = 0;
 	float background_process = float(Timer::instance()->GetTime("game") % Setting::instance()->GetDuration()) / float(Setting::instance()->GetDuration());
-	wall_z = -background_process * wall->GetW();
+	wall_z = -background_process * (System::instance()->GetWindowDepth() - (System::instance()->GetWindowDepth() % wall->GetW()));
 	while (wall_z < System::instance()->GetWindowDepth())
 	{
 		wall_vectrices[2] = wall_z;
 		wall_vectrices[8] = wall_z + wall->GetW();
 		wall_vectrices[14] = wall_z;
 		wall_vectrices[20] = wall_z + wall->GetW();
-		ground_vectrices[2] = wall_z;
+		ground_vectrices[2] = wall_z + ground->GetH();
 		ground_vectrices[8] = wall_z + ground->GetH();
 		ground_vectrices[14] = wall_z;
-		ground_vectrices[20] = wall_z + ground->GetH();
+		ground_vectrices[20] = wall_z;
 		wall_vectrices[0] = 0;
 		wall_vectrices[6] = 0;
 		wall_vectrices[12] = 0;
@@ -201,7 +215,25 @@ void fr::Beatmap::render()
 		ground->render();
 		wall_z += wall->GetW();
 	}
-	play_base->render();
+
+	play_base_vectrices[2] = play_base_z + play_base->GetH();
+	play_base_vectrices[8] = play_base_z + play_base->GetH();
+	play_base_vectrices[14] = play_base_z;
+	play_base_vectrices[20] = play_base_z;
+	play_base->SetVectrices(play_base_vectrices);
+	play_base->render(0);
+	play_base_z += play_base->GetH();
+	while (play_base_z < System::instance()->GetWindowDepth())
+	{
+		play_base_vectrices[2] = play_base_z + play_base->GetH();
+		play_base_vectrices[8] = play_base_z + play_base->GetH();
+		play_base_vectrices[14] = play_base_z;
+		play_base_vectrices[20] = play_base_z;
+		play_base->SetVectrices(play_base_vectrices);
+		play_base->render(1);
+		play_base_z += play_base->GetH();
+	}
+
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->render();

@@ -43,7 +43,6 @@ namespace fr
 			int *ground_vectrices;
 			int *play_base_vectrices;
 			std::vector<Column*> m_column;
-			float scale_w, scale_h;
 	};
 
 	class GameBeatmap : public Beatmap
