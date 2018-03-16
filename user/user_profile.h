@@ -21,9 +21,6 @@ namespace fr
 			}
 			void init();
 			void clear();
-			void update();
-			void RenderCharacter();
-			void RenderController();
 			std::string GetUserName();
 			int GetPerformancePoint();
 			void SetUserName(std::string input);
@@ -36,10 +33,6 @@ namespace fr
 			static UserProfile *m_instance;
 			std::string m_user_name;
 			int m_performance_point;
-			std::string m_char_path;
-			std::string m_controller_path;
-			Sprite *m_char;
-			Sprite *m_controller;
 	};
 };
 
