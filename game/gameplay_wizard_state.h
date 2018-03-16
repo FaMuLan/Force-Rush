@@ -31,7 +31,6 @@ namespace fr
 			void start();
 			void stop();
 			bool IsRunning();
-			void ResetScale();
 		private:
 
 			GameplayWizardBeatmap() {}
@@ -67,19 +66,25 @@ namespace fr
 			Sprite *widget_base;
 			Button *back;
 			Button *offset_wizard_switch;
-			Button *draw_scale_left;
-			Button *draw_scale_right;
-			Button *draw_scale_left_dual;
-			Button *draw_scale_right_dual;
-			Button *draw_offset_left;
-			Button *draw_offset_right;
-			Button *draw_offset_left_dual;
-			Button *draw_offset_right_dual;
+			Button *camera_pos_y_left;
+			Button *camera_pos_y_right;
+			Button *camera_pos_y_left_dual;
+			Button *camera_pos_y_right_dual;
+			Button *camera_pos_z_left;
+			Button *camera_pos_z_right;
+			Button *camera_pos_z_left_dual;
+			Button *camera_pos_z_right_dual;
+			Button *camera_rotate_x_left;
+			Button *camera_rotate_x_right;
+			Button *camera_rotate_x_left_dual;
+			Button *camera_rotate_x_right_dual;
 			TextArea *offset_wizard_text;
-			TextArea *draw_scale_text;
-			TextArea *draw_offset_text;
-			TextArea *draw_scale_num;
-			TextArea *draw_offset_num;
+			TextArea *camera_pos_y_text;
+			TextArea *camera_pos_z_text;
+			TextArea *camera_rotate_x_text;
+			TextArea *camera_pos_y_num;
+			TextArea *camera_pos_z_num;
+			TextArea *camera_rotate_x_num;
 			
 	};
 };

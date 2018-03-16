@@ -144,32 +144,31 @@ bool fr::GameplayWizardBeatmap::IsRunning()
 	return is_running;
 }
 
-void fr::GameplayWizardBeatmap::ResetScale()
-{
-	play_base->SetSize(System::instance()->GetWindowWidth(), System::instance()->GetWindowHeigh() * Setting::instance()->GetDrawScale());
-	play_base->SetPos(0, Setting::instance()->GetDrawOffset());
-	scale_w = System::instance()->GetWindowWidth() / 720.f;
-	scale_h = System::instance()->GetWindowHeigh() / 1280.f * Setting::instance()->GetDrawScale();
-}
 
 void fr::GameplayWizardState::init()
 {
 	widget_base = new Sprite;
 	back = new Button;
 	offset_wizard_switch = new Button;
-	draw_scale_left = new Button;
-	draw_scale_right = new Button;
-	draw_scale_left_dual = new Button;
-	draw_scale_right_dual = new Button;
-	draw_offset_left = new Button;
-	draw_offset_right = new Button;
-	draw_offset_left_dual = new Button;
-	draw_offset_right_dual = new Button;
+	camera_pos_y_left = new Button;
+	camera_pos_y_right = new Button;
+	camera_pos_y_left_dual = new Button;
+	camera_pos_y_right_dual = new Button;
+	camera_pos_z_left = new Button;
+	camera_pos_z_right = new Button;
+	camera_pos_z_left_dual = new Button;
+	camera_pos_z_right_dual = new Button;
+	camera_rotate_x_left = new Button;
+	camera_rotate_x_right = new Button;
+	camera_rotate_x_left_dual = new Button;
+	camera_rotate_x_right_dual = new Button;
 	offset_wizard_text = new TextArea;
-	draw_scale_text = new TextArea;
-	draw_offset_text = new TextArea;
-	draw_scale_num = new TextArea;
-	draw_offset_num = new TextArea;
+	camera_pos_y_text = new TextArea;
+	camera_pos_z_text = new TextArea;
+	camera_rotate_x_text = new TextArea;
+	camera_pos_y_num = new TextArea;
+	camera_pos_z_num = new TextArea;
+	camera_rotate_x_num = new TextArea;
 
 	GameplayWizardBeatmap::instance()->init();
 	widget_base->init("assets/base/widget_base.png");
@@ -180,34 +179,48 @@ void fr::GameplayWizardState::init()
 	offset_wizard_switch->init("assets/base/sort_button.png", Rect(widget_base->GetX() + 464, widget_base->GetY() + 32, 0, 0));
 	offset_wizard_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
 	offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	draw_scale_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430,  widget_base->GetY() + 154, 0, 0));
-	draw_scale_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
-	draw_scale_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382,  widget_base->GetY() + 154, 0, 0));
-	draw_scale_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
-	draw_scale_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 154, 0, 0));
-	draw_scale_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
-	draw_scale_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 154, 0, 0));
-	draw_scale_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
-	draw_offset_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430, widget_base->GetY() + 258, 0, 0));
-	draw_offset_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
-	draw_offset_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382, widget_base->GetY() + 258, 0, 0));
-	draw_offset_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
-	draw_offset_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 258, 0, 0));
-	draw_offset_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
-	draw_offset_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 258, 0, 0));
-	draw_offset_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+
+	
+	camera_pos_y_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430,  widget_base->GetY() + 154, 0, 0));
+	camera_pos_y_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	camera_pos_y_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382,  widget_base->GetY() + 154, 0, 0));
+	camera_pos_y_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	camera_pos_y_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 154, 0, 0));
+	camera_pos_y_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	camera_pos_y_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 154, 0, 0));
+	camera_pos_y_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+	camera_pos_z_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430,  widget_base->GetY() + 258, 0, 0));
+	camera_pos_z_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	camera_pos_z_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382,  widget_base->GetY() + 258, 0, 0));
+	camera_pos_z_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	camera_pos_z_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 258, 0, 0));
+	camera_pos_z_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	camera_pos_z_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 258, 0, 0));
+	camera_pos_z_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+	camera_rotate_x_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430, widget_base->GetY() + 362, 0, 0));
+	camera_rotate_x_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	camera_rotate_x_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382, widget_base->GetY() + 362, 0, 0));
+	camera_rotate_x_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	camera_rotate_x_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 362, 0, 0));
+	camera_rotate_x_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	camera_rotate_x_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 362, 0, 0));
+	camera_rotate_x_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
 
 	offset_wizard_text->init("OFFSET WIZARD", widget_base->GetX() + 32, widget_base->GetY() + 50, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	draw_scale_text->init("DRAW SCALE", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	draw_offset_text->init("DRAW OFFSET", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	char *draw_scale_ch = new char;
-	char *draw_offset_ch = new char;
-	sprintf(draw_scale_ch, "%.1f%%", Setting::instance()->GetDrawScale() * 100);
-	sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-	draw_scale_num->init(draw_scale_ch, widget_base->GetX() + 544, widget_base->GetY() + 172, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	draw_offset_num->init(draw_offset_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	delete draw_scale_ch;
-	delete draw_offset_ch;
+	camera_pos_y_text->init("CAMERA POS Y", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	camera_pos_z_text->init("CAMERA POS Z", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	camera_rotate_x_text->init("CAMERA ROTATE X", widget_base->GetX() + 32, widget_base->GetY() + 362, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	char *camera_pos_y_ch = new char;
+	char *camera_pos_z_ch = new char;
+	char *camera_rotate_x_ch = new char;
+	sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
+	sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+	sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+	camera_pos_y_num->init(camera_pos_y_ch, widget_base->GetX() + 544, widget_base->GetY() + 172, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	camera_pos_z_num->init(camera_pos_z_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	camera_rotate_x_num->init(camera_rotate_x_ch, widget_base->GetX() + 544, widget_base->GetY() + 380, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	delete camera_pos_z_ch;
+	delete camera_rotate_x_ch;
 
 }
 
@@ -222,14 +235,18 @@ void fr::GameplayWizardState::update()
 	GameplayWizardBeatmap::instance()->update();
 	back->update();
 	offset_wizard_switch->update();
-	draw_scale_left->update();
-	draw_scale_right->update();
-	draw_scale_left_dual->update();
-	draw_scale_right_dual->update();
-	draw_offset_left->update();
-	draw_offset_right->update();
-	draw_offset_left_dual->update();
-	draw_offset_right_dual->update();
+	camera_pos_y_left->update();
+	camera_pos_y_right->update();
+	camera_pos_y_left_dual->update();
+	camera_pos_y_right_dual->update();
+	camera_pos_z_left->update();
+	camera_pos_z_right->update();
+	camera_pos_z_left_dual->update();
+	camera_pos_z_right_dual->update();
+	camera_rotate_x_left->update();
+	camera_rotate_x_right->update();
+	camera_rotate_x_left_dual->update();
+	camera_rotate_x_right_dual->update();
 
 	if (GameplayWizardBeatmap::instance()->IsRunning())
 	{
@@ -254,28 +271,34 @@ void fr::GameplayWizardState::update()
 	{
 		widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
 		offset_wizard_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-		draw_scale_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
-		draw_scale_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
-		draw_scale_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 154);
-		draw_scale_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
-		draw_offset_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 258);
-		draw_offset_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 258);
-		draw_offset_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
-		draw_offset_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+		camera_pos_y_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
+		camera_pos_y_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 154);
+		camera_pos_y_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 154);
+		camera_pos_y_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 154);
+		camera_pos_z_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
+		camera_pos_z_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
+		camera_pos_z_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
+		camera_pos_z_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 258);
+		camera_rotate_x_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 362);
+		camera_rotate_x_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 362);
+		camera_rotate_x_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 362);
+		camera_rotate_x_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 362);
 		offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
-		draw_scale_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
-		draw_offset_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
-		draw_scale_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
-		draw_offset_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+		camera_pos_y_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+		camera_pos_z_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+		camera_rotate_x_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+		camera_pos_y_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
+		camera_pos_z_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
+		camera_rotate_x_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
 
-		char *draw_scale_ch = new char;
-		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
-		draw_scale_num->SetText(draw_scale_ch);
-		delete draw_scale_ch;
-		char *draw_offset_ch = new char;
-		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-		draw_offset_num->SetText(draw_offset_ch);
-		delete draw_offset_ch;
+		char *camera_pos_z_ch = new char;
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_z_num->SetText(camera_pos_z_ch);
+		delete camera_pos_z_ch;
+		char *camera_rotate_x_ch = new char;
+		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		delete camera_rotate_x_ch;
 	}
 
 	if (back->IsReleased())
@@ -283,94 +306,125 @@ void fr::GameplayWizardState::update()
 		LoadingState::instance()->init(STATE_PREPARE);
 	}
 
-	if (draw_scale_left->IsReleased())
+	if (camera_pos_z_left->IsReleased())
 	{
-		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() - 0.001f);
-		char *draw_scale_ch = new char;
-		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
-		draw_scale_num->SetText(draw_scale_ch);
-		delete draw_scale_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() - 10);
+		char *camera_pos_y_ch = new char;
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_y_num->SetText(camera_pos_y_ch);
+		delete camera_pos_y_ch;
 	}
-	if (draw_scale_left_dual->IsReleased())
+	if (camera_pos_y_left_dual->IsReleased())
 	{
-		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() - 0.01f);
-		char *draw_scale_ch = new char;
-		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
-		draw_scale_num->SetText(draw_scale_ch);
-		delete draw_scale_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() - 100);
+		char *camera_pos_y_ch = new char;
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
+		camera_pos_y_num->SetText(camera_pos_y_ch);
+		delete camera_pos_y_ch;
 	}
-	if (draw_scale_right->IsReleased())
+	if (camera_pos_y_right->IsReleased())
 	{
-		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() + 0.001f);
-		char *draw_scale_ch = new char;
-		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
-		draw_scale_num->SetText(draw_scale_ch);
-		delete draw_scale_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() + 10);
+		char *camera_pos_y_ch = new char;
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_y_num->SetText(camera_pos_y_ch);
+		delete camera_pos_y_ch;
 	}
-	if (draw_scale_right_dual->IsReleased())
+	if (camera_pos_y_right_dual->IsReleased())
 	{
-		Setting::instance()->SetDrawScale(Setting::instance()->GetDrawScale() + 0.01f);
-		char *draw_scale_ch = new char;
-		sprintf(draw_scale_ch, "%.1f", Setting::instance()->GetDrawScale() * 100);
-		draw_scale_num->SetText(draw_scale_ch);
-		delete draw_scale_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() + 100);
+		char *camera_pos_y_ch = new char;
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
+		camera_pos_y_num->SetText(camera_pos_y_ch);
+		delete camera_pos_y_ch;
 	}
-	if (draw_offset_left->IsReleased())
+
+	if (camera_pos_z_left->IsReleased())
 	{
-		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() - 1);
-		char *draw_offset_ch = new char;
-		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-		draw_offset_num->SetText(draw_offset_ch);
-		delete draw_offset_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() - 10);
+		char *camera_pos_z_ch = new char;
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_z_num->SetText(camera_pos_z_ch);
+		delete camera_pos_z_ch;
 	}
-	if (draw_offset_left_dual->IsReleased())
+	if (camera_pos_z_left_dual->IsReleased())
 	{
-		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() - 10);
-		char *draw_offset_ch = new char;
-		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-		draw_offset_num->SetText(draw_offset_ch);
-		delete draw_offset_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() - 100);
+		char *camera_pos_z_ch = new char;
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_z_num->SetText(camera_pos_z_ch);
+		delete camera_pos_z_ch;
 	}
-	if (draw_offset_right->IsReleased())
+	if (camera_pos_z_right->IsReleased())
 	{
-		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() + 1);
-		char *draw_offset_ch = new char;
-		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-		draw_offset_num->SetText(draw_offset_ch);
-		delete draw_offset_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() + 10);
+		char *camera_pos_z_ch = new char;
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_z_num->SetText(camera_pos_z_ch);
+		delete camera_pos_z_ch;
 	}
-	if (draw_offset_right_dual->IsReleased())
+	if (camera_pos_z_right_dual->IsReleased())
 	{
-		Setting::instance()->SetDrawOffset(Setting::instance()->GetDrawOffset() + 10);
-		char *draw_offset_ch = new char;
-		sprintf(draw_offset_ch, "%d", Setting::instance()->GetDrawOffset());
-		draw_offset_num->SetText(draw_offset_ch);
-		delete draw_offset_ch;
-		GameplayWizardBeatmap::instance()->ResetScale();
+		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() + 100);
+		char *camera_pos_z_ch = new char;
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
+		camera_pos_z_num->SetText(camera_pos_z_ch);
+		delete camera_pos_z_ch;
+	}
+	if (camera_rotate_x_left->IsReleased())
+	{
+		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() - 1);
+		char *camera_rotate_x_ch = new char;
+		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		delete camera_rotate_x_ch;
+	}
+	if (camera_rotate_x_left_dual->IsReleased())
+	{
+		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() - 10);
+		char *camera_rotate_x_ch = new char;
+		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		delete camera_rotate_x_ch;
+	}
+	if (camera_rotate_x_right->IsReleased())
+	{
+		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() + 1);
+		char *camera_rotate_x_ch = new char;
+		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		delete camera_rotate_x_ch;
+	}
+	if (camera_rotate_x_right_dual->IsReleased())
+	{
+		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() + 10);
+		char *camera_rotate_x_ch = new char;
+		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		delete camera_rotate_x_ch;
 	}
 
 	GameplayWizardBeatmap::instance()->render();
 	widget_base->render();
 	back->render();
 	offset_wizard_switch->render();
-	draw_scale_left->render();
-	draw_scale_right->render();
-	draw_scale_left_dual->render();
-	draw_scale_right_dual->render();
-	draw_offset_left->render();
-	draw_offset_right->render();
-	draw_offset_left_dual->render();
-	draw_offset_right_dual->render();
+	camera_pos_y_left->render();
+	camera_pos_y_right->render();
+	camera_pos_y_left_dual->render();
+	camera_pos_y_right_dual->render();
+	camera_pos_z_left->render();
+	camera_pos_z_right->render();
+	camera_pos_z_left_dual->render();
+	camera_pos_z_right_dual->render();
+	camera_rotate_x_left->render();
+	camera_rotate_x_right->render();
+	camera_rotate_x_left_dual->render();
+	camera_rotate_x_right_dual->render();
 	offset_wizard_text->render();
-	draw_scale_text->render();
-	draw_offset_text->render();
-	draw_scale_num->render();
-	draw_offset_num->render();
+	camera_pos_y_text->render();
+	camera_pos_z_text->render();
+	camera_rotate_x_text->render();
+	camera_pos_y_num->render();
+	camera_pos_z_num->render();
+	camera_rotate_x_num->render();
 }
