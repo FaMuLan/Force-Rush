@@ -69,16 +69,6 @@ void fr::TextureManager::clearfont(std::string path, int size)
 
 void fr::TextureManager::update()
 {
-	Matrix perspective_matrix;
-	Matrix model_view_matrix;
-	perspective_matrix.LoadIdentity();
-	model_view_matrix.LoadIdentity();
-
-	perspective_matrix.Perspective(70, float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 1.f, 20.f);
-	model_view_matrix.Translate(0.f, 0.f, -1.5f);
-	model_view_matrix.Rotate(-20, 1.0, 0.0, 0.0);
-	*mvp_matrix = model_view_matrix * perspective_matrix;
-
 	glEnableVertexAttribArray(position_location);
 	glEnableVertexAttribArray(texture_coord_location);
 	glActiveTexture(GL_TEXTURE0);
@@ -184,6 +174,12 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices)
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(mvp_matrix));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+}
+
+void fr::TextureManager::SetMvpMatrix(Matrix *load_mvp_matrix)
+{
+	delete mvp_matrix;
+	mvp_matrix = load_mvp_matrix;
 }
 
 fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper)
