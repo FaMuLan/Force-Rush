@@ -3,6 +3,7 @@
 #include "../sprite.h"
 #include "../control_handler.h"
 #include "../system.h"
+#include "../texture_manager.h"
 #include "../timer.h"
 #include "../user/setting.h"
 #include "../song_data.h"
@@ -70,6 +71,11 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	note_vectrices[23] = s_note->GetH();
 	//bottom right
 
+	light_pos.y = System::instance()->GetWindowHeigh();
+	light_pos.z = 84;
+	light_pos.w = 1;
+	s_light->SetSize(320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f));
+
 	switch (column_index)
 	{
 		case 0:
@@ -77,6 +83,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+			s_light->SetPos(103.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x = 0;
 			m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
@@ -87,6 +94,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+			s_light->SetPos(274.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
@@ -97,6 +105,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+			s_light->SetPos(445.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
@@ -107,6 +116,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+			s_light->SetPos(616.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x = 515 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
@@ -373,6 +383,7 @@ void fr::Column::update()
 		note_vectrices[7] = System::instance()->GetWindowHeigh();
 		note_vectrices[13] = System::instance()->GetWindowHeigh();
 		note_vectrices[19] = System::instance()->GetWindowHeigh();
+		int light_pos_x;
 		switch (column_index)
 		{
 			case 0:
@@ -381,6 +392,7 @@ void fr::Column::update()
 				note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+				s_light->SetPos(103.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 				m_x = 0 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
@@ -390,6 +402,7 @@ void fr::Column::update()
 				note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+				s_light->SetPos(274.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 				m_x = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
@@ -399,6 +412,7 @@ void fr::Column::update()
 				note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+				s_light->SetPos(445.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 				m_x = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_w = 194 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
@@ -408,6 +422,7 @@ void fr::Column::update()
 				note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+				s_light->SetPos(616.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 				m_x = 515 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_w = 166 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;

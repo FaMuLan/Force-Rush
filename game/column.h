@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <SDL2/SDL.h>
+#include "../shape.h"
 
 namespace fr
 {
@@ -29,6 +30,7 @@ namespace fr
 			Sprite *s_note;
 			Sprite *s_feedback;
 			Sprite *s_light;
+			Vector4Df light_pos;
 			int *note_vectrices;
 			int m_x;
 			int m_w;
