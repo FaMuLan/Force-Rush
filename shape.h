@@ -6,35 +6,23 @@
 
 namespace fr
 {
-	class Vector
+	class Vector2Di
 	{
 		public:
-			Vector() {}
-			Vector(int load_x, int load_y);
-			Vector(double load_length, double load_angle);
-			Vector operator+(Vector input);
-			Vector operator-(Vector input);
-			Vector operator*(double input);
-			Vector operator/(double input);
-			int operator*(Vector input);
-			double GetIntersectingAngle(Vector input);
+			Vector2Di() {}
+			Vector2Di(int load_x, int load_y);
+			Vector2Di(double load_length, double load_angle);
+			Vector2Di operator+(Vector2Di input);
+			Vector2Di operator-(Vector2Di input);
+			Vector2Di operator*(double input);
+			Vector2Di operator/(double input);
+			int operator*(Vector2Di input);
+			double GetIntersectingAngle(Vector2Di input);
 
 			int x;
 			int y;
 			double length;
 			double angle;
-	};
-	
-	class Matrix
-	{
-		public:
-			Matrix operator*(Matrix &m2);
-			void LoadIdentity();
-			void Translate(float tx, float ty, float tz);
-			void Rotate(float angle, float x, float y, float z);
-			void Frustum(float left, float right, float bottom, float top, float near_z, float far_z);
-			void Perspective(float fovy, float aspect, float near_z, float far_z);
-			float m[4][4];
 	};
 
 	class Point
@@ -42,8 +30,8 @@ namespace fr
 		public:
 			Point() {}
 			Point(int load_x, int load_y) : x(load_x), y(load_y) {}
-			Vector operator-(Point input);
-			Point operator+(Vector input);
+			Vector2Di operator-(Point input);
+			Point operator+(Vector2Di input);
 			int x;
 			int y;
 	};
