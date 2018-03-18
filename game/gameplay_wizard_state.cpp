@@ -306,11 +306,11 @@ void fr::GameplayWizardState::update()
 		LoadingState::instance()->init(STATE_PREPARE);
 	}
 
-	if (camera_pos_z_left->IsReleased())
+	if (camera_pos_y_left->IsReleased())
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() - 10);
 		char *camera_pos_y_ch = new char;
-		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosZ());
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
 		delete camera_pos_y_ch;
 	}
@@ -326,7 +326,7 @@ void fr::GameplayWizardState::update()
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() + 10);
 		char *camera_pos_y_ch = new char;
-		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosZ());
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
 		delete camera_pos_y_ch;
 	}
