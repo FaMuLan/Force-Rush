@@ -30,11 +30,9 @@ namespace fr
 			Sprite *s_note;
 			Sprite *s_feedback;
 			Sprite *s_light;
-			Vector4Df light_pos;
 			int *note_vectrices;
-			int m_x;
-			int m_w;
-			int m_h;
+			int m_x_l;
+			int m_x_r;
 			SDL_Scancode keyboard_key;
 			bool is_tapped;
 			bool is_hold;
