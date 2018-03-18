@@ -1,5 +1,7 @@
 #include "beatmap.h"
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include "column.h"
 #include "game_state.h"
 #include "result_state.h"
@@ -121,6 +123,17 @@ void fr::Beatmap::init()
 	//bottom right
 	ground->SetVectrices(ground_vectrices);
 	play_base->SetVectrices(play_base_vectrices);
+
+	glm::mat4x4 perspective_matrix;
+	glm::mat4x4 model_view_matrix;
+
+	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
+//	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
+	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
+
 	for (int i = 0; i < 4; i++)
 	{
 		Column *new_column = new Column;
@@ -165,22 +178,20 @@ void fr::Beatmap::update()
 		}
 	}
 
+	glm::mat4x4 perspective_matrix;
+	glm::mat4x4 model_view_matrix;
+
+	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
+//	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
+	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
+
 	for (int i = 0; i < m_column.size(); i++)
 	{
 		m_column[i]->update();
 	}
-
-	Matrix perspective_matrix;
-	Matrix model_view_matrix;
-	perspective_matrix.LoadIdentity();
-	model_view_matrix.LoadIdentity();
-
-	perspective_matrix.Perspective(70, float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 1.f, 20.f);
-	model_view_matrix.Translate(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 720.f);
-	model_view_matrix.Rotate(Setting::instance()->GetCameraRotateX(), 1.0, 0.0, 0.0);
-	Matrix *mvp_matrix = new Matrix;
-	*mvp_matrix = model_view_matrix * perspective_matrix;
-	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
 }
 
 void fr::Beatmap::render()

@@ -5,6 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <GLES2/gl2.h>
+#include <glm/glm.hpp>
 #include <string>
 #include <vector>
 #include <map>
@@ -47,7 +48,8 @@ namespace fr
 			//For 2D rendering
 			void render(std::string path, float *load_vectrices);
 			void render(GLuint *load_texture, float *load_vectrices);
-			void SetMvpMatrix(Matrix *load_mvp_matrix);
+			void SetMvpMatrix(glm::mat4x4 &load_mvp_matrix);
+			glm::mat4x4 GetMvpMatrix();
 			//for 3D rendering
 			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0, bool wrapper = false);
 			//limit_w = 0 = NO_LIMIT
@@ -64,8 +66,8 @@ namespace fr
 			GLint texture_coord_location;
 			GLint sampler_location;
 			GLint mvp_location;
-			Matrix *null_matrix;
-			Matrix *mvp_matrix;
+			glm::mat4x4 null_matrix;
+			glm::mat4x4 mvp_matrix;
 	};	//class TextureManager
 };	//namespace fr
 

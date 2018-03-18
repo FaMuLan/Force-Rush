@@ -6,9 +6,7 @@ fr::TextureManager *fr::TextureManager::m_instance = 0;
 
 void fr::TextureManager::init(GLuint program_object)
 {
-	null_matrix = new Matrix;
-	null_matrix->LoadIdentity();
-	mvp_matrix = new Matrix;
+	null_matrix = glm::mat4(1.f);
 	position_location = glGetAttribLocation(program_object, "a_position");
 	texture_coord_location = glGetAttribLocation(program_object, "a_texCoord");
 	sampler_location = glGetUniformLocation(program_object, "s_texture");
@@ -110,7 +108,7 @@ void fr::TextureManager::render(std::string path, Rect dest_rect, Rect texture_s
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(null_matrix->m));
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &null_matrix[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -150,7 +148,7 @@ void fr::TextureManager::render(GLuint *load_texture, Rect dest_rect, Rect textu
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(null_matrix->m));
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &null_matrix[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -161,7 +159,7 @@ void fr::TextureManager::render(std::string path, float *load_vectrices)
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(mvp_matrix));
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp_matrix[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -172,14 +170,18 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices)
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (GLfloat*)(mvp_matrix));
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp_matrix[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void fr::TextureManager::SetMvpMatrix(Matrix *load_mvp_matrix)
+void fr::TextureManager::SetMvpMatrix(glm::mat4x4 &load_mvp_matrix)
 {
-	delete mvp_matrix;
 	mvp_matrix = load_mvp_matrix;
+}
+
+glm::mat4x4 fr::TextureManager::GetMvpMatrix()
+{
+	return mvp_matrix;
 }
 
 fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper)
