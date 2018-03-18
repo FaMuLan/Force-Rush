@@ -137,6 +137,19 @@ void fr::Sprite::SetPos(int x, int y)
 	dest_rect.y = y;
 }
 
+void fr::Sprite::SetPos(int x, int y, int z)
+{
+	glm::vec4 gl_pos(float(x) / System::instance()->GetWindowWidth() * 2.f - 1.f, (1.f - float(y) / System::instance()->GetWindowHeigh()) * 2.f - 1.f, -float(z) / 360.f, 1.f);
+//	glm::vec4 gl_pos(float(x), float(y), float(z), 1.f);
+
+	glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMvpMatrix();
+	glm::vec4 converted_pos;
+	converted_pos = mvp_matrix * gl_pos;
+	converted_pos = converted_pos * (1.0f / converted_pos.w);
+	dest_rect.x = ((converted_pos.x + 1.f) / 2.f * System::instance()->GetWindowWidth()) - dest_rect.w / 2;
+	dest_rect.y = (1.f - (converted_pos.y + 1.f) / 2.f) * System::instance()->GetWindowHeigh() - dest_rect.h / 2;
+}
+
 void fr::Sprite::SetScale(float load_scale)
 {
 	scale = load_scale;

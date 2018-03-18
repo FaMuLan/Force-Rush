@@ -21,6 +21,7 @@ namespace fr
 			int GetCurrentIndex();
 			void SetBaseFrame(int index);
 			void SetPos(int x, int y);
+			void SetPos(int x, int y, int z);
 			void SetScale(float load_scale);
 			void SetSize(int w, int h);
 			void SetSrcRect(Rect load_source_rect);
