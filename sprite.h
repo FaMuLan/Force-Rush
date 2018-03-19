@@ -10,7 +10,7 @@ namespace fr
 	class Sprite
 	{
 		public:
-			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0), Point load_center = Point(0, 0), double load_angle = 0);
+			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
 			virtual void update();
 			virtual void render();
 			virtual void render(int index);
@@ -27,6 +27,7 @@ namespace fr
 			void SetSrcRect(Rect load_source_rect);
 			void SetRotation(Point load_center, double load_angle);
 			void SetVectrices(int *load_vectrices);
+			void SetMatrix(std::string id);
 			int GetX();
 			int GetY();
 			int GetW();
@@ -46,6 +47,7 @@ namespace fr
 			Point center;
 			double angle;
 			float *vectrices;
+			std::string matrix_id;
 	};	//class Sprite
 };	//namespace fr
 

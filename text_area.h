@@ -45,6 +45,8 @@ namespace fr
 			bool m_wrapped;
 			float m_scale;
 			TextureCache *cache;
+			float *vectrices;
+			std::string matrix_id;
 	};	//class TextArea
 };	//namespace fr
 
