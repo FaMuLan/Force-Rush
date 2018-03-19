@@ -38,21 +38,20 @@ namespace fr
 			void init(GLuint program_object);
 			void load(std::string path, Rect &output_size);
 			void load(GLuint *load_texture, std::string path);
-			void loadfont(std::string path, int size);
+			void LoadFont(std::string path, int size);
+			void LoadMatrix(std::string id, glm::mat4x4 load_matrix);
 			void clear();
 			void clear(std::string path);
-			void clearfont(std::string path, int size);
+			void ClearFont(std::string path, int size);
+			void ClearMatrix(std::string id);
 			void update();
-			void render(std::string path, Rect dest_rect, Rect texture_size, Rect source_rect = Rect(0, 0, 0, 0), Point center = Point(0, 0), double angle = 0, float scale = 1);
-			void render(GLuint *load_texture, Rect dest_rect, Rect texture_size, Rect source_rect = Rect(0, 0, 0, 0), Point center = Point(0, 0), double angle = 0, float scale = 1);
-			//For 2D rendering
-			void render(std::string path, float *load_vectrices);
-			void render(GLuint *load_texture, float *load_vectrices);
-			void SetMvpMatrix(glm::mat4x4 &load_mvp_matrix);
-			glm::mat4x4 GetMvpMatrix();
-			//for 3D rendering
+			void render(std::string path, float *load_vectrices, std::string matrix_id = "default");
+			void render(GLuint *load_texture, float *load_vectrices, std::string matrix_id = "default");
+			void render(std::string path, float *load_vectrices, glm::mat4x4 load_matrix);
+			void render(GLuint *load_texture, float *load_vectrices, glm::mat4x4 load_matrix);
 			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0, bool wrapper = false);
 			//limit_w = 0 = NO_LIMIT
+			glm::mat4x4 GetMatrix(std::string id);
 			void DestroyCache(TextureCache *cache);
 		private: 
 			TextureManager() {}
@@ -60,14 +59,13 @@ namespace fr
 			static TextureManager *m_instance;
 			std::map<std::string, GLuint*> texture;
 			//保守起见用指针来确认是否加载好
+			std::map<std::string, glm::mat4x4> matrix;
 			std::map<std::string, std::map<int, TTF_Font*> > font;
 			//存储字体
 			GLint position_location;
 			GLint texture_coord_location;
 			GLint sampler_location;
 			GLint mvp_location;
-			glm::mat4x4 null_matrix;
-			glm::mat4x4 mvp_matrix;
 	};	//class TextureManager
 };	//namespace fr
 

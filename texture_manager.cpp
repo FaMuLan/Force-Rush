@@ -1,12 +1,23 @@
 #include "texture_manager.h"
+#include <glm/ext.hpp>
 #include "system.h"
+#include "user/setting.h"
 #include "shape.h"
 
 fr::TextureManager *fr::TextureManager::m_instance = 0;
 
 void fr::TextureManager::init(GLuint program_object)
 {
-	null_matrix = glm::mat4(1.f);
+	matrix["default"] = glm::mat4(1.f);
+	glm::mat4x4 perspective_matrix;
+	glm::mat4x4 model_view_matrix;
+	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
+//	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	matrix["model_view"] = model_view_matrix;
+	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
+	matrix["mvp"] = mvp_matrix;
 	position_location = glGetAttribLocation(program_object, "a_position");
 	texture_coord_location = glGetAttribLocation(program_object, "a_texCoord");
 	sampler_location = glGetUniformLocation(program_object, "s_texture");
@@ -38,13 +49,18 @@ void fr::TextureManager::load(GLuint *load_texture, std::string path)
 	texture[path] = load_texture;
 }
 
-void fr::TextureManager::loadfont(std::string path, int size)
+void fr::TextureManager::LoadFont(std::string path, int size)
 {
 	if (!font[path][size])
 	{
 		TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
 		font[path][size] = new_font;
 	}
+}
+
+void fr::TextureManager::LoadMatrix(std::string id, glm::mat4x4 load_matrix)
+{
+	matrix[id] = load_matrix;
 }
 
 void fr::TextureManager::clear()
@@ -59,129 +75,75 @@ void fr::TextureManager::clear(std::string path)
 	texture[path] = NULL;
 }
 
-void fr::TextureManager::clearfont(std::string path, int size)
+void fr::TextureManager::ClearFont(std::string path, int size)
 {
 	TTF_CloseFont(font[path][size]);
 	font[path][size] = NULL;
 }
 
+void fr::TextureManager::ClearMatrix(std::string id)
+{
+	
+}
+
 void fr::TextureManager::update()
 {
+	glm::mat4x4 perspective_matrix;
+	glm::mat4x4 model_view_matrix;
+	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
+//	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	matrix["model_view"] = model_view_matrix;
+	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
+	matrix["mvp"] = mvp_matrix;
 	glEnableVertexAttribArray(position_location);
 	glEnableVertexAttribArray(texture_coord_location);
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void fr::TextureManager::render(std::string path, Rect dest_rect, Rect texture_size, Rect source_rect, Point center, double angle, float scale)
-{
-	GLfloat gles_vectrices[] =
-	{
-		(float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x) / float(texture_size.w),
-		float(source_rect.y) / float(texture_size.h),
-		//top left
-		(float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x + source_rect.w) / float(texture_size.w),
-		float(source_rect.y) / float(texture_size.h),
-		//top right
-		(float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x) / float(texture_size.w),
-		float(source_rect.y + source_rect.h) / float(texture_size.h),
-		//bottom left
-		float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f,
-		(1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x + source_rect.w) / float(texture_size.w),
-		float(source_rect.y + source_rect.h) / float(texture_size.h)
-		//bottom right
-	};
-	//二维图像顶点数据，毕竟不需要z轴
-	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
-	//顶点顺序
-	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[0]);
-	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
-	glBindTexture(GL_TEXTURE_2D, *texture[path]);
-	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &null_matrix[0][0]);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
-}
-
-void fr::TextureManager::render(GLuint *load_texture, Rect dest_rect, Rect texture_size, Rect source_rect, Point center, double angle, float scale)
-{
-	GLfloat gles_vectrices[] =
-	{
-		(float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x) / float(texture_size.w),
-		float(source_rect.y) / float(texture_size.h),
-		//top left
-		(float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x + source_rect.w) / float(texture_size.w),
-		float(source_rect.y) / float(texture_size.h),
-		//top right
-		(float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f,
-		(1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x) / float(texture_size.w),
-		float(source_rect.y + source_rect.h) / float(texture_size.h),
-		//bottom left
-		float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f,
-		(1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f,
-		0.f, 1.f,
-		float(source_rect.x + source_rect.w) / float(texture_size.w),
-		float(source_rect.y + source_rect.h) / float(texture_size.h)
-		//bottom right
-	};
-	//二维图像顶点数据，毕竟不需要z轴
-	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
-	//顶点顺序
-	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[0]);
-	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &gles_vectrices[4]);
-	glBindTexture(GL_TEXTURE_2D, *load_texture);
-	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &null_matrix[0][0]);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
-}
-
-void fr::TextureManager::render(std::string path, float *load_vectrices)
+void fr::TextureManager::render(std::string path, float *load_vectrices, std::string matrix_id)
 {
 	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp_matrix[0][0]);
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &(matrix[matrix_id])[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices)
+void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, std::string matrix_id)
 {
 	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
-	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp_matrix[0][0]);
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &(matrix[matrix_id])[0][0]);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void fr::TextureManager::SetMvpMatrix(glm::mat4x4 &load_mvp_matrix)
+void fr::TextureManager::render(std::string path, float *load_vectrices, glm::mat4x4 load_matrix)
 {
-	mvp_matrix = load_mvp_matrix;
+	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
+	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
+	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
+	glBindTexture(GL_TEXTURE_2D, *texture[path]);
+	glUniform1i(sampler_location, 0);
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &load_matrix[0][0]);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-glm::mat4x4 fr::TextureManager::GetMvpMatrix()
+void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, glm::mat4x4 load_matrix)
 {
-	return mvp_matrix;
+	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
+	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
+	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
+	glBindTexture(GL_TEXTURE_2D, *load_texture);
+	glUniform1i(sampler_location, 0);
+	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &load_matrix[0][0]);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
 fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper)
@@ -229,6 +191,11 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	SDL_FreeSurface(converted_surface);
 	SDL_FreeSurface(text_surface);
 	return output_cache;
+}
+
+glm::mat4x4 fr::TextureManager::GetMatrix(std::string id)
+{
+	return matrix[id];
 }
 
 void fr::TextureManager::DestroyCache(fr::TextureCache *cache)
