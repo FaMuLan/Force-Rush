@@ -116,7 +116,6 @@ void fr::LoadingState::init()
 	shutter_arrow_front_landscape->init("assets/base/shutter_arrow_front_landscape.png");
 	shutter_arrow_back_portrait->init("assets/base/shutter_arrow_back_portrait.png");
 	shutter_arrow_back_landscape->init("assets/base/shutter_arrow_back_landscape.png");
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 80);
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	Animator::instance()->AddAnimation("loading_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 1000);

@@ -42,7 +42,6 @@ bool fr::SongList::is_exited = false;
 void fr::SongList::init()
 {
 	cell_heigh = 64;
-	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-M.ttf", 32);
 	search_bar = new TextInputBox;
 	search_bar->init("assets/prepare/search_bar.png", Rect(0, 288, 0, 0));
 	search_bar->AddPressedFrame( "assets/prepare/search_bar.png");

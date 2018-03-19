@@ -15,8 +15,6 @@ fr::PrepareState *fr::PrepareState::m_instance = 0;
 
 void fr::PrepareState::init()
 {
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 36);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 32);
 	PrepareHeader::instance()->init();
 	SongList::instance()->init();
 	ModWidget::instance()->init();

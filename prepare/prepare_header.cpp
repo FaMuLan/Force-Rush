@@ -39,7 +39,7 @@ void fr::PrepareHeader::init()
 		information_base->SetPos(0, 0);
 		score_base->SetPos(System::instance()->GetWindowWidth() - 280, 0);
 	}
-	TextureManager::instance()->loadfont("assets/fonts/Ubuntu-R.ttf", 24);	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 156);
+
 	artist_text->init("NULL", 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	noter_text->init("NULL", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	version_text->init("NULL", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);

@@ -53,7 +53,6 @@ void fr::MainState::init()
 void fr::MainState::clear()
 {
 	main_about->clear();
-	TextureManager::instance()->clearfont("assets/fonts/Audiowide.ttf", 60);
 }
 
 void fr::MainState::update()
