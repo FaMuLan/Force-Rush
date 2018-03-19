@@ -62,7 +62,6 @@ void fr::Beatmap::init()
 	wall_vectrices[22] = wall->GetW();
 	wall_vectrices[23] = wall->GetH();
 	//bottom right
-	wall->SetVectrices(wall_vectrices);
 
 	ground_vectrices[0] = 0;
 	ground_vectrices[1] = 0;
@@ -121,18 +120,12 @@ void fr::Beatmap::init()
 	play_base_vectrices[22] = play_base->GetW();
 	play_base_vectrices[23] = play_base->GetH();
 	//bottom right
+	wall->SetVectrices(wall_vectrices);
+	wall->SetMatrix("mvp");
 	ground->SetVectrices(ground_vectrices);
+	ground->SetMatrix("mvp");
 	play_base->SetVectrices(play_base_vectrices);
-
-	glm::mat4x4 perspective_matrix;
-	glm::mat4x4 model_view_matrix;
-
-	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
-//	model_view_matrix = glm::mat4(1.f);
-	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
-	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
-	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
-	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
+	play_base->SetMatrix("mvp");
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -177,16 +170,6 @@ void fr::Beatmap::update()
 			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + load_finger.dy);
 		}
 	}
-
-	glm::mat4x4 perspective_matrix;
-	glm::mat4x4 model_view_matrix;
-
-	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
-//	model_view_matrix = glm::mat4(1.f);
-	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
-	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
-	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
-	TextureManager::instance()->SetMvpMatrix(mvp_matrix);
 
 	for (int i = 0; i < m_column.size(); i++)
 	{
@@ -280,8 +263,6 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	judge_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
 	early_text->init("EARLY", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
 	late_text->init("LATE", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 140);
-	TextureManager::instance()->loadfont("assets/fonts/Audiowide.ttf", 40);
 	Animator::instance()->AddAnimation("chain", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("chain");
 

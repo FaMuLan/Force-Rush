@@ -48,6 +48,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_note->AddFrame("assets/game/note_long_body.png");
 	s_note->AddFrame("assets/game/note_long_head.png");
 	s_note->AddFrame("assets/game/note_long_end.png");
+	s_note->SetMatrix("mvp");
 
 	note_vectrices[1] = System::instance()->GetWindowHeigh();
 	note_vectrices[3] = 1;
@@ -121,7 +122,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
 	glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
 	glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
-	glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMvpMatrix();
+	glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMatrix("mvp");
 	glm::vec4 converted_pos_l;
 	glm::vec4 converted_pos_r;
 	converted_pos_l = mvp_matrix * gl_pos_l;
@@ -432,7 +433,7 @@ void fr::Column::update()
 		s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
 		glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
 		glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
-		glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMvpMatrix();
+		glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMatrix("mvp");
 		glm::vec4 converted_pos_l;
 		glm::vec4 converted_pos_r;
 		converted_pos_l = mvp_matrix * gl_pos_l;
