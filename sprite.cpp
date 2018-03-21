@@ -10,6 +10,7 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 	texture_size.w = 0;
 	texture_size.h = 0;
 	scale = 1;
+	pos_3d = { 0.f, 0.f, 0.f };
 	vectrices = new float[24];
 
 	if (path != "")
@@ -79,6 +80,10 @@ void fr::Sprite::update()
 	else
 	{
 		current_index = base_index;
+	}
+	if (pos_3d.z != 0)
+	{
+		SetPos(pos_3d.x, pos_3d.y, pos_3d.z);
 	}
 }
 
@@ -180,6 +185,7 @@ void fr::Sprite::SetPos(int x, int y)
 
 void fr::Sprite::SetPos(int x, int y, int z)
 {
+	pos_3d = { float(x), float(y), float(z) };
 	glm::vec4 gl_pos(float(x) / System::instance()->GetWindowWidth() * 2.f - 1.f, (1.f - float(y) / System::instance()->GetWindowHeigh()) * 2.f - 1.f, -float(z) / 360.f, 1.f);
 //	glm::vec4 gl_pos(float(x), float(y), float(z), 1.f);
 

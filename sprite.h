@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <glm/glm.hpp>
 #include "shape.h"
 
 namespace fr
@@ -47,6 +48,7 @@ namespace fr
 			Point center;
 			double angle;
 			float *vectrices;
+			glm::vec3 pos_3d;
 			std::string matrix_id;
 	};	//class Sprite
 };	//namespace fr
