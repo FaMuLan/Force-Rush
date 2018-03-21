@@ -12,7 +12,7 @@ void fr::TextureManager::init(GLuint program_object)
 	glm::mat4x4 perspective_matrix;
 	glm::mat4x4 model_view_matrix;
 	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
-//	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::mat4(1.f);
 	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
 	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
 	matrix["model_view"] = model_view_matrix;
@@ -89,13 +89,8 @@ void fr::TextureManager::ClearMatrix(std::string id)
 void fr::TextureManager::update()
 {
 	glm::mat4x4 perspective_matrix;
-	glm::mat4x4 model_view_matrix;
 	perspective_matrix = glm::perspective(glm::radians(80.f), float(System::instance()->GetWindowWidth()) / float(System::instance()->GetWindowHeigh()), 0.1f, 20.f);
-//	model_view_matrix = glm::mat4(1.f);
-	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
-	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
-	matrix["model_view"] = model_view_matrix;
-	glm::mat4x4 mvp_matrix = perspective_matrix * model_view_matrix;
+	glm::mat4x4 mvp_matrix = perspective_matrix * matrix["model_view"];
 	matrix["mvp"] = mvp_matrix;
 	glEnableVertexAttribArray(position_location);
 	glEnableVertexAttribArray(texture_coord_location);
