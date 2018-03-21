@@ -36,6 +36,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_light->AddFrame("assets/game/lighting-10.png");
 	s_light->AddFrame("assets/game/lighting-11.png");
 	s_light->AddFrame("assets/game/lighting-12.png");
+//	s_light->SetMatrix("rotate");
 
 	s_note->init("assets/game/note.png");
 	s_note->AddFrame("assets/game/note_slide_in_left.png");
@@ -296,9 +297,15 @@ void fr::Column::update()
 				{
 					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
 				}
-				else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r))
+				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l)
 				{
 					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					m_parent->AddForce(-10);
+				}
+				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r)
+				{
+					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					m_parent->AddForce(10);
 				}
 				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
 				{
@@ -379,6 +386,7 @@ void fr::Column::update()
 					is_pressing_ln = false;
 				}
 				//长条尾未松开手指
+				m_parent->AddForce(column_index * -10.f + 15.f);
 			}
 		}
 	}

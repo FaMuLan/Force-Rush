@@ -34,6 +34,7 @@ namespace fr
 			virtual void update();
 			virtual void render();
 			virtual Judgement judge(int note_time, bool is_pressed = true, bool is_ln_pressing = false, bool error_only = false) = 0;
+			virtual void AddForce(float angle);
 		protected:
 			std::string audio_path;
 			Sprite *play_base;
@@ -43,6 +44,11 @@ namespace fr
 			int *ground_vectrices;
 			int *play_base_vectrices;
 			std::vector<Column*> m_column;
+			float last_angle;
+			float current_angle;
+			float last_force;
+			float force;
+			float angle_diff;
 	};
 
 	class GameBeatmap : public Beatmap

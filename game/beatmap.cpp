@@ -30,9 +30,14 @@ void fr::Beatmap::init()
 	play_base->AddFrame("assets/game/play_base_body.png");
 	wall->init("assets/game/wall.png");
 	ground->init("assets/game/ground.png");
+	Animator::instance()->AddAnimation("rotate", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	wall_vectrices = new int[24];
 	ground_vectrices = new int[24];
 	play_base_vectrices = new int [24];
+	force = 0;
+	last_force = 0;
+	current_angle = 0;
+	last_angle = 0;
 
 	wall_vectrices[0] = 0;
 	wall_vectrices[1] = 0;
@@ -147,6 +152,7 @@ void fr::Beatmap::clear()
 
 void fr::Beatmap::update()
 {
+	force = 0;
 	if (System::instance()->IsWindowModified())
 	{
 		wall_vectrices[13] = System::instance()->GetWindowHeigh();
@@ -175,6 +181,32 @@ void fr::Beatmap::update()
 	{
 		m_column[i]->update();
 	}
+
+	if (last_force != force)
+	{
+		Animator::instance()->ResetAnimation("rotate");
+		Animator::instance()->Animate("rotate");
+		last_angle = current_angle;
+		angle_diff = force - last_angle;
+	}
+	if (!Animator::instance()->IsTimeUp("rotate"))
+	{
+		float process = Animator::instance()->GetProcess("rotate");
+		current_angle = last_angle + angle_diff * process;
+	}
+	else
+	{
+		current_angle = last_angle + angle_diff;
+	}
+
+	glm::mat4x4 model_view_matrix;
+	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(current_angle), glm::vec3(0.0, 0.0, 1.0));
+	TextureManager::instance()->LoadMatrix("model_view", model_view_matrix);
+
+	last_force = force;
 }
 
 void fr::Beatmap::render()
@@ -232,6 +264,11 @@ void fr::Beatmap::render()
 	{
 		m_column[i]->render();
 	}
+}
+
+void fr::Beatmap::AddForce(float angle)
+{
+	force += angle;
 }
 
 void fr::GameBeatmap::load(fr::SongInformation *load_information)
