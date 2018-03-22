@@ -31,6 +31,7 @@ namespace fr
 			Sprite *s_feedback;
 			Sprite *s_light;
 			int *note_vectrices;
+			int *feedback_vectrices;
 			int m_x_l;
 			int m_x_r;
 			SDL_Scancode keyboard_key;

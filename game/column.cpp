@@ -19,9 +19,10 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	is_touch_pressed = false;
 	is_keyboard_pressed = false;
 	s_note = new Sprite;
-//	s_feedback = new Sprite;
+	s_feedback = new Sprite;
 	s_light = new Sprite;
 	note_vectrices = new int[24];
+	feedback_vectrices = new int[24];
 
 	s_light->init("", Rect(0, 0, 320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f)));
 	s_light->AddFrame("assets/game/lighting-1.png");
@@ -36,7 +37,6 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_light->AddFrame("assets/game/lighting-10.png");
 	s_light->AddFrame("assets/game/lighting-11.png");
 	s_light->AddFrame("assets/game/lighting-12.png");
-//	s_light->SetMatrix("rotate");
 
 	s_note->init("assets/game/note.png");
 	s_note->AddFrame("assets/game/note_slide_in_left.png");
@@ -50,6 +50,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_note->AddFrame("assets/game/note_long_head.png");
 	s_note->AddFrame("assets/game/note_long_end.png");
 	s_note->SetMatrix("mvp");
+
+	s_feedback->init("assets/game/feedback.png");
+	s_feedback->SetMatrix("mvp");
 
 	note_vectrices[1] = System::instance()->GetWindowHeigh();
 	note_vectrices[3] = 1;
@@ -72,6 +75,31 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	note_vectrices[23] = s_note->GetH();
 	//bottom right
 
+	feedback_vectrices[1] = System::instance()->GetWindowHeigh();
+	feedback_vectrices[2] = s_feedback->GetH() + 20;
+	feedback_vectrices[3] = 1;
+	feedback_vectrices[4] = 0;
+	feedback_vectrices[5] = 0;
+	//top left
+	feedback_vectrices[7] = System::instance()->GetWindowHeigh();
+	feedback_vectrices[8] = s_feedback->GetH() + 20;
+	feedback_vectrices[9] = 1;
+	feedback_vectrices[10] = s_feedback->GetW();
+	feedback_vectrices[11] = 0;
+	//top right
+	feedback_vectrices[13] = System::instance()->GetWindowHeigh();
+	feedback_vectrices[14] = 20;
+	feedback_vectrices[15] = 1;
+	feedback_vectrices[16] = 0;
+	feedback_vectrices[17] = s_feedback->GetH();
+	//bottom left
+	feedback_vectrices[19] = System::instance()->GetWindowHeigh();
+	feedback_vectrices[20] = 20;
+	feedback_vectrices[21] = 1;
+	feedback_vectrices[22] = s_feedback->GetW();
+	feedback_vectrices[23] = s_feedback->GetH();
+	//bottom right
+
 	s_light->SetSize(320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f));
 
 	switch (column_index)
@@ -81,45 +109,58 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 			note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[0] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 			s_light->SetPos(103.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x_l = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x_r = 189 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-//			s_light->SetPos(-38 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 1:
 			note_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 			s_light->SetPos(274.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x_l = 189 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x_r = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-//			s_light->SetPos(119 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 2:
 			note_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 			s_light->SetPos(445.5f * float(System::instance()->GetWindowWidth()) / 720.f, System::instance()->GetWindowHeigh(), 84);
 			m_x_l = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x_r = 531 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-//			s_light->SetPos(282 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 		case 3:
 			note_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 			note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+			feedback_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x_l = 531 * float(System::instance()->GetWindowWidth() / 720.f);
 			m_x_r = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 			keyboard_key = Setting::instance()->GetKeycode(column_index);
-//			s_light->SetPos(443 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 		break;
 	}
+	s_feedback->SetVectrices(feedback_vectrices);
 	s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
 	glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
 	glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
@@ -139,6 +180,8 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 void fr::Column::clear()
 {
 	std::vector<Note*>(m_note).swap(m_note);
+	delete [] note_vectrices;
+	delete [] feedback_vectrices;
 }
 
 void fr::Column::update()
@@ -402,42 +445,55 @@ void fr::Column::update()
 		switch (column_index)
 		{
 			case 0:
-//				s_light->SetPos(-38 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				note_vectrices[0] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[0] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[6] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[12] = 20 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[18] = 187 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_l = 20 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_r = 189 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 1:
-//				s_light->SetPos(119 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				note_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[0] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[6] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[12] = 191 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[18] = 358 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_l = 189 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_r = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 2:
-//				s_light->SetPos(282 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				note_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[0] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[6] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[12] = 362 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[18] = 529 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_l = 360 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_r = 531 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 			case 3:
-//				s_light->SetPos(443 * float(System::instance()->GetWindowWidth() / 720.f), 1078 * m_parent->GetScaleH() - s_light->GetH() / 2 + Setting::instance()->GetDrawOffset());
 				note_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
 				note_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[0] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[6] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[12] = 533 * float(System::instance()->GetWindowWidth() / 720.f);
+				feedback_vectrices[18] = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_l = 531 * float(System::instance()->GetWindowWidth() / 720.f);
 				m_x_r = 700 * float(System::instance()->GetWindowWidth() / 720.f);
 			break;
 		}
+		s_feedback->SetVectrices(feedback_vectrices);
 		s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
 		glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
 		glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
@@ -466,7 +522,7 @@ void fr::Column::render()
 	}
 	if (is_hold)
 	{
-//		s_feedback->render();
+		s_feedback->render();
 	}
 	s_light->render();
 }
