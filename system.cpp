@@ -82,10 +82,10 @@ void fr::System::init()
 
 	TTF_Init();
 	IMG_Init(0);
+	Setting::instance()->init();
 	TextureManager::instance()->init(program_object);
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
-	Setting::instance()->init();
 	UserProfile::instance()->init();
 	Background::instance()->init();
 	MainState::instance()->init();
