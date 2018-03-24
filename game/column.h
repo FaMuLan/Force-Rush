@@ -41,6 +41,8 @@ namespace fr
 			bool is_pressing_ln;
 			bool is_slide_in_l;
 			bool is_slide_in_r;
+			bool is_rotate_l;
+			bool is_rotate_r;
 			bool is_slide_out_l;
 			bool is_slide_out_r;
 			bool is_keyboard_pressed;

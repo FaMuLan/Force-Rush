@@ -18,6 +18,8 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	is_hold = false;
 	is_touch_pressed = false;
 	is_keyboard_pressed = false;
+	is_rotate_l = false;
+	is_rotate_r = false;
 	s_note = new Sprite;
 	s_feedback = new Sprite;
 	s_light = new Sprite;
@@ -162,8 +164,8 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	}
 	s_feedback->SetVectrices(feedback_vectrices);
 	s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
-	glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
-	glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
+	glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(0) / 360.f, 1.f);
+	glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(0) / 360.f, 1.f);
 	glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMatrix("mvp");
 	glm::vec4 converted_pos_l;
 	glm::vec4 converted_pos_r;
@@ -343,12 +345,16 @@ void fr::Column::update()
 				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l)
 				{
 					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
-					m_parent->AddForce(-10);
+					is_rotate_l = true;
+					Timer::instance()->ResetTimer("slide_rotate_l");
+					Timer::instance()->RunTimer("slide_rotate_l");
 				}
 				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r)
 				{
 					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
-					m_parent->AddForce(10);
+					is_rotate_r = true;
+					Timer::instance()->ResetTimer("slide_rotate_r");
+					Timer::instance()->RunTimer("slide_rotate_r");
 				}
 				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
 				{
@@ -429,7 +435,37 @@ void fr::Column::update()
 					is_pressing_ln = false;
 				}
 				//长条尾未松开手指
-				m_parent->AddForce(column_index * -10.f + 15.f);
+				switch (column_index)
+				{
+					case 0:
+						m_parent->AddForce(-Setting::instance()->GetForceAngle());
+					break;
+					case 1:
+						m_parent->AddForce(-Setting::instance()->GetForceAngle() / 2.f);
+					break;
+					case 2:
+						m_parent->AddForce(Setting::instance()->GetForceAngle() / 2.f);
+					break;
+					case 3:
+						m_parent->AddForce(Setting::instance()->GetForceAngle());
+					break;
+				}
+			}
+			if (is_rotate_l)
+			{
+				m_parent->AddForce(-Setting::instance()->GetForceAngle() / 2.f);
+			}
+			if (is_rotate_r)
+			{
+				m_parent->AddForce(Setting::instance()->GetForceAngle() / 2.f);
+			}
+			if (Timer::instance()->GetTime("slide_rotate_l") >= 300)
+			{
+				is_rotate_l = false;
+			}
+			if (Timer::instance()->GetTime("slide_rotate_r") >= 300)
+			{
+				is_rotate_r = false;
 			}
 		}
 	}
@@ -442,6 +478,10 @@ void fr::Column::update()
 		note_vectrices[7] = System::instance()->GetWindowHeigh();
 		note_vectrices[13] = System::instance()->GetWindowHeigh();
 		note_vectrices[19] = System::instance()->GetWindowHeigh();
+		feedback_vectrices[1] = System::instance()->GetWindowHeigh();
+		feedback_vectrices[7] = System::instance()->GetWindowHeigh();
+		feedback_vectrices[13] = System::instance()->GetWindowHeigh();
+		feedback_vectrices[19] = System::instance()->GetWindowHeigh();
 		switch (column_index)
 		{
 			case 0:
@@ -495,8 +535,8 @@ void fr::Column::update()
 		}
 		s_feedback->SetVectrices(feedback_vectrices);
 		s_light->SetPos((m_x_l + m_x_r) / 2.f, System::instance()->GetWindowHeigh(), 84);
-		glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
-		glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(84) / 360.f, 1.f);
+		glm::vec4 gl_pos_l(float(m_x_l) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(0) / 360.f, 1.f);
+		glm::vec4 gl_pos_r(float(m_x_r) / System::instance()->GetWindowWidth() * 2.f - 1.f, -1, -float(0) / 360.f, 1.f);
 		glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMatrix("mvp");
 		glm::vec4 converted_pos_l;
 		glm::vec4 converted_pos_r;
@@ -520,11 +560,11 @@ void fr::Column::render()
 		i++;
 		is_note_in_screen = is_note_in_screen && i < m_note.size();
 	}
-	if (is_hold)
+	s_light->render();
+	if (is_hold || is_tapped || is_pressing_ln)
 	{
 		s_feedback->render();
 	}
-	s_light->render();
 }
 
 void fr::Column::reset()

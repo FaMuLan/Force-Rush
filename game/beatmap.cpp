@@ -38,6 +38,7 @@ void fr::Beatmap::init()
 	last_force = 0;
 	current_angle = 0;
 	last_angle = 0;
+	angle_diff = 0;
 
 	wall_vectrices[0] = 0;
 	wall_vectrices[1] = 0;
@@ -132,6 +133,13 @@ void fr::Beatmap::init()
 	play_base->SetVectrices(play_base_vectrices);
 	play_base->SetMatrix("mvp");
 
+	glm::mat4x4 model_view_matrix;
+	model_view_matrix = glm::mat4(1.f);
+	model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -Setting::instance()->GetCameraPosY() / float(System::instance()->GetWindowHeigh()) * 2.f - 1.f, -Setting::instance()->GetCameraPosZ() / 360.f));
+	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
+	model_view_matrix = glm::rotate(model_view_matrix, 0.0f, glm::vec3(0.0, 0.0, 1.0));
+	TextureManager::instance()->LoadMatrix("model_view", model_view_matrix);
+
 	for (int i = 0; i < 4; i++)
 	{
 		Column *new_column = new Column;
@@ -174,6 +182,12 @@ void fr::Beatmap::update()
 		if (load_finger.y < System::instance()->GetWindowHeigh() / 2)
 		{
 			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + load_finger.dy);
+		}
+		else
+		{
+//			int drag_angle = float(load_finger.x - load_finger.startx) / System::instance()->GetWindowWidth() * Setting::instance()->GetForceAngle();
+//			current_angle += drag_angle;
+//			force = current_angle;
 		}
 	}
 
