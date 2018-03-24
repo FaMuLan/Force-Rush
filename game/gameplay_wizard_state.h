@@ -78,13 +78,19 @@ namespace fr
 			Button *camera_rotate_x_right;
 			Button *camera_rotate_x_left_dual;
 			Button *camera_rotate_x_right_dual;
+			Button *force_angle_left;
+			Button *force_angle_right;
+			Button *force_angle_left_dual;
+			Button *force_angle_right_dual;
 			TextArea *offset_wizard_text;
 			TextArea *camera_pos_y_text;
 			TextArea *camera_pos_z_text;
 			TextArea *camera_rotate_x_text;
+			TextArea *force_angle_text;
 			TextArea *camera_pos_y_num;
 			TextArea *camera_pos_z_num;
 			TextArea *camera_rotate_x_num;
+			TextArea *force_angle_num;
 			
 	};
 };

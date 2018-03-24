@@ -162,13 +162,19 @@ void fr::GameplayWizardState::init()
 	camera_rotate_x_right = new Button;
 	camera_rotate_x_left_dual = new Button;
 	camera_rotate_x_right_dual = new Button;
+	force_angle_left = new Button;
+	force_angle_right = new Button;
+	force_angle_left_dual = new Button;
+	force_angle_right_dual = new Button;
 	offset_wizard_text = new TextArea;
 	camera_pos_y_text = new TextArea;
 	camera_pos_z_text = new TextArea;
 	camera_rotate_x_text = new TextArea;
+	force_angle_text = new TextArea;
 	camera_pos_y_num = new TextArea;
 	camera_pos_z_num = new TextArea;
 	camera_rotate_x_num = new TextArea;
+	force_angle_num = new TextArea;
 
 	GameplayWizardBeatmap::instance()->init();
 	widget_base->init("assets/base/widget_base.png");
@@ -205,20 +211,32 @@ void fr::GameplayWizardState::init()
 	camera_rotate_x_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
 	camera_rotate_x_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 362, 0, 0));
 	camera_rotate_x_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
+	force_angle_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430, widget_base->GetY() + 466, 0, 0));
+	force_angle_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
+	force_angle_left_dual->init("assets/base/arrow_left_dual.png", Rect(widget_base->GetX() + 382, widget_base->GetY() + 466, 0, 0));
+	force_angle_left_dual->AddPressedFrame("assets/base/arrow_left_dual_pressed.png");
+	force_angle_right->init("assets/base/arrow_right.png", Rect(widget_base->GetX() + 622, widget_base->GetY() + 466, 0, 0));
+	force_angle_right->AddPressedFrame("assets/base/arrow_right_pressed.png");
+	force_angle_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 466, 0, 0));
+	force_angle_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
 
 	offset_wizard_text->init("OFFSET WIZARD", widget_base->GetX() + 32, widget_base->GetY() + 50, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_pos_y_text->init("CAMERA POS Y", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_pos_z_text->init("CAMERA POS Z", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_rotate_x_text->init("CAMERA ROTATE X", widget_base->GetX() + 32, widget_base->GetY() + 362, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	camera_pos_y_text->init("CAM POS Y", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	camera_pos_z_text->init("CAM POS Z", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	camera_rotate_x_text->init("CAM ROTATE X", widget_base->GetX() + 32, widget_base->GetY() + 362, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	force_angle_text->init("FORCE ANGLE", widget_base->GetX() + 32, widget_base->GetY() + 466, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	char *camera_pos_y_ch = new char;
 	char *camera_pos_z_ch = new char;
 	char *camera_rotate_x_ch = new char;
+	char *force_angle_ch = new char;
 	sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 	sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 	sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+	sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
 	camera_pos_y_num->init(camera_pos_y_ch, widget_base->GetX() + 544, widget_base->GetY() + 172, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	camera_pos_z_num->init(camera_pos_z_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	camera_rotate_x_num->init(camera_rotate_x_ch, widget_base->GetX() + 544, widget_base->GetY() + 380, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	force_angle_num->init(force_angle_ch, widget_base->GetX() + 544, widget_base->GetY() + 484, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	delete camera_pos_z_ch;
 	delete camera_rotate_x_ch;
 
@@ -247,6 +265,10 @@ void fr::GameplayWizardState::update()
 	camera_rotate_x_right->update();
 	camera_rotate_x_left_dual->update();
 	camera_rotate_x_right_dual->update();
+	force_angle_left->update();
+	force_angle_right->update();
+	force_angle_left_dual->update();
+	force_angle_right_dual->update();
 
 	if (GameplayWizardBeatmap::instance()->IsRunning())
 	{
@@ -269,6 +291,7 @@ void fr::GameplayWizardState::update()
 
 	if (System::instance()->IsWindowModified())
 	{
+		back->SetPos(0, 0);
 		widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
 		offset_wizard_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
 		camera_pos_y_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 154);
@@ -283,22 +306,36 @@ void fr::GameplayWizardState::update()
 		camera_rotate_x_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 362);
 		camera_rotate_x_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 362);
 		camera_rotate_x_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 362);
+		force_angle_left->SetPos(widget_base->GetX() + 430, widget_base->GetY() + 466);
+		force_angle_left_dual->SetPos(widget_base->GetX() + 382, widget_base->GetY() + 466);
+		force_angle_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 466);
+		force_angle_right_dual->SetPos(widget_base->GetX() + 660, widget_base->GetY() + 466);
 		offset_wizard_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 50);
 		camera_pos_y_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 		camera_pos_z_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
 		camera_rotate_x_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 362);
+		force_angle_text->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 466);
 		camera_pos_y_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 172);
 		camera_pos_z_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 276);
 		camera_rotate_x_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
+		force_angle_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 484);
 
+		char *camera_pos_y_ch = new char;
 		char *camera_pos_z_ch = new char;
-		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
-		camera_pos_z_num->SetText(camera_pos_z_ch);
-		delete camera_pos_z_ch;
 		char *camera_rotate_x_ch = new char;
+		char *force_angle_ch = new char;
+		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
+		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
+		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
+		camera_pos_y_num->SetText(camera_pos_y_ch);
+		camera_pos_z_num->SetText(camera_pos_z_ch);
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
+		force_angle_num->SetText(force_angle_ch);
+		delete camera_pos_y_ch;
+		delete camera_pos_z_ch;
 		delete camera_rotate_x_ch;
+		delete force_angle_ch;
 	}
 
 	if (back->IsReleased())
@@ -403,6 +440,38 @@ void fr::GameplayWizardState::update()
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
 		delete camera_rotate_x_ch;
 	}
+	if (force_angle_left->IsReleased())
+	{
+		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() - 1);
+		char *force_angle_ch = new char;
+		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
+		force_angle_num->SetText(force_angle_ch);
+		delete force_angle_ch;
+	}
+	if (force_angle_left_dual->IsReleased())
+	{
+		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() - 10);
+		char *force_angle_ch = new char;
+		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
+		force_angle_num->SetText(force_angle_ch);
+		delete force_angle_ch;
+	}
+	if (force_angle_right->IsReleased())
+	{
+		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() + 1);
+		char *force_angle_ch = new char;
+		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
+		force_angle_num->SetText(force_angle_ch);
+		delete force_angle_ch;
+	}
+	if (force_angle_right_dual->IsReleased())
+	{
+		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() + 10);
+		char *force_angle_ch = new char;
+		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
+		force_angle_num->SetText(force_angle_ch);
+		delete force_angle_ch;
+	}
 
 	GameplayWizardBeatmap::instance()->render();
 	widget_base->render();
@@ -420,11 +489,17 @@ void fr::GameplayWizardState::update()
 	camera_rotate_x_right->render();
 	camera_rotate_x_left_dual->render();
 	camera_rotate_x_right_dual->render();
+	force_angle_left->render();
+	force_angle_right->render();
+	force_angle_left_dual->render();
+	force_angle_right_dual->render();
 	offset_wizard_text->render();
 	camera_pos_y_text->render();
 	camera_pos_z_text->render();
 	camera_rotate_x_text->render();
+	force_angle_text->render();
 	camera_pos_y_num->render();
 	camera_pos_z_num->render();
 	camera_rotate_x_num->render();
+	force_angle_num->render();
 }
