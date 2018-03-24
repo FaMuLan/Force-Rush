@@ -508,7 +508,7 @@ void fr::SongList::RefreshList()
 			m_information.push_back(new_song_information);
 
 			list_length = cell_heigh * m_information.size();
-			PrepareHeader::instance()->SetInformation(m_information[selected_index]);
+//			PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 			WriteList();
 			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
 		}
