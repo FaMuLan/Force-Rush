@@ -32,6 +32,7 @@ void fr::AboutState::update()
 	if (System::instance()->IsWindowModified())
 	{
 		text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2);
+		back->SetPos(0, 0);
 	}
 
 	back->update();

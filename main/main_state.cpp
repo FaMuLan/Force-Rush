@@ -59,8 +59,11 @@ void fr::MainState::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
+		widget_base->SetPos(0, 0);
 		main_about->SetPos(0, System::instance()->GetWindowHeigh() - main_about->GetH());
 		start_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180);
+		user_name_text->SetPos(32, 32);
+		performance_point_text->SetPos(32, 120);
 		logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - logo->GetH() / 2);
 	}
 
