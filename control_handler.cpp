@@ -161,6 +161,8 @@ void fr::ControlHandler::update()
 				Finger new_finger;
 				new_finger.x = e.tfinger.x * System::instance()->GetWindowWidth();
 				new_finger.y = e.tfinger.y * System::instance()->GetWindowHeigh();
+				new_finger.startx = e.tfinger.x * System::instance()->GetWindowWidth();
+				new_finger.starty = e.tfinger.y * System::instance()->GetWindowHeigh();
 				new_finger.dx = e.tfinger.dx * System::instance()->GetWindowWidth();
 				new_finger.dy = e.tfinger.dy * System::instance()->GetWindowHeigh();
 				new_finger.moved = false;

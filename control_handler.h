@@ -25,6 +25,8 @@ namespace fr
 		int y;
 		int dx;
 		int dy;
+		int startx;
+		int starty;
 		bool moved;
 		bool released;
 		FingerID id;
