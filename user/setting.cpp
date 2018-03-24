@@ -21,9 +21,11 @@ void fr::Setting::init()
 	camera_pos_y_portrait = 0;
 	camera_pos_z_portrait = 720;
 	camera_rotate_x_portrait = 0;
+	force_angle_portrait = 5;
 	camera_pos_y_landscape = 0;
 	camera_pos_z_landscape = 720;
 	camera_rotate_x_landscape = 0;
+	force_angle_landscape = 2;
 	song_list.push_back("assets/songs");
 	tips_text.push_back("适当休息。在这里我更建议您的是对手部进行放松");
 	tips_text.push_back("在游戏时，可以在屏幕上半部分以竖直方向滑动手指，来进行快速调节音符下落速度");
@@ -53,8 +55,8 @@ bool fr::Setting::read()
 	std::regex offset_pattern("offset:(-?\\d+?)\\n");
 	std::regex key_code_pattern("key (\\d+?):(\\d+?)\\n");
 	std::regex song_list_pattern("song_list:(.+?)\\n");
-	std::regex camera_portrait_pattern("camera_portrait:(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
-	std::regex camera_landscape_pattern("camera_landscape:(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
+	std::regex camera_portrait_pattern("camera_portrait:(-?\\d+?),(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
+	std::regex camera_landscape_pattern("camera_landscape:(-?\\d+?),(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
 	std::regex tips_pattern("tips:(.+?)\\n");
 	std::smatch auto_line;
 	std::smatch slide_out_line;
@@ -75,9 +77,11 @@ bool fr::Setting::read()
 	camera_pos_y_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$1").c_str());
 	camera_pos_z_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$2").c_str());
 	camera_rotate_x_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$3").c_str());
+	force_angle_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$4").c_str());
 	camera_pos_y_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$1").c_str());
 	camera_pos_z_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$2").c_str());
 	camera_rotate_x_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$3").c_str());
+	force_angle_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$4").c_str());
 	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), key_code_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch key_code_line = *i;
@@ -106,8 +110,8 @@ void fr::Setting::write()
 	char *camera_landscape_ch = new char[50];
 	sprintf(duration_ch, "duration:%d\n", duration);
 	sprintf(offset_ch, "offset:%d\n", offset);
-	sprintf(camera_portrait_ch, "camera_portrait:%d,%d,%d\n", camera_pos_y_portrait, camera_pos_z_portrait, camera_rotate_x_portrait);
-	sprintf(camera_landscape_ch, "camera_landscape:%d,%d,%d\n", camera_pos_y_landscape, camera_pos_z_landscape, camera_rotate_x_landscape);
+	sprintf(camera_portrait_ch, "camera_portrait:%d,%d,%d,%d\n", camera_pos_y_portrait, camera_pos_z_portrait, camera_rotate_x_portrait, force_angle_portrait);
+	sprintf(camera_landscape_ch, "camera_landscape:%d,%d,%d,%d\n", camera_pos_y_landscape, camera_pos_z_landscape, camera_rotate_x_landscape, force_angle_landscape);
 
 	file = "Force Rush user setting file\n";
 	file += is_auto ? "auto:on\n" : "auto:off\n";
@@ -195,6 +199,15 @@ int fr::Setting::GetCameraRotateX()
 	return camera_rotate_x_landscape;
 }
 
+int fr::Setting::GetForceAngle()
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		return force_angle_portrait;
+	}
+	return force_angle_landscape;
+}
+
 SDL_Scancode fr::Setting::GetKeycode(int index)
 {
 	return key_code[index];
@@ -278,6 +291,19 @@ void fr::Setting::SetCameraRotateX(int input)
 	else
 	{
 		camera_rotate_x_landscape = input;
+	}
+	write();
+}
+
+void fr::Setting::SetForceAngle(int input)
+{
+	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
+	{
+		force_angle_portrait = input;
+	}
+	else
+	{
+		force_angle_landscape = input;
 	}
 	write();
 }

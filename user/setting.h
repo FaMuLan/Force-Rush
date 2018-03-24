@@ -31,6 +31,7 @@ namespace fr
 			int GetCameraPosY();
 			int GetCameraPosZ();
 			int GetCameraRotateX();
+			int GetForceAngle();
 			SDL_Scancode GetKeycode(int index);
 			void GetSongList(std::vector<std::string> &output);
 			std::string GetRandomTips();
@@ -42,6 +43,7 @@ namespace fr
 			void SetCameraPosY(int input);
 			void SetCameraPosZ(int input);
 			void SetCameraRotateX(int input);
+			void SetForceAngle(int input);
 			void SetKeycode(SDL_Scancode input, int index);
 		private:
 			Setting() {}
@@ -55,9 +57,11 @@ namespace fr
 			int camera_pos_y_portrait;
 			int camera_pos_z_portrait;
 			int camera_rotate_x_portrait;
+			int force_angle_portrait;
 			int camera_pos_y_landscape;
 			int camera_pos_z_landscape;
 			int camera_rotate_x_landscape;
+			int force_angle_landscape;
 			SDL_Scancode key_code[4];
 			std::vector<std::string> song_list;
 			std::vector<std::string> tips_text;
