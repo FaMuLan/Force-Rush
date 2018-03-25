@@ -64,6 +64,7 @@ void fr::MainState::update()
 		start_text->SetPos(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180);
 		user_name_text->SetPos(32, 32);
 		performance_point_text->SetPos(32, 120);
+		performance_process_bar->SetPos(32, 94);
 		logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - logo->GetH() / 2);
 	}
 
