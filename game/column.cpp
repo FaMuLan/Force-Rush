@@ -572,24 +572,20 @@ void fr::Column::reset()
 	current_note_index = 0;
 }
 
-void fr::Column::AddNote(Note *load_note)
+
+void fr::Column::AddNote(NoteSet &load_note)
 {
-	m_note.push_back(load_note);
+	m_note.swap(load_note);
 }
 
-void fr::Column::AddNote(std::vector<Note*> &load_note_list)
-{
-	m_note.swap(load_note_list);
-}
-
-bool fr::Column::DrawNote(Note *load_note)
+bool fr::Column::DrawNote(Note load_note)
 {
 	int time_diff = load_note->time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
-	double process = double(Setting::instance()->GetDuration() - time_diff) / double(Setting::instance()->GetDuration());
+	double process = double(50000.f / Setting::instance()->GetSpeed() - time_diff) / double(50000.f / Setting::instance()->GetSpeed());
 	int note_z = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process) + 20 + s_note->GetH();
 	//note時間與當前時間的時間差
 
-	if (time_diff > Setting::instance()->GetDuration())
+	if (time_diff > (50000.f / Setting::instance()->GetSpeed()))
 	{
 		//檢測當前note是否在屏幕外面
 		return false;
@@ -600,7 +596,7 @@ bool fr::Column::DrawNote(Note *load_note)
 	{
 		int time_diff_end = load_note->time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 		//長條尾時間與當前時間的時間差
-		double process_end = double(Setting::instance()->GetDuration() - time_diff_end) / double(Setting::instance()->GetDuration());
+		double process_end = double(50000.f / Setting::instance()->GetSpeed() - time_diff_end) / double(50000.f / Setting::instance()->GetSpeed());
 		int note_z_end = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process_end) + 20 + s_note->GetH();
 		//時間差轉換成Z坐標 * 2
 
@@ -614,7 +610,7 @@ bool fr::Column::DrawNote(Note *load_note)
 		}
 
 		double ln_piece_process = process;
-		while (ln_piece_process > (time_diff_end > Setting::instance()->GetDuration() ? 0 : process_end))
+		while (ln_piece_process > (time_diff_end > (50000.f / Setting::instance()->GetSpeed()) ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
 			int note_z_piece = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - ln_piece_process) + 20 + s_note->GetH();

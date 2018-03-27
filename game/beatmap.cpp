@@ -181,7 +181,7 @@ void fr::Beatmap::update()
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
 		if (load_finger.y < System::instance()->GetWindowHeigh() / 2)
 		{
-			Setting::instance()->SetDuration(Setting::instance()->GetDuration() + load_finger.dy);
+			Setting::instance()->SetSpeed(Setting::instance()->GetSpeed() - load_finger.dy / 8.f);
 		}
 		else
 		{
@@ -227,7 +227,7 @@ void fr::Beatmap::render()
 {
 	int wall_z;
 	int play_base_z = 0;
-	float background_process = float(Timer::instance()->GetTime("game") % Setting::instance()->GetDuration()) / float(Setting::instance()->GetDuration());
+	float background_process = float(Timer::instance()->GetTime("game") % int(50000.f / Setting::instance()->GetSpeed())) / float(50000.f / Setting::instance()->GetSpeed());
 	wall_z = -background_process * (System::instance()->GetWindowDepth() - (System::instance()->GetWindowDepth() % wall->GetW()));
 	while (wall_z < System::instance()->GetWindowDepth())
 	{
