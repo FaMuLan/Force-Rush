@@ -26,7 +26,7 @@ namespace fr
 			std::string GetUserProfilePath();
 			bool IsAuto();
 			bool IsSlideOut();
-			int GetDuration();
+			int GetSpeed();
 			int GetOffset();
 			int GetCameraPosY();
 			int GetCameraPosZ();
@@ -38,7 +38,7 @@ namespace fr
 			void SetUserProfilePath(std::string input);
 			void SwitchAuto();
 			void SwitchSlideOut();
-			void SetDuration(int input);
+			void SetSpeed(int input);
 			void SetOffset(int input);
 			void SetCameraPosY(int input);
 			void SetCameraPosZ(int input);
@@ -52,7 +52,7 @@ namespace fr
 			std::string user_profile_path;
 			bool is_auto;
 			bool is_slide_out;
-			int duration;
+			int speed;
 			int offset;
 			int camera_pos_y_portrait;
 			int camera_pos_z_portrait;

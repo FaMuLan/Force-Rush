@@ -12,7 +12,7 @@ void fr::Setting::init()
 	user_profile_path = "/sdcard/data/default.fru";
 	is_auto = false;
 	is_slide_out = false;
-	duration = 3000;
+	speed = 3000;
 	offset = -200;
 	key_code[0] = SDL_SCANCODE_D;
 	key_code[1] = SDL_SCANCODE_F;
@@ -51,7 +51,7 @@ bool fr::Setting::read()
 	tips_text.clear();
 	std::regex auto_pattern("auto:(.+?)\\n");
 	std::regex slide_out_pattern("slide_out:(.+?)\\n");
-	std::regex duration_pattern("duration:(\\d+?)\\n");
+	std::regex speed_pattern("speed:(\\d+?)\\n");
 	std::regex offset_pattern("offset:(-?\\d+?)\\n");
 	std::regex key_code_pattern("key (\\d+?):(\\d+?)\\n");
 	std::regex song_list_pattern("song_list:(.+?)\\n");
@@ -60,19 +60,19 @@ bool fr::Setting::read()
 	std::regex tips_pattern("tips:(.+?)\\n");
 	std::smatch auto_line;
 	std::smatch slide_out_line;
-	std::smatch duration_line;
+	std::smatch speed_line;
 	std::smatch offset_line;
 	std::smatch camera_portrait_line;
 	std::smatch camera_landscape_line;
 	std::regex_search(file, auto_line, auto_pattern);
 	std::regex_search(file, slide_out_line, slide_out_pattern);
-	std::regex_search(file, duration_line, duration_pattern);
+	std::regex_search(file, speed_line, speed_pattern);
 	std::regex_search(file, offset_line, offset_pattern);
 	std::regex_search(file, camera_portrait_line, camera_portrait_pattern);
 	std::regex_search(file, camera_landscape_line, camera_landscape_pattern);
 	is_auto = std::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
 	is_slide_out = std::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
-	duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
+	speed = atoi(std::regex_replace(speed_line.str(), speed_pattern, "$1").c_str());
 	offset = atoi(std::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
 	camera_pos_y_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$1").c_str());
 	camera_pos_z_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$2").c_str());
@@ -104,11 +104,11 @@ bool fr::Setting::read()
 void fr::Setting::write()
 {
 	std::string file;
-	char *duration_ch = new char[50];
+	char *speed_ch = new char[50];
 	char *offset_ch = new char[50];
 	char *camera_portrait_ch = new char[50];
 	char *camera_landscape_ch = new char[50];
-	sprintf(duration_ch, "duration:%d\n", duration);
+	sprintf(speed_ch, "speed:%d\n", speed);
 	sprintf(offset_ch, "offset:%d\n", offset);
 	sprintf(camera_portrait_ch, "camera_portrait:%d,%d,%d,%d\n", camera_pos_y_portrait, camera_pos_z_portrait, camera_rotate_x_portrait, force_angle_portrait);
 	sprintf(camera_landscape_ch, "camera_landscape:%d,%d,%d,%d\n", camera_pos_y_landscape, camera_pos_z_landscape, camera_rotate_x_landscape, force_angle_landscape);
@@ -116,11 +116,11 @@ void fr::Setting::write()
 	file = "Force Rush user setting file\n";
 	file += is_auto ? "auto:on\n" : "auto:off\n";
 	file += is_slide_out ? "slide_out:on\n" : "slide_out:off\n";
-	file += duration_ch;
+	file += speed_ch;
 	file += offset_ch;
 	file += camera_portrait_ch;
 	file += camera_landscape_ch;
-	delete [] duration_ch;
+	delete [] speed_ch;
 	delete [] offset_ch;
 	delete [] camera_portrait_ch;
 	delete [] camera_landscape_ch;
@@ -162,9 +162,9 @@ bool fr::Setting::IsSlideOut()
 	return is_slide_out;
 }
 
-int fr::Setting::GetDuration()
+int fr::Setting::GetSpeed()
 {
-	return duration;
+	return speed;
 }
 
 int fr::Setting::GetOffset()
@@ -242,11 +242,11 @@ void fr::Setting::SwitchSlideOut()
 	write();
 }
 
-void fr::Setting::SetDuration(int input)
+void fr::Setting::SetSpeed(int input)
 {
-	duration = input;
-	duration = duration < 500 ? 500 : duration;
-	duration = duration > 3000 ? 3000 : duration;
+	speed = input;
+	speed = speed < 1 ? 1 : speed;
+	speed = speed > 100 ? 100 : speed;
 	write();
 }
 
