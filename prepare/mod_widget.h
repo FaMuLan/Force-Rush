@@ -42,12 +42,12 @@ namespace fr
 			Button *auto_switch;
 			TextArea *slide_out_text;
 			Button *slide_out_switch;
-			TextArea *duration_text;
-			Button *duration_left;
-			Button *duration_left_dual;
-			Button *duration_right;
-			Button *duration_right_dual;
-			TextArea *duration_num;
+			TextArea *speed_text;
+			Button *speed_left;
+			Button *speed_left_dual;
+			Button *speed_right;
+			Button *speed_right_dual;
+			TextArea *speed_num;
 			TextArea *offset_text;
 			Button *offset_left;
 			Button *offset_left_dual;
