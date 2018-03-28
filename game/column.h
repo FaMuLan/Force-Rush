@@ -8,6 +8,7 @@
 namespace fr
 {
 	struct Note;
+	struct NoteSet;
 	class Sprite;
 	class Beatmap;
 	typedef SDL_FingerID FingerID;
@@ -20,13 +21,12 @@ namespace fr
 			void update();
 			void render();
 			void reset();
-			void AddNote(Note *load_note);
-			void AddNote(std::vector<Note*> &load_note_list);
+			void AddNote(NoteSet *load_note_set);
 			bool DrawNote(Note *load_note);
 		private:
 			Beatmap *m_parent;
 			int column_index;
-			std::vector<Note*> m_note;
+			NoteSet *m_note_set;
 			Sprite *s_note;
 			Sprite *s_feedback;
 			Sprite *s_light;

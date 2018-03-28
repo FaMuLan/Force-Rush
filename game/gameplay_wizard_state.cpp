@@ -29,6 +29,8 @@ void fr::GameplayWizardBeatmap::init()
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+
+	NoteSet *new_note_set = new NoteSet;
 	for (int i = 0; i < 120; i++)
 	{
 		Note *new_note = new Note;
@@ -36,8 +38,17 @@ void fr::GameplayWizardBeatmap::init()
 		new_note->time_end = new_note->time;
 		new_note->type = NOTETYPE_NORMAL;
 		new_note->type_end = NOTETYPE_NORMAL;
-		m_column[3]->AddNote(new_note);
+		new_note_set->note.push_back(new_note);
 	}
+	m_column[3]->AddNote(new_note_set);
+	for (int i = 0; i < 3; i++)
+	{
+		NoteSet *null_note_set = new NoteSet;
+		m_column[0]->AddNote(null_note_set);
+		m_column[1]->AddNote(null_note_set);
+		m_column[2]->AddNote(null_note_set);
+	}
+
 	Animator::instance()->AddAnimation("offset", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 100);
 	Animator::instance()->ResetAnimation("offset");
 	beat_count = 0;

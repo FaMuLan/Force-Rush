@@ -14,6 +14,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	m_parent = parent;
 	column_index = load_column_index;
 	current_note_index = 0;
+	m_note_set = NULL;
 	is_pressing_ln = false;
 	is_hold = false;
 	is_touch_pressed = false;
@@ -181,7 +182,6 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 
 void fr::Column::clear()
 {
-	std::vector<Note*>(m_note).swap(m_note);
 	delete [] note_vectrices;
 	delete [] feedback_vectrices;
 }
@@ -298,20 +298,20 @@ void fr::Column::update()
 //================ Auto Mod =========
 	if (Setting::instance()->IsAuto())
 	{
-		if (current_note_index < m_note.size())
+		if (current_note_index < m_note_set->note.size())
 		{
 			if (is_pressing_ln)
 			{
-				if (m_note[current_note_index]->time_end - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game"))
+				if (m_note_set->note[current_note_index]->time_end - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game"))
 				{
 					is_released = true;
 					is_slide_out_l = true;
 					is_slide_out_r = true;
 				}
 			}
-			if (m_note[current_note_index]->time - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game") && !is_pressing_ln)
+			if (m_note_set->note[current_note_index]->time - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game") && !is_pressing_ln)
 			{
-				if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH)
+				if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH)
 				{
 					is_slide_out_l = true;
 					is_slide_out_r = true;
@@ -328,37 +328,37 @@ void fr::Column::update()
 //=================== End ===========
 	if (!GameHeader::instance()->IsPaused())
 	{
-		if (current_note_index < m_note.size())
+		if (current_note_index < m_note_set->note.size())
 		//檢測防止下標越界而導致段錯誤
 		{
-			if (is_tapped || is_slide_in_l || is_slide_in_r || (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r)))
+			if (is_tapped || is_slide_in_l || is_slide_in_r || (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r)))
 			{
 				Judgement current_judgement;
-				if (m_note[current_note_index]->type == NOTETYPE_NORMAL)
+				if (m_note_set->note[current_note_index]->type == NOTETYPE_NORMAL)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time);
+					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time);
 				}
-				else if ((m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT && is_slide_in_l) || (m_note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT && is_slide_in_r))
+				else if ((m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_IN_LEFT && is_slide_in_l) || (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_IN_RIGHT && is_slide_in_r))
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
 				}
-				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l)
+				else if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
 					is_rotate_l = true;
 					Timer::instance()->ResetTimer("slide_rotate_l");
 					Timer::instance()->RunTimer("slide_rotate_l");
 				}
-				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r)
+				else if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r)
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
 					is_rotate_r = true;
 					Timer::instance()->ResetTimer("slide_rotate_r");
 					Timer::instance()->RunTimer("slide_rotate_r");
 				}
-				else if (m_note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
+				else if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_THROUGH && (is_slide_out_l || is_slide_out_r))
 				{
-					current_judgement = m_parent->judge(m_note[current_note_index]->time, true, false, true);
+					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
 				}
 				else
 				{
@@ -367,7 +367,7 @@ void fr::Column::update()
 
 				if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
 				{
-					if (m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+					if (m_note_set->note[current_note_index]->time != m_note_set->note[current_note_index]->time_end)
 					{
 						is_pressing_ln = true;
 						//有長條的情況下先不跳過
@@ -388,16 +388,16 @@ void fr::Column::update()
 
 			if (is_released || is_slide_out_l || is_slide_out_r)
 			{
-				if (is_pressing_ln && m_note[current_note_index]->time != m_note[current_note_index]->time_end)
+				if (is_pressing_ln && m_note_set->note[current_note_index]->time != m_note_set->note[current_note_index]->time_end)
 				{
 					Judgement current_judgement;
-					if (m_note[current_note_index]->type_end == NOTETYPE_NORMAL)
+					if (m_note_set->note[current_note_index]->type_end == NOTETYPE_NORMAL)
 					{
-						current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true, false);
+						current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time_end, true, true, false);
 					}
-					else if ((m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
+					else if ((m_note_set->note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_LEFT && is_slide_out_l) || (m_note_set->note[current_note_index]->type_end == NOTETYPE_SLIDE_OUT_RIGHT && is_slide_out_r))
 					{
-						current_judgement = m_parent->judge(m_note[current_note_index]->time_end, true, true, false);
+						current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time_end, true, true, false);
 					}
 					else
 					{
@@ -413,11 +413,11 @@ void fr::Column::update()
 				is_pressing_ln = false;
 			}
 
-			if (!is_pressing_ln && current_note_index < m_note.size())
+			if (!is_pressing_ln && current_note_index < m_note_set->note.size())
 			//以防檢測開頭而導致意外ERROR
 			//注意因為之前current_note_index可能執行過++所以還是需要做檢測
 			{
-				if (m_parent->judge(m_note[current_note_index]->time, false) == JUDGEMENT_ER)
+				if (m_parent->judge(m_note_set->note[current_note_index]->time, false) == JUDGEMENT_ER)
 				{
 					current_note_index++;
 				}
@@ -429,7 +429,7 @@ void fr::Column::update()
 				{
 					s_light->SetAnimate(1, 12, 200);
 				}
-				if (m_parent->judge(m_note[current_note_index]->time_end, false) == JUDGEMENT_ER)
+				if (m_parent->judge(m_note_set->note[current_note_index]->time_end, false) == JUDGEMENT_ER)
 				{
 					current_note_index++;
 					is_pressing_ln = false;
@@ -552,13 +552,13 @@ void fr::Column::update()
 void fr::Column::render()
 {
 	int i = current_note_index;
-	bool is_note_in_screen = i < m_note.size();
+	bool is_note_in_screen = i < m_note_set->note.size();
 
 	while (is_note_in_screen)
 	{
-		is_note_in_screen = DrawNote(m_note[i]);
+		is_note_in_screen = DrawNote(m_note_set->note[i]);
 		i++;
-		is_note_in_screen = is_note_in_screen && i < m_note.size();
+		is_note_in_screen = is_note_in_screen && i < m_note_set->note.size();
 	}
 	s_light->render();
 	if (is_hold || is_tapped || is_pressing_ln)
@@ -573,12 +573,12 @@ void fr::Column::reset()
 }
 
 
-void fr::Column::AddNote(NoteSet &load_note)
+void fr::Column::AddNote(NoteSet *load_note_set)
 {
-	m_note.swap(load_note);
+	m_note_set = load_note_set;
 }
 
-bool fr::Column::DrawNote(Note load_note)
+bool fr::Column::DrawNote(Note *load_note)
 {
 	int time_diff = load_note->time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	double process = double(50000.f / Setting::instance()->GetSpeed() - time_diff) / double(50000.f / Setting::instance()->GetSpeed());
@@ -600,8 +600,8 @@ bool fr::Column::DrawNote(Note load_note)
 		int note_z_end = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process_end) + 20 + s_note->GetH();
 		//時間差轉換成Z坐標 * 2
 
-//		if (is_pressing_ln && load_note->time == m_note[current_note_index]->time && load_note->time_end == m_note[current_note_index]->time_end)
-		if (is_pressing_ln && load_note == m_note[current_note_index])
+//		if (is_pressing_ln && load_note->time == m_note_set->note[current_note_index]->time && load_note->time_end == m_note_set->note[current_note_index]->time_end)
+		if (is_pressing_ln && load_note == m_note_set->note[current_note_index])
 		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
@@ -652,7 +652,7 @@ bool fr::Column::DrawNote(Note load_note)
 	note_vectrices[14] = note_z - s_note->GetH();
 	note_vectrices[20] = note_z - s_note->GetH();
 	s_note->SetVectrices(note_vectrices);
-	s_note->render(((is_pressing_ln && load_note == m_note[current_note_index]) || Setting::instance()->IsSlideOut()) ? NOTETYPE_NORMAL : load_note->type);
+	s_note->render(((is_pressing_ln && load_note == m_note_set->note[current_note_index]) || Setting::instance()->IsSlideOut()) ? NOTETYPE_NORMAL : load_note->type);
 
 	return true;
 	//畫note

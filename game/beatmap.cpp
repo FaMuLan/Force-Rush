@@ -297,12 +297,6 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_score->score = 0;
 	m_score->chain = 0;
 	current_chain = 0;
-	for (int i = 0; i < 4; i++)
-	{
-		Column *new_column = new Column;
-		new_column->init(i, this);
-		m_column.push_back(new_column);
-	}
 
 	chain_text = new TextArea;
 	judge_text = new TextArea;
@@ -322,19 +316,13 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	is_waiting = true;
 	is_ended = false;
 
-	std::string text;
-	ReadFile(m_information->file_path, text);
-	std::vector<Note*> note_list1;
-	std::vector<Note*> note_list2;
-	std::vector<Note*> note_list3;
-	std::vector<Note*> note_list4;
+	std::vector<NoteSet*> new_note_set;
+	LoadBeatmapFile(m_information->file_path, NULL, &new_note_set);
 
-	LoadBeatmapFile(m_information->file_path, NULL, &note_list1, &note_list2, &note_list3, &note_list4);
-
-	m_column[0]->AddNote(note_list1);
-	m_column[1]->AddNote(note_list2);
-	m_column[2]->AddNote(note_list3);
-	m_column[3]->AddNote(note_list4);
+	m_column[0]->AddNote(new_note_set[0]);
+	m_column[1]->AddNote(new_note_set[1]);
+	m_column[2]->AddNote(new_note_set[2]);
+	m_column[3]->AddNote(new_note_set[3]);
 	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
 //	無需加載，因為在選曲界面的時候就加載好了
 
