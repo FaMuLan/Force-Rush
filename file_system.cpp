@@ -78,23 +78,23 @@ std::string fr::GetParentDir(std::string path)
 	return regex_replace(path, parent_dir_pattern, "$1");
 }
 
-bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
+bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
 	std::regex path_pattern(".*\\.(.*)");
 	std::string format = std::regex_replace(path, path_pattern, "$1");
 	bool success = true;
 	if (format == "imd")
 	{
-		success = LoadIMDFile(path, output_information, output_note_list1, output_note_list2, output_note_list3, output_note_list4);
+		success = LoadIMDFile(path, output_information, output_note_set);
 	}
 	else
 	{
-		success = LoadOSUFile(path, output_information, output_note_list1, output_note_list2, output_note_list3, output_note_list4);
+		success = LoadOSUFile(path, output_information, output_note_set);
 	}
 	return success;
 }
 
-bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
+bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
 
 	static std::regex id_pattern("BeatmapID:(.*?)[\\n\\r]");
@@ -111,7 +111,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	bool success = true;
 
 	bool load_information = output_information != NULL;
-	bool load_note = output_note_list1 != NULL && output_note_list2 != NULL && output_note_list3 != NULL && output_note_list4 != NULL;
+	bool load_note = output_note_set != NULL;
 
 	int note_count = 0;
 	int key_count = 0;
@@ -163,6 +163,15 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		}
 	}
 
+	if (load_note)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			NoteSet *new_note_set = new NoteSet;
+			output_note_set->push_back(new_note_set);
+		}
+	}
+
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch note_line = *i;
@@ -180,16 +189,16 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 			switch (column_index)
 			{
 				case 64:
-					output_note_list1->push_back(new_note);
+					(*output_note_set)[0]->note.push_back(new_note);
 				break;
 				case 192:
-					output_note_list2->push_back(new_note);
+					(*output_note_set)[1]->note.push_back(new_note);
 				break;
 				case 320:
-					output_note_list3->push_back(new_note);
+					(*output_note_set)[2]->note.push_back(new_note);
 				break;
 				case 448:
-					output_note_list4->push_back(new_note);
+					(*output_note_set)[3]->note.push_back(new_note);
 				break;
 			}
 		}
@@ -221,21 +230,21 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	}
 	if (load_note)
 	{
-		std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
-		std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
-		std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
-		std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
+		std::sort((*output_note_set)[0]->note.begin(), (*output_note_set)[0]->note.end(), CompareNote);
+		std::sort((*output_note_set)[1]->note.begin(), (*output_note_set)[1]->note.end(), CompareNote);
+		std::sort((*output_note_set)[2]->note.begin(), (*output_note_set)[2]->note.end(), CompareNote);
+		std::sort((*output_note_set)[3]->note.begin(), (*output_note_set)[3]->note.end(), CompareNote);
 		//信不過來排序
 	}
 	return true;
 }
 
-bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std::vector<Note*> *output_note_list1, std::vector<Note*> *output_note_list2, std::vector<Note*> *output_note_list3, std::vector<Note*> *output_note_list4)
+bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
 	static std::regex path_pattern(".*/(.*?)_(\\d)k_(.*?)\\.imd");
 	bool success = true;
 	bool load_information = output_information != NULL;
-	bool load_note = output_note_list1 != NULL && output_note_list2 != NULL && output_note_list3 != NULL && output_note_list4 != NULL;
+	bool load_note = output_note_set != NULL;
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "r+b");
 	//死因:不會用fstream讀取二進制文件
 	int note_count = 0;
@@ -298,6 +307,15 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		SDL_RWread(file, &temp, 2, 1);
 		SDL_RWread(file, &note_count, 4, 1);
 	}
+	if (load_note)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			NoteSet *new_note_set = new NoteSet;
+			output_note_set->push_back(new_note_set);
+		}
+	}
+
 	Note *last_note1;
 	Note *last_note2;
 	Note *last_note3;
@@ -349,21 +367,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					new_note->type_end = NOTETYPE_NORMAL;
 					new_note->time = time_stamp + 2000;
 					new_note->time_end = new_note->time;
-					switch (track)
-					{
-						case 0x00:
-							output_note_list1->push_back(new_note);
-						break;
-						case 0x01:
-							output_note_list2->push_back(new_note);
-						break;
-						case 0x02:
-							output_note_list3->push_back(new_note);
-						break;
-						case 0x03:
-							output_note_list4->push_back(new_note);
-						break;
-					}
+					(*output_note_set)[track]->note.push_back(new_note);
 				}
 				break;
 				case 0x0001:	//滑鍵
@@ -373,21 +377,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					new_start_note->type_end = NOTETYPE_NORMAL;
 					new_start_note->time = time_stamp + 2000;
 					new_start_note->time_end = new_start_note->time;
-					switch (track)
-					{
-						case 0x00:
-							output_note_list1->push_back(new_start_note);
-						break;
-						case 0x01:
-							output_note_list2->push_back(new_start_note);
-						break;
-						case 0x02:
-							output_note_list3->push_back(new_start_note);
-						break;
-						case 0x03:
-							output_note_list4->push_back(new_start_note);
-						break;
-					}
+					(*output_note_set)[track]->note.push_back(new_start_note);
 					for (char i = track; i != track + time_span;)
 					{
 						Note *new_slide_note = new Note;
@@ -402,21 +392,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						}
 						new_slide_note->time = time_stamp + 2000;
 						new_slide_note->time_end = new_start_note->time;
-						switch (i)
-						{
-							case 0x00:
-								output_note_list1->push_back(new_slide_note);
-							break;
-							case 0x01:
-								output_note_list2->push_back(new_slide_note);
-							break;
-							case 0x02:
-								output_note_list3->push_back(new_slide_note);
-							break;
-							case 0x03:
-								output_note_list4->push_back(new_slide_note);
-							break;
-						}
+						(*output_note_set)[i]->note.push_back(new_slide_note);
 					}
 				}
 				break;
@@ -427,21 +403,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					new_note->type_end = NOTETYPE_NORMAL;
 					new_note->time = time_stamp + 2000;
 					new_note->time_end = new_note->time + time_span;
-					switch (track)
-					{
-						case 0x00:
-							output_note_list1->push_back(new_note);
-						break;
-						case 0x01:
-							output_note_list2->push_back(new_note);
-						break;
-						case 0x02:
-							output_note_list3->push_back(new_note);
-						break;
-						case 0x03:
-							output_note_list4->push_back(new_note);
-						break;
-					}
+					(*output_note_set)[track]->note.push_back(new_note);
 				}
 				break;
 				case 0x0061:	//長滑條開頭(橫滑)
@@ -451,21 +413,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					new_start_note->type_end = NOTETYPE_NORMAL;
 					new_start_note->time = time_stamp + 2000;
 					new_start_note->time_end = new_start_note->time;
-					switch (track)
-					{
-						case 0x00:
-							output_note_list1->push_back(new_start_note);
-						break;
-						case 0x01:
-							output_note_list2->push_back(new_start_note);
-						break;
-						case 0x02:
-							output_note_list3->push_back(new_start_note);
-						break;
-						case 0x03:
-							output_note_list4->push_back(new_start_note);
-						break;
-					}
+					(*output_note_set)[track]->note.push_back(new_start_note);
 					for (char i = track; i != track + time_span;)
 					{
 						Note *new_slide_note = new Note;
@@ -481,25 +429,7 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						new_slide_note->type_end = NOTETYPE_NORMAL;
 						new_slide_note->time = time_stamp + 2000;
 						new_slide_note->time_end = new_start_note->time;
-						switch (i)
-						{
-							case 0x00:
-								output_note_list1->push_back(new_slide_note);
-								last_note1 = new_slide_note;
-							break;
-							case 0x01:
-								output_note_list2->push_back(new_slide_note);
-								last_note2 = new_slide_note;
-							break;
-							case 0x02:
-								output_note_list3->push_back(new_slide_note);
-								last_note3 = new_slide_note;
-							break;
-							case 0x03:
-								output_note_list4->push_back(new_slide_note);
-								last_note4 = new_slide_note;
-							break;
-						}
+						(*output_note_set)[i]->note.push_back(new_slide_note);
 					}
 				}
 				break;
@@ -510,44 +440,12 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 					new_note->type_end = NOTETYPE_NORMAL;
 					new_note->time = time_stamp + 2000;
 					new_note->time_end = new_note->time + time_span;
-					switch (track)
-					{
-						case 0x00:
-							output_note_list1->push_back(new_note);
-							last_note1 = new_note;
-						break;
-						case 0x01:
-							output_note_list2->push_back(new_note);
-							last_note2 = new_note;
-						break;
-						case 0x02:
-							output_note_list3->push_back(new_note);
-							last_note3 = new_note;
-						break;
-						case 0x03:
-							output_note_list4->push_back(new_note);
-							last_note4 = new_note;
-						break;
-					}
+					(*output_note_set)[track]->note.push_back(new_note);
 				}
 				break;
 				case 0x0021:	//長滑條中繼(橫滑)
 				{
-					switch (track)
-					{
-						case 0x00:
-							last_note1->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x01:
-							last_note2->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x02:
-							last_note3->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x03:
-							last_note4->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-					}
+					(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 					for (char i = track; i != track + time_span;)
 					{
 						Note *new_slide_note = new Note;
@@ -563,61 +461,15 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						new_slide_note->type_end = NOTETYPE_NORMAL;
 						new_slide_note->time = time_stamp + 2000;
 						new_slide_note->time_end = new_slide_note->time;
-						switch (i)
-						{
-							case 0x00:
-								output_note_list1->push_back(new_slide_note);
-								last_note1 = new_slide_note;
-							break;
-							case 0x01:
-								output_note_list2->push_back(new_slide_note);
-								last_note2 = new_slide_note;
-							break;
-							case 0x02:
-								output_note_list3->push_back(new_slide_note);
-								last_note3 = new_slide_note;
-							break;
-							case 0x03:
-								output_note_list4->push_back(new_slide_note);
-								last_note4 = new_slide_note;
-							break;
-						}
+						(*output_note_set)[i]->note.push_back(new_slide_note);
 					}
 				}
 				break;
 				case 0x0022:	//長滑條中繼(直行)
-					switch (track)
-					{
-						case 0x00:
-							last_note1->time_end = last_note1->time + time_span;
-						break;
-						case 0x01:
-							last_note2->time_end = last_note2->time + time_span;
-						break;
-						case 0x02:
-							last_note3->time_end = last_note3->time + time_span;
-						break;
-						case 0x03:
-							last_note4->time_end = last_note4->time + time_span;
-						break;
-					}
+					(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->time_end =	(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->time + time_span;
 				break;
 				case 0x00A1:	//長滑條結束(橫滑)
-					switch (track)
-					{
-						case 0x00:
-							last_note1->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x01:
-							last_note2->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x02:
-							last_note3->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-						case 0x03:
-							last_note4->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
-						break;
-					}
+					(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->type_end = time_span > 0 ? NOTETYPE_SLIDE_OUT_RIGHT : NOTETYPE_SLIDE_OUT_LEFT;
 					for (char i = track; i != track + time_span;)
 					{
 						Note *new_slide_note = new Note;
@@ -633,41 +485,11 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 						new_slide_note->type_end = NOTETYPE_NORMAL;
 						new_slide_note->time = time_stamp + 2000;
 						new_slide_note->time_end = new_slide_note->time;
-						switch (i)
-						{
-							case 0x00:
-								output_note_list1->push_back(new_slide_note);
-							break;
-							case 0x01:
-								output_note_list2->push_back(new_slide_note);
-							break;
-							case 0x02:
-								output_note_list3->push_back(new_slide_note);
-							break;
-							case 0x03:
-								output_note_list4->push_back(new_slide_note);
-							break;
-						}
+						(*output_note_set)[i]->note.push_back(new_slide_note);
 					}
 				break;
 				case 0x00A2:	//長滑條結束(直行)
-				{
-					switch (track)
-					{
-						case 0x00:
-							last_note1->time_end = last_note1->time + time_span;
-						break;
-						case 0x01:
-							last_note2->time_end = last_note2->time + time_span;
-						break;
-						case 0x02:
-							last_note3->time_end = last_note3->time + time_span;
-						break;
-						case 0x03:
-							last_note4->time_end = last_note4->time + time_span;
-						break;
-					}
-				}
+					(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->time_end =	(*output_note_set)[track]->note[(*output_note_set)[track]->note.size() - 1]->time + time_span;
 				break;
 			}	//switch (action)
 		}	//if (load_note)
@@ -675,10 +497,10 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 
 	if (load_note)
 	{
-		std::sort(output_note_list1->begin(), output_note_list1->end(), CompareNote);
-		std::sort(output_note_list2->begin(), output_note_list2->end(), CompareNote);
-		std::sort(output_note_list3->begin(), output_note_list3->end(), CompareNote);
-		std::sort(output_note_list4->begin(), output_note_list4->end(), CompareNote);
+		std::sort((*output_note_set)[0]->note.begin(), (*output_note_set)[0]->note.end(), CompareNote);
+		std::sort((*output_note_set)[1]->note.begin(), (*output_note_set)[1]->note.end(), CompareNote);
+		std::sort((*output_note_set)[2]->note.begin(), (*output_note_set)[2]->note.end(), CompareNote);
+		std::sort((*output_note_set)[3]->note.begin(), (*output_note_set)[3]->note.end(), CompareNote);
 		//對於IMD格式的時間排列……不手動排序的話遊戲中某些配置連auto都救不了
 	}
 
