@@ -503,7 +503,7 @@ void fr::SongList::RefreshList()
 	{
 		SongInformation *new_song_information = new SongInformation;
 
-		if (LoadBeatmapFile(file[i]->name, new_song_information, NULL, NULL, NULL, NULL))
+		if (LoadBeatmapFile(file[i]->name, new_song_information, NULL))
 		{
 			m_information.push_back(new_song_information);
 
