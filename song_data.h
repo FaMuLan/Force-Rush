@@ -35,6 +35,20 @@ namespace fr
 		NoteType type_end;
 	};
 
+	struct Timeline
+	{
+		unsigned int start_time;
+		unsigned int duration;
+		float bpm;
+		float speed;
+	};
+
+	struct NoteSet
+	{
+		std::vector<Note*> note;
+		std::vector<Timeline*> timeline;
+	};
+
 	struct Score
 	{
 		int pure;
