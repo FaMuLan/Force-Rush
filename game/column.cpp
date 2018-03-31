@@ -14,6 +14,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	m_parent = parent;
 	column_index = load_column_index;
 	current_note_index = 0;
+	current_timeline_index = 0;
 	m_note_set = NULL;
 	is_pressing_ln = false;
 	is_hold = false;
@@ -471,6 +472,14 @@ void fr::Column::update()
 	}
 	s_light->update();
 
+	if (current_timeline_index < m_note_set->timeline.size())
+	{
+		while (m_note_set->timeline[current_timeline_index]->end_time - Setting::instance()->GetOffset() < Timer::instance()->GetTime("game") && m_note_set->timeline[current_timeline_index]->end_time != 0)
+		{
+			current_timeline_index++;
+		}
+	}
+
 	if (System::instance()->IsWindowModified())
 	{
 		s_light->SetSize(320 * float(System::instance()->GetWindowWidth() / 720.f), 320 * float(System::instance()->GetWindowWidth() / 720.f));
@@ -580,12 +589,11 @@ void fr::Column::AddNote(NoteSet *load_note_set)
 
 bool fr::Column::DrawNote(Note *load_note)
 {
-	int time_diff = load_note->time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
-	double process = double(50000.f / Setting::instance()->GetSpeed() - time_diff) / double(50000.f / Setting::instance()->GetSpeed());
+	double process = TimeToProcess(load_note->time);
 	int note_z = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process) + 20 + s_note->GetH();
 	//note時間與當前時間的時間差
 
-	if (time_diff > (50000.f / Setting::instance()->GetSpeed()))
+	if (process < 0)
 	{
 		//檢測當前note是否在屏幕外面
 		return false;
@@ -594,9 +602,7 @@ bool fr::Column::DrawNote(Note *load_note)
 	if (load_note->time != load_note->time_end)
 	//是否長條
 	{
-		int time_diff_end = load_note->time_end - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
-		//長條尾時間與當前時間的時間差
-		double process_end = double(50000.f / Setting::instance()->GetSpeed() - time_diff_end) / double(50000.f / Setting::instance()->GetSpeed());
+		double process_end = TimeToProcess(load_note->time_end);
 		int note_z_end = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - process_end) + 20 + s_note->GetH();
 		//時間差轉換成Z坐標 * 2
 
@@ -605,12 +611,11 @@ bool fr::Column::DrawNote(Note *load_note)
 		//用超智障的方法來確認這是繪製的第一個長條
 		{
 			process = 1;
-			time_diff = 0;
 			note_z = 20 + s_note->GetH();
 		}
 
 		double ln_piece_process = process;
-		while (ln_piece_process > (time_diff_end > (50000.f / Setting::instance()->GetSpeed()) ? 0 : process_end))
+		while (ln_piece_process > (process_end < 0 ? 0 : process_end))
 		//長條身不超過屏幕 且 不超過尾部 時畫出來，循環
 		{
 			int note_z_piece = (System::instance()->GetWindowDepth() - 20 - s_note->GetH()) * (1.f - ln_piece_process) + 20 + s_note->GetH();
@@ -656,4 +661,44 @@ bool fr::Column::DrawNote(Note *load_note)
 
 	return true;
 	//畫note
+}
+
+double fr::Column::TimeToProcess(unsigned int time)
+{
+	int previous_time = Setting::instance()->GetOffset() + Timer::instance()->GetTime("game");
+	int next_time = (time < m_note_set->timeline[current_timeline_index]->end_time || m_note_set->timeline[current_timeline_index]->end_time == 0) ? time : m_note_set->timeline[current_timeline_index]->end_time;
+	int timeline_index_offset = 1;
+	int time_diff = next_time - previous_time;
+	double process;
+	if (m_note_set->timeline[current_timeline_index]->speed != 0)
+	{
+		process = 1.f - double(time_diff) / double(50000.f / (Setting::instance()->GetSpeed() * m_note_set->timeline[current_timeline_index]->speed));
+	}
+	else
+	{
+		process = 1.f;
+	}
+
+	if (current_timeline_index + timeline_index_offset < m_note_set->timeline.size())
+	{
+		while (time > m_note_set->timeline[current_timeline_index + timeline_index_offset]->start_time)
+		{
+			previous_time = m_note_set->timeline[current_timeline_index + timeline_index_offset]->start_time;
+			if (current_timeline_index + timeline_index_offset < m_note_set->timeline.size())
+			{
+				next_time = (time < m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time || m_note_set->timeline[current_timeline_index]->end_time == 0) ? time : m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time;
+			}
+			else
+			{
+				next_time = time;
+			}
+			time_diff = next_time - previous_time;
+			if (m_note_set->timeline[current_timeline_index + timeline_index_offset]->speed != 0)
+			{
+				process -= double(time_diff) / double(50000.f / (Setting::instance()->GetSpeed() * m_note_set->timeline[current_timeline_index + timeline_index_offset]->speed));
+			}
+			timeline_index_offset++;
+		}
+	}
+	return process;
 }

@@ -23,6 +23,7 @@ namespace fr
 			void reset();
 			void AddNote(NoteSet *load_note_set);
 			bool DrawNote(Note *load_note);
+			double TimeToProcess(unsigned int time);
 		private:
 			Beatmap *m_parent;
 			int column_index;
@@ -49,6 +50,7 @@ namespace fr
 			bool is_touch_pressed;
 			FingerID has_pressed_id;
 			int current_note_index;
+			int current_timeline_index;
 	};
 };
 
