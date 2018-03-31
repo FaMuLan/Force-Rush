@@ -38,7 +38,7 @@ namespace fr
 	struct Timeline
 	{
 		unsigned int start_time;
-		unsigned int duration;
+		unsigned int end_time;
 		float bpm;
 		float speed;
 	};
