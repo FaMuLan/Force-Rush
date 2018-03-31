@@ -80,7 +80,7 @@ std::string fr::GetParentDir(std::string path)
 
 bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-	std::regex path_pattern(".*\\.(.*)");
+	static std::regex path_pattern(".*\\.(.*)");
 	std::string format = std::regex_replace(path, path_pattern, "$1");
 	bool success = true;
 	if (format == "imd")
@@ -107,6 +107,7 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 	static std::regex audio_path_pattern("AudioFilename: (.*?)[\\n\\r]");
 	static std::regex preview_time_pattern("PreviewTime: (\\d*)");
 	static std::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
+	static std::regex timeline_pattern("(\\d+?\\.?\\d*?),(-?\\d+?\\.?\\d*?),\\d+?,\\d+?,\\d+?,\\d+?,(\\d),\\d+?");
 
 	bool success = true;
 
@@ -169,6 +170,50 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		{
 			NoteSet *new_note_set = new NoteSet;
 			output_note_set->push_back(new_note_set);
+		}
+	}
+
+	Timeline *last_timeline;
+	if (load_note)
+	{
+		Timeline *first_timeline = new Timeline;
+		first_timeline->start_time = 0;
+		first_timeline->speed = 1;
+		first_timeline->end_time = 0;
+		last_timeline = first_timeline;
+		for (int i = 0; i < output_note_set->size(); i++)
+		{
+			(*output_note_set)[i]->timeline.push_back(first_timeline);
+		}
+	}
+	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), timeline_pattern); i != std::sregex_iterator(); i++)
+	{
+		std::smatch timeline_line = *i;
+		int start_time = atoi(std::regex_replace(timeline_line.str(), timeline_pattern, "$1").c_str()) + 2000;
+		float milliseconds = atof(std::regex_replace(timeline_line.str(), timeline_pattern, "$2").c_str());
+		int type = atoi(std::regex_replace(timeline_line.str(), timeline_pattern, "$3").c_str());
+		if (milliseconds <= 0)
+		{
+			if (load_note)
+			{
+				Timeline *new_timeline = new Timeline;
+				new_timeline->start_time = start_time;
+				new_timeline->speed = -milliseconds / 100.f;
+				new_timeline->end_time = 0;
+				last_timeline->end_time = start_time;
+				//if (last_timeline->speed != -milliseconds / 100.f)
+				//{
+					for (int i = 0; i < output_note_set->size(); i++)
+					{
+						(*output_note_set)[i]->timeline.push_back(new_timeline);
+					}
+					last_timeline = new_timeline;
+				//}
+				//else
+				//{
+				//	delete new_timeline;
+				//}
+			}
 		}
 	}
 
@@ -313,6 +358,18 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 		{
 			NoteSet *new_note_set = new NoteSet;
 			output_note_set->push_back(new_note_set);
+		}
+	}
+
+	if (load_note)
+	{
+		Timeline *first_timeline = new Timeline;
+		first_timeline->start_time = 0;
+		first_timeline->speed = 1;
+		first_timeline->end_time = 0;
+		for (int i = 0; i < output_note_set->size(); i++)
+		{
+			(*output_note_set)[i]->timeline.push_back(first_timeline);
 		}
 	}
 
