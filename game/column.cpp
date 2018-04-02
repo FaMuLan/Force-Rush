@@ -579,6 +579,7 @@ void fr::Column::render()
 void fr::Column::reset()
 {
 	current_note_index = 0;
+	current_timeline_index = 0;
 }
 
 
