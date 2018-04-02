@@ -39,6 +39,16 @@ void fr::GameplayWizardBeatmap::init()
 		new_note->type = NOTETYPE_NORMAL;
 		new_note->type_end = NOTETYPE_NORMAL;
 		new_note_set->note.push_back(new_note);
+		Timeline *new_timeline1 = new Timeline;
+		new_timeline1->start_time = 500 * i + 2000;
+		new_timeline1->end_time = 500 * i + 2250;
+		new_timeline1->speed = 1;
+		new_note_set->timeline.push_back(new_timeline1);
+		Timeline *new_timeline2 = new Timeline;
+		new_timeline2->start_time = 500 * i + 2250;
+		new_timeline2->end_time = 500 * i + 2500;
+		new_timeline2->speed = 0.0f;
+		new_note_set->timeline.push_back(new_timeline2);
 	}
 	m_column[3]->AddNote(new_note_set);
 	for (int i = 0; i < 3; i++)
