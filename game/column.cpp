@@ -55,7 +55,9 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	s_note->AddFrame("assets/game/note_long_end.png");
 	s_note->SetMatrix("mvp");
 
-	s_feedback->init("assets/game/feedback.png");
+	s_feedback->init("assets/game/feedback_front_head.png");
+	s_feedback->AddFrame("assets/game/feedback_back_head.png");
+	s_feedback->AddFrame("assets/game/feedback_back_body.png");
 	s_feedback->SetMatrix("mvp");
 
 	note_vectrices[1] = System::instance()->GetWindowHeigh();
@@ -183,6 +185,15 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 
 void fr::Column::clear()
 {
+	for (int i = 0; i < m_note_set->timeline.size(); i++)
+	{
+		delete m_note_set->timeline[i];
+	}
+	for (int i = 0; i < m_note_set->note.size(); i++)
+	{
+		delete m_note_set->note[i];
+	}
+	delete m_note_set;
 	delete [] note_vectrices;
 	delete [] feedback_vectrices;
 }
@@ -562,7 +573,28 @@ void fr::Column::render()
 {
 	int i = current_note_index;
 	bool is_note_in_screen = i < m_note_set->note.size();
+	int feedback_z = s_feedback->GetH() + 20;
 
+	if (is_hold || is_tapped || is_pressing_ln)
+	{
+		while (feedback_z < System::instance()->GetWindowDepth())
+		{
+			feedback_vectrices[2] = feedback_z + s_feedback->GetH();
+			feedback_vectrices[8] = feedback_z + s_feedback->GetH();
+			feedback_vectrices[14] = feedback_z;
+			feedback_vectrices[20] = feedback_z;
+			s_feedback->SetVectrices(feedback_vectrices);
+			s_feedback->render(2);
+			feedback_z += s_feedback->GetH();
+		}
+		feedback_z = 20;
+		feedback_vectrices[2] = feedback_z + s_feedback->GetH();
+		feedback_vectrices[8] = feedback_z + s_feedback->GetH();
+		feedback_vectrices[14] = feedback_z;
+		feedback_vectrices[20] = feedback_z;
+		s_feedback->SetVectrices(feedback_vectrices);
+		s_feedback->render(1);
+	}
 	while (is_note_in_screen)
 	{
 		is_note_in_screen = DrawNote(m_note_set->note[i]);
@@ -572,7 +604,7 @@ void fr::Column::render()
 	s_light->render();
 	if (is_hold || is_tapped || is_pressing_ln)
 	{
-		s_feedback->render();
+		s_feedback->render(0);
 	}
 }
 
@@ -685,20 +717,17 @@ double fr::Column::TimeToProcess(unsigned int time)
 		while (time > m_note_set->timeline[current_timeline_index + timeline_index_offset]->start_time)
 		{
 			previous_time = m_note_set->timeline[current_timeline_index + timeline_index_offset]->start_time;
-			if (current_timeline_index + timeline_index_offset < m_note_set->timeline.size())
-			{
-				next_time = (time < m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time || m_note_set->timeline[current_timeline_index]->end_time == 0) ? time : m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time;
-			}
-			else
-			{
-				next_time = time;
-			}
+			next_time = (time < m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time || m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time == 0) ? time : m_note_set->timeline[current_timeline_index + timeline_index_offset]->end_time;
 			time_diff = next_time - previous_time;
 			if (m_note_set->timeline[current_timeline_index + timeline_index_offset]->speed != 0)
 			{
 				process -= double(time_diff) / double(50000.f / (Setting::instance()->GetSpeed() * m_note_set->timeline[current_timeline_index + timeline_index_offset]->speed));
 			}
 			timeline_index_offset++;
+			if (current_timeline_index + timeline_index_offset >= m_note_set->timeline.size())
+			{
+				break;
+			}
 		}
 	}
 	return process;
