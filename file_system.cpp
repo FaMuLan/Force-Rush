@@ -173,8 +173,8 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 		}
 	}
 
-	Timeline *last_timeline;
-	int base_bpm;
+	Timeline *last_timeline = NULL;
+	int base_bpm = 0;
 	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), timeline_pattern); i != std::sregex_iterator(); i++)
 	{
 		std::smatch timeline_line = *i;
@@ -211,7 +211,10 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 				}
 				new_timeline->speed = new_timeline->bpm / base_bpm;
 				new_timeline->end_time = 0;
-				last_timeline->end_time = start_time;
+				if (last_timeline)
+				{
+					last_timeline->end_time = start_time;
+				}
 				for (int i = 0; i < output_note_set->size(); i++)
 				{
 					(*output_note_set)[i]->timeline.push_back(new_timeline);
