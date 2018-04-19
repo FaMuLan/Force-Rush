@@ -3,6 +3,7 @@
 #include "../button.h"
 #include "../sprite.h"
 #include "../system.h"
+#include "../control_handler.h"
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
 #include "../user/user_profile.h"
@@ -10,6 +11,7 @@
 #include "song_list.h"
 #include "prepare_header.h"
 #include "mod_widget.h"
+#include "list_widget.h"
 
 fr::PrepareState *fr::PrepareState::m_instance = 0;
 
@@ -18,6 +20,7 @@ void fr::PrepareState::init()
 	PrepareHeader::instance()->init();
 	SongList::instance()->init();
 	ModWidget::instance()->init();
+	ListWidget::instance()->init();
 	prepare_back = new Button;
 	prepare_mod = new Button;
 	prepare_list = new Button;
@@ -83,6 +86,7 @@ void fr::PrepareState::update()
 	SongList::instance()->update();
 	PrepareHeader::instance()->update();
 	ModWidget::instance()->update();
+	ListWidget::instance()->update();
 	prepare_back->update();
 	prepare_mod->update();
 	prepare_list->update();
@@ -96,9 +100,10 @@ void fr::PrepareState::update()
 	prepare_list->render();
 	prepare_refresh->render();
 	ModWidget::instance()->render();
-	if (!ModWidget::instance()->IsShown())
+	ListWidget::instance()->render();
+	if (!ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
 	{
-		if (prepare_back->IsReleased())
+		if (prepare_back->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 		{
 			LoadingState::instance()->init(STATE_MAIN);
 		}
@@ -108,7 +113,7 @@ void fr::PrepareState::update()
 		}
 		if (prepare_list->IsReleased())
 		{
-			SongList::instance()->SwitchShown();
+			ListWidget::instance()->SwitchShown();
 		}
 		if (prepare_refresh->IsReleased() && !SongList::instance()->IsRefreshing())
 		{

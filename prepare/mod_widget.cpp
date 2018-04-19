@@ -96,7 +96,7 @@ void fr::ModWidget::update()
 		{
 			widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() - widget_base->GetH());
 			auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-			slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+			slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
 			speed_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
 			speed_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
 			speed_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
@@ -125,6 +125,11 @@ void fr::ModWidget::update()
 				}
 			}
 		}
+		if (ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
+		{
+			SwitchShown();
+		}
+
 		auto_switch->update();
 		slide_out_switch->update();
 		speed_left->update();
@@ -282,7 +287,7 @@ void fr::ModWidget::OnEnter()
 	int widget_x = -widget_base->GetW() + (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_enter");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
 	speed_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
 	speed_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
 	speed_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
@@ -311,7 +316,7 @@ void fr::ModWidget::OnExit()
 	int widget_x = System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2 - (System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2) * Animator::instance()->GetProcess("mod_exit");
 	widget_base->SetPos(widget_x, System::instance()->GetWindowHeigh() - widget_base->GetH());
 	auto_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 32);
-	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 134);
+	slide_out_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
 	speed_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 258);
 	speed_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 258);
 	speed_left_dual->SetPos(widget_base->GetX() + 382,  widget_base->GetY() + 258);
