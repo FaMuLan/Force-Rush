@@ -12,6 +12,7 @@
 #include "../sprite.h"
 #include "../system.h"
 #include "../texture_manager.h"
+#include "../timer.h"
 #include "../file_system.h"
 #include "../sound_manager.h"
 #include "../song_data.h"
@@ -20,11 +21,13 @@
 #include "../user/setting.h"
 #include "prepare_header.h"
 #include "mod_widget.h"
+#include "list_widget.h"
 
 fr::SongList *fr::SongList::m_instance = 0;
 std::vector<fr::Button*> fr::SongList::m_cell;
 fr::TextInputBox *fr::SongList::search_bar;
 std::vector<fr::SongInformation*> fr::SongList::m_information;
+std::vector<fr::SongInformation*> fr::SongList::shown_information;
 fr::SongInformation *fr::SongList::null_information = 0;
 int fr::SongList::list_length = 0;
 int fr::SongList::list_process = 0;
@@ -32,8 +35,11 @@ int fr::SongList::selected_index = 0;
 int fr::SongList::cell_heigh = 0;
 int fr::SongList::cell_pos_offset_y = 0;
 bool fr::SongList::is_list_moved = false;
+bool fr::SongList::last_list_moved = false;
 bool fr::SongList::is_refreshing = false;
 bool fr::SongList::is_loaded = false;
+bool fr::SongList::is_reverse = false;
+fr::SortType fr::SongList::sort_type = SORTTYPE_DEFAULT;
 
 bool fr::SongList::is_shown = true;
 bool fr::SongList::is_entered = true;
@@ -65,6 +71,7 @@ void fr::SongList::init()
 
 	Animator::instance()->AddAnimation("song_list_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("song_list_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
+	Timer::instance()->ResetTimer("waiting");
 
 	if (!is_refreshing && !is_loaded)
 	{
@@ -76,8 +83,8 @@ void fr::SongList::init()
 	}
 	//一定要在計算列表長度之前加載好信息
 	list_length = cell_heigh * m_information.size();
-	list_process = 0;
-	selected_index = 0;
+//	list_process = 0;
+//	selected_index = 0;
 
 	RefreshListSize();
 	if (m_information.size() == 0)
@@ -113,7 +120,7 @@ void fr::SongList::update()
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if ((load_finger.x >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280)) && (load_finger.x <= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000)) && (load_finger.y >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) && !ModWidget::instance()->IsShown())
+			if ((load_finger.x >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280)) && (load_finger.x <= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 720 : 1000)) && (load_finger.y >= (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)) && !ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
 			{
 				list_process -= load_finger.dy;
 				roll_speed = load_finger.dy;
@@ -178,27 +185,28 @@ void fr::SongList::update()
 		search_bar->update();
 
 		search_bar->SetPos(System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280, (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 288 : 0) + cell_pos_offset_y);
+		int list_middle_y = ((System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 288 : 0) + System::instance()->GetWindowHeigh()) / 2;
 		int current_index = list_process / cell_heigh;
 		for (int i = 0; i < m_cell.size(); i++)
 		{
 			int x = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280;
 			int y = -(list_process % cell_heigh) + i * cell_heigh + (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64) + cell_pos_offset_y;
 			m_cell[i]->SetPos(x, y);
-			if (m_information.size() != 0)
+			if (shown_information.size() != 0)
 			{
-				if (current_index >= m_information.size())
+				if (current_index >= shown_information.size())
 				{
 					current_index = 0;
 				}
 				char *difficulty_ch = new char[3];
-				sprintf(difficulty_ch, "%d", m_information[current_index]->difficulty);
+				sprintf(difficulty_ch, "%d", shown_information[current_index]->difficulty);
 
 				if (current_index == selected_index)
 				{
 					m_cell[i]->SetBaseFrame(2);
 					m_cell[i]->GetText(0)->SetText(difficulty_ch);	
 					m_cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
-					m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+					m_cell[i]->GetText(1)->SetText(shown_information[current_index]->title);
 					m_cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
 				}
 				else
@@ -206,7 +214,7 @@ void fr::SongList::update()
 					m_cell[i]->SetBaseFrame(0);
 					m_cell[i]->GetText(0)->SetText(difficulty_ch);
 					m_cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
-					m_cell[i]->GetText(1)->SetText(m_information[current_index]->title);
+					m_cell[i]->GetText(1)->SetText(shown_information[current_index]->title);
 					m_cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
 				}
 
@@ -214,36 +222,47 @@ void fr::SongList::update()
 
 				if (((m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 140 && System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT) ||
 				(m_cell[i]->GetY() < System::instance()->GetWindowHeigh() - 60 && System::instance()->GetWindowRotation() == WINDOWROTATION_LANDSCAPE) ||
-				!is_list_moved) && !ModWidget::instance()->IsShown())
-			//這個條件運算吃棗藥丸……
+				!is_list_moved) && !ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
+				//這個條件運算吃棗藥丸……
 				{
 					m_cell[i]->update();
 				}
-				if (m_cell[i]->IsReleased() && !ModWidget::instance()->IsShown())
+
+				if (is_list_moved)
 				{
-					if (current_index == selected_index)
+					Timer::instance()->ResetTimer("waiting");
+				}
+				else if (last_list_moved)
+				{
+					Timer::instance()->RunTimer("waiting");
+				}
+
+				if (m_cell[i]->GetY() < list_middle_y && (m_cell[i]->GetY() + cell_heigh) > list_middle_y  && !ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
+				{
+					if (m_cell[i]->IsReleased())
 					{
 						LoadingState::instance()->init(STATE_GAME);
-						GameState::instance()->SetFile(m_information[selected_index]);
+						GameState::instance()->SetFile(shown_information[selected_index]);
 						SoundManager::instance()->stop();
 					}
 					else
 					{
-						if (m_information[selected_index]->audio_path != m_information[current_index]->audio_path)
+						if (shown_information[selected_index]->audio_path != shown_information[current_index]->audio_path && Timer::instance()->GetTime("waiting") > 1000)
 						{
+							Timer::instance()->ResetTimer("waiting");
 							if (SoundManager::instance()->IsPlayingMusic())
 							{
 								SoundManager::instance()->stop();
-								SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+								SoundManager::instance()->clear(shown_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
 							}
 							selected_index = current_index;
-							PrepareHeader::instance()->SetInformation(m_information[selected_index]);
-							SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
-							SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
+							PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
+							SoundManager::instance()->load(shown_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+							SoundManager::instance()->play(shown_information[selected_index]->audio_path, shown_information[selected_index]->preview_time);
 						}
 						else
 						{
-							selected_index = current_index;									PrepareHeader::instance()->SetInformation(m_information[selected_index]);
+							selected_index = current_index;									PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
 						}
 					}
 				}
@@ -260,6 +279,8 @@ void fr::SongList::update()
 			}
 		}
 	}
+
+	last_list_moved = is_list_moved;
 
 	if (list_process < 0 || list_process > list_length)
 	{
@@ -380,6 +401,7 @@ bool fr::SongList::LoadList()
 		new_information->high_score = new_score;
 		m_information.push_back(new_information);
 	}
+	shown_information = m_information;
 	is_loaded = true;
 	return true;
 }
@@ -569,6 +591,48 @@ void fr::SongList::OnExit()
 	}
 }
 
+void fr::SongList::SwitchSort(SortType type, bool reverse)
+{
+	is_reverse = reverse;
+	sort_type = type;
+	switch (type)
+	{
+		case SORTTYPE_DEFAULT:
+			shown_information = m_information;
+		break;
+		case SORTTYPE_ARTIST:
+			shown_information = m_information;
+			std::sort(shown_information.begin(), shown_information.end(), CompareArtist);
+		break;
+		case SORTTYPE_NOTER:
+			shown_information = m_information;
+			std::sort(shown_information.begin(), shown_information.end(), CompareNoter);
+		break;
+		case SORTTYPE_TITLE:
+			shown_information = m_information;
+			std::sort(shown_information.begin(), shown_information.end(), CompareTitle);
+		break;
+		case SORTTYPE_DIFFICULTY:
+			shown_information = m_information;
+			std::sort(shown_information.begin(), shown_information.end(), CompareDifficulty);
+		break;
+		case SORTTYPE_DURATION:
+			shown_information = m_information;
+			std::sort(shown_information.begin(), shown_information.end(), CompareDuration);
+		break;
+	}
+}
+
+void fr::SongList::RollList()
+{
+	
+}
+
+void fr::SongList::Search(std::string pattern_str)
+{
+	
+}
+
 void fr::SongList::SwitchShown()
 {
 	is_shown = !is_shown;
@@ -586,4 +650,14 @@ void fr::SongList::SwitchShown()
 bool fr::SongList::IsShown()
 {
 	return is_shown || !is_exited;
+}
+
+bool fr::SongList::IsReverse()
+{
+	return is_reverse;
+}
+
+fr::SortType fr::SongList::GetSortType()
+{
+	return sort_type;
 }

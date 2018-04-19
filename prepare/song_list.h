@@ -12,6 +12,16 @@ namespace fr
 	struct SongInformation;
 	struct Score;
 
+	enum SortType
+	{
+		SORTTYPE_DEFAULT = 0,
+		SORTTYPE_ARTIST,
+		SORTTYPE_NOTER,
+		SORTTYPE_TITLE,
+		SORTTYPE_DIFFICULTY,
+		SORTTYPE_DURATION
+	};
+
 	class SongList
 	{
 		public:
@@ -37,8 +47,13 @@ namespace fr
 
 			static void OnEnter();
 			static void OnExit();
+			static void SwitchSort(SortType type, bool reverse);
+			static void RollList();
+			static void Search(std::string pattern_str);
 			static void SwitchShown();
 			static bool IsShown();
+			static bool IsReverse();
+			static SortType GetSortType();
 		private:
 			SongList() {}
 			~SongList() {}
@@ -47,6 +62,7 @@ namespace fr
 			static std::vector<Button*> m_cell;
 			static TextInputBox *search_bar;
 			static std::vector<SongInformation*> m_information;
+			static std::vector<SongInformation*> shown_information;
 			static SongInformation *null_information;
 			static int list_length;
 			static int list_process;
@@ -54,8 +70,11 @@ namespace fr
 			static int cell_heigh;
 			static int cell_pos_offset_y;
 			static bool is_list_moved;
+			static bool last_list_moved;
 			static bool is_refreshing;
 			static bool is_loaded;
+			static bool is_reverse;
+			static SortType sort_type;
 
 			static bool is_shown;
 			static bool is_entered;
