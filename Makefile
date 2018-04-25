@@ -1,11 +1,11 @@
 LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS	:= -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lmad -lSDL2_ttf
-VPATH	:= main : prepare : game : loading : user : about
+VPATH	:= main : prepare : game : loading : user : about : gui
 
 all: run
 
-OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
+OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@ -g
 
@@ -30,6 +30,8 @@ gameplay_wizard_state.o: gameplay_wizard_state.cpp gameplay_wizard_state.h
 game_header.o: game_header.cpp game_header.h
 	$(CXX) $< $(CFLAGS)
 game_state.o: game_state.cpp game_state.h
+	$(CXX) $< $(CFLAGS)
+list.o: list.cpp list.h
 	$(CXX) $< $(CFLAGS)
 list_widget.o: list_widget.cpp list_widget.h
 	$(CXX) $< $(CFLAGS)
