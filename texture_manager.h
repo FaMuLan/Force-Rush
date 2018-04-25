@@ -10,7 +10,7 @@
 #include <vector>
 #include <map>
 
-#include "text_area.h"
+#include "gui/text_area.h"
 #include "shape.h"
 
 namespace fr
