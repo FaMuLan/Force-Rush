@@ -2,7 +2,7 @@
 #include <thread>
 #include "../system.h"
 #include "../sprite.h"
-#include "../text_area.h"
+#include "../gui/text_area.h"
 #include "../timer.h"
 #include "../texture_manager.h"
 #include "../sound_manager.h"

@@ -1,10 +1,10 @@
 #include "about_state.h"
-#include "../button.h"
+#include "../gui/button.h"
 #include "../sprite.h"
 #include "../texture_manager.h"
 #include "../system.h"
 #include "../loading/loading_state.h"
-#include "../text_area.h"
+#include "../gui/text_area.h"
 #include "../background.h"
 
 fr::AboutState *fr::AboutState::m_instance = 0;

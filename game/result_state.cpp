@@ -1,12 +1,13 @@
 #include "result_state.h"
 #include "beatmap.h"
-#include "../button.h"
+#include "../gui/button.h"
 #include "../sprite.h"
-#include "../text_area.h"
+#include "../gui/text_area.h"
 #include "../system.h"
 #include "../texture_manager.h"
 #include "../song_data.h"
 #include "../prepare/prepare_state.h"
+#include "../control_handler.h"
 #include "../prepare/song_list.h"
 #include "../loading/loading_state.h"
 #include "game_state.h"
@@ -217,7 +218,7 @@ void fr::ResultState::update()
 		new_performance_text->render();
 	}
 
-	if (b_return->IsReleased())
+	if (b_return->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 	{
 		LoadingState::instance()->init(STATE_PREPARE);
 	}

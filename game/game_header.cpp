@@ -1,8 +1,9 @@
 #include "game_header.h"
 #include "../sprite.h"
-#include "../button.h"
-#include "../text_area.h"
+#include "../gui/button.h"
+#include "../gui/text_area.h"
 #include "../texture_manager.h"
+#include "../control_handler.h"
 #include "../animator.h"
 #include "../system.h"
 #include "../sound_manager.h"
@@ -48,7 +49,7 @@ void fr::GameHeader::init()
 
 	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
 	title_base->AddPressedFrame("assets/game/title_base_pressed.png");
-	title_base->AddText(GameState::instance()->m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	title_base->AddText(GameState::instance()->m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 720);
 	score_base->init("assets/base/widget_min_base.png");
 	score_base->SetPos(0, title_base->GetX() >= score_base->GetW() ? 0 : 64);
 	user_base->init("assets/base/widget_min_base.png");
@@ -111,7 +112,7 @@ void fr::GameHeader::update()
 	performance_process_bar->SetSrcRect(Rect(0, 0, performance_process * 216.f, 8));
 	performance_process_bar->SetSize(performance_process * 216.f, 8);
 
-	if (title_base->IsReleased())
+	if (title_base->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 	{
 		GameHeader::instance()->SwitchPause();
 		SoundManager::instance()->SwitchPause();

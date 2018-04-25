@@ -1,6 +1,6 @@
 #include "prepare_header.h"
 #include "../texture_manager.h"
-#include "../button.h"
+#include "../gui/button.h"
 #include "../system.h"
 #include "../song_data.h"
 

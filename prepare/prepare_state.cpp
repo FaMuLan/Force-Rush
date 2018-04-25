@@ -1,6 +1,6 @@
 #include "prepare_state.h"
 #include <thread>
-#include "../button.h"
+#include "../gui/button.h"
 #include "../sprite.h"
 #include "../system.h"
 #include "../control_handler.h"

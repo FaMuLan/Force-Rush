@@ -15,7 +15,7 @@
 #include "../file_system.h"
 #include "../system.h"
 #include "../timer.h"
-#include "../text_area.h"
+#include "../gui/text_area.h"
 #include "../sprite.h"
 #include "../animator.h"
 
@@ -139,6 +139,7 @@ void fr::Beatmap::init()
 	model_view_matrix = glm::rotate(model_view_matrix, glm::radians(float(Setting::instance()->GetCameraRotateX())), glm::vec3(1.0, 0.0, 0.0));
 	model_view_matrix = glm::rotate(model_view_matrix, 0.0f, glm::vec3(0.0, 0.0, 1.0));
 	TextureManager::instance()->LoadMatrix("model_view", model_view_matrix);
+	TextureManager::instance()->update();
 
 	for (int i = 0; i < 4; i++)
 	{
