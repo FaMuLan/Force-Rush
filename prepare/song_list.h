@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "../gui/list.h"
 
 namespace fr
 {
@@ -22,7 +23,7 @@ namespace fr
 		SORTTYPE_DURATION
 	};
 
-	class SongList
+	class SongList : public List
 	{
 		public:
 			static SongList *instance()
@@ -34,51 +35,35 @@ namespace fr
 				}
 				return m_instance;
 			}
-			static void init();
-			static void clear();
-			static void update();
-			static void render();
+			void init();
+			void clear();
+			void update();
+			void render();
 
-			static bool LoadList();
+			bool LoadList();
 			static void WriteList();
 			static void RefreshList();
-			static bool IsRefreshing();
-			static void RefreshListSize();
+			bool IsRefreshing();
+			void RefreshListSize();
 
-			static void OnEnter();
-			static void OnExit();
-			static void SwitchSort(SortType type, bool reverse);
-			static void RollList();
-			static void Search(std::string pattern_str);
-			static void SwitchShown();
-			static bool IsShown();
-			static bool IsReverse();
-			static SortType GetSortType();
+			void SwitchSort(SortType type, bool reverse);
+			void RollList();
+			void Search(std::string pattern_str);
+			bool IsReverse();
+			SortType GetSortType();
 		private:
 			SongList() {}
 			~SongList() {}
 			static SongList *m_instance;
 
-			static std::vector<Button*> m_cell;
-			static TextInputBox *search_bar;
+			TextInputBox *search_bar;
 			static std::vector<SongInformation*> m_information;
 			static std::vector<SongInformation*> shown_information;
 			static SongInformation *null_information;
-			static int list_length;
-			static int list_process;
-			static int selected_index;
-			static int cell_heigh;
-			static int cell_pos_offset_y;
-			static bool is_list_moved;
-			static bool last_list_moved;
 			static bool is_refreshing;
 			static bool is_loaded;
-			static bool is_reverse;
-			static SortType sort_type;
-
-			static bool is_shown;
-			static bool is_entered;
-			static bool is_exited;
+			bool is_reverse;
+			SortType sort_type;
 	};
 };	//namespace fr
 
