@@ -1,5 +1,7 @@
 #include "file_system.h"
 #include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fstream>
 #include <algorithm>
 #include <SDL2/SDL.h>
@@ -25,6 +27,7 @@ bool fr::ReadFile(std::string path, std::string &output)
 
 bool fr::WriteFile(std::string path, std::string &output)
 {
+	mkdir(GetParentDir(path).c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	std::ofstream file;
 	file.open(path);
 	file << output;
