@@ -153,6 +153,7 @@ void fr::SongList::update()
 				}
 				PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
 			}
+			last_selected_index = selected_index;
 		}
 		else
 		{
@@ -199,7 +200,7 @@ bool fr::SongList::LoadList()
 	std::regex chain_pattern("\\tchain:(\\d*?)\\n");
 	std::regex rank_pattern("\\trank:(\\d)");
 
-	if (!ReadFile("/sdcard/data/song_list.fa", text))
+	if (!ReadFile("/sdcard/ForceRush/song_list.fa", text))
 	{
 		return false;
 	}
@@ -356,7 +357,7 @@ void fr::SongList::WriteList()
 		delete [] chain_ch;
 		delete [] rank_ch;
 	}
-	WriteFile("/sdcard/data/song_list.fa", output_text);
+	WriteFile("/sdcard/ForceRush/song_list.fa", output_text);
 }
 
 void fr::SongList::RefreshList()

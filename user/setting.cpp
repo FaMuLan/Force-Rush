@@ -9,7 +9,7 @@ fr::Setting *fr::Setting::m_instance = 0;
 
 void fr::Setting::init()
 {
-	user_profile_path = "/sdcard/data/default.fru";
+	user_profile_path = "/sdcard/ForceRush/default.fa";
 	is_auto = false;
 	is_slide_out = false;
 	speed = 3000;
@@ -43,7 +43,7 @@ void fr::Setting::init()
 bool fr::Setting::read()
 {
 	std::string file;
-	if (!ReadFile("/sdcard/data/user_setting.fa", file))
+	if (!ReadFile("/sdcard/ForceRush/setting.fa", file))
 	{
 		return false; 
 	}
@@ -144,7 +144,7 @@ void fr::Setting::write()
 		file += "\n";
 	}
 	file += "End of file\n";
-	WriteFile("/sdcard/data/user_setting.fa", file);
+	WriteFile("/sdcard/ForceRush/setting.fa", file);
 }
 
 std::string fr::Setting::GetUserProfilePath()
