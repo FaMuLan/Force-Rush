@@ -30,7 +30,6 @@ namespace fr
 			int value_count;
 			int selected_index;
 			int last_selected_index;
-			int ergodic_value_index;
 			int current_list_process;
 			int roll_speed;
 			bool is_loop;

@@ -7,10 +7,14 @@ void fr::List::init(Rect load_dest_rect, int load_value_count,  bool load_is_loo
 	dest_rect = load_dest_rect;
 	value_count = load_value_count;
 	selected_index = load_selected_index;
+	last_selected_index = load_selected_index;
 	is_loop = load_is_loop;
 	is_double_confirm = load_is_double_confirm;
+	current_list_process = 0;
+	roll_speed = 0;
 	is_locked = false;
 	is_list_moved = false;
+	is_confirmed = false;
 	RefreshListSize();
 }
 
@@ -69,8 +73,8 @@ void fr::List::update()
 	is_list_moved = roll_speed != 0;
 	//检测列表是否移动。
 
-	int list_middle_y = (dest_rect.y + dest_rect.h) / 2;
-	ergodic_value_index = current_list_process / cell_h;
+//	int list_middle_y = (dest_rect.y + dest_rect.h) / 2;
+	int ergodic_value_index = current_list_process / cell_h;
 	for (int i = 0; i < cell.size(); i++)
 	{
 		int x = dest_rect.x;
@@ -86,7 +90,7 @@ void fr::List::update()
 		if (i == cell.size() - 1)
 		{
 			cell[i]->SetSize(cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY());
-			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell[i]->GetY() + cell[i]->GetH() - dest_rect.y - dest_rect.h));
+			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell_h - cell[i]->GetY() - cell[i]->GetH() + dest_rect.y + dest_rect.h));
 		}
 
 		if (ergodic_value_index >= value_count)
@@ -102,10 +106,7 @@ void fr::List::update()
 			cell[i]->SetBaseFrame(0);
 		}
 
-		if (!is_list_moved)
-		{
-			cell[i]->update();
-		}
+		cell[i]->update();
 
 		if (cell[i]->IsReleased() && (!is_double_confirm || ergodic_value_index == selected_index))
 		{
@@ -113,7 +114,6 @@ void fr::List::update()
 		}
 		else if (cell[i]->IsReleased())
 		{
-			last_selected_index = selected_index;
 			selected_index = ergodic_value_index;
 		}
 		ergodic_value_index++;
@@ -151,6 +151,7 @@ void fr::List::RefreshListSize()
 		new_cell->AddFrame(cell_base_selected_path);
 		cell.push_back(new_cell);
 	}
+	list_length = cell_h * value_count;
 }
 
 void fr::List::SetValueCount(int load_value_count)
