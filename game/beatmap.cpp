@@ -374,7 +374,7 @@ void fr::GameBeatmap::update()
 void fr::GameBeatmap::render()
 {
 	Beatmap::render();
-	chain_text->render(chain_text->GetX(), chain_text->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("chain")));
+	chain_text->render(chain_text->GetUserX(), chain_text->GetUserY() - 100.f * (1.f - Animator::instance()->GetProcess("chain")));
 	if (show_early)
 	{
 		early_text->render();
