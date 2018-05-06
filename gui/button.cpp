@@ -64,7 +64,8 @@ void fr::Button::update()
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
 			if (load_finger.id == has_pressed_id)
 			{
-				if (load_finger.x < dest_rect.x || load_finger.y < dest_rect.y || load_finger.x > (dest_rect.x + dest_rect.w) || load_finger.y > (dest_rect.y + dest_rect.h))
+//				if (load_finger.x < dest_rect.x || load_finger.y < dest_rect.y || load_finger.x > (dest_rect.x + dest_rect.w) || load_finger.y > (dest_rect.y + dest_rect.h))
+				if (load_finger.moved)
 				{
 					is_pressed = false;
 				}
@@ -92,7 +93,10 @@ void fr::Button::render()
 	Sprite::render();
 	for (int i = 0; i < text.size(); i++)
 	{
-		text[i]->render(dest_rect.x + text[i]->GetX(), dest_rect.y + text[i]->GetY());
+		int x, y;
+		x = source_rect.x > text[i]->GetX() ? dest_rect.x : text[i]->GetX() + dest_rect.x - source_rect.x;
+		y = source_rect.y > text[i]->GetY() ? dest_rect.y : text[i]->GetY() + dest_rect.y - source_rect.y;
+		text[i]->render(x, y, TEXTFORMAT_LEFT);
 	}
 }
 
@@ -147,4 +151,26 @@ void fr::Button::ClearText()
 fr::TextArea *fr::Button::GetText(int index)
 {
 	return text[index];
+}
+
+void fr::Button::SetSize(int w, int h)
+{
+	Sprite::SetSize(w, h);
+}
+
+void fr::Button::SetSrcRect(fr::Rect load_source_rect)
+{
+	Sprite::SetSrcRect(load_source_rect);
+	for (int i = 0; i < text.size(); i++)
+	{
+		Rect text_source_rect = Rect(0, 0, 0, 0);
+		text_source_rect.x = source_rect.x < text[i]->GetX() ? 0 : source_rect.x - text[i]->GetX();
+		text_source_rect.y = source_rect.y < text[i]->GetY() ? 0 : source_rect.y - text[i]->GetY();
+		text_source_rect.w = (source_rect.x + source_rect.w > text[i]->GetX() + text[i]->GetTextureW()) ? text[i]->GetTextureW() - text_source_rect.x : text[i]->GetX() + text[i]->GetTextureW() - source_rect.x - source_rect.w - text_source_rect.x;
+//		text_source_rect.h = (source_rect.y + source_rect.h > text[i]->GetY() + text[i]->GetTextureH()) ? text[i]->GetTextureH() - text_source_rect.y : -(text[i]->GetY()) - text[i]->GetTextureH() + source_rect.y + source_rect.h - text_source_rect.y;
+		text_source_rect.h = text_source_rect.y < text[i]->GetTextureH() ? text[i]->GetTextureH() - text_source_rect.y : 0;
+//		text_source_rect.h + text_source_rect.y == source_rect.y + source_rect.h > text[i]->GetY() + text->h ? text->h : source_rect.y + source_rect.h - text[i]->GetY() - text->h
+		text[i]->SetSrcRect(text_source_rect);
+		text[i]->SetSize(text_source_rect.w, text_source_rect.h);
+	}
 }

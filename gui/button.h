@@ -30,6 +30,9 @@ namespace fr
 			void AddText(TextArea *load_text);
 			void ClearText();
 			TextArea *GetText(int index);
+
+			virtual void SetSize(int w, int h);
+			virtual void SetSrcRect(Rect load_source_rect);
 		protected:
 			bool is_pressed;
 			bool is_released;
