@@ -80,17 +80,17 @@ void fr::List::update()
 		int x = dest_rect.x;
 		int y = -(current_list_process % cell_h) + i * cell_h + dest_rect.y;
 		cell[i]->SetPos(x, y);
-		cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell[i]->GetH()));
+		cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell_h));
 		if (i == 0)
 		{
 			cell[i]->SetPos(dest_rect.x, dest_rect.y);
-			cell[i]->SetSize(cell[i]->GetW(), cell[i]->GetH() - (dest_rect.y - cell[i]->GetY()));
-			cell[i]->SetSrcRect(Rect(0, dest_rect.y - cell[i]->GetY(), cell[i]->GetW(), cell[i]->GetH() - (dest_rect.y - cell[i]->GetY())));
+			cell[i]->SetSize(cell[i]->GetW(), cell_h - (dest_rect.y - y));
+			cell[i]->SetSrcRect(Rect(0, dest_rect.y - y, cell[i]->GetW(), cell_h - (dest_rect.y - y)));
 		}
 		if (i == cell.size() - 1)
 		{
 			cell[i]->SetSize(cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY());
-			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell_h - cell[i]->GetY() - cell[i]->GetH() + dest_rect.y + dest_rect.h));
+			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY()));
 		}
 
 		if (ergodic_value_index >= value_count)
