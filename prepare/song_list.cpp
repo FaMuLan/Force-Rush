@@ -95,6 +95,8 @@ void fr::SongList::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
+		List::SetPos(System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280, System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64);
+		List::SetSize(720, System::instance()->GetWindowHeigh() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64));
 		search_bar->SetPos(dest_rect.x, dest_rect.y - cell_h);
 		RefreshListSize();
 	}
