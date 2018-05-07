@@ -20,6 +20,8 @@ void fr::ListWidget::init()
 	sort_type_text = new TextArea;
 	reverse_label = new TextArea;
 	reverse_switch = new Button;
+	manage_path_label = new TextArea;
+	manage_path_switch = new Button;
 
 	widget_base->init("assets/base/widget_base.png");
 	sort_type_label->init("SORT", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
@@ -52,6 +54,10 @@ void fr::ListWidget::init()
 	reverse_switch->init("assets/base/sort_button.png");
 	reverse_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
 	reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", reverse_switch->GetW() / 2, reverse_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	manage_path_label->init("MANAGE PATH", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	manage_path_switch->init("assets/base/sort_button.png");
+	manage_path_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
+	manage_path_switch->AddText("OPEN", manage_path_switch->GetW() / 2, manage_path_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
 	is_shown = false;
 	is_entered = false;
@@ -78,6 +84,8 @@ void fr::ListWidget::update()
 			sort_type_text->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 68);
 			reverse_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
 			reverse_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
+			manage_path_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+			manage_path_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 240);
 		}
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
@@ -98,6 +106,7 @@ void fr::ListWidget::update()
 		sort_type_left->update();
 		sort_type_right->update();
 		reverse_switch->update();
+		manage_path_switch->update();
 
 		if (sort_type_left->IsReleased())
 		{
@@ -181,6 +190,8 @@ void fr::ListWidget::render()
 		sort_type_text->render();
 		reverse_label->render();
 		reverse_switch->render();
+		manage_path_label->render();
+		manage_path_switch->render();
 	}
 }
 
@@ -211,8 +222,10 @@ void fr::ListWidget::OnEnter()
 	sort_type_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 50);
 	sort_type_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 50);
 	sort_type_text->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 68);
-	reverse_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 118);
-	reverse_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 98);
+	reverse_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+	reverse_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
+	manage_path_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+	manage_path_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 240);
 	if (Animator::instance()->IsTimeUp("list_enter"))
 	{
 		Animator::instance()->ResetAnimation("list_enter");
@@ -228,8 +241,10 @@ void fr::ListWidget::OnExit()
 	sort_type_left->SetPos(widget_base->GetX() + 430,  widget_base->GetY() + 50);
 	sort_type_right->SetPos(widget_base->GetX() + 622, widget_base->GetY() + 50);
 	sort_type_text->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 68);
-	reverse_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 118);
-	reverse_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 98);
+	reverse_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 154);
+	reverse_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 136);
+	manage_path_label->SetPos(widget_base->GetX() + 32, widget_base->GetY() + 258);
+	manage_path_switch->SetPos(widget_base->GetX() + 464, widget_base->GetY() + 240);
 	if (Animator::instance()->IsTimeUp("list_exit"))
 	{
 		Animator::instance()->ResetAnimation("list_exit");

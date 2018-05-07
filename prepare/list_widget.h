@@ -1,6 +1,8 @@
 #ifndef FORCE_RUSH_PREPARE_LIST_WIDGET_H
 #define FORCE_RUSH_PREPARE_LIST_WIDGET_H
 
+#include "../gui/list.h"
+
 namespace fr
 {
 	class Sprite;
@@ -44,6 +46,8 @@ namespace fr
 			TextArea *sort_type_text;
 			TextArea *reverse_label;
 			Button *reverse_switch;
+			TextArea *manage_path_label;
+			Button *manage_path_switch;
 	};
 };
 
