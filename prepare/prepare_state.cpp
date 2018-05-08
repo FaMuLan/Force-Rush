@@ -12,6 +12,7 @@
 #include "prepare_header.h"
 #include "mod_widget.h"
 #include "list_widget.h"
+#include "song_path_manager.h"
 
 fr::PrepareState *fr::PrepareState::m_instance = 0;
 
@@ -21,6 +22,7 @@ void fr::PrepareState::init()
 	SongList::instance()->init();
 	ModWidget::instance()->init();
 	ListWidget::instance()->init();
+	SongPathManagerWidget::instance()->init();
 	prepare_back = new Button;
 	prepare_mod = new Button;
 	prepare_list = new Button;
@@ -87,6 +89,7 @@ void fr::PrepareState::update()
 	PrepareHeader::instance()->update();
 	ModWidget::instance()->update();
 	ListWidget::instance()->update();
+	SongPathManagerWidget::instance()->update();
 	prepare_back->update();
 	prepare_mod->update();
 	prepare_list->update();
@@ -101,6 +104,7 @@ void fr::PrepareState::update()
 	prepare_refresh->render();
 	ModWidget::instance()->render();
 	ListWidget::instance()->render();
+	SongPathManagerWidget::instance()->render();
 	if (!ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
 	{
 		if (prepare_back->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
