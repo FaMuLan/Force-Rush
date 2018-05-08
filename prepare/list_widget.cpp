@@ -7,6 +7,7 @@
 #include "../user/setting.h"
 #include "../control_handler.h"
 #include "song_list.h"
+#include "song_path_manager.h"
 
 fr::ListWidget *fr::ListWidget::m_instance = 0;
 
@@ -167,6 +168,10 @@ void fr::ListWidget::update()
 			SongList::instance()->SwitchSort(SongList::instance()->GetSortType(), !SongList::instance()->IsReverse());
 			reverse_switch->ClearText();
 			reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", reverse_switch->GetW() / 2, reverse_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+		}
+		if (manage_path_switch->IsReleased())
+		{
+			SongPathManagerWidget::instance()->SwitchShown();
 		}
 	}
 	else if (is_shown)
