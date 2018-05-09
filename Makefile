@@ -1,11 +1,11 @@
 LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS	:= -c -g
-LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lmad -lSDL2_ttf
+LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lSDL2_ttf
 VPATH	:= main : prepare : game : loading : user : about : gui
 
 all: run
 
-OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
+OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o song_path_manager.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@ -g
 
@@ -54,6 +54,8 @@ setting.o: setting.cpp setting.h
 shape.o: shape.cpp shape.h
 	$(CXX) $< $(CFLAGS)
 song_list.o: song_list.cpp song_list.h
+	$(CXX) $< $(CFLAGS)
+song_path_manager.o: song_path_manager.cpp song_path_manager.h
 	$(CXX) $< $(CFLAGS)
 sound_manager.o: sound_manager.cpp sound_manager.h
 	$(CXX) $< $(CFLAGS)
