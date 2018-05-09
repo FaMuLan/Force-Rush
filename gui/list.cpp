@@ -33,13 +33,25 @@ void fr::List::update()
 			current_list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
 
-			while (current_list_process < 0)
+			while (current_list_process < 0 && is_loop)
 			{
 				current_list_process += list_length;
 			}
-			while (current_list_process >= list_length)
+			while (current_list_process >= list_length && is_loop)
 			{
 				current_list_process -= list_length;
+			}
+			if (current_list_process < 0 && !is_loop)
+			{
+				current_list_process = 0;
+			}
+			else if (current_list_process >= list_length - dest_rect.h && !is_loop)
+			{
+				current_list_process = list_length - dest_rect.h;
+				if (current_list_process < 0)
+				{
+					current_list_process = 0;
+				}
 			}
 			//把list_process盡量控制在[0,list_length)區間內
 			//艸有必要用一個笨方法來控制變量在範圍內了
@@ -60,13 +72,25 @@ void fr::List::update()
 		}
 		//不包含 roll_speed == 0 這個情況
 		current_list_process -= roll_speed;
-		while (current_list_process < 0)
+		while (current_list_process < 0 && is_loop)
 		{
 			current_list_process += list_length;
 		}
-		while (current_list_process >= list_length)
+		while (current_list_process >= list_length && is_loop)
 		{
 			current_list_process -= list_length;
+		}
+		if (current_list_process < 0 && !is_loop)
+		{
+			current_list_process = 0;
+		}
+		else if (current_list_process >= list_length - dest_rect.h && !is_loop)
+		{
+			current_list_process = list_length - dest_rect.h;
+			if (current_list_process < 0)
+			{
+				current_list_process = 0;
+			}
 		}
 	}
 
@@ -81,13 +105,13 @@ void fr::List::update()
 		int y = -(current_list_process % cell_h) + i * cell_h + dest_rect.y;
 		cell[i]->SetPos(x, y);
 		cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell_h));
-		if (i == 0)
+		if (cell[i]->GetY() < dest_rect.y)
 		{
 			cell[i]->SetPos(dest_rect.x, dest_rect.y);
 			cell[i]->SetSize(cell[i]->GetW(), cell_h - (dest_rect.y - y));
 			cell[i]->SetSrcRect(Rect(0, dest_rect.y - y, cell[i]->GetW(), cell_h - (dest_rect.y - y)));
 		}
-		if (i == cell.size() - 1)
+		if (cell[i]->GetY() + cell[i]->GetH() == dest_rect.y + dest_rect.h)
 		{
 			cell[i]->SetSize(cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY());
 			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY()));
