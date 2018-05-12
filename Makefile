@@ -1,11 +1,11 @@
 LDFLAGS	:= `sdl2-config --cflags`
 CFLAGS	:= -c -g
 LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lSDL2_ttf
-VPATH	:= main : prepare : game : loading : user : about : gui
+VPATH	:= main : prepare : game : loading : user : about : gui : tools
 
 all: run
 
-OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o song_path_manager.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
+OBJ	:= about_state.o animator.o background.o beatmap.o button.o column.o control_handler.o file_explorer.o file_system.o gameplay_wizard_state.o game_header.o game_state.o list.o list_widget.o loading_state.o main.o main_state.o mod_widget.o prepare_header.o prepare_state.o result_state.o setting.o shape.o song_list.o song_path_manager.o sound_manager.o sprite.o system.o text_area.o text_input_box.o texture_manager.o timer.o user_profile.o
 run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@ -g
 
@@ -22,6 +22,8 @@ button.o: button.cpp button.h sprite.h
 column.o: column.cpp column.h
 	$(CXX) $< $(CFLAGS)
 control_handler.o: control_handler.cpp control_handler.h
+	$(CXX) $< $(CFLAGS)
+file_explorer.o: file_explorer.cpp file_explorer.h
 	$(CXX) $< $(CFLAGS)
 file_system.o: file_system.cpp file_system.h
 	$(CXX) $< $(CFLAGS)
