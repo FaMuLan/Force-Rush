@@ -4,6 +4,7 @@
 #include "../animator.h"
 #include "../control_handler.h"
 #include "../user/setting.h"
+#include "../tools/file_explorer.h"
 #include "song_path_manager.h"
 
 
@@ -67,14 +68,21 @@ void fr::SongPathManagerWidget::update()
 		new_path->update();
 		delete_path->update();
 		SongPathList::instance()->update();
+
+		if (new_path->IsReleased())
+		{
+			FileExplorerWidget::instance()->SwitchShown();
+		}
 	}
 	else if (is_shown)
 	{
 		OnEnter();
+		SongPathList::instance()->update();
 	}
 	else if (!is_shown && !is_exited)
 	{
 		OnExit();
+		SongPathList::instance()->update();
 	}
 }
 
