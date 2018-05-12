@@ -135,6 +135,7 @@ void fr::List::update()
 		if (cell[i]->IsReleased() && (!is_double_confirm || ergodic_value_index == selected_index) && !is_locked)
 		{
 			is_confirmed = true;
+			selected_index = ergodic_value_index;
 		}
 		else if (cell[i]->IsReleased() && !is_locked)
 		{
