@@ -27,7 +27,7 @@ void fr::List::update()
 	for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 	{
 		Finger load_finger = ControlHandler::instance()->GetFinger(i);
-		if ((load_finger.x >= dest_rect.x) && (load_finger.x <= dest_rect.x + dest_rect.w) && (load_finger.y >= dest_rect.y) && (load_finger.y <= dest_rect.y + dest_rect.w) && !is_locked)
+		if ((load_finger.x >= dest_rect.x) && (load_finger.x <= dest_rect.x + dest_rect.w) && (load_finger.y >= dest_rect.y) && (load_finger.y <= dest_rect.y + dest_rect.h) && !is_locked)
 		{
 			current_list_process -= load_finger.dy;
 			roll_speed = load_finger.dy;
