@@ -15,7 +15,6 @@ void fr::List::init(Rect load_dest_rect, int load_value_count,  bool load_is_loo
 	is_locked = false;
 	is_list_moved = false;
 	is_confirmed = false;
-	RefreshListSize();
 }
 
 void fr::List::clear()
@@ -104,6 +103,7 @@ void fr::List::update()
 		int x = dest_rect.x;
 		int y = -(current_list_process % cell_h) + i * cell_h + dest_rect.y;
 		cell[i]->SetPos(x, y);
+		cell[i]->SetSize(cell[i]->GetW(), cell_h);
 		cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), cell_h));
 		if (cell[i]->GetY() < dest_rect.y)
 		{
@@ -111,7 +111,7 @@ void fr::List::update()
 			cell[i]->SetSize(cell[i]->GetW(), cell_h - (dest_rect.y - y));
 			cell[i]->SetSrcRect(Rect(0, dest_rect.y - y, cell[i]->GetW(), cell_h - (dest_rect.y - y)));
 		}
-		if (cell[i]->GetY() + cell[i]->GetH() == dest_rect.y + dest_rect.h)
+		if (cell[i]->GetY() + cell_h > dest_rect.y + dest_rect.h)
 		{
 			cell[i]->SetSize(cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY());
 			cell[i]->SetSrcRect(Rect(0, 0, cell[i]->GetW(), dest_rect.y + dest_rect.h - cell[i]->GetY()));
@@ -132,11 +132,11 @@ void fr::List::update()
 
 		cell[i]->update();
 
-		if (cell[i]->IsReleased() && (!is_double_confirm || ergodic_value_index == selected_index))
+		if (cell[i]->IsReleased() && (!is_double_confirm || ergodic_value_index == selected_index) && !is_locked)
 		{
 			is_confirmed = true;
 		}
-		else if (cell[i]->IsReleased())
+		else if (cell[i]->IsReleased() && !is_locked)
 		{
 			selected_index = ergodic_value_index;
 		}
@@ -148,7 +148,10 @@ void fr::List::render()
 {
 	for (int i = 0; i < cell.size(); i++)
 	{
-		cell[i]->render();
+		if (cell[i]->GetY() < dest_rect.y + dest_rect.h)
+		{
+			cell[i]->render();
+		}
 	}
 }
 
@@ -203,4 +206,9 @@ void fr::List::SetSize(int w, int h)
 {
 	dest_rect.w = w;
 	dest_rect.h = h;
+}
+
+void fr::List::lock(bool lock_switch)
+{
+	is_locked = lock_switch;
 }
