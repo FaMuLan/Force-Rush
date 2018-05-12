@@ -46,7 +46,7 @@ namespace fr
 			bool IsRefreshing();
 			void RefreshListSize();
 
-			void SwitchSort(SortType type, bool reverse);
+			static void SwitchSort(SortType type, bool reverse);
 			void RollList();
 			void Search(std::string pattern_str);
 			bool IsReverse();
@@ -62,8 +62,8 @@ namespace fr
 			static SongInformation *null_information;
 			static bool is_refreshing;
 			static bool is_loaded;
-			bool is_reverse;
-			SortType sort_type;
+			static bool is_reverse;
+			static SortType sort_type;
 	};
 };	//namespace fr
 

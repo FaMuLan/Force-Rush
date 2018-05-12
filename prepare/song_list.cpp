@@ -21,6 +21,7 @@
 #include "../user/setting.h"
 #include "prepare_header.h"
 #include "mod_widget.h"
+#include "song_path_manager.h"
 
 fr::SongList *fr::SongList::m_instance = 0;
 std::vector<fr::SongInformation*> fr::SongList::m_information;
@@ -28,6 +29,8 @@ std::vector<fr::SongInformation*> fr::SongList::shown_information;
 fr::SongInformation *fr::SongList::null_information = 0;
 bool fr::SongList::is_refreshing = false;
 bool fr::SongList::is_loaded = false;
+bool fr::SongList::is_reverse = false;
+fr::SortType fr::SongList::sort_type = fr::SORTTYPE_DEFAULT;
 
 void fr::SongList::init()
 {
@@ -399,6 +402,8 @@ void fr::SongList::RefreshList()
 		if (LoadBeatmapFile(file[i]->name, new_song_information, NULL))
 		{
 			m_information.push_back(new_song_information);
+			SwitchSort(sort_type, is_reverse);
+			//就当是刷新列表了
 
 //			PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 			WriteList();
