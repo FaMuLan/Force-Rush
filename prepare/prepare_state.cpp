@@ -12,6 +12,7 @@
 #include "prepare_header.h"
 #include "mod_widget.h"
 #include "list_widget.h"
+#include "../tools/file_explorer.h"
 #include "song_path_manager.h"
 
 fr::PrepareState *fr::PrepareState::m_instance = 0;
@@ -23,6 +24,7 @@ void fr::PrepareState::init()
 	ModWidget::instance()->init();
 	ListWidget::instance()->init();
 	SongPathManagerWidget::instance()->init();
+	FileExplorerWidget::instance()->init();
 	prepare_back = new Button;
 	prepare_mod = new Button;
 	prepare_list = new Button;
@@ -90,11 +92,14 @@ void fr::PrepareState::update()
 	ModWidget::instance()->update();
 	ListWidget::instance()->update();
 	SongPathManagerWidget::instance()->update();
+	FileExplorerWidget::instance()->update();
 	prepare_back->update();
 	prepare_mod->update();
 	prepare_list->update();
 	prepare_refresh->update();
 
+	SongList::instance()->lock(ModWidget::instance()->IsShown() || ListWidget::instance()->IsShown() || SongPathManagerWidget::instance()->IsShown() || FileExplorerWidget::instance()->IsShown());
+	SongPathList::instance()->lock(FileExplorerWidget::instance()->IsShown());
 	Background::instance()->render();
 	SongList::instance()->render();
 	PrepareHeader::instance()->render();
@@ -105,6 +110,7 @@ void fr::PrepareState::update()
 	ModWidget::instance()->render();
 	ListWidget::instance()->render();
 	SongPathManagerWidget::instance()->render();
+	FileExplorerWidget::instance()->render();
 	if (!ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
 	{
 		if (prepare_back->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))

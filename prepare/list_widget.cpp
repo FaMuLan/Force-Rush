@@ -8,6 +8,7 @@
 #include "../control_handler.h"
 #include "song_list.h"
 #include "song_path_manager.h"
+#include "../tools/file_explorer.h"
 
 fr::ListWidget *fr::ListWidget::m_instance = 0;
 
@@ -109,7 +110,7 @@ void fr::ListWidget::update()
 		reverse_switch->update();
 		manage_path_switch->update();
 
-		if (sort_type_left->IsReleased())
+		if (sort_type_left->IsReleased() && !FileExplorerWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown())
 		{
 			int sort_type_num = SongList::instance()->GetSortType();
 			sort_type_num = sort_type_num - 1 < 0 ? 5 : sort_type_num - 1;
@@ -136,7 +137,7 @@ void fr::ListWidget::update()
 				break;
 			}
 		}
-		if (sort_type_right->IsReleased())
+		if (sort_type_right->IsReleased() && !FileExplorerWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown())
 		{
 			int sort_type_num = SongList::instance()->GetSortType();
 			sort_type_num = sort_type_num + 1 > 5 ? 0 : sort_type_num + 1;
@@ -163,13 +164,13 @@ void fr::ListWidget::update()
 				break;
 			}
 		}
-		if (reverse_switch->IsReleased())
+		if (reverse_switch->IsReleased() && !FileExplorerWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown())
 		{
 			SongList::instance()->SwitchSort(SongList::instance()->GetSortType(), !SongList::instance()->IsReverse());
 			reverse_switch->ClearText();
 			reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", reverse_switch->GetW() / 2, reverse_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 		}
-		if (manage_path_switch->IsReleased())
+		if (manage_path_switch->IsReleased() && !FileExplorerWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown())
 		{
 			SongPathManagerWidget::instance()->SwitchShown();
 		}

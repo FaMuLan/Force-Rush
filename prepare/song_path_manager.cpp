@@ -69,7 +69,11 @@ void fr::SongPathManagerWidget::update()
 		delete_path->update();
 		SongPathList::instance()->update();
 
-		if (new_path->IsReleased())
+		if (new_path->IsReleased() && !FileExplorerWidget::instance()->IsShown())
+		{
+			FileExplorerWidget::instance()->SwitchShown();
+		}
+		if (delete_path->IsReleased() && !FileExplorerWidget::instance()->IsShown())
 		{
 			FileExplorerWidget::instance()->SwitchShown();
 		}
