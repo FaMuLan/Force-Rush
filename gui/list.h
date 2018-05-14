@@ -24,6 +24,7 @@ namespace fr
 			void SetPos(int x, int y);
 			void SetSize(int w, int h);
 			void lock(bool lock_switch);
+			int GetSelectedIndex();
 		protected:
 			Rect dest_rect;
 			int cell_h;

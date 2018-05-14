@@ -213,3 +213,8 @@ void fr::List::lock(bool lock_switch)
 {
 	is_locked = lock_switch;
 }
+
+int fr::List::GetSelectedIndex()
+{
+	return selected_index;
+}
