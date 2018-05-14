@@ -30,6 +30,7 @@ namespace fr
 			void render();
 			void SwitchShown();
 			bool IsShown();
+			bool GetOutput(std::string &result);
 
 			void OnEnter();
 			void OnExit();
@@ -40,6 +41,7 @@ namespace fr
 			Sprite *widget_base_head;
 			Sprite *widget_base_body;
 			Sprite *widget_base_foot;
+			bool is_outputed;
 			bool is_shown;
 			bool is_entered;
 			bool is_exited;

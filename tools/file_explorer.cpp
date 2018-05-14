@@ -50,6 +50,7 @@ void fr::FileExplorerWidget::clear()
 
 void fr::FileExplorerWidget::update()
 {
+	is_outputed = false;
 	if (is_shown && is_entered)
 	{
 		if (System::instance()->IsWindowModified())
@@ -77,6 +78,11 @@ void fr::FileExplorerWidget::update()
 		if (parent_dir->IsReleased())
 		{
 			FileList::instance()->PathBack();
+		}
+		if (confirm->IsReleased())
+		{
+			is_outputed = true;
+			SwitchShown();
 		}
 		current_path->SetText(FileList::instance()->GetCurrentPath());
 	}
@@ -129,6 +135,11 @@ bool fr::FileExplorerWidget::IsShown()
 	return is_shown || !is_exited;
 }
 
+bool fr::FileExplorerWidget::GetOutput(std::string &result)
+{
+	result = FileList::instance()->GetCurrentPath();
+	return is_outputed;
+}
 
 void fr::FileExplorerWidget::OnEnter()
 {
