@@ -4,6 +4,8 @@
 #include "../system.h"
 #include "../animator.h"
 #include "../control_handler.h"
+#include "../file_system.h"
+#include <regex>
 #include "file_explorer.h"
 
 fr::FileExplorerWidget *fr::FileExplorerWidget::m_instance = 0;
@@ -16,19 +18,22 @@ void fr::FileExplorerWidget::init()
 	widget_base_foot = new Sprite;
 	confirm = new Button;
 	current_path = new TextArea;
+	parent_dir = new Button;
 	widget_base_head->init("assets/base/long_widget_head.png");
 	widget_base_body->init("assets/base/long_widget_body.png");
 	widget_base_foot->init("assets/base/long_widget_foot.png");
 	confirm->init("assets/base/widget_button_single.png");
 	confirm->AddPressedFrame("assets/base/widget_button_single_pressed.png");
 	confirm->AddText("CONFIRM", confirm->GetW() / 2, confirm->GetH() / 2, "assets/fonts/Audiowide.ttf", 30, 0x00, 0x00, 0x00);
-	current_path->init("NULL", widget_base_head->GetX() + 56, widget_base_head->GetY() + 52, "assets/fonts/Ubuntu-M.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 608);
+	current_path->init("NULL", widget_base_head->GetX() + 120, widget_base_head->GetY() + 52, "assets/fonts/Ubuntu-M.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 544);
+	parent_dir->init("assets/base/arrow_back.png");
+	parent_dir->AddPressedFrame("assets/base/arrow_back_pressed.png");
 	body_count = (System::instance()->GetWindowHeigh() - 560) / 140;
 	widget_h = 560 + 140 * body_count;
 	widget_y = (System::instance()->GetWindowHeigh() / 2) - (widget_h) / 2;
 	FileList::instance()->init();
 	FileList::instance()->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 96);
-	FileList::instance()->SetSize(656, widget_h - 152);
+	FileList::instance()->SetSize(656, widget_h - 176);
 	FileList::instance()->RefreshListSize();
 
 	is_shown = false;
@@ -54,10 +59,11 @@ void fr::FileExplorerWidget::update()
 			widget_base_head->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base_head->GetW() / 2, widget_y);
 			widget_base_foot->SetPos(widget_base_head->GetX(), widget_y + 280 + body_count * 140);
 			FileList::instance()->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 96);
-			FileList::instance()->SetSize(656, widget_h - 152);
+			FileList::instance()->SetSize(656, widget_h - 176);
 			FileList::instance()->RefreshListSize();
 			confirm->SetPos(widget_base_foot->GetX() + 8, widget_base_foot->GetY() + 224);
-			current_path->SetPos(widget_base_head->GetX() + 56, widget_base_head->GetY() + 52);
+			parent_dir->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 32);
+			current_path->SetPos(widget_base_head->GetX() + 120, widget_base_head->GetY() + 52);
 		}
 		if (ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 		{
@@ -65,7 +71,14 @@ void fr::FileExplorerWidget::update()
 		}
 
 		confirm->update();
+		parent_dir->update();
 		FileList::instance()->update();
+
+		if (parent_dir->IsReleased())
+		{
+			FileList::instance()->PathBack();
+		}
+		current_path->SetText(FileList::instance()->GetCurrentPath());
 	}
 	else if (is_shown)
 	{
@@ -91,6 +104,7 @@ void fr::FileExplorerWidget::render()
 			widget_base_body->render();
 		}
 		confirm->render();
+		parent_dir->render();
 		current_path->render();
 		FileList::instance()->render();
 	}
@@ -123,7 +137,8 @@ void fr::FileExplorerWidget::OnEnter()
 	widget_base_foot->SetPos(widget_x, widget_y + 280 + body_count * 140);
 	FileList::instance()->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 96);
 	confirm->SetPos(widget_base_foot->GetX() + 8, widget_base_foot->GetY() + 224);
-	current_path->SetPos(widget_base_head->GetX() + 56, widget_base_head->GetY() + 52);
+	parent_dir->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 32);
+	current_path->SetPos(widget_base_head->GetX() + 120, widget_base_head->GetY() + 52);
 
 	if (Animator::instance()->IsTimeUp("file_explorer_enter"))
 	{
@@ -139,7 +154,8 @@ void fr::FileExplorerWidget::OnExit()
 	widget_base_foot->SetPos(widget_x, widget_y + 280 + body_count * 140);
 	FileList::instance()->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 96);
 	confirm->SetPos(widget_base_foot->GetX() + 8, widget_base_foot->GetY() + 224);
-	current_path->SetPos(widget_base_head->GetX() + 56, widget_base_head->GetY() + 52);
+	parent_dir->SetPos(widget_base_head->GetX() + 32, widget_base_head->GetY() + 32);
+	current_path->SetPos(widget_base_head->GetX() + 120, widget_base_head->GetY() + 52);
 
 	if (Animator::instance()->IsTimeUp("file_explorer_exit"))
 	{
@@ -154,7 +170,21 @@ void fr::FileList::init()
 	cell_base_path = "assets/base/wide_list_cell.png";
 	cell_base_pressed_path = "assets/base/wide_list_cell_pressed.png";
 	cell_base_selected_path = "assets/base/wide_list_cell_selected.png";
-	List::init(Rect(0, 0, 0, 0), 30);
+	no_dir_label = new TextArea;
+	no_dir_label->init("EMPTY", dest_rect.x + dest_rect.w / 2, dest_rect.y + dest_rect.h / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	current_path = "/sdcard";
+	std::vector<File*> file_list;
+	ListDir(current_path, file_list);
+	dir_list.clear();
+	const std::regex filename_pattern(".*/(.*?)");
+	for (int i = 0; i < file_list.size(); i++)
+	{
+		if (file_list[i]->type == FILETYPE_DIR)
+		{
+			dir_list.push_back(std::regex_replace(file_list[i]->name, filename_pattern, "$1"));
+		}
+	}
+	List::init(Rect(0, 0, 0, 0), dir_list.size());
 	RefreshListSize();
 }
 
@@ -176,21 +206,51 @@ void fr::FileList::update()
 
 		if (current_index == selected_index)
 		{
-			cell[i]->GetText(0)->SetText("NULL");
+			cell[i]->GetText(0)->SetText(dir_list[current_index]);
 			cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
 		}
 		else
 		{
-			cell[i]->GetText(0)->SetText("NULL");
+			cell[i]->GetText(0)->SetText(dir_list[current_index]);
 			cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
 		}
 		current_index++;
+		if (IsConfirmed())
+		{
+			is_confirmed = false;
+			current_path += "/" + dir_list[selected_index];
+			RefreshList();
+		}
 	}
 }
 
 void fr::FileList::render()
 {
-	List::render();
+	if (dir_list.size() != 0)
+	{
+		List::render();
+	}
+	else
+	{
+		no_dir_label->render();
+	}
+}
+
+void fr::FileList::RefreshList()
+{
+	std::vector<File*> file_list;
+	ListDir(current_path, file_list);
+	dir_list.clear();
+	const std::regex filename_pattern(".*/(.*?)");
+	for (int i = 0; i < file_list.size(); i++)
+	{
+		if (file_list[i]->type == FILETYPE_DIR)
+		{
+			dir_list.push_back(std::regex_replace(file_list[i]->name, filename_pattern, "$1"));
+		}
+	}
+	SetValueCount(dir_list.size());
+	RefreshListSize();
 }
 
 void fr::FileList::RefreshListSize()
@@ -200,4 +260,17 @@ void fr::FileList::RefreshListSize()
 	{
 		cell[i]->AddText("??", 24, 20, "assets/fonts/Ubuntu-M.ttf", 24, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 608);
 	}
+	no_dir_label->SetPos(dest_rect.x + dest_rect.w / 2, dest_rect.y + dest_rect.h / 2);
+}
+
+std::string fr::FileList::GetCurrentPath()
+{
+	return current_path;
+}
+
+void fr::FileList::PathBack()
+{
+	const std::regex parent_dir_pattern("(.*)/[^/]*");
+	current_path = regex_replace(current_path, parent_dir_pattern, "$1");
+	RefreshList();
 }
