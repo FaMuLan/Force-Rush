@@ -45,6 +45,8 @@ namespace fr
 			void SetCameraRotateX(int input);
 			void SetForceAngle(int input);
 			void SetKeycode(SDL_Scancode input, int index);
+			void AddSongList(std::string path);
+			void DeleteSongList(int index);
 		private:
 			Setting() {}
 			~Setting() {}

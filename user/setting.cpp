@@ -313,3 +313,15 @@ void fr::Setting::SetKeycode(SDL_Scancode input, int index)
 	key_code[index] = input;
 	write();
 }
+
+void fr::Setting::AddSongList(std::string path)
+{
+	song_list.push_back(path);
+	write();
+}
+
+void fr::Setting::DeleteSongList(int index)
+{
+	song_list.erase(song_list.begin() + index);
+	write();
+}
