@@ -58,6 +58,7 @@ namespace fr
 			void clear();
 			void update();
 			void render();
+			void RefreshList();
 			void RefreshListSize();
 		private:
 			SongPathList() {}

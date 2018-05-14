@@ -75,7 +75,14 @@ void fr::SongPathManagerWidget::update()
 		}
 		if (delete_path->IsReleased() && !FileExplorerWidget::instance()->IsShown())
 		{
-			FileExplorerWidget::instance()->SwitchShown();
+			Setting::instance()->DeleteSongList(SongPathList::instance()->GetSelectedIndex());
+			SongPathList::instance()->RefreshList();
+		}
+		std::string added_path;
+		if (FileExplorerWidget::instance()->GetOutput(added_path))
+		{
+			Setting::instance()->AddSongList(added_path);
+			SongPathList::instance()->RefreshList();
 		}
 	}
 	else if (is_shown)
@@ -195,6 +202,13 @@ void fr::SongPathList::update()
 void fr::SongPathList::render()
 {
 	List::render();
+}
+
+void fr::SongPathList::RefreshList()
+{
+	Setting::instance()->GetSongList(list_path);
+	SetValueCount(list_path.size());
+	RefreshListSize();
 }
 
 void fr::SongPathList::RefreshListSize()
