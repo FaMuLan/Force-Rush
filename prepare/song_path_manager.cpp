@@ -52,7 +52,7 @@ void fr::SongPathManagerWidget::update()
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
 			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (!load_finger.moved)
+			if (!load_finger.moved && !FileExplorerWidget::instance()->IsShown())
 			{
 				if (load_finger.x < System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2 || load_finger.x > System::instance()->GetWindowWidth() / 2 + widget_base->GetW() / 2 || load_finger.y < System::instance()->GetWindowHeigh() - widget_base->GetH())
 				{

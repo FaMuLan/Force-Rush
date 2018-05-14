@@ -111,7 +111,7 @@ void fr::PrepareState::update()
 	ListWidget::instance()->render();
 	SongPathManagerWidget::instance()->render();
 	FileExplorerWidget::instance()->render();
-	if (!ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown())
+	if (!ModWidget::instance()->IsShown() && !ListWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown() && !FileExplorerWidget::instance()->IsShown())
 	{
 		if (prepare_back->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 		{
