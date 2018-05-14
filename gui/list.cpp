@@ -149,7 +149,7 @@ void fr::List::render()
 {
 	for (int i = 0; i < cell.size(); i++)
 	{
-		if (cell[i]->GetY() < dest_rect.y + dest_rect.h)
+		if (cell[i]->GetY() < dest_rect.y + dest_rect.h && cell[i]->GetY() + cell[i]->GetH() > dest_rect.y)
 		{
 			cell[i]->render();
 		}
