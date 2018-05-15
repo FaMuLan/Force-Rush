@@ -170,6 +170,7 @@ void fr::SongList::update()
 			list_length = cell_h;
 		}
 	}
+	List::SetValueCount(shown_information.size());
 }	//void fr::SongList::update()
 
 void fr::SongList::render()
@@ -402,6 +403,7 @@ void fr::SongList::RefreshList()
 		if (LoadBeatmapFile(file[i]->name, new_song_information, NULL))
 		{
 			m_information.push_back(new_song_information);
+			shown_information.push_back(new_song_information);
 			SwitchSort(sort_type, is_reverse);
 			//就当是刷新列表了
 
