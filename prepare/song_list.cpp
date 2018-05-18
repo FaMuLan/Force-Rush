@@ -376,6 +376,7 @@ void fr::SongList::RefreshList()
 	for (int i = 0; i < list_path.size(); i++)
 	{
 		FindFile(list_path[i], ".*\\.osu", file);
+		FindFile(list_path[i], ".*\\.mc", file);
 		FindFile(list_path[i], ".*\\.imd", file);
 	}
 	Setting::instance()->write();
