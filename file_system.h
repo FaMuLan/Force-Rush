@@ -34,6 +34,7 @@ namespace fr
 
 	bool LoadOSUFile(std::string path, SongInformation *output_information, std::vector<NoteSet*> *output_note_set);
 	bool LoadIMDFile(std::string path, SongInformation *output_information, std::vector<NoteSet*> *output_note_set);
+	bool LoadMalodyFile(std::string path, SongInformation *output_information, std::vector<NoteSet*> *output_note_set);
 };
 
 #endif
