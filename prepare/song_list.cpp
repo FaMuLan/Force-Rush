@@ -107,6 +107,42 @@ void fr::SongList::update()
 	search_bar->update();
 	List::update();
 
+	if (shown_information.size() != 0)
+	{
+		if (IsConfirmed())
+		{
+			LoadingState::instance()->init(STATE_GAME);
+			GameState::instance()->SetFile(shown_information[selected_index]);
+			SoundManager::instance()->stop();
+		}
+		else 
+		{
+			if (shown_information[last_selected_index]->audio_path != shown_information[selected_index]->audio_path)
+			{
+				if (SoundManager::instance()->IsPlayingMusic())
+				{
+					SoundManager::instance()->stop();
+					SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path, SOUNDTYPE_MUSIC);
+				}
+				PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
+				SoundManager::instance()->load(shown_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+				SoundManager::instance()->play(shown_information[selected_index]->audio_path, shown_information[selected_index]->preview_time);
+			}
+			PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
+		}
+		last_selected_index = selected_index;
+	}
+	List::SetValueCount(shown_information.size());
+}	//void fr::SongList::update()
+
+void fr::SongList::render()
+{
+	List::render();
+	search_bar->render();
+}
+
+void fr::SongList::PushText()
+{
 	int current_index = current_list_process / cell_h;
 	for (int i = 0; i < cell.size(); i++)
 	{
@@ -136,29 +172,6 @@ void fr::SongList::update()
 
 			delete [] difficulty_ch;
 			current_index++;
-
-			if (IsConfirmed())
-			{
-				LoadingState::instance()->init(STATE_GAME);
-				GameState::instance()->SetFile(shown_information[selected_index]);
-				SoundManager::instance()->stop();
-			}
-			else 
-			{
-				if (shown_information[last_selected_index]->audio_path != shown_information[selected_index]->audio_path)
-				{
-					if (SoundManager::instance()->IsPlayingMusic())
-					{
-						SoundManager::instance()->stop();
-						SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path, SOUNDTYPE_MUSIC);
-					}
-					PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
-					SoundManager::instance()->load(shown_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
-					SoundManager::instance()->play(shown_information[selected_index]->audio_path, shown_information[selected_index]->preview_time);
-				}
-				PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
-			}
-			last_selected_index = selected_index;
 		}
 		else
 		{
@@ -170,13 +183,6 @@ void fr::SongList::update()
 			list_length = cell_h;
 		}
 	}
-	List::SetValueCount(shown_information.size());
-}	//void fr::SongList::update()
-
-void fr::SongList::render()
-{
-	List::render();
-	search_bar->render();
 }
 
 bool fr::SongList::LoadList()
@@ -411,6 +417,10 @@ void fr::SongList::RefreshList()
 //			PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 			WriteList();
 			//實時寫入到緩存文件，中途退出回來刷新的時可以繼續進度
+		}
+		else
+		{
+			delete new_song_information;
 		}
 	}
 

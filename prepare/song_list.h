@@ -39,6 +39,7 @@ namespace fr
 			void clear();
 			void update();
 			void render();
+			void PushText();
 
 			bool LoadList();
 			static void WriteList();

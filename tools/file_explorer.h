@@ -70,6 +70,7 @@ namespace fr
 			void clear();
 			void update();
 			void render();
+			void PushText();
 			void RefreshList();
 			void RefreshListSize();
 

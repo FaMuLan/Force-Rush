@@ -207,6 +207,28 @@ void fr::FileList::clear()
 void fr::FileList::update()
 {
 	List::update();
+	if (IsConfirmed())
+	{
+		is_confirmed = false;
+		current_path += "/" + dir_list[selected_index];
+		RefreshList();
+	}
+}
+
+void fr::FileList::render()
+{
+	if (dir_list.size() != 0)
+	{
+		List::render();
+	}
+	else
+	{
+		no_dir_label->render();
+	}
+}
+
+void fr::FileList::PushText()
+{
 	int current_index = current_list_process / cell_h;
 	for (int i = 0; i < cell.size(); i++)
 	{
@@ -226,24 +248,6 @@ void fr::FileList::update()
 			cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
 		}
 		current_index++;
-		if (IsConfirmed())
-		{
-			is_confirmed = false;
-			current_path += "/" + dir_list[selected_index];
-			RefreshList();
-		}
-	}
-}
-
-void fr::FileList::render()
-{
-	if (dir_list.size() != 0)
-	{
-		List::render();
-	}
-	else
-	{
-		no_dir_label->render();
 	}
 }
 

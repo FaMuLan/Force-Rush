@@ -177,6 +177,15 @@ void fr::SongPathList::clear()
 void fr::SongPathList::update()
 {
 	List::update();
+}
+
+void fr::SongPathList::render()
+{
+	List::render();
+}
+
+void fr::SongPathList::PushText()
+{
 	int current_index = current_list_process / cell_h;
 	for (int i = 0; i < cell.size(); i++)
 	{
@@ -197,11 +206,6 @@ void fr::SongPathList::update()
 		}
 		current_index++;
 	}
-}
-
-void fr::SongPathList::render()
-{
-	List::render();
 }
 
 void fr::SongPathList::RefreshList()
