@@ -357,14 +357,20 @@ void fr::Column::update()
 				else if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_END_LEFT && is_slide_in_l)
 				{
 					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
-					is_rotate_l = true;
+					if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
+					{
+						is_rotate_l = true;
+					}
 					Timer::instance()->ResetTimer("slide_rotate_l");
 					Timer::instance()->RunTimer("slide_rotate_l");
 				}
 				else if (m_note_set->note[current_note_index]->type == NOTETYPE_SLIDE_END_RIGHT && is_slide_in_r)
 				{
 					current_judgement = m_parent->judge(m_note_set->note[current_note_index]->time, true, false, true);
-					is_rotate_r = true;
+					if (current_judgement != JUDGEMENT_ER && current_judgement != JUDGEMENT_NONE)
+					{
+						is_rotate_r = true;
+					}
 					Timer::instance()->ResetTimer("slide_rotate_r");
 					Timer::instance()->RunTimer("slide_rotate_r");
 				}
