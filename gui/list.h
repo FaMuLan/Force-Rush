@@ -20,6 +20,7 @@ namespace fr
 			void RefreshListSize();
 			void SetValueCount(int load_value_count);
 			void SetSelectedIndex(int load_selected_index);
+			virtual void PushText() = 0;
 			bool IsConfirmed();
 			void SetPos(int x, int y);
 			void SetSize(int w, int h);

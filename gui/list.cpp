@@ -96,6 +96,8 @@ void fr::List::update()
 	is_list_moved = roll_speed != 0;
 	//检测列表是否移动。
 
+	PushText();
+
 //	int list_middle_y = (dest_rect.y + dest_rect.h) / 2;
 	int ergodic_value_index = current_list_process / cell_h;
 	for (int i = 0; i < cell.size(); i++)
