@@ -54,6 +54,7 @@ bool fr::ListDir(std::string path, std::vector<fr::File*> &output)
 			output.push_back(new_file);
 		}
 	}
+	closedir(dir);
 	return true;
 }
 
@@ -74,6 +75,8 @@ void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 			//使用遞歸讀取子目錄下的文件
 		}
 	}
+	current_list.clear();
+	current_list.shrink_to_fit();
 }
 
 std::string fr::GetParentDir(std::string path)
@@ -84,18 +87,18 @@ std::string fr::GetParentDir(std::string path)
 
 bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-	static std::regex path_pattern(".*\\.(.*)");
+	static std::regex path_pattern(".*\\.(.*?)");
 	std::string format = std::regex_replace(path, path_pattern, "$1");
 	bool success = true;
 	if (format == "imd")
 	{
 		success = LoadIMDFile(path, output_information, output_note_set);
 	}
-	else if (format == "mc")
+	if (format == "mc")
 	{
 		success = LoadMalodyFile(path, output_information, output_note_set);
 	}
-	else
+	if (format == "osu")
 	{
 		success = LoadOSUFile(path, output_information, output_note_set);
 	}
@@ -597,7 +600,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 	static std::regex mode_pattern("\\s*\"mode\": (\\d)");
 	static std::regex key_count_pattern("\"mode_ext\": \\{[\\S\\s]*?\"column\": (\\d)[\\S\\s]*?\\}");
 	static std::regex audio_path_pattern("\\s*\"sound\": \"(.*)\"");
-	static std::regex global_offset_pattern("\\s*\"offset\": (\\d*),");
+	static std::regex global_offset_pattern("\\s*\"offset\": (\\d*)");
 	static std::regex timeline_text_pattern("\"time\"[\\S\\s]*\"note\"");
 	static std::regex timeline_bpm_pattern("\"bpm\": ([\\d.]+)");
 	static std::regex timeline_beat_pattern("\"beat\": \\[(\\d+),(\\d+),(\\d+)\\]");
@@ -716,7 +719,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		}
 		else
 		{
-			start_time = 2000;
+			start_time = 2000 - global_offset;
 		}
 
 		Timeline *new_timeline = new Timeline;
@@ -826,6 +829,10 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		new_null_score->error = 0;
 		new_null_score->chain = 0;
 		output_information->high_score = new_null_score;
+		if (!load_note)
+		{
+			temp_timeline.clear();
+		}
 	}
 	if (load_note)
 	{
