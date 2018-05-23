@@ -24,6 +24,7 @@ namespace fr
 			void AddNote(NoteSet *load_note_set);
 			bool DrawNote(Note *load_note);
 			double TimeToProcess(unsigned int time);
+			float GetCurrentSpeed();
 		private:
 			Beatmap *m_parent;
 			int column_index;

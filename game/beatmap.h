@@ -49,6 +49,8 @@ namespace fr
 			float last_force;
 			float force;
 			float angle_diff;
+			float background_process;
+			int last_frame_time;
 	};
 
 	class GameBeatmap : public Beatmap

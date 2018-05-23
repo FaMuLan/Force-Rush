@@ -738,3 +738,8 @@ double fr::Column::TimeToProcess(unsigned int time)
 	}
 	return process;
 }
+
+float fr::Column::GetCurrentSpeed()
+{
+	return m_note_set->timeline[current_timeline_index]->speed;
+}

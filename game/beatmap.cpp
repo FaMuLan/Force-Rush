@@ -39,6 +39,7 @@ void fr::Beatmap::init()
 	current_angle = 0;
 	last_angle = 0;
 	angle_diff = 0;
+	last_frame_time = 0;
 
 	wall_vectrices[0] = 0;
 	wall_vectrices[1] = 0;
@@ -226,9 +227,16 @@ void fr::Beatmap::update()
 
 void fr::Beatmap::render()
 {
+	int current_time = Timer::instance()->GetTime("game");
 	int wall_z;
 	int play_base_z = 0;
-	float background_process = float(Timer::instance()->GetTime("game") % int(50000.f / Setting::instance()->GetSpeed())) / float(50000.f / Setting::instance()->GetSpeed());
+	float avg_speed = 0;
+	for (int i = 0; i < m_column.size(); i++)
+	{
+		avg_speed += m_column[i]->GetCurrentSpeed() * 0.25f;
+	}
+	background_process += float((current_time - last_frame_time) / float(50000.f / Setting::instance()->GetSpeed())) * avg_speed;
+	background_process -= int(background_process);
 	wall_z = -background_process * (System::instance()->GetWindowDepth() - (System::instance()->GetWindowDepth() % wall->GetW()));
 	while (wall_z < System::instance()->GetWindowDepth())
 	{
@@ -279,6 +287,7 @@ void fr::Beatmap::render()
 	{
 		m_column[i]->render();
 	}
+	last_frame_time = current_time;
 }
 
 void fr::Beatmap::AddForce(float angle)
