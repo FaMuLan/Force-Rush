@@ -385,7 +385,6 @@ void fr::SongList::RefreshList()
 		FindFile(list_path[i], ".*\\.mc", file);
 		FindFile(list_path[i], ".*\\.imd", file);
 	}
-	Setting::instance()->write();
 
 	for (int i = 0; i < m_information.size(); i++)
 	{
@@ -403,6 +402,8 @@ void fr::SongList::RefreshList()
 			}
 		}
 	}
+
+
 	for (int i = 0; i < file.size(); i++)
 	{
 		SongInformation *new_song_information = new SongInformation;
@@ -423,6 +424,7 @@ void fr::SongList::RefreshList()
 			delete new_song_information;
 		}
 	}
+
 
 	is_refreshing = false;
 	is_loaded = true;
