@@ -741,5 +741,9 @@ double fr::Column::TimeToProcess(unsigned int time)
 
 float fr::Column::GetCurrentSpeed()
 {
-	return m_note_set->timeline[current_timeline_index]->speed;
+	if (m_note_set->timeline.size() != 0)
+	{
+		return m_note_set->timeline[current_timeline_index]->speed;
+	}
+	return 1;
 }
