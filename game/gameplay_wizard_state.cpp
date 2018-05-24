@@ -108,7 +108,7 @@ void fr::GameplayWizardBeatmap::render()
 	current_offset_text->render();
 	if (is_running)
 	{
-		hit_offset_num->render(hit_offset_num->GetX(), hit_offset_num->GetY() - 100.f * (1.f - Animator::instance()->GetProcess("offset")));
+		hit_offset_num->render(hit_offset_num->GetUserX(), hit_offset_num->GetUserY() - 100.f * (1.f - Animator::instance()->GetProcess("offset")));
 	}
 }
 
