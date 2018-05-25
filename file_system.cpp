@@ -600,7 +600,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 	static std::regex mode_pattern("\\s*\"mode\": (\\d)");
 	static std::regex key_count_pattern("\"mode_ext\": \\{[\\S\\s]*?\"column\": (\\d)[\\S\\s]*?\\}");
 	static std::regex audio_path_pattern("\\s*\"sound\": \"(.*)\"");
-	static std::regex global_offset_pattern("\\s*\"offset\": (\\d*)");
+	static std::regex global_offset_pattern("\\s*\"offset\": (\\d*),");
 	static std::regex timeline_text_pattern("\"time\"[\\S\\s]*\"note\"");
 	static std::regex timeline_bpm_pattern("\"bpm\": ([\\d.]+)");
 	static std::regex timeline_beat_pattern("\"beat\": \\[(\\d+),(\\d+),(\\d+)\\]");
@@ -662,8 +662,8 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 	if (load_note)
 	{
 		std::smatch global_offset_line;
-		global_offset = atoi(std::regex_replace(global_offset_line.str(), global_offset_pattern, "$1").c_str());
 		std::regex_search(text, global_offset_line, global_offset_pattern);
+		global_offset = atoi(std::regex_replace(global_offset_line.str(), global_offset_pattern, "$1").c_str());
 		for (int i = 0; i < 4; i++)
 		{
 			NoteSet *new_note_set = new NoteSet;
