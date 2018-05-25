@@ -81,8 +81,8 @@ void fr::SongList::init()
 		SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
 		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 	}
-	search_bar->SetPos(dest_rect.x, dest_rect.y - cell_h);
 	RefreshListSize();
+	search_bar->SetPos(dest_rect.x, dest_rect.y - cell_h);
 }	//void fr::SongList::inìt()
 
 void fr::SongList::clear()
