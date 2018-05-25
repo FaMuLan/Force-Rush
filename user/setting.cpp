@@ -18,13 +18,13 @@ void fr::Setting::init()
 	key_code[1] = SDL_SCANCODE_F;
 	key_code[2] = SDL_SCANCODE_J;
 	key_code[3] = SDL_SCANCODE_K;
-	camera_pos_y_portrait = 0;
-	camera_pos_z_portrait = 630;
-	camera_rotate_x_portrait = 30;
+	camera_pos_y_portrait = -160;
+	camera_pos_z_portrait = 1020;
+	camera_rotate_x_portrait = 18;
 	force_angle_portrait = 5;
 	camera_pos_y_landscape = -470;
-	camera_pos_z_landscape = -20;
-	camera_rotate_x_landscape = 40;
+	camera_pos_z_landscape = 120;
+	camera_rotate_x_landscape = 35;
 	force_angle_landscape = 3;
 	song_list.push_back("assets/songs");
 	tips_text.push_back("适当休息。在这里我更建议您的是对手部进行放松");
