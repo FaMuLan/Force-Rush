@@ -18,7 +18,7 @@ void fr::AboutState::init()
 	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	std::string str =
 		"程序: FaMuLan\n"
-		"版本: beta 1.2\n";
+		"版本: beta 1.3\n";
 	text->init(str, System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Miui-Bold.ttf", 30, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560, true);
 }
 
