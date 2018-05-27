@@ -1,6 +1,8 @@
 #include "setting.h"
 #include <string>
 #include <regex>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "../file_system.h"
 #include "../system.h"
 #include "../timer.h"
@@ -12,7 +14,7 @@ void fr::Setting::init()
 	user_profile_path = "/sdcard/ForceRush/default.fa";
 	is_auto = false;
 	is_slide_out = false;
-	speed = 3000;
+	speed = 10;
 	offset = -200;
 	key_code[0] = SDL_SCANCODE_D;
 	key_code[1] = SDL_SCANCODE_F;
@@ -26,7 +28,9 @@ void fr::Setting::init()
 	camera_pos_z_landscape = 120;
 	camera_rotate_x_landscape = 35;
 	force_angle_landscape = 3;
+	mkdir("/sdcard/ForceRush/songs", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	song_list.push_back("assets/songs");
+	song_list.push_back("/sdcard/ForceRush/songs");
 	tips_text.push_back("适当休息。在这里我更建议您的是对手部进行放松");
 	tips_text.push_back("在游戏时，可以在屏幕上半部分以竖直方向滑动手指，来进行快速调节音符下落速度");
 	tips_text.push_back("在游戏时若发现音画不同步的现象，可以尝试调节一下偏移，本游戏内置偏移调节向导");

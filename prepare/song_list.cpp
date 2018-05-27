@@ -177,9 +177,9 @@ void fr::SongList::PushText()
 		else
 		{
 			cell[i]->GetText(0)->SetText("??");
-			cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+			cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
 			cell[i]->GetText(1)->SetText(null_information->title);
-			cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
+			cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
 			PrepareHeader::instance()->SetInformation(null_information);
 			list_length = cell_h;
 		}
