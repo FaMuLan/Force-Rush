@@ -157,7 +157,7 @@ void fr::Beatmap::clear()
 	{
 		SoundManager::instance()->stop();
 	}
-	SoundManager::instance()->clear(audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->clear(audio_path);
 }
 
 void fr::Beatmap::update()
@@ -333,7 +333,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_column[1]->AddNote(new_note_set[1]);
 	m_column[2]->AddNote(new_note_set[2]);
 	m_column[3]->AddNote(new_note_set[3]);
-	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->load(audio_path);
 //	無需加載，因為在選曲界面的時候就加載好了
 
 	Timer::instance()->RunTimer("game");

@@ -28,7 +28,7 @@ void fr::GameplayWizardBeatmap::init()
 	delete current_offset_ch;
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
-	SoundManager::instance()->load(audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->load(audio_path);
 
 	NoteSet *new_note_set = new NoteSet;
 	for (int i = 0; i < 120; i++)

@@ -78,7 +78,7 @@ void fr::SongList::init()
 	{
 		List::init(Rect((System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280), (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64), 720, System::instance()->GetWindowHeigh() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)), m_information.size(), true, true);
 		PrepareHeader::instance()->SetInformation(m_information[selected_index]);
-		SoundManager::instance()->load(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+		SoundManager::instance()->load(m_information[selected_index]->audio_path);
 		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
 	}
 	RefreshListSize();
@@ -91,7 +91,7 @@ void fr::SongList::clear()
 	if (SoundManager::instance()->IsPlayingMusic())
 	{
 		SoundManager::instance()->stop();
-	SoundManager::instance()->clear(m_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+	SoundManager::instance()->clear(m_information[selected_index]->audio_path);
 	}
 }
 
@@ -123,10 +123,10 @@ void fr::SongList::update()
 				if (SoundManager::instance()->IsPlayingMusic())
 				{
 					SoundManager::instance()->stop();
-					SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path, SOUNDTYPE_MUSIC);
+					SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path);
 				}
 				PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
-				SoundManager::instance()->load(shown_information[selected_index]->audio_path, SOUNDTYPE_MUSIC);
+				SoundManager::instance()->load(shown_information[selected_index]->audio_path);
 				SoundManager::instance()->play(shown_information[selected_index]->audio_path, shown_information[selected_index]->preview_time);
 			}
 			PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
