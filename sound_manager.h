@@ -27,11 +27,17 @@ namespace fr
 		unsigned char *file_start;
 		unsigned int file_length;
 		std::vector<unsigned char*> buffer;
-		unsigned long current_buffer_index;
-		unsigned int current_buffer_duration;
-		unsigned int current_buffer_process;
+		unsigned int buffer_duration;
 		unsigned int sound_duration;
+	};
+
+	struct SoundProcess
+	{
+		std::string path;
+		unsigned long buffer_index;
 		unsigned int sound_process;
+		unsigned int buffer_process;
+		unsigned char volume;
 		bool is_playing;
 	};
 
@@ -65,22 +71,19 @@ namespace fr
 			void clear();
 			void clear(std::string path);
 			bool load(std::string path);
-			void play(std::string path);
-			void play(std::string path, int time);
-			void stop();	//music type only
-			void SwitchPause();	//music type only
-			void SetVolume(Uint16 load_volume, SoundType type);
+			void play(std::string process_name);
+			void seek(std::string process_name, int time);
+			void SwitchPause(std::string process_name);
 			void LoadMP3(std::string path);
 			void LoadOGG(std::string path);
 			static void AudioCallback(void *userdata, unsigned char *stream, int len);
-
-			bool IsPlayingMusic();
+			void AddProcess(std::string name, SoundProcess *load_process);
+			SoundProcess *GetProcess(std::string name);
 		private:
 			SoundManager() {}
 			~SoundManager() {}
 			static std::map<std::string, Sound*> m_sound;
-			static std::string current_sound_data;
-			static unsigned short SoundVolume;
+			static std::map<std::string, SoundProcess*> m_process;
 			static SoundManager *m_instance;
 	};	//class SoundManager
 };	//namespace fr
