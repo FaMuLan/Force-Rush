@@ -24,8 +24,16 @@ namespace fr
 
 	struct Sound
 	{
+		int fd;
 		unsigned char *file_start;
 		unsigned int file_length;
+		int src_sample_index;
+		int dest_sample_index;
+		float *new_buffer;
+		float *converted_buffer;
+		unsigned char *output_buffer;
+		//以上是加载才会用到的数据 
+		//其中两个sample索引是方便音频缓冲区凑4096个sample
 		std::vector<unsigned char*> buffer;
 		unsigned int buffer_duration;
 		unsigned int sound_duration;
@@ -43,7 +51,7 @@ namespace fr
 
 	namespace ogg
 	{
-		
+		static int decode(Sound *load_sound);
 	};
 
 	namespace mp3

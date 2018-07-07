@@ -52,50 +52,45 @@ enum mad_flow fr::mp3::output(void *data, struct mad_header const *header, struc
 	left_ch    = pcm->samples[0];
 	right_ch   = pcm->samples[1];
 	m_sound->buffer_duration = 4096 * 4;
-	static float *new_buffer = new float[4096 * 2];
-	static float *converted_buffer = new float[4096 * 2];
-	static unsigned char *output_buffer = new unsigned char[4096 * 4];
 	if (frequency != 44100)
 	{
 		src_data.end_of_input = 0;
-		src_data.data_in = new_buffer;
+		src_data.data_in = m_sound->new_buffer;
 		src_data.input_frames = 0;
 		src_data.src_ratio = 44100.f / frequency;
-		src_data.data_out = converted_buffer;
+		src_data.data_out = m_sound->converted_buffer;
 		src_data.output_frames = 4096 * 44100.f / frequency;
 	}
 
-	static int i = 0;
-	static int j = 0;
 	while (samples_count--)
 	{
 		float sample;
 		sample = scale(*left_ch++);
-		new_buffer[i++] = sample;
+		m_sound->new_buffer[m_sound->src_sample_index++] = sample;
 		if (channels_count == 2)
 		{
 			sample = scale(*right_ch++);
 		}
-		new_buffer[i++] = sample;
-		if (i >= 4096 * 2)
+		m_sound->new_buffer[m_sound->src_sample_index++] = sample;
+		if (m_sound->src_sample_index >= 4096 * 2)
 		{
-			i = 0;
+			m_sound->src_sample_index = 0;
 			//默认频率是44100，如果音频不是44100音频的话要交给libsamplerate转换
 			if (frequency != 44100)
 			{
-				src_data.data_in = new_buffer;
+				src_data.data_in = m_sound->new_buffer;
 				src_data.input_frames = 4096;
 				if (src_simple(&src_data, SRC_LINEAR, 2) == 0)
 				{
-					for (int k = 0; k < src_data.output_frames_gen * 2; k++)
+					for (int i = 0; i < src_data.output_frames_gen * 2; i++)
 					{
-						output_buffer[j++] = (int(converted_buffer[k]) >> 0) & 0xFF;
-						output_buffer[j++] = (int(converted_buffer[k]) >> 8) & 0xFF;
-						if (j >= 4096 * 4)
+						m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->converted_buffer[i]) >> 0) & 0xFF;
+						m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->converted_buffer[i]) >> 8) & 0xFF;
+						if (m_sound->dest_sample_index >= 4096 * 4)
 						{
-							j = 0;
-							m_sound->buffer.push_back(output_buffer);
-							output_buffer = new unsigned char[4096 * 4];
+							m_sound->dest_sample_index = 0;
+							m_sound->buffer.push_back(m_sound->output_buffer);
+							m_sound->output_buffer = new unsigned char[4096 * 4];
 						}
 					}
 				}
@@ -103,28 +98,24 @@ enum mad_flow fr::mp3::output(void *data, struct mad_header const *header, struc
 			//是44100的话还需要做float -> unsigned char的转换工作
 			else
 			{
-				for (int k = 0; k < 4096 * 2; k++)
+				for (int i = 0; i < 4096 * 2; i++)
 				{
-					output_buffer[j++] = (int(new_buffer[k]) >> 0) & 0xFF;
-					output_buffer[j++] = (int(new_buffer[k]) >> 8) & 0xFF;
+					m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->new_buffer[i]) >> 0) & 0xFF;
+					m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->new_buffer[i]) >> 8) & 0xFF;
 				}
-				m_sound->buffer.push_back(output_buffer);
-				j = 0;
-				output_buffer = new unsigned char[4096 * 4];
+				m_sound->buffer.push_back(m_sound->output_buffer);
+				m_sound->dest_sample_index = 0;
+				m_sound->output_buffer = new unsigned char[4096 * 4];
 			}
 		}
 	}
-	
-//	SDL_BuildAudioCVT(&cvt, AUDIO_S16, channels_count, frequency, AUDIO_S16, 2, 44100);
-//	cvt.buf = output_buffer;
-//	cvt.len = samples_count * 4;
-//	SDL_ConvertAudio(&cvt);
+
 	return MAD_FLOW_CONTINUE;
 }
 
 enum mad_flow fr::mp3::error(void *data, struct mad_stream *stream, struct mad_frame *frame)
 {
-	Sound* m_sound = (Sound*)data;
+	Sound *m_sound = (Sound*)data;
 	fprintf(stderr, "decoding error 0x%04x (%s) at byte offset %u\n", stream->error, mad_stream_errorstr(stream), stream->this_frame - m_sound->file_start);
 	return MAD_FLOW_CONTINUE;
 }
@@ -133,13 +124,12 @@ int fr::mp3::decode(Sound *load_sound)
 {
 	struct mad_decoder m_decoder;
 	int result;
+	int tag_size = (load_sound->file_start[6] & 0x7F) * 0x200000 + (load_sound->file_start[7] & 0x7F) * 0x400 + (load_sound->file_start[8] & 0x7F) * 0x80 + (load_sound->file_start[9] & 0x7F);
+	load_sound->file_start += tag_size;
 
 	mad_decoder_init(&m_decoder, load_sound, mp3::input, 0, 0, mp3::output, mp3::error, 0);
-	mad_decoder_options(&m_decoder, 0);
 	result = mad_decoder_run(&m_decoder, MAD_DECODER_MODE_SYNC);
 	mad_decoder_finish(&m_decoder);
-
-	load_sound->sound_duration = load_sound->buffer.size() * load_sound->buffer_duration / 44.1f;
 
 	return result;
 }
@@ -156,6 +146,11 @@ bool fr::mp3::IsMP3File(unsigned char *magic)
 		return true;
 	}
 	return false;
+}
+
+int fr::ogg::decode(Sound *load_sound)
+{
+	
 }
 
 void fr::SoundManager::init()
@@ -203,8 +198,14 @@ bool fr::SoundManager::load(std::string path)
 		return false;
 	}
 	unsigned char *file_ch = (unsigned char*)fdm;
+	new_sound->fd = fd;
 	new_sound->file_start = file_ch;
 	new_sound->file_length = st.st_size;
+	new_sound->new_buffer = new float[4096 * 2];
+	new_sound->converted_buffer = new float[4096 * 2];
+	new_sound->output_buffer = new unsigned char[4096 * 4];
+	new_sound->src_sample_index = 0;
+	new_sound->dest_sample_index = 0;
 	unsigned int magic = 0;
 	magic += file_ch[0] << 24;
 	magic += file_ch[1] << 16;
@@ -228,6 +229,11 @@ bool fr::SoundManager::load(std::string path)
 		break;
 	}
 	//分析SDL_mixer得知，MP3格式的要另外检测
+	new_sound->sound_duration = new_sound->buffer.size() * new_sound->buffer_duration / 44.1f;
+	new_sound->src_sample_index = 0;
+	new_sound->dest_sample_index = 0;
+	delete [] new_sound->new_buffer;
+	delete [] new_sound->converted_buffer;
 	if (munmap(fdm, st.st_size) == -1)
 	{
 		return false;
@@ -240,6 +246,7 @@ void fr::SoundManager::play(std::string process_name)
 {
 	m_process[process_name]->is_playing = true;
 	m_process[process_name]->buffer_process = 0;
+	m_process[process_name]->buffer_index = 0;
 	m_process[process_name]->sound_process = 0;
 }
 
@@ -273,7 +280,7 @@ void fr::SoundManager::AudioCallback(void *userdata, unsigned char *stream, int 
 		SoundProcess *load_process = i->second;
 		if (m_sound[load_process->path])
 		{
-			if (load_process->sound_process < m_sound[load_process->path]->sound_duration && load_process->is_playing)
+			if (load_process->buffer_index < m_sound[load_process->path]->buffer.size() && load_process->is_playing)
 			{
 				len = (load_process->buffer_process + len > m_sound[load_process->path]->buffer_duration) ?  m_sound[load_process->path]->buffer_duration - load_process->buffer_process : len;
 				SDL_MixAudio(stream,  m_sound[load_process->path]->buffer[load_process->buffer_index], len, SDL_MIX_MAXVOLUME);
@@ -281,7 +288,7 @@ void fr::SoundManager::AudioCallback(void *userdata, unsigned char *stream, int 
 				if (load_process->buffer_process >=  m_sound[load_process->path]->buffer_duration)
 				{
 					load_process->buffer_index++;
-					load_process->buffer_process = 0;
+					load_process->buffer_process %= m_sound[load_process->path]->buffer_duration;
 				}
 			}
 		}
