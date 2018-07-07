@@ -79,7 +79,9 @@ void fr::SongList::init()
 		List::init(Rect((System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 0 : 280), (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64), 720, System::instance()->GetWindowHeigh() - (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? 352 : 64)), m_information.size(), true, true);
 		PrepareHeader::instance()->SetInformation(m_information[selected_index]);
 		SoundManager::instance()->load(m_information[selected_index]->audio_path);
-		SoundManager::instance()->play(m_information[selected_index]->audio_path, m_information[selected_index]->preview_time);
+		SoundManager::instance()->GetProcess("default_music")->path = m_information[selected_index]->audio_path;
+		SoundManager::instance()->play("default_music");
+		SoundManager::instance()->seek("default_music", m_information[selected_index]->preview_time);
 	}
 	RefreshListSize();
 	search_bar->SetPos(dest_rect.x, dest_rect.y - cell_h);
@@ -88,11 +90,8 @@ void fr::SongList::init()
 void fr::SongList::clear()
 {
 	cell.clear();
-	if (SoundManager::instance()->IsPlayingMusic())
-	{
-		SoundManager::instance()->stop();
+	SoundManager::instance()->GetProcess("default_music")->is_playing = false;
 	SoundManager::instance()->clear(m_information[selected_index]->audio_path);
-	}
 }
 
 void fr::SongList::update()
@@ -114,20 +113,19 @@ void fr::SongList::update()
 		{
 			LoadingState::instance()->init(STATE_GAME);
 			GameState::instance()->SetFile(shown_information[selected_index]);
-			SoundManager::instance()->stop();
+			SoundManager::instance()->GetProcess("default_music")->is_playing = false;
 		}
 		else 
 		{
 			if (shown_information[last_selected_index]->audio_path != shown_information[selected_index]->audio_path)
 			{
-				if (SoundManager::instance()->IsPlayingMusic())
-				{
-					SoundManager::instance()->stop();
-					SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path);
-				}
+				SoundManager::instance()->GetProcess("default_music")->is_playing = false;
+				SoundManager::instance()->clear(shown_information[last_selected_index]->audio_path);
 				PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
 				SoundManager::instance()->load(shown_information[selected_index]->audio_path);
-				SoundManager::instance()->play(shown_information[selected_index]->audio_path, shown_information[selected_index]->preview_time);
+				SoundManager::instance()->GetProcess("default_music")->path = shown_information[selected_index]->audio_path;
+				SoundManager::instance()->play("default_music");
+				SoundManager::instance()->seek("default_music", shown_information[selected_index]->preview_time);
 			}
 			PrepareHeader::instance()->SetInformation(shown_information[selected_index]);
 		}
