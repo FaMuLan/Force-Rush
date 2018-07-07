@@ -29,6 +29,7 @@ void fr::GameplayWizardBeatmap::init()
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
 	SoundManager::instance()->load(audio_path);
+	SoundManager::instance()->GetProcess("default_music")->path = audio_path;
 
 	NoteSet *new_note_set = new NoteSet;
 	for (int i = 0; i < 120; i++)
@@ -78,7 +79,8 @@ void fr::GameplayWizardBeatmap::update()
 	{
 		if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 		{
-			SoundManager::instance()->play(audio_path, Timer::instance()->GetTime("game") - 2000);
+			SoundManager::instance()->play("default_music");
+			SoundManager::instance()->seek("default_music", Timer::instance()->GetTime("game") - 2000);
 			is_waiting = false;
 		}
 	}
@@ -153,10 +155,7 @@ void fr::GameplayWizardBeatmap::stop()
 {
 	m_column[3]->reset();
 	Timer::instance()->ResetTimer("game");
-	if (SoundManager::instance()->IsPlayingMusic())
-	{
-		SoundManager::instance()->stop();
-	}
+	SoundManager::instance()->GetProcess("default_music")->is_playing = false;
 	is_running = false;
 }
 

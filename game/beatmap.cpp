@@ -153,10 +153,7 @@ void fr::Beatmap::init()
 void fr::Beatmap::clear()
 {
 	m_column.clear();
-	if (SoundManager::instance()->IsPlayingMusic())
-	{
-		SoundManager::instance()->stop();
-	}
+	SoundManager::instance()->GetProcess("default_music")->is_playing = false;
 	SoundManager::instance()->clear(audio_path);
 }
 
@@ -325,6 +322,7 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	bool is_mapped = false;
 	is_waiting = true;
 	is_ended = false;
+	SoundManager::instance()->GetProcess("default_music")->path = audio_path;
 
 	std::vector<NoteSet*> new_note_set;
 	LoadBeatmapFile(m_information->file_path, NULL, &new_note_set);
@@ -350,7 +348,8 @@ void fr::GameBeatmap::update()
 	Beatmap::update();
 	if (Timer::instance()->GetTime("game") > 2000 && is_waiting)
 	{
-		SoundManager::instance()->play(audio_path, Timer::instance()->GetTime("game") - 2000);
+		SoundManager::instance()->play("default_music");
+		SoundManager::instance()->seek("default_music", Timer::instance()->GetTime("game") - 2000);
 		is_waiting = false;
 	}
 	if (System::instance()->IsWindowModified())

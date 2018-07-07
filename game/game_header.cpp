@@ -115,14 +115,16 @@ void fr::GameHeader::update()
 	if (title_base->IsReleased() || ControlHandler::instance()->IsKeyDown(SDL_SCANCODE_AC_BACK))
 	{
 		GameHeader::instance()->SwitchPause();
-		SoundManager::instance()->SwitchPause();
+//		SoundManager::instance()->SwitchPause("default_music");
 		if (GameHeader::instance()->IsPaused())
 		{
+			SoundManager::instance()->GetProcess("default_music")->is_playing = false;
 			Timer::instance()->PauseTimer("game");
 			tips_text->SetText("Tips: " + Setting::instance()->GetRandomTips());
 		}
 		else
 		{
+			SoundManager::instance()->GetProcess("default_music")->is_playing = true;
 			Timer::instance()->RunTimer("game");
 		}
 	}
@@ -168,7 +170,7 @@ void fr::GameHeader::update()
 		if (pause_resume->IsReleased())
 		{
 			GameHeader::instance()->SwitchPause();
-			SoundManager::instance()->SwitchPause();
+//			SoundManager::instance()->SwitchPause("default_music");
 			Timer::instance()->RunTimer("game");
 		}
 		if (pause_retry->IsReleased())
