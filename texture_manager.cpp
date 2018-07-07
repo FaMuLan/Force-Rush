@@ -195,6 +195,9 @@ glm::mat4x4 fr::TextureManager::GetMatrix(std::string id)
 
 void fr::TextureManager::DestroyCache(fr::TextureCache *cache)
 {
-	glDeleteTextures(1, cache->texture);
+	if (cache)
+	{
+		glDeleteTextures(1, cache->texture);
+	}
 	delete cache;
 }
