@@ -24,7 +24,7 @@ namespace fr
 
 	struct Sound
 	{
-		int fd;
+		std::string path;
 		unsigned char *file_start;
 		unsigned int file_length;
 		int src_sample_index;

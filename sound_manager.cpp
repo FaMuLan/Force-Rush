@@ -5,6 +5,9 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <samplerate.h>
+#include <mad.h>
+#include <vorbis/vorbisfile.h>
+#include <vorbis/codec.h>
 
 fr::SoundManager *fr::SoundManager::m_instance = 0;
 std::map<std::string, fr::Sound*> fr::SoundManager::m_sound;
@@ -150,7 +153,53 @@ bool fr::mp3::IsMP3File(unsigned char *magic)
 
 int fr::ogg::decode(Sound *load_sound)
 {
-	
+	int current_section = 0;
+	OggVorbis_File vorbis_file;
+	vorbis_info *info;
+	int channels_count;
+	int frequency;
+	bool eof = false;
+	float **load_buffer;
+	if (ov_fopen(load_sound->path.c_str(), &vorbis_file) != 0)
+	{
+		return -1;
+	}
+	info = ov_info(&vorbis_file, -1);
+	channels_count = info->channels;
+	frequency = info->rate;
+	load_sound->buffer_duration = 4096 * 4;
+	while (!eof)
+	{
+		long samples_count = ov_read_float(&vorbis_file, &load_buffer, 4096, &current_section);
+		if (samples_count <= 0)
+		{
+			eof = true;
+		}
+		if (samples_count > 0)
+		{
+			for (int i = 0; i < samples_count; i += 1)
+			{
+				load_sound->new_buffer[load_sound->src_sample_index++] = load_buffer[0][i];
+				load_sound->new_buffer[load_sound->src_sample_index++] = channels_count == 1 ? load_buffer[0][i] : load_buffer[1][i];
+				//强行双声道
+				if (load_sound->src_sample_index >= 4096 * 2)
+				{
+					load_sound->src_sample_index = 0;
+					for (int j = 0; j < 4096 * 2; j++)
+					{
+						int sample = load_sound->new_buffer[j] * 32767;
+						load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 0) & 0xFF;
+						load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 8) & 0xFF;
+					}
+					load_sound->dest_sample_index = 0;
+					load_sound->buffer.push_back(load_sound->output_buffer);
+					load_sound->output_buffer = new unsigned char[4096 * 4];
+				}
+			}
+		}
+	}
+	ov_clear(&vorbis_file);
+	return 0;
 }
 
 void fr::SoundManager::init()
@@ -198,7 +247,7 @@ bool fr::SoundManager::load(std::string path)
 		return false;
 	}
 	unsigned char *file_ch = (unsigned char*)fdm;
-	new_sound->fd = fd;
+	new_sound->path = path;
 	new_sound->file_start = file_ch;
 	new_sound->file_length = st.st_size;
 	new_sound->new_buffer = new float[4096 * 2];
@@ -216,6 +265,7 @@ bool fr::SoundManager::load(std::string path)
 		case 0x57415645:	//WAVE
 		break;
 		case 0x4F676753:	//OGGS
+			ogg::decode(new_sound);
 		break;
 		default:
 			if (mp3::IsMP3File((Uint8*)&magic))
@@ -230,8 +280,6 @@ bool fr::SoundManager::load(std::string path)
 	}
 	//分析SDL_mixer得知，MP3格式的要另外检测
 	new_sound->sound_duration = new_sound->buffer.size() * new_sound->buffer_duration / 44.1f;
-	new_sound->src_sample_index = 0;
-	new_sound->dest_sample_index = 0;
 	delete [] new_sound->new_buffer;
 	delete [] new_sound->converted_buffer;
 	if (munmap(fdm, st.st_size) == -1)
