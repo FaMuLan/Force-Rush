@@ -153,6 +153,8 @@ bool fr::mp3::IsMP3File(unsigned char *magic)
 
 int fr::ogg::decode(Sound *load_sound)
 {
+	static SRC_DATA src_data;
+	int samplerate_error = -1;
 	int current_section = 0;
 	OggVorbis_File vorbis_file;
 	vorbis_info *info;
@@ -168,6 +170,15 @@ int fr::ogg::decode(Sound *load_sound)
 	channels_count = info->channels;
 	frequency = info->rate;
 	load_sound->buffer_duration = 4096 * 4;
+	if (frequency != 44100)
+	{
+		src_data.end_of_input = 0;
+		src_data.data_in = load_sound->new_buffer;
+		src_data.input_frames = 0;
+		src_data.src_ratio = 44100.f / frequency;
+		src_data.data_out = load_sound->converted_buffer;
+		src_data.output_frames = 4096 * 44100.f / frequency;
+	}
 	while (!eof)
 	{
 		long samples_count = ov_read_float(&vorbis_file, &load_buffer, 4096, &current_section);
@@ -177,23 +188,46 @@ int fr::ogg::decode(Sound *load_sound)
 		}
 		if (samples_count > 0)
 		{
-			for (int i = 0; i < samples_count; i += 1)
+			for (int i = 0; i < samples_count; i++)
 			{
 				load_sound->new_buffer[load_sound->src_sample_index++] = load_buffer[0][i];
-				load_sound->new_buffer[load_sound->src_sample_index++] = channels_count == 1 ? load_buffer[0][i] : load_buffer[1][i];
+								load_sound->new_buffer[load_sound->src_sample_index++] = channels_count == 1 ? load_buffer[0][i] : load_buffer[1][i];
 				//强行双声道
 				if (load_sound->src_sample_index >= 4096 * 2)
 				{
 					load_sound->src_sample_index = 0;
-					for (int j = 0; j < 4096 * 2; j++)
+					//默认频率是44100，如果音频不是44100音频的话要交给libsamplerate转换
+					if (frequency != 44100)
 					{
-						int sample = load_sound->new_buffer[j] * 32767;
-						load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 0) & 0xFF;
-						load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 8) & 0xFF;
+						src_data.data_in = load_sound->new_buffer;
+						src_data.input_frames = 4096;
+						if (src_simple(&src_data, SRC_LINEAR, 2) == 0)
+						{
+							for (int j = 0; j < src_data.output_frames_gen * 2; j++)
+							{
+								load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->converted_buffer[j] * 28000) >> 0) & 0xFF;
+								load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->converted_buffer[j] * 28000) >> 8) & 0xFF;
+								if (load_sound->dest_sample_index >= 4096 * 4)
+								{
+									load_sound->dest_sample_index = 0;
+									load_sound->buffer.push_back(load_sound->output_buffer);
+									load_sound->output_buffer = new unsigned char[4096 * 4];
+								}
+							}
+						}
 					}
-					load_sound->dest_sample_index = 0;
-					load_sound->buffer.push_back(load_sound->output_buffer);
-					load_sound->output_buffer = new unsigned char[4096 * 4];
+					else
+					{
+						for (int j = 0; j < 4096 * 2; j++)
+						{
+							int sample = load_sound->new_buffer[j] * 28000;
+							load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 0) & 0xFF;
+							load_sound->output_buffer[load_sound->dest_sample_index++] = (sample >> 8) & 0xFF;
+						}
+						load_sound->buffer.push_back(load_sound->output_buffer);
+						load_sound->dest_sample_index = 0;
+						load_sound->output_buffer = new unsigned char[4096 * 4];
+					}
 				}
 			}
 		}
