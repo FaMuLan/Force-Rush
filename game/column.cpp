@@ -338,7 +338,7 @@ void fr::Column::update()
 		}
 	}
 //=================== End ===========
-	if (!GameHeader::instance()->IsPaused())
+	if (!Timer::instance()->IsPaused("game"))
 	{
 		if (current_note_index < m_note_set->note.size())
 		//檢測防止下標越界而導致段錯誤
