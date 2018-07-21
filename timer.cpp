@@ -51,3 +51,8 @@ unsigned long fr::Timer::GetSystemTime()
 {
 	return SDL_GetTicks();
 }
+
+bool fr::Timer::IsPaused(std::string id)
+{
+	return is_pause[id];
+}

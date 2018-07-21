@@ -25,6 +25,7 @@ namespace fr
 
 			unsigned long GetTime(std::string id);
 			unsigned long GetSystemTime();
+			bool IsPaused(std::string id);
 		private:
 			Timer() {}
 			~Timer() {}
