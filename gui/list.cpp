@@ -187,6 +187,7 @@ void fr::List::RefreshListSize()
 void fr::List::SetValueCount(int load_value_count)
 {
 	value_count = load_value_count;
+	list_length = value_count != 0 ? cell_h * value_count : cell_h;
 }
 
 void fr::List::SetSelectedIndex(int load_selected_index)
