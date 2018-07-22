@@ -96,7 +96,7 @@ void fr::MainState::update()
 //		SoundManager::instance()->stop();
 	}
 
-	UserProfile::instance()->SetUserName(user_name_text->GetText());
+//	UserProfile::instance()->SetUserName(user_name_text->GetText());
 }
 
 void fr::MainState::lock(bool load)
