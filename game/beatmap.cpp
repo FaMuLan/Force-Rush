@@ -56,14 +56,14 @@ void fr::Beatmap::init()
 	wall_vectrices[11] = 0;
 	//top right
 	wall_vectrices[12] = 0;
-	wall_vectrices[13] = wall->GetH();
+	wall_vectrices[13] = System::instance()->GetWindowHeigh();
 	wall_vectrices[14] = 0;
 	wall_vectrices[15] = 1;
 	wall_vectrices[16] = 0;
 	wall_vectrices[17] = wall->GetH();
 	//bottom left
 	wall_vectrices[18] = 0;
-	wall_vectrices[19] = wall->GetH();
+	wall_vectrices[19] = System::instance()->GetWindowHeigh();
 	wall_vectrices[20] = wall->GetW();
 	wall_vectrices[21] = 1;
 	wall_vectrices[22] = wall->GetW();
@@ -77,7 +77,7 @@ void fr::Beatmap::init()
 	ground_vectrices[4] = 0;
 	ground_vectrices[5] = 0;
 	//top left
-	ground_vectrices[6] = ground->GetW();
+	ground_vectrices[6] = System::instance()->GetWindowWidth();
 	ground_vectrices[7] = 0;
 	ground_vectrices[8] = 0;
 	ground_vectrices[9] = 1;
@@ -91,7 +91,7 @@ void fr::Beatmap::init()
 	ground_vectrices[16] = 0;
 	ground_vectrices[17] = ground->GetH();
 	//bottom left
-	ground_vectrices[18] = ground->GetW();
+	ground_vectrices[18] = System::instance()->GetWindowWidth();
 	ground_vectrices[19] = 0;
 	ground_vectrices[20] = ground->GetH();
 	ground_vectrices[21] = 1;
@@ -100,28 +100,28 @@ void fr::Beatmap::init()
 	//bottom right
 
 	play_base_vectrices[0] = 0;
-	play_base_vectrices[1] = 1280;
+	play_base_vectrices[1] = System::instance()->GetWindowHeigh();
 	play_base_vectrices[2] = play_base->GetH();
 	play_base_vectrices[3] = 1;
 	play_base_vectrices[4] = 0;
 	play_base_vectrices[5] = 0;
 	//top left
-	play_base_vectrices[6] = play_base->GetW();
-	play_base_vectrices[7] = 1280;
+	play_base_vectrices[6] = System::instance()->GetWindowWidth();
+	play_base_vectrices[7] = System::instance()->GetWindowHeigh();
 	play_base_vectrices[8] = play_base->GetH();
 	play_base_vectrices[9] = 1;
 	play_base_vectrices[10] = play_base->GetW();
 	play_base_vectrices[11] = 0;
 	//top right
 	play_base_vectrices[12] = 0;
-	play_base_vectrices[13] = 1280;
+	play_base_vectrices[13] = System::instance()->GetWindowHeigh();
 	play_base_vectrices[14] = 0;
 	play_base_vectrices[15] = 1;
 	play_base_vectrices[16] = 0;
 	play_base_vectrices[17] = play_base->GetH();
 	//bottom left
-	play_base_vectrices[18] = play_base->GetW();
-	play_base_vectrices[19] = 1280;
+	play_base_vectrices[18] = System::instance()->GetWindowWidth();
+	play_base_vectrices[19] = System::instance()->GetWindowHeigh();
 	play_base_vectrices[20] = 0;
 	play_base_vectrices[21] = 1;
 	play_base_vectrices[22] = play_base->GetW();
