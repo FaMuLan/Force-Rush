@@ -70,6 +70,10 @@ void fr::GameplayWizardBeatmap::init()
 void fr::GameplayWizardBeatmap::clear()
 {
 	Beatmap::clear();
+	hit_offset_num->clear();
+	current_offset_text->clear();
+	delete hit_offset_num;
+	delete current_offset_text;
 }
 
 void fr::GameplayWizardBeatmap::update()
@@ -266,6 +270,62 @@ void fr::GameplayWizardState::clear()
 {
 	GameplayWizardBeatmap::instance()->stop();
 	GameplayWizardBeatmap::instance()->clear();
+	widget_base->clear();
+	back->clear();
+	offset_wizard_switch->clear();
+	camera_pos_y_left->clear();
+	camera_pos_y_right->clear();
+	camera_pos_y_left_dual->clear();
+	camera_pos_y_right_dual->clear();
+	camera_pos_z_left->clear();
+	camera_pos_z_right->clear();
+	camera_pos_z_left_dual->clear();
+	camera_pos_z_right_dual->clear();
+	camera_rotate_x_left->clear();
+	camera_rotate_x_right->clear();
+	camera_rotate_x_left_dual->clear();
+	camera_rotate_x_right_dual->clear();
+	force_angle_left->clear();
+	force_angle_right->clear();
+	force_angle_left_dual->clear();
+	force_angle_right_dual->clear();
+	offset_wizard_text->clear();
+	camera_pos_y_text->clear();
+	camera_pos_z_text->clear();
+	camera_rotate_x_text->clear();
+	force_angle_text->clear();
+	camera_pos_y_num->clear();
+	camera_pos_z_num->clear();
+	camera_rotate_x_num->clear();
+	force_angle_num->clear();
+	delete widget_base;
+	delete back;
+	delete offset_wizard_switch;
+	delete camera_pos_y_left;
+	delete camera_pos_y_right;
+	delete camera_pos_y_left_dual;
+	delete camera_pos_y_right_dual;
+	delete camera_pos_z_left;
+	delete camera_pos_z_right;
+	delete camera_pos_z_left_dual;
+	delete camera_pos_z_right_dual;
+	delete camera_rotate_x_left;
+	delete camera_rotate_x_right;
+	delete camera_rotate_x_left_dual;
+	delete camera_rotate_x_right_dual;
+	delete force_angle_left;
+	delete force_angle_right;
+	delete force_angle_left_dual;
+	delete force_angle_right_dual;
+	delete offset_wizard_text;
+	delete camera_pos_y_text;
+	delete camera_pos_z_text;
+	delete camera_rotate_x_text;
+	delete force_angle_text;
+	delete camera_pos_y_num;
+	delete camera_pos_z_num;
+	delete camera_rotate_x_num;
+	delete force_angle_num;
 }
 
 void fr::GameplayWizardState::update()

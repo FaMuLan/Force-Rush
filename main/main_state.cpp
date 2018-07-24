@@ -53,6 +53,19 @@ void fr::MainState::init()
 void fr::MainState::clear()
 {
 	main_about->clear();
+	widget_base->clear();
+	performance_process_bar->clear();
+	logo->clear();
+	user_name_text->clear();
+	performance_point_text->clear();
+	start_text->clear();
+	delete main_about;
+	delete widget_base;
+	delete performance_process_bar;
+	delete logo;
+	delete user_name_text;
+	delete performance_point_text;
+	delete start_text;
 }
 
 void fr::MainState::update()

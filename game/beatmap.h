@@ -84,7 +84,7 @@ namespace fr
 			TextArea *judge_text;
 			TextArea *early_text;
 			TextArea *late_text;
-			
+
 			bool show_early;
 			bool show_late;
 			bool is_waiting;

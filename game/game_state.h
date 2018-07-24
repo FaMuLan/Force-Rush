@@ -27,7 +27,6 @@ namespace fr
 			void update();
 
 			void SetFile(SongInformation *load_information);
-			void DrawWall();
 			SongInformation *m_information;
 		private:
 			GameState() {}

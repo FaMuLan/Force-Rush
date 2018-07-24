@@ -196,6 +196,12 @@ void fr::Column::clear()
 	delete m_note_set;
 	delete [] note_vectrices;
 	delete [] feedback_vectrices;
+	s_note->clear();
+	s_feedback->clear();
+	s_light->clear();
+	delete s_note;
+	delete s_feedback;
+	delete s_light;
 }
 
 void fr::Column::update()

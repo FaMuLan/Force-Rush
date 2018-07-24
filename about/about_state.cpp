@@ -24,7 +24,10 @@ void fr::AboutState::init()
 
 void fr::AboutState::clear()
 {
-	
+	text->clear();
+	back->clear();
+	delete text;
+	delete back;
 }
 
 void fr::AboutState::update()

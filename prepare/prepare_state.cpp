@@ -29,7 +29,6 @@ void fr::PrepareState::init()
 	prepare_mod = new Button;
 	prepare_list = new Button;
 	prepare_refresh = new Button;
-	background = new Sprite;
 
 	prepare_back->init("assets/base/sort_button.png");
 	prepare_back->AddPressedFrame( "assets/base/sort_button_pressed.png");
@@ -64,7 +63,17 @@ void fr::PrepareState::init()
 void fr::PrepareState::clear()
 {
 	SongList::instance()->clear();
-	background->clear();
+	ModWidget::instance()->clear();
+	ListWidget::instance()->clear();
+	SongPathManagerWidget::instance()->clear();
+	prepare_back->clear();
+	prepare_mod->clear();
+	prepare_list->clear();
+	prepare_refresh->clear();
+	delete prepare_back;
+	delete prepare_mod;
+	delete prepare_list;
+	delete prepare_refresh;
 }
 
 void fr::PrepareState::update()

@@ -35,7 +35,11 @@ void fr::SongPathManagerWidget::init()
 
 void fr::SongPathManagerWidget::clear()
 {
-	
+	SongPathList::instance()->clear();
+	new_path->clear();
+	delete_path->clear();
+	delete new_path;
+	delete delete_path;
 }
 
 void fr::SongPathManagerWidget::update()
@@ -171,7 +175,8 @@ void fr::SongPathList::init()
 
 void fr::SongPathList::clear()
 {
-	
+	List::clear();
+	list_path.clear();
 }
 
 void fr::SongPathList::update()

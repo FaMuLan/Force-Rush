@@ -28,7 +28,6 @@ namespace fr
 			PrepareState() {}
 			~PrepareState() {}
 			static PrepareState *m_instance;
-			Sprite *background;
 			Button *prepare_back;
 			Button *prepare_mod;
 			Button *prepare_list;

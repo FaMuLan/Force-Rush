@@ -71,7 +71,34 @@ void fr::GameHeader::init()
 
 void fr::GameHeader::clear()
 {
-	
+	pause_widget_base->clear();
+	title_base->clear();
+	score_base->clear();
+	user_base->clear();
+	duration_process_bar->clear();
+	performance_process_bar->clear();
+	pause_resume->clear();
+	pause_retry->clear();
+	pause_retire->clear();
+	score_text->clear();
+	duration_text->clear();
+	performance_text->clear();
+	user_name_text->clear();
+	tips_text->clear();
+	delete pause_widget_base;
+	delete title_base;
+	delete score_base;
+	delete user_base;
+	delete duration_process_bar;
+	delete performance_process_bar;
+	delete pause_resume;
+	delete pause_retry;
+	delete pause_retire;
+	delete score_text;
+	delete duration_text;
+	delete performance_text;
+	delete user_name_text;
+	delete tips_text;
 }
 
 void fr::GameHeader::update()

@@ -85,7 +85,42 @@ void fr::ModWidget::init()
 
 void fr::ModWidget::clear()
 {
-	
+	auto_text->clear();
+	auto_switch->clear();
+	slide_out_text->clear();
+	slide_out_switch->clear();
+	speed_text->clear();
+	speed_left->clear();
+	speed_left_dual->clear();
+	speed_right->clear();
+	speed_right_dual->clear();
+	speed_num->clear();
+	offset_text->clear();
+	offset_left->clear();
+	offset_left_dual->clear();
+	offset_right->clear();
+	offset_right_dual->clear();
+	offset_num->clear();
+	gameplay_wizard_text->clear();
+	gameplay_wizard_button->clear();
+	delete auto_text;
+	delete auto_switch;
+	delete slide_out_text;
+	delete slide_out_switch;
+	delete speed_text;
+	delete speed_left;
+	delete speed_left_dual;
+	delete speed_right;
+	delete speed_right_dual;
+	delete speed_num;
+	delete offset_text;
+	delete offset_left;
+	delete offset_left_dual;
+	delete offset_right;
+	delete offset_right_dual;
+	delete offset_num;
+	delete gameplay_wizard_text;
+	delete gameplay_wizard_button;
 }
 
 void fr::ModWidget::update()

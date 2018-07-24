@@ -25,6 +25,7 @@ void fr::GameState::init()
 void fr::GameState::clear()
 {
 	GameBeatmap::instance()->clear();
+	GameHeader::instance()->clear();
 }
 
 void fr::GameState::update()
@@ -33,7 +34,6 @@ void fr::GameState::update()
 	GameHeader::instance()->update();
 
 	GameBeatmap::instance()->render();
-//	UserProfile::instance()->RenderController();
 	GameHeader::instance()->render();
 }
 

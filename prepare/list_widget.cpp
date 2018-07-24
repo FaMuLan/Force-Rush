@@ -70,7 +70,22 @@ void fr::ListWidget::init()
 
 void fr::ListWidget::clear()
 {
-	
+	sort_type_label->clear();
+	sort_type_left->clear();
+	sort_type_right->clear();
+	sort_type_text->clear();
+	reverse_label->clear();
+	reverse_switch->clear();
+	manage_path_label->clear();
+	manage_path_switch->clear();
+	delete sort_type_label;
+	delete sort_type_left;
+	delete sort_type_right;
+	delete sort_type_text;
+	delete reverse_label;
+	delete reverse_switch;
+	delete manage_path_label;
+	delete manage_path_switch;
 }
 
 void fr::ListWidget::update()

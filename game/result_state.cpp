@@ -156,7 +156,50 @@ void fr::ResultState::init()
 
 void fr::ResultState::clear()
 {
-	
+	song_base->clear();
+	score_base->clear();
+	rank_base->clear();
+	user_base->clear();
+	b_return->clear();
+	b_retry->clear();
+	title_text->clear();
+	artist_text->clear();
+	version_text->clear();
+	difficulty_text->clear();
+	score_text->clear();
+	pure_text->clear();
+	safe_text->clear();
+	warning_text->clear();
+	error_text->clear();
+	chain_text->clear();
+	acc_text->clear();
+	rank_text->clear();
+	user_name_text->clear();
+	performance_point_text->clear();
+	new_record_text->clear();
+	new_performance_text->clear();
+	delete song_base;
+	delete score_base;
+	delete rank_base;
+	delete user_base;
+	delete b_return;
+	delete b_retry;
+	delete title_text;
+	delete artist_text;
+	delete version_text;
+	delete difficulty_text;
+	delete score_text;
+	delete pure_text;
+	delete safe_text;
+	delete warning_text;
+	delete error_text;
+	delete chain_text;
+	delete acc_text;
+	delete rank_text;
+	delete user_name_text;
+	delete performance_point_text;
+	delete new_record_text;
+	delete new_performance_text;
 }
 
 void fr::ResultState::update()
