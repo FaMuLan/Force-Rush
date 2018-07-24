@@ -123,7 +123,8 @@ void fr::TextArea::render(int x, int y, fr::TextFormat format)
 
 void fr::TextArea::clear()
 {
-	
+	TextureManager::instance()->DestroyCache(cache);
+	delete [] vectrices;
 }
 
 void fr::TextArea::SetPos(int x, int y)

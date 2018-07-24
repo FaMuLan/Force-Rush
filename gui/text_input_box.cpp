@@ -7,6 +7,7 @@ void fr::TextInputBox::clear()
 {
 	Button::clear();
 	current_text->clear();
+	delete current_text;
 }
 
 void fr::TextInputBox::update()

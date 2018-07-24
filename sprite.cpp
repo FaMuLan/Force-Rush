@@ -106,6 +106,7 @@ void fr::Sprite::render(int index)
 void fr::Sprite::clear()
 {
 //	TextureManager::instance()->clear(m_path);
+	delete [] vectrices;
 }
 
 void fr::Sprite::AddFrame(std::string path)

@@ -102,7 +102,12 @@ void fr::Button::render()
 
 void fr::Button::clear()
 {
-	
+	Sprite::clear();
+	for (int i = 0; i < text.size(); i++)
+	{
+		text[i]->clear();
+		delete text[i];
+	}
 }
 
 void fr::Button::SetRotation(Point load_center, double load_angle)
