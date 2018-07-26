@@ -18,7 +18,28 @@ void fr::AboutState::init()
 	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	std::string str =
 		"程序: FaMuLan\n"
-		"版本: beta 1.3\n";
+		"版本: beta 1.3.5\n"
+		"特别致谢：\n"
+		"{\n"
+		"\t直接参与协助：\n"
+		"\t{\n"
+		"\t\tSSsea+\n"
+		"\t\tCytokinesis\n"
+		"\t\tTeradora\n"
+		"\t\tluyzi\n"
+		"\t\tMTF LHZS\n"
+		"\t}\n"
+		"\t精神股东：\n"
+		"\t{\n"
+		"\t\tHDRoop\n"
+		"\t\tQAIU\n"
+		"\t\tcr01x\n"
+		"\t\tG-Orochi\n"
+		"\t\t隐月\n"
+		"\t\t小小苏\n"
+		"\t}\n"
+		"\t还有那个一直在关注我成长的你\n"
+		"}\n";
 	text->init(str, System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Miui-Bold.ttf", 30, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560, true);
 }
 
