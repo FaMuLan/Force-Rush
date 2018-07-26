@@ -77,7 +77,7 @@ bool fr::UserProfile::read()
 bool fr::UserProfile::write()
 {
 	std::string file;
-	char *performance_point_ch = new char[20];
+	char *performance_point_ch = new char[50];
 	sprintf(performance_point_ch, "performance_point:%d\n", m_performance_point);
 	file = "Force Rush user profile\n";
 	file += "user_name:" + m_user_name + "\n";

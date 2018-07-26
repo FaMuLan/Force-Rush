@@ -91,13 +91,13 @@ void fr::ResultState::init()
 		is_new_performance = true;
 	}
 
-	char *difficulty_ch = new char[10];
-	char *pure_ch = new char[10];
-	char *safe_ch = new char[10];
-	char *warning_ch = new char[10];
-	char *error_ch = new char[10];
-	char *score_ch = new char[10];
-	char *performance_ch = new char[20];
+	char *difficulty_ch = new char[50];
+	char *pure_ch = new char[50];
+	char *safe_ch = new char[50];
+	char *warning_ch = new char[50];
+	char *error_ch = new char[50];
+	char *score_ch = new char[50];
+	char *performance_ch = new char[50];
 	std::string rank_ch;
 
 	sprintf(difficulty_ch, "Lv.%d", m_information->difficulty);
@@ -171,8 +171,6 @@ void fr::ResultState::clear()
 	safe_text->clear();
 	warning_text->clear();
 	error_text->clear();
-	chain_text->clear();
-	acc_text->clear();
 	rank_text->clear();
 	user_name_text->clear();
 	performance_point_text->clear();
@@ -193,8 +191,6 @@ void fr::ResultState::clear()
 	delete safe_text;
 	delete warning_text;
 	delete error_text;
-	delete chain_text;
-	delete acc_text;
 	delete rank_text;
 	delete user_name_text;
 	delete performance_point_text;

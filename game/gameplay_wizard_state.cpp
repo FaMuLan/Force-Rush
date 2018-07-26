@@ -249,10 +249,10 @@ void fr::GameplayWizardState::init()
 	camera_pos_z_text->init("CAM POS Z", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	camera_rotate_x_text->init("CAM ROTATE X", widget_base->GetX() + 32, widget_base->GetY() + 362, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	force_angle_text->init("FORCE ANGLE", widget_base->GetX() + 32, widget_base->GetY() + 466, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	char *camera_pos_y_ch = new char;
-	char *camera_pos_z_ch = new char;
-	char *camera_rotate_x_ch = new char;
-	char *force_angle_ch = new char;
+	char *camera_pos_y_ch = new char[10];
+	char *camera_pos_z_ch = new char[10];
+	char *camera_rotate_x_ch = new char[10];
+	char *force_angle_ch = new char[10];
 	sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 	sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 	sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
@@ -261,8 +261,10 @@ void fr::GameplayWizardState::init()
 	camera_pos_z_num->init(camera_pos_z_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	camera_rotate_x_num->init(camera_rotate_x_ch, widget_base->GetX() + 544, widget_base->GetY() + 380, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 	force_angle_num->init(force_angle_ch, widget_base->GetX() + 544, widget_base->GetY() + 484, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	delete camera_pos_z_ch;
-	delete camera_rotate_x_ch;
+	delete [] camera_pos_y_ch;
+	delete [] camera_pos_z_ch;
+	delete [] camera_rotate_x_ch;
+	delete [] force_angle_ch;
 
 }
 
@@ -400,10 +402,10 @@ void fr::GameplayWizardState::update()
 		camera_rotate_x_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 380);
 		force_angle_num->SetPos(widget_base->GetX() + 544, widget_base->GetY() + 484);
 
-		char *camera_pos_y_ch = new char;
-		char *camera_pos_z_ch = new char;
-		char *camera_rotate_x_ch = new char;
-		char *force_angle_ch = new char;
+		char *camera_pos_y_ch = new char[10];
+		char *camera_pos_z_ch = new char[10];
+		char *camera_rotate_x_ch = new char[10];
+		char *force_angle_ch = new char[10];
 		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
@@ -412,10 +414,10 @@ void fr::GameplayWizardState::update()
 		camera_pos_z_num->SetText(camera_pos_z_ch);
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
 		force_angle_num->SetText(force_angle_ch);
-		delete camera_pos_y_ch;
-		delete camera_pos_z_ch;
-		delete camera_rotate_x_ch;
-		delete force_angle_ch;
+		delete [] camera_pos_y_ch;
+		delete [] camera_pos_z_ch;
+		delete [] camera_rotate_x_ch;
+		delete [] force_angle_ch;
 	}
 
 	if (back->IsReleased())
@@ -426,131 +428,131 @@ void fr::GameplayWizardState::update()
 	if (camera_pos_y_left->IsReleased())
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() - 10);
-		char *camera_pos_y_ch = new char;
+		char *camera_pos_y_ch = new char[10];
 		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
-		delete camera_pos_y_ch;
+		delete [] camera_pos_y_ch;
 	}
 	if (camera_pos_y_left_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() - 100);
-		char *camera_pos_y_ch = new char;
+		char *camera_pos_y_ch = new char[10];
 		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
-		delete camera_pos_y_ch;
+		delete [] camera_pos_y_ch;
 	}
 	if (camera_pos_y_right->IsReleased())
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() + 10);
-		char *camera_pos_y_ch = new char;
+		char *camera_pos_y_ch = new char[10];
 		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
-		delete camera_pos_y_ch;
+		delete [] camera_pos_y_ch;
 	}
 	if (camera_pos_y_right_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraPosY(Setting::instance()->GetCameraPosY() + 100);
-		char *camera_pos_y_ch = new char;
+		char *camera_pos_y_ch = new char[10];
 		sprintf(camera_pos_y_ch, "%d", Setting::instance()->GetCameraPosY());
 		camera_pos_y_num->SetText(camera_pos_y_ch);
-		delete camera_pos_y_ch;
+		delete [] camera_pos_y_ch;
 	}
 
 	if (camera_pos_z_left->IsReleased())
 	{
 		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() - 10);
-		char *camera_pos_z_ch = new char;
+		char *camera_pos_z_ch = new char[10];
 		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		camera_pos_z_num->SetText(camera_pos_z_ch);
-		delete camera_pos_z_ch;
+		delete [] camera_pos_z_ch;
 	}
 	if (camera_pos_z_left_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() - 100);
-		char *camera_pos_z_ch = new char;
+		char *camera_pos_z_ch = new char[10];
 		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		camera_pos_z_num->SetText(camera_pos_z_ch);
-		delete camera_pos_z_ch;
+		delete [] camera_pos_z_ch;
 	}
 	if (camera_pos_z_right->IsReleased())
 	{
 		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() + 10);
-		char *camera_pos_z_ch = new char;
+		char *camera_pos_z_ch = new char[10];
 		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		camera_pos_z_num->SetText(camera_pos_z_ch);
-		delete camera_pos_z_ch;
+		delete [] camera_pos_z_ch;
 	}
 	if (camera_pos_z_right_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraPosZ(Setting::instance()->GetCameraPosZ() + 100);
-		char *camera_pos_z_ch = new char;
+		char *camera_pos_z_ch = new char[10];
 		sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 		camera_pos_z_num->SetText(camera_pos_z_ch);
-		delete camera_pos_z_ch;
+		delete [] camera_pos_z_ch;
 	}
 	if (camera_rotate_x_left->IsReleased())
 	{
 		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() - 1);
-		char *camera_rotate_x_ch = new char;
+		char *camera_rotate_x_ch = new char[10];
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
-		delete camera_rotate_x_ch;
+		delete [] camera_rotate_x_ch;
 	}
 	if (camera_rotate_x_left_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() - 10);
-		char *camera_rotate_x_ch = new char;
+		char *camera_rotate_x_ch = new char[10];
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
-		delete camera_rotate_x_ch;
+		delete [] camera_rotate_x_ch;
 	}
 	if (camera_rotate_x_right->IsReleased())
 	{
 		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() + 1);
-		char *camera_rotate_x_ch = new char;
+		char *camera_rotate_x_ch = new char[10];
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
-		delete camera_rotate_x_ch;
+		delete [] camera_rotate_x_ch;
 	}
 	if (camera_rotate_x_right_dual->IsReleased())
 	{
 		Setting::instance()->SetCameraRotateX(Setting::instance()->GetCameraRotateX() + 10);
-		char *camera_rotate_x_ch = new char;
+		char *camera_rotate_x_ch = new char[10];
 		sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
 		camera_rotate_x_num->SetText(camera_rotate_x_ch);
-		delete camera_rotate_x_ch;
+		delete [] camera_rotate_x_ch;
 	}
 	if (force_angle_left->IsReleased())
 	{
 		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() - 1);
-		char *force_angle_ch = new char;
+		char *force_angle_ch = new char[10];
 		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
 		force_angle_num->SetText(force_angle_ch);
-		delete force_angle_ch;
+		delete [] force_angle_ch;
 	}
 	if (force_angle_left_dual->IsReleased())
 	{
 		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() - 10);
-		char *force_angle_ch = new char;
+		char *force_angle_ch = new char[10];
 		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
 		force_angle_num->SetText(force_angle_ch);
-		delete force_angle_ch;
+		delete [] force_angle_ch;
 	}
 	if (force_angle_right->IsReleased())
 	{
 		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() + 1);
-		char *force_angle_ch = new char;
+		char *force_angle_ch = new char[10];
 		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
 		force_angle_num->SetText(force_angle_ch);
-		delete force_angle_ch;
+		delete [] force_angle_ch;
 	}
 	if (force_angle_right_dual->IsReleased())
 	{
 		Setting::instance()->SetForceAngle(Setting::instance()->GetForceAngle() + 10);
-		char *force_angle_ch = new char;
+		char *force_angle_ch = new char[10];
 		sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
 		force_angle_num->SetText(force_angle_ch);
-		delete force_angle_ch;
+		delete [] force_angle_ch;
 	}
 
 	GameplayWizardBeatmap::instance()->render();

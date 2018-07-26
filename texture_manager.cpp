@@ -70,9 +70,12 @@ void fr::TextureManager::clear()
 
 void fr::TextureManager::clear(std::string path)
 {
-	glDeleteTextures(1, texture[path]);
-	delete texture[path];
-	texture[path] = NULL;
+	if (texture[path])
+	{
+		glDeleteTextures(1, texture[path]);
+		delete texture[path];
+		texture[path] = NULL;
+	}
 }
 
 void fr::TextureManager::ClearFont(std::string path, int size)

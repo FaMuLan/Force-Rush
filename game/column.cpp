@@ -185,14 +185,8 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 
 void fr::Column::clear()
 {
-	for (int i = 0; i < m_note_set->timeline.size(); i++)
-	{
-		delete m_note_set->timeline[i];
-	}
-	for (int i = 0; i < m_note_set->note.size(); i++)
-	{
-		delete m_note_set->note[i];
-	}
+	m_note_set->timeline.clear();
+	m_note_set->note.clear();
 	delete m_note_set;
 	delete [] note_vectrices;
 	delete [] feedback_vectrices;
