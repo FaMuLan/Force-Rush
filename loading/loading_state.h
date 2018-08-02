@@ -37,12 +37,12 @@ namespace fr
 			LoadingState() {}
 			~LoadingState() {}
 			static LoadingState *m_instance;
-			Sprite *shutter_arrow_front_portrait;
-			Sprite *shutter_arrow_front_landscape;
-			Sprite *shutter_arrow_back_portrait;
-			Sprite *shutter_arrow_back_landscape;
-			std::vector<int> arrow_front_pos;
-			std::vector<int> arrow_back_pos;
+			Sprite *shutter_middle_portrait;
+			Sprite *shutter_middle_landscape;
+			Sprite *shutter_left_portrait;
+			Sprite *shutter_top_landscape;
+			Sprite *shutter_right_portrait;
+			Sprite *shutter_bottom_landscape;
 			int background_length;
 			bool is_entered;
 			static bool is_loaded;

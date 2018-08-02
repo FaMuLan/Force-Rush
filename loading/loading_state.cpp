@@ -24,16 +24,6 @@ void fr::LoadingState::update()
 {
 	if (System::instance()->IsWindowModified())
 	{
-		arrow_front_pos.clear();
-		arrow_back_pos.clear();
-		int arrow_count = 0;
-		background_length = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? System::instance()->GetWindowHeigh() : System::instance()->GetWindowWidth();
-		arrow_count = background_length / 420 + 1;
-		for (int i = 0; i < arrow_count; i++)
-		{
-			arrow_front_pos.push_back(0);
-			arrow_back_pos.push_back(0);
-		}
 	}
 
 	if (!is_entered)
@@ -108,27 +98,22 @@ void fr::LoadingState::update()
 
 void fr::LoadingState::init()
 {
-	shutter_arrow_front_portrait = new Sprite;
-	shutter_arrow_front_landscape = new Sprite;
-	shutter_arrow_back_portrait = new Sprite;
-	shutter_arrow_back_landscape = new Sprite;
-	shutter_arrow_front_portrait->init("assets/base/shutter_arrow_front_portrait.png");
-	shutter_arrow_front_landscape->init("assets/base/shutter_arrow_front_landscape.png");
-	shutter_arrow_back_portrait->init("assets/base/shutter_arrow_back_portrait.png");
-	shutter_arrow_back_landscape->init("assets/base/shutter_arrow_back_landscape.png");
+	shutter_middle_portrait = new Sprite;
+	shutter_middle_landscape = new Sprite;
+	shutter_left_portrait = new Sprite;
+	shutter_top_landscape = new Sprite;
+	shutter_right_portrait = new Sprite;
+	shutter_bottom_landscape = new Sprite;
+	shutter_middle_portrait->init("assets/base/shutter_middle_portrait.png");
+	shutter_middle_landscape->init("assets/base/shutter_middle_landscape.png");
+	shutter_left_portrait->init("assets/base/shutter_left_portrait.png");
+	shutter_top_landscape->init("assets/base/shutter_top_landscape.png");
+	shutter_right_portrait->init("assets/base/shutter_right_portrait.png");
+	shutter_bottom_landscape->init("assets/base/shutter_bottom_landscape.png");
 	//SoundManager::instance()->load("assets/shutter_close.wav", SOUNDTYPE_SFX);
 	//SoundManager::instance()->load("assets/shutter_open.wav", SOUNDTYPE_SFX);
 	Animator::instance()->AddAnimation("loading_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 1000);
 	Animator::instance()->AddAnimation("loading_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 1000);
-
-	int arrow_count = 0;
-	background_length = System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT ? System::instance()->GetWindowHeigh() : System::instance()->GetWindowWidth();
-	arrow_count = background_length / 420 + 1;
-	for (int i = 0; i < arrow_count; i++)
-	{
-		arrow_front_pos.push_back(0);
-		arrow_back_pos.push_back(0);
-	}
 
 	is_entered = true;
 	is_loaded = true;
@@ -139,29 +124,15 @@ void fr::LoadingState::render()
 {
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
-		for (int i = 0; i < arrow_front_pos.size(); i++)
-		{
-			shutter_arrow_back_portrait->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_arrow_back_portrait->GetW() / 2, arrow_back_pos[i]);
-			shutter_arrow_back_portrait->render();
-		}
-		for (int i = 0; i < arrow_front_pos.size(); i++)
-		{
-			shutter_arrow_front_portrait->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_arrow_front_portrait->GetW() / 2, arrow_front_pos[i]);
-			shutter_arrow_front_portrait->render();
-		}
+		shutter_left_portrait->render();
+		shutter_right_portrait->render();
+		shutter_middle_portrait->render();
 	}
 	else
 	{
-		for (int i = 0; i < arrow_back_pos.size(); i++)
-		{
-			shutter_arrow_back_landscape->SetPos(arrow_back_pos[i], System::instance()->GetWindowHeigh() / 2 - shutter_arrow_back_landscape->GetH() / 2);
-			shutter_arrow_back_landscape->render();
-		}
-		for (int i = 0; i < arrow_back_pos.size(); i++)
-		{
-			shutter_arrow_front_landscape->SetPos(arrow_front_pos[i], System::instance()->GetWindowHeigh() / 2 - shutter_arrow_front_landscape->GetH() / 2);
-			shutter_arrow_front_landscape->render();
-		}
+		shutter_top_landscape->render();
+		shutter_bottom_landscape->render();
+		shutter_middle_landscape->render();
 	}
 }
 
@@ -207,15 +178,13 @@ void fr::LoadingState::clear()
 
 void fr::LoadingState::OnEnter()
 {
-	for (int i = 0; i < arrow_front_pos.size(); i++)
-	{
-		int front_start = -1000 * (i + 1);
-		int front_end = background_length - 420 * (i + 1);
-		int back_start = background_length + 1000 * i;
-		int back_end = -255 + 420 * i;
-		arrow_front_pos[i] = front_start + (front_end - front_start) * Animator::instance()->GetProcess("loading_enter");
-		arrow_back_pos[i] = back_start + (back_end - back_start) * Animator::instance()->GetProcess("loading_enter");
-	}
+	shutter_left_portrait->SetPos(-shutter_left_portrait->GetW() + (System::instance()->GetWindowWidth() / 2) * Animator::instance()->GetProcess("loading_enter"), System::instance()->GetWindowHeigh() - shutter_left_portrait->GetH());
+	shutter_right_portrait->SetPos(System::instance()->GetWindowWidth() - (System::instance()->GetWindowWidth() / 2) * Animator::instance()->GetProcess("loading_enter"), System::instance()->GetWindowHeigh() - shutter_right_portrait->GetH());
+	shutter_middle_portrait->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_middle_portrait->GetW() / 2, -shutter_middle_portrait->GetH() + System::instance()->GetWindowHeigh() * Animator::instance()->GetProcess("loading_enter"));
+
+	shutter_top_landscape->SetPos(System::instance()->GetWindowWidth() - shutter_top_landscape->GetW(), -shutter_top_landscape->GetH() + (System::instance()->GetWindowHeigh() / 2) * Animator::instance()->GetProcess("loading_enter"));
+	shutter_bottom_landscape->SetPos(System::instance()->GetWindowWidth() - shutter_bottom_landscape->GetW(), System::instance()->GetWindowHeigh() - (System::instance()->GetWindowHeigh() / 2) * Animator::instance()->GetProcess("loading_enter"));
+	shutter_middle_landscape->SetPos(-shutter_middle_landscape->GetW() + System::instance()->GetWindowWidth() * Animator::instance()->GetProcess("loading_enter"), System::instance()->GetWindowHeigh() / 2 - shutter_middle_landscape->GetH() / 2);
 	if (Animator::instance()->IsTimeUp("loading_enter"))
 	{
 //		shutter_top->SetPos(0, System::instance()->GetWindowHeigh() - 534);
@@ -227,15 +196,13 @@ void fr::LoadingState::OnEnter()
 
 void fr::LoadingState::OnExit()
 {
-	for (int i = 0; i < arrow_front_pos.size(); i++)
-	{
-		int front_start = background_length - 420 * (i + 1);
-		int front_end = background_length + 1000 * (arrow_front_pos.size() - i - 1);
-		int back_start = -255 + 420 * i;
-		int back_end = -1000 * (arrow_back_pos.size() - i);
-		arrow_front_pos[i] = front_start + (front_end - front_start) * Animator::instance()->GetProcess("loading_exit");
-		arrow_back_pos[i] = back_start + (back_end - back_start) * Animator::instance()->GetProcess("loading_exit");
-	}
+	shutter_left_portrait->SetPos(-shutter_left_portrait->GetW() + (System::instance()->GetWindowWidth() / 2) * (1.0f - Animator::instance()->GetProcess("loading_exit")), System::instance()->GetWindowHeigh() - shutter_left_portrait->GetH());
+	shutter_right_portrait->SetPos(System::instance()->GetWindowWidth() - (System::instance()->GetWindowWidth() / 2) * (1.0f - Animator::instance()->GetProcess("loading_exit")), System::instance()->GetWindowHeigh() - shutter_right_portrait->GetH());
+	shutter_middle_portrait->SetPos(System::instance()->GetWindowWidth() / 2 - shutter_middle_portrait->GetW() / 2, -shutter_middle_portrait->GetH() + System::instance()->GetWindowHeigh() * (1.0f - Animator::instance()->GetProcess("loading_exit")));
+
+	shutter_top_landscape->SetPos(System::instance()->GetWindowWidth() - shutter_top_landscape->GetW(), -shutter_top_landscape->GetH() + (System::instance()->GetWindowHeigh() / 2) * (1.0f - Animator::instance()->GetProcess("loading_exit")));
+	shutter_bottom_landscape->SetPos(System::instance()->GetWindowWidth() - shutter_bottom_landscape->GetW(), System::instance()->GetWindowHeigh() - (System::instance()->GetWindowHeigh() / 2) * (1.0f - Animator::instance()->GetProcess("loading_exit")));
+	shutter_middle_landscape->SetPos(-shutter_middle_landscape->GetW() + System::instance()->GetWindowWidth() * (1.0f - Animator::instance()->GetProcess("loading_exit")), System::instance()->GetWindowHeigh() / 2 - shutter_middle_landscape->GetH() / 2);
 	if (Animator::instance()->IsTimeUp("loading_exit"))
 	{
 //		shutter_top->SetPos(0, System::instance()->GetWindowHeigh());
