@@ -107,74 +107,31 @@ bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, 
 
 bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-
-	static std::regex id_pattern("BeatmapID:(.*?)[\\n\\r]");
-	static std::regex title_pattern("Title:(.*?)[\\n\\r]");
-	static std::regex artist_pattern("Artist:(.*?)[\\n\\r]");
-	static std::regex noter_pattern("Creator:(.*?)[\\n\\r]");
-	static std::regex version_pattern("Version:(.*?)[\\n\\r]");
-	static std::regex mode_pattern("Mode: (\\d)");
-	static std::regex key_count_pattern("CircleSize:(\\d)");
-	static std::regex audio_path_pattern("AudioFilename: (.*?)[\\n\\r]");
-	static std::regex preview_time_pattern("PreviewTime: (\\d*)");
-	static std::regex note_pattern("(\\d+?),\\d+?,(\\d+?),(\\d+?),\\d+?,(\\d+?):\\d+?:\\d+?:\\d+?:(\\d+?:)?");
-	static std::regex timeline_pattern("(\\d+?\\.?\\d*?),(-?\\d+?\\.?\\d*?),\\d+?,\\d+?,\\d+?,\\d+?,(\\d),\\d+?");
-
 	bool success = true;
 
 	bool load_information = output_information != NULL;
 	bool load_note = output_note_set != NULL;
 
-	int note_count = 0;
-	int key_count = 0;
-	int mode = 0;
 	std::vector<float> note_piece_count;
 	int note_piece_index = 0;
 	note_piece_count.push_back(0);
 
 	std::string text;
+	int file_index = 0;
 	ReadFile(path, text);
 
-	if (load_information)
-	{
-		output_information->file_path = path;
-		std::smatch id_line;
-		std::smatch title_line;
-		std::smatch artist_line;
-		std::smatch noter_line;
-		std::smatch version_line;
-		std::smatch mode_line;
-		std::smatch key_count_line;
-		std::smatch audio_path_line;
-		std::smatch preview_time_line;
-
-		std::regex_search(text, id_line, id_pattern);
-		std::regex_search(text, title_line, title_pattern);
-		std::regex_search(text, artist_line, artist_pattern);
-		std::regex_search(text, noter_line, noter_pattern);
-		std::regex_search(text, version_line, version_pattern);
-		std::regex_search(text, mode_line, mode_pattern);
-		std::regex_search(text, key_count_line, key_count_pattern);
-		std::regex_search(text, audio_path_line, audio_path_pattern);
-		std::regex_search(text, preview_time_line, preview_time_pattern);
-
-		output_information->id = "osu" +  std::regex_replace(id_line.str(), id_pattern, "$1");
-		output_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
-		output_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
-		output_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
-		output_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
-		output_information->audio_path = GetParentDir(output_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		output_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
-		output_information->full_score = 0;
-		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 3);
-		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
-
-		if (!success)
-		{
-			return false;
-		}
-	}
-
+	bool is_id_read = false;
+	bool is_title_read = false;
+	bool is_artist_read = false;
+	bool is_noter_read = false;
+	bool is_version_read = false;
+	bool is_mode_read = false;
+	bool is_key_count_read = false;
+	bool is_audio_path_read = false;
+	bool is_preview_time_read = false;
+	int mode = 0;
+	int key_count;
+	int note_count = 0;
 	if (load_note)
 	{
 		for (int i = 0; i < 4; i++)
@@ -183,98 +140,252 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 			output_note_set->push_back(new_note_set);
 		}
 	}
-
 	Timeline *last_timeline = NULL;
 	int base_bpm = 0;
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), timeline_pattern); i != std::sregex_iterator(); i++)
+	while (file_index < text.size())
 	{
-		std::smatch timeline_line = *i;
-		int start_time = atoi(std::regex_replace(timeline_line.str(), timeline_pattern, "$1").c_str()) + 2000;
-		float milliseconds = atof(std::regex_replace(timeline_line.str(), timeline_pattern, "$2").c_str());
-		int type = atoi(std::regex_replace(timeline_line.str(), timeline_pattern, "$3").c_str());
-		if (type == 0)
+		std::string line;
+		int char_index;
+		for (char_index = 0; text[file_index + char_index] != 10; char_index++)
 		{
-			if (load_note)
+			if (text[file_index + char_index] != 13)
 			{
-				Timeline *new_timeline = new Timeline;
-				new_timeline->start_time = start_time;
-				new_timeline->bpm = last_timeline->bpm;
-				new_timeline->speed = new_timeline->bpm / base_bpm / (-milliseconds / 100.f);
-				new_timeline->end_time = 0;
-				last_timeline->end_time = start_time;
-				for (int i = 0; i < output_note_set->size(); i++)
-				{
-					(*output_note_set)[i]->timeline.push_back(new_timeline);
-				}
-				last_timeline = new_timeline;
+				line += text[file_index + char_index];
 			}
-		}
-		else if (type == 1)
-		{
-			if (load_note)
+			if (file_index + char_index + 1 == text.size())
 			{
-				Timeline *new_timeline = new Timeline;
-				new_timeline->start_time = start_time;
-				new_timeline->bpm = 60000.f / milliseconds;
-				if ((*output_note_set)[0]->timeline.size() == 0)
-				{
-					base_bpm = new_timeline->bpm;
-				}
-				new_timeline->speed = new_timeline->bpm / base_bpm;
-				new_timeline->end_time = 0;
-				if (last_timeline)
-				{
-					last_timeline->end_time = start_time;
-				}
-				for (int i = 0; i < output_note_set->size(); i++)
-				{
-					(*output_note_set)[i]->timeline.push_back(new_timeline);
-				}
-				last_timeline = new_timeline;
-			}
-		}
-	}
-
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch note_line = *i;
-		int time = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
-		int type = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
-		int time_end = (type % 16 == 0) ? atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str()) : time;
-		int column_index = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
-		if (load_note)
-		{
-			Note *new_note = new Note;
-			new_note->time = time + 2000;
-			new_note->time_end = time_end + 2000;
-			new_note->type = NOTETYPE_NORMAL;
-			new_note->type_end = NOTETYPE_NORMAL;
-			switch (column_index)
-			{
-				case 64:
-					(*output_note_set)[0]->note.push_back(new_note);
-				break;
-				case 192:
-					(*output_note_set)[1]->note.push_back(new_note);
-				break;
-				case 320:
-					(*output_note_set)[2]->note.push_back(new_note);
-				break;
-				case 448:
-					(*output_note_set)[3]->note.push_back(new_note);
 				break;
 			}
 		}
+		file_index += char_index + 1;
 		if (load_information)
 		{
-			output_information->duration = time;
-			while (note_piece_index * 1000 < time)
+			if (!is_id_read)
 			{
-				note_piece_index++;
-				note_piece_count.push_back(0);
+				if (line.compare(0, 10, "BeatmapID:") == 0)
+				{
+					output_information->id = "osu" + line.substr(10);
+					is_id_read = true;
+				}
 			}
-			note_piece_count[note_piece_index]++;
-			output_information->full_score += (type % 16 == 0) ? 4 : 2;
+			if (!is_title_read)
+			{
+				if (line.compare(0, 6, "Title:") == 0)
+				{
+					output_information->title = line.substr(6);
+					is_title_read = true;
+				}
+			}
+			if (!is_artist_read)
+			{
+				if (line.compare(0, 7, "Artist:") == 0)
+				{
+					output_information->artist = line.substr(7);
+					is_artist_read = true;
+				}
+			}
+			if (!is_noter_read)
+			{
+				if (line.compare(0, 8, "Creator:") == 0)
+				{
+					output_information->noter = line.substr(8);
+					is_noter_read = true;
+				}
+			}
+			if (!is_version_read)
+			{
+				if (line.compare(0, 8, "Version:") == 0)
+				{
+					output_information->version = line.substr(8);
+					is_version_read = true;
+				}
+			}
+			if (!is_mode_read)
+			{
+				if (line.compare(0, 6, "Mode: ") == 0)
+				{
+					mode = atoi(line.substr(6).c_str());
+					is_mode_read = true;
+				}
+			}
+			if (!is_key_count_read)
+			{
+				if (line.compare(0, 11, "CircleSize:") == 0)
+				{
+					key_count = atoi(line.substr(11).c_str());
+					is_key_count_read = true;
+				}
+			}
+			if (!is_audio_path_read)
+			{
+				if (line.compare(0, 15, "AudioFilename: ") == 0)
+				{
+					output_information->audio_path = line.substr(15);
+					is_audio_path_read = true;
+				}
+			}
+			if (!is_preview_time_read)
+			{
+				if (line.compare(0, 13, "PreviewTime: ") == 0)
+				{
+					output_information->preview_time = atoi(line.substr(13).c_str());
+					is_preview_time_read = true;
+				}
+			}
+			success = success && mode == 3;
+			success = success && key_count == 4;
+			if (!success)
+			{
+				return false;
+			}
+		}
+
+		int comma_count = 0;
+		for (int i = 0; i < line.size(); i++)
+		{
+			if (line[i] == ',')
+			{
+				comma_count++;
+			}
+			if (comma_count == 5)
+			{
+				if (line[i] == ':')	//Notes
+				{
+					int comma_index;
+					int last_comma_index;
+					int column_index;
+					unsigned int time;
+					unsigned int time_end;
+					int type;
+
+					comma_index = line.find(',', 0);
+					column_index = atoi(line.substr(0, comma_index).c_str());
+					//column index
+					comma_index = line.find(',', comma_index + 1);
+					last_comma_index = comma_index;
+					//ignored
+					comma_index = line.find(',', comma_index + 1);
+					time = atoi(line.substr(last_comma_index + 1, comma_index - last_comma_index - 1).c_str());
+					last_comma_index = comma_index;
+					//time
+					comma_index = line.find(',', comma_index + 1);
+					type = atoi(line.substr(last_comma_index + 1, comma_index - last_comma_index - 1).c_str());
+					//note type
+					comma_index = line.find(',', comma_index + 1);
+					last_comma_index = comma_index;
+					//ignored
+					comma_index = line.find(':', comma_index + 1);
+					time_end = atoi(line.substr(last_comma_index + 1, comma_index - last_comma_index - 1).c_str());
+					time_end = (type % 16 == 0) ? time_end : time;
+					//time end
+
+					if (load_note)
+					{
+						Note *new_note = new Note;
+						new_note->time = time + 2000;
+						new_note->time_end = time_end + 2000;
+						new_note->type = NOTETYPE_NORMAL;
+						new_note->type_end = NOTETYPE_NORMAL;
+						switch (column_index)
+						{
+							case 64:
+								(*output_note_set)[0]->note.push_back(new_note);
+							break;
+							case 192:
+								(*output_note_set)[1]->note.push_back(new_note);
+							break;
+							case 320:
+								(*output_note_set)[2]->note.push_back(new_note);
+							break;
+							case 448:
+								(*output_note_set)[3]->note.push_back(new_note);
+							break;
+						}
+					}
+					if (load_information)
+					{
+						output_information->duration = time;
+						while (note_piece_index * 1000 < time)
+						{
+							note_piece_index++;
+							note_piece_count.push_back(0);
+						}
+						note_piece_count[note_piece_index]++;
+						output_information->full_score += (type % 16 == 0) ? 4 : 2;
+					}
+
+					comma_count = 0;
+					break;
+				}
+			}
+			if (comma_count == 7)	//Timelines
+			{
+				int comma_index;
+				int last_comma_index;
+				int start_time;
+				float milliseconds;
+				int type;
+
+				comma_index = line.find(',', 0);
+				start_time = atoi(line.substr(0, comma_index).c_str());
+				last_comma_index = comma_index;
+				//start time
+				comma_index = line.find(',', comma_index + 1);
+				milliseconds = atof(line.substr(last_comma_index + 1, comma_index - last_comma_index - 1).c_str());
+				//milliseconds
+				comma_index = line.find(',', comma_index + 1);
+				comma_index = line.find(',', comma_index + 1);
+				comma_index = line.find(',', comma_index + 1);
+				comma_index = line.find(',', comma_index + 1);
+				last_comma_index = comma_index;
+				//ignored
+				comma_index = line.find(',', comma_index + 1);
+				type = atoi(line.substr(last_comma_index + 1, comma_index - last_comma_index - 1).c_str());
+				if (type == 0)
+				{
+					if (load_note)
+					{
+						Timeline *new_timeline = new Timeline;
+						new_timeline->start_time = start_time + 2000;
+						new_timeline->bpm = last_timeline->bpm;
+						new_timeline->speed = new_timeline->bpm / base_bpm / (-milliseconds / 100.f);
+						new_timeline->end_time = 0;
+						last_timeline->end_time = start_time + 2000;
+						for (int i = 0; i < output_note_set->size(); i++)
+						{
+							(*output_note_set)[i]->timeline.push_back(new_timeline);
+						}
+						last_timeline = new_timeline;
+					}
+				}
+				else if (type == 1)
+				{
+					if (load_note)
+					{
+						Timeline *new_timeline = new Timeline;
+						new_timeline->start_time = start_time + 2000;
+						new_timeline->bpm = 60000.f / milliseconds;
+						if ((*output_note_set)[0]->timeline.size() == 0)
+						{
+							base_bpm = new_timeline->bpm;
+						}
+						new_timeline->speed = new_timeline->bpm / base_bpm;
+						new_timeline->end_time = 0;
+						if (last_timeline)
+						{
+							last_timeline->end_time = start_time + 2000;
+						}
+						for (int i = 0; i < output_note_set->size(); i++)
+						{
+							(*output_note_set)[i]->timeline.push_back(new_timeline);
+						}
+						last_timeline = new_timeline;
+					}
+				}
+
+				comma_count = 0;
+				break;
+			}
 		}
 	}
 	if (load_information)
