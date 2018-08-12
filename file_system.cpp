@@ -703,78 +703,38 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 
 bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-	static std::regex id_pattern("\\s*\"id\": (\\d*),");
-	static std::regex title_pattern("\\s*\"title\": \"(.*)\"");
-	static std::regex artist_pattern("\\s*\"artist\": \"(.*)\"");
-	static std::regex noter_pattern("\\s*\"creator\": \"(.*)\"");
-	static std::regex version_pattern("\\s*\"version\": \"(.*)\"");
-	static std::regex mode_pattern("\\s*\"mode\": (\\d)");
-	static std::regex key_count_pattern("\"mode_ext\": \\{[\\S\\s]*?\"column\": (\\d)[\\S\\s]*?\\}");
-	static std::regex audio_path_pattern("\\s*\"sound\": \"(.*)\"");
-	static std::regex global_offset_pattern("\\s*\"offset\": (\\d*),");
-	static std::regex timeline_text_pattern("\"time\"[\\S\\s]*\"note\"");
-	static std::regex timeline_bpm_pattern("\"bpm\": ([\\d.]+)");
-	static std::regex timeline_beat_pattern("\"beat\": \\[(\\d+),(\\d+),(\\d+)\\]");
-	static std::regex note_pattern("\\s*\\{\\s*\"beat\": \\[(\\d+),(\\d+),(\\d+)\\],\\s*(?:\"endbeat\": \\[\\d+,\\d+,\\d+\\],\\s*)?\"column\": (\\d+)\\s*\\}");
-	static std::regex long_note_pattern("\\s*\\{\\s*\"beat\": \\[\\d+,\\d+,\\d+\\],\\s*\"endbeat\": \\[(\\d+),(\\d+),(\\d+)\\],\\s*\"column\": \\d+\\s*\\}");
-
+	std::string text;
 	bool success = true;
-
 	bool load_information = output_information != NULL;
 	bool load_note = output_note_set != NULL;
+	int file_index = 0;
+	ReadFile(path, text);
 
+	bool is_id_read = false;
+	bool is_title_read = false;
+	bool is_artist_read = false;
+	bool is_noter_read = false;
+	bool is_version_read = false;
+	bool is_mode_read = false;
+	bool is_key_count_read = false;
+	bool is_audio_path_read = false;
+	bool is_global_offset_read = false;
+	bool is_note_loading = false;
+	bool is_timeline_loading = false;
+	int mode;
+	int key_count;
 	int note_count = 0;
-	int key_count = 0;
-	int mode = 0;
 	std::vector<float> note_piece_count;
 	int note_piece_index = 0;
 	note_piece_count.push_back(0);
 	int global_offset = 0;
+	std::vector<BeatTimeline> temp_timeline_beat;
+	std::vector<BeatNote> temp_note_beat;
+	std::vector<Timeline*> temp_timeline;
+	std::vector<float> timeline_meter;
 
-	std::string text;
-	ReadFile(path, text);
-
-	if (load_information)
-	{
-		output_information->file_path = path;
-		std::smatch id_line;
-		std::smatch title_line;
-		std::smatch artist_line;
-		std::smatch noter_line;
-		std::smatch version_line;
-		std::smatch mode_line;
-		std::smatch key_count_line;
-		std::smatch audio_path_line;
-
-		std::regex_search(text, id_line, id_pattern);
-		std::regex_search(text, title_line, title_pattern);
-		std::regex_search(text, artist_line, artist_pattern);
-		std::regex_search(text, noter_line, noter_pattern);
-		std::regex_search(text, version_line, version_pattern);
-		std::regex_search(text, mode_line, mode_pattern);
-		std::regex_search(text, key_count_line, key_count_pattern);
-		std::regex_search(text, audio_path_line, audio_path_pattern);
-
-		output_information->id = "ma" +  std::regex_replace(id_line.str(), id_pattern, "$1");
-		output_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
-		output_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
-		output_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
-		output_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
-		output_information->audio_path = GetParentDir(output_information->file_path) + std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		output_information->full_score = 0;
-		success = success && (atoi(std::regex_replace(mode_line.str(), mode_pattern, "$1").c_str()) == 0);
-		success = success && (atoi(std::regex_replace(key_count_line.str(), key_count_pattern, "$1").c_str()) == 4);
-
-		if (!success)
-		{
-			return false;
-		}
-	}
 	if (load_note)
 	{
-		std::smatch global_offset_line;
-		std::regex_search(text, global_offset_line, global_offset_pattern);
-		global_offset = atoi(std::regex_replace(global_offset_line.str(), global_offset_pattern, "$1").c_str());
 		for (int i = 0; i < 4; i++)
 		{
 			NoteSet *new_note_set = new NoteSet;
@@ -782,48 +742,275 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		}
 	}
 
-	std::smatch timeline_text;
-	std::string timeline_text_str;
-	std::regex_search(text, timeline_text, timeline_text_pattern);
-	timeline_text_str = timeline_text.str();
-
-	std::vector<float> timeline_meter;
-	std::vector<int> temp_timeline_bar;
-	std::vector<int> temp_timeline_beat;
-	std::vector<int> temp_timeline_divide;
-	std::vector<float> temp_timeline_bpm;
-	std::vector<Timeline*> temp_timeline;
+	Timeline *last_timeline = NULL;
 	int base_bpm = 0;
 	float last_milliseconds = 0;
-	int last_timeline_bar = 0;
-	int last_timeline_beat = 0;
-	int last_timeline_divide = 1;
-	Timeline *last_timeline = NULL;
-	for (std::sregex_iterator i = std::sregex_iterator(timeline_text_str.begin(), timeline_text_str.end(), timeline_beat_pattern); i != std::sregex_iterator(); i++)
+	Beat last_timeline_beat;
+	last_timeline_beat.divide = 1;
+
+	while (file_index < text.size())
 	{
-		std::smatch beat_line = *i;
-		temp_timeline_bar.push_back(atoi(std::regex_replace(beat_line.str(), timeline_beat_pattern, "$1").c_str()));
-		temp_timeline_beat.push_back(atoi(std::regex_replace(beat_line.str(), timeline_beat_pattern, "$2").c_str()));
-		temp_timeline_divide.push_back(atoi(std::regex_replace(beat_line.str(), timeline_beat_pattern, "$3").c_str()));
+		std::string line;
+		int char_index;
+		for (char_index = 0; text[file_index + char_index] != 10; char_index++)
+		{
+			if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+			{
+				line += text[file_index + char_index];
+			}
+			if (file_index + char_index + 1 == text.size())
+			{
+				break;
+			}
+		}
+		file_index += char_index + 1;
+		if (load_information)
+		{
+			if (!is_id_read)
+			{
+				if (line.compare(0, 10, "id:") == 0 && line.find(',') != std::string::npos)
+				{
+					output_information->id = "ma" + line.substr(10);
+					is_id_read = true;
+				}
+			}
+			if (!is_title_read)
+			{
+				if (line.compare(0, 8, "\"title\":") == 0)
+				{
+					int mark_index = line.find('\"', 9);
+					output_information->title = line.substr(9, mark_index - 9);
+					is_title_read = true;
+				}
+			}
+			if (!is_artist_read)
+			{
+				if (line.compare(0, 9, "\"artist\":") == 0)
+				{
+					int mark_index = line.find('\"', 10);
+					output_information->artist = line.substr(10, mark_index - 10);
+					is_artist_read = true;
+				}
+			}
+			if (!is_noter_read)
+			{
+				if (line.compare(0, 10, "\"creator\":") == 0)
+				{
+					int mark_index = line.find('\"', 11);
+					output_information->noter = line.substr(11, mark_index - 11);
+					is_noter_read = true;
+				}
+			}
+			if (!is_version_read)
+			{
+				if (line.compare(0, 10, "\"version\":") == 0)
+				{
+					int mark_index = line.find('\"', 11);
+					output_information->version = line.substr(11, mark_index - 11);
+					is_version_read = true;
+				}
+			}
+			if (!is_mode_read)
+			{
+				if (line.compare(0, 7, "\"mode\":") == 0)
+				{
+					int mark_index = line.find(',', 8);
+					mode = atoi(line.substr(8, mark_index - 8).c_str());
+					is_mode_read = true;
+				}
+			}
+			if (!is_key_count_read)
+			{
+				if (line.compare(0, 9, "\"column\":") == 0)
+				{
+					int mark_index = line.find(',', 10);
+					key_count = atoi(line.substr(10, mark_index - 10).c_str());
+					is_key_count_read = true;
+				}
+			}
+			if (!is_audio_path_read)
+			{
+				if (line.compare(0, 8, "\"sound\":") == 0)
+				{
+					int mark_index = line.find('\"', 11);
+					output_information->audio_path = line.substr(10, mark_index - 10);
+					is_audio_path_read = true;
+				}
+			}
+			output_information->full_score = 0;
+			output_information->preview_time = 0;
+			success = success && mode == 0;
+			success = success && key_count == 4;
+
+			if (!success)
+			{
+				return false;
+			}
+		}
+		
+		if (!is_timeline_loading)
+		{
+			if (line.compare(0, 8, "\"time\":[") == 0)
+			{
+				is_timeline_loading = true;
+			}
+		}
+		else
+		{
+			if (line.compare(0, 2, "],") == 0)
+			{
+				is_timeline_loading = false;
+			}
+			if (line.compare(0, 1, "{") == 0)
+			{
+				std::string brace_line;
+				BeatTimeline new_timeline;
+				while (brace_line.compare(0, 1, "}") != 0)
+				{
+					brace_line = "";
+					for (char_index = 0; text[file_index + char_index] != 10; char_index++)
+					{
+						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+						{
+							brace_line += text[file_index + char_index];
+						}
+						if (file_index + char_index + 1 == text.size())
+						{
+							break;
+						}
+					}
+					file_index += char_index + 1;
+					if (brace_line.compare(0, 7, "\"beat\":") == 0)
+					{
+						int last_mark_index = 0;
+						int mark_index = brace_line.find(',', 8);
+						new_timeline.start_time.bar = atoi(brace_line.substr(8, mark_index - 8).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(',', mark_index + 1);
+						new_timeline.start_time.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(']', mark_index + 1);
+						new_timeline.start_time.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+					}
+					if (brace_line.compare(0, 6, "\"bpm\":") == 0)
+					{
+						if (brace_line.find(',') != std::string::npos)
+						{
+							int mark_index = brace_line.find(',', 6);
+							new_timeline.bpm = atof(brace_line.substr(7, mark_index - 7).c_str());
+						}
+						else
+						{
+							new_timeline.bpm = atof(brace_line.substr(6).c_str());
+						}
+					}
+				}
+				temp_timeline_beat.push_back(new_timeline);
+			}
+		}
+		if (!is_note_loading)
+		{
+			if (line.compare(0, 8, "\"note\":[") == 0)
+			{
+				is_note_loading = true;
+			}
+		}
+		else
+		{
+			if (line.compare(0, 2, "],") == 0)
+			{
+				is_note_loading = false;
+			}
+			if (line.compare(0, 1, "{") == 0)
+			{
+				std::string brace_line;
+				BeatNote new_note;
+				bool has_column = false;
+				bool is_long_note = false;
+				while (brace_line.compare(0, 1, "}") != 0)
+				{
+					brace_line = "";
+					for (char_index = 0; text[file_index + char_index] != 10; char_index++)
+					{
+						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+						{
+							brace_line += text[file_index + char_index];
+						}
+						if (file_index + char_index + 1 == text.size())
+						{
+							break;
+						}
+					}
+					file_index += char_index + 1;
+					if (brace_line.compare(0, 7, "\"beat\":") == 0)
+					{
+						int last_mark_index = 0;
+						int mark_index = brace_line.find(',', 8);
+						new_note.time.bar = atoi(brace_line.substr(8, mark_index - 8).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(',', mark_index + 1);
+						new_note.time.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(']', mark_index + 1);
+						new_note.time.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+					}
+					if (brace_line.compare(0, 9, "\"column\":") == 0)
+					{
+						if (brace_line.find(',') != std::string::npos)
+						{
+							int mark_index = brace_line.find(',', 9);
+							new_note.column = atoi(brace_line.substr(10, mark_index - 10).c_str());
+						}
+						else
+						{
+							new_note.column = atoi(brace_line.substr(9).c_str());
+						}
+						has_column = true;
+					}
+					if (brace_line.compare(0, 10, "\"endbeat\":") == 0)
+					{
+						int last_mark_index = 0;
+						int mark_index = brace_line.find(',', 11);
+						new_note.time_end.bar = atoi(brace_line.substr(11, mark_index - 11).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(',', mark_index + 1);
+						new_note.time_end.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+						last_mark_index = mark_index;
+						mark_index = brace_line.find(']', mark_index + 1);
+						new_note.time_end.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+						is_long_note = true;
+					}
+				}
+				if (!is_long_note)
+				{
+					new_note.time_end = new_note.time;
+				}
+				if (has_column)
+				{
+					temp_note_beat.push_back(new_note);
+				}
+			}
+		}
+		if (!is_global_offset_read)
+		{
+			if (line.compare(0, 10, "\"offset\": ") == 0)
+			{
+				int mark_index = line.find(',', 10);
+				global_offset = atoi(line.substr(10, mark_index - 11).c_str());
+				is_global_offset_read = true;
+			}
+		}
 	}
-	for (std::sregex_iterator i = std::sregex_iterator(timeline_text_str.begin(), timeline_text_str.end(), timeline_bpm_pattern); i != std::sregex_iterator(); i++)
+	
+	for (int i = 0; i < temp_timeline_beat.size(); i++)
 	{
-		std::smatch bpm_line = *i;
-		temp_timeline_bpm.push_back(atof(std::regex_replace(bpm_line.str(), timeline_bpm_pattern, "$1").c_str()));
-	}
-	for (int i = 0; i < temp_timeline_bpm.size(); i++)
-	{
-		int timeline_bar = temp_timeline_bar[i];
-		int timeline_beat = temp_timeline_beat[i];
-		int timeline_divide = temp_timeline_divide[i];
-		float bpm = temp_timeline_bpm[i];
-		float milliseconds = 60000.f / bpm;
-		float meter = float(timeline_bar * timeline_divide + timeline_beat) / float(timeline_divide);
+		float milliseconds = 60000.f / temp_timeline_beat[i].bpm;
+		float meter = float(temp_timeline_beat[i].start_time.bar * temp_timeline_beat[i].start_time.divide + temp_timeline_beat[i].start_time.beat) / float(temp_timeline_beat[i].start_time.divide);
 		timeline_meter.push_back(meter);
 		int start_time = 0;
 		if (last_timeline)
 		{
-			float last_meter = float(last_timeline_bar * last_timeline_divide + last_timeline_beat) / float(last_timeline_divide);
+			float last_meter = float(last_timeline_beat.bar * last_timeline_beat.divide + last_timeline_beat.beat) / float(last_timeline_beat.divide);
 			float sub = meter - last_meter;
 			last_timeline->end_time = last_timeline->start_time + last_milliseconds * sub;
 			start_time = last_timeline->end_time;
@@ -835,7 +1022,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 
 		Timeline *new_timeline = new Timeline;
 		new_timeline->start_time = start_time;
-		new_timeline->bpm = bpm;
+		new_timeline->bpm = temp_timeline_beat[i].bpm;
 		if (temp_timeline.size() == 0)
 		{
 			base_bpm = new_timeline->bpm;
@@ -845,9 +1032,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		temp_timeline.push_back(new_timeline);
 		last_timeline = new_timeline;
 		last_milliseconds = milliseconds;
-		last_timeline_bar = timeline_bar;
-		last_timeline_beat = timeline_beat;
-		last_timeline_divide = timeline_divide;
+		last_timeline_beat = temp_timeline_beat[i].start_time;
 	}
 	if (load_note)
 	{
@@ -858,13 +1043,9 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 	}
 
 	int timeline_index = 0;
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), note_pattern); i != std::sregex_iterator(); i++)
+	for (int i = 0; i < temp_note_beat.size(); i++)
 	{
-		std::smatch note_line = *i;
-		int note_bar = atoi(std::regex_replace(note_line.str(), note_pattern, "$1").c_str());
-		int note_beat = atoi(std::regex_replace(note_line.str(), note_pattern, "$2").c_str());
-		int note_divide = atoi(std::regex_replace(note_line.str(), note_pattern, "$3").c_str());
-		float meter = float(note_bar * note_divide + note_beat) / float(note_divide);
+		float meter = float(temp_note_beat[i].time.bar * temp_note_beat[i].time.divide + temp_note_beat[i].time.beat) / float(temp_note_beat[i].time.divide);
 		if (timeline_index < temp_timeline.size() - 1)
 		{
 			while (meter >= timeline_meter[timeline_index + 1])
@@ -879,32 +1060,23 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		float milliseconds = 60000.f / temp_timeline[timeline_index]->bpm;
 		float sub_meter = meter - timeline_meter[timeline_index];
 		int time = temp_timeline[timeline_index]->start_time + milliseconds * sub_meter;
-		int type = 0;
 		int time_end = time;
-		if (std::regex_match(note_line.str(), long_note_pattern))
+		int timeline_end_index = timeline_index;
+		float meter_end = float(temp_note_beat[i].time_end.bar * temp_note_beat[i].time_end.divide + temp_note_beat[i].time_end.beat) / float(temp_note_beat[i].time_end.divide);
+		if (timeline_end_index < temp_timeline.size() - 1)
 		{
-			type = 1;
-			int note_end_bar = atoi(std::regex_replace(note_line.str(), long_note_pattern, "$1").c_str());
-			int note_end_beat = atoi(std::regex_replace(note_line.str(), long_note_pattern, "$2").c_str());
-			int note_end_divide = atoi(std::regex_replace(note_line.str(), long_note_pattern, "$3").c_str());
-			int timeline_end_index = timeline_index;
-			float meter_end = float(note_end_bar * note_end_divide + note_end_beat) / float(note_end_divide);
-			if (timeline_end_index < temp_timeline.size() - 1)
+			while (meter_end >= timeline_meter[timeline_end_index + 1])
 			{
-				while (meter_end >= timeline_meter[timeline_end_index + 1])
+				timeline_end_index++;
+				if (timeline_end_index >= temp_timeline.size() - 2)
 				{
-					timeline_end_index++;
-					if (timeline_end_index >= temp_timeline.size() - 2)
-					{
-						break;
-					}
+					break;
 				}
 			}
-			float milliseconds_end = 60000.f / temp_timeline[timeline_end_index]->bpm;
-			float sub_meter_end = meter_end - timeline_meter[timeline_end_index];
-			time_end = temp_timeline[timeline_end_index]->start_time + milliseconds_end * sub_meter_end;
 		}
-		int column_index = atoi(std::regex_replace(note_line.str(), note_pattern, "$4").c_str());
+		float milliseconds_end = 60000.f / temp_timeline[timeline_end_index]->bpm;
+		float sub_meter_end = meter_end - timeline_meter[timeline_end_index];
+		time_end = temp_timeline[timeline_end_index]->start_time + milliseconds_end * sub_meter_end;
 		if (load_note)
 		{
 			Note *new_note = new Note;
@@ -912,7 +1084,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 			new_note->time_end = time_end;
 			new_note->type = NOTETYPE_NORMAL;
 			new_note->type_end = NOTETYPE_NORMAL;
-			(*output_note_set)[column_index]->note.push_back(new_note);
+			(*output_note_set)[temp_note_beat[i].column]->note.push_back(new_note);
 		}
 		if (load_information)
 		{
@@ -923,7 +1095,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 				note_piece_count.push_back(0);
 			}
 			note_piece_count[note_piece_index]++;
-			output_information->full_score += (type == 1) ? 4 : 2;
+			output_information->full_score += (time != time_end) ? 4 : 2;
 		}
 	}
 
