@@ -6,8 +6,6 @@
 #include <algorithm>
 #include <SDL2/SDL.h>
 #include <map>
-#include <regex>
-#include <ratio>
 #include "song_data.h"
 
 bool fr::ReadFile(std::string path, std::string &output)
@@ -58,20 +56,19 @@ bool fr::ListDir(std::string path, std::vector<fr::File*> &output)
 	return true;
 }
 
-void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> &output)
+void fr::FindFile(std::string path, std::string pattern, std::vector<File*> &output)
 {
 	std::vector<File*> current_list;
 	ListDir(path, current_list);
-	std::regex pattern(pattern_str); 
 	for (int i = 0; i < current_list.size(); i++)
 	{
-		if (std::regex_match(current_list[i]->name, pattern))
+		if (current_list[i]->name.find(pattern) != std::string::npos)
 		{
 			output.push_back(current_list[i]);
 		}
 		else if (current_list[i]->type == FILETYPE_DIR)
 		{
-			FindFile(current_list[i]->name, pattern_str, output);
+			FindFile(current_list[i]->name, pattern, output);
 			//使用遞歸讀取子目錄下的文件
 		}
 	}
@@ -86,8 +83,7 @@ std::string fr::GetParentDir(std::string path)
 
 bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-	static std::regex path_pattern(".*\\.(.*?)");
-	std::string format = std::regex_replace(path, path_pattern, "$1");
+	std::string format = path.substr(path.find_last_of('.') + 1);
 	bool success = true;
 	if (format == "imd")
 	{
@@ -422,7 +418,6 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 
 bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
 {
-	static std::regex path_pattern(".*/(.*?)_(\\d)k_(.*?)\\.imd");
 	bool success = true;
 	bool load_information = output_information != NULL;
 	bool load_note = output_note_set != NULL;
@@ -439,12 +434,17 @@ bool fr::LoadIMDFile(std::string path, SongInformation *output_information, std:
 	if (load_information)
 	{
 		output_information->file_path = path;
-		output_information->title = std::regex_replace(path, path_pattern, "$1");
-		std::string track_count = std::regex_replace(path, path_pattern, "$2");
-		output_information->version = std::regex_replace(path, path_pattern, "IMD $3");
+		int mark_index = path.find_last_of("_");
+		int last_mark_index = mark_index;
+		output_information->version = "IMD " + path.substr(mark_index + 1, path.size() - 5 - mark_index);
+		mark_index = path.find_last_of("_", mark_index - 1);
+		std::string track_count = path.substr(mark_index + 1, last_mark_index - mark_index - 1);
+		last_mark_index = mark_index;
+		mark_index = path.find_last_of("/", mark_index - 1);
+		output_information->title = path.substr(mark_index + 1, last_mark_index - mark_index - 1);
 		output_information->audio_path = GetParentDir(output_information->file_path) + output_information->title + ".mp3";
 		output_information->preview_time = 0;
-		if (track_count != "4")
+		if (track_count != "4k")
 		{
 			success = false;
 		}
