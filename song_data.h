@@ -44,6 +44,26 @@ namespace fr
 		float speed;
 	};
 
+	struct Beat
+	{
+		unsigned int bar;
+		unsigned int beat;
+		unsigned int divide;
+	};
+
+	struct BeatNote
+	{
+		Beat time;
+		Beat time_end;
+		int column;
+	};
+
+	struct BeatTimeline
+	{
+		Beat start_time;
+		float bpm;
+	};
+
 	struct NoteSet
 	{
 		std::vector<Note*> note;
