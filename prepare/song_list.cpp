@@ -380,9 +380,9 @@ void fr::SongList::RefreshList()
 	Setting::instance()->GetSongList(list_path);
 	for (int i = 0; i < list_path.size(); i++)
 	{
-		FindFile(list_path[i], ".*\\.osu", file);
-		FindFile(list_path[i], ".*\\.mc", file);
-		FindFile(list_path[i], ".*\\.imd", file);
+		FindFile(list_path[i], ".osu", file);
+		FindFile(list_path[i], ".mc", file);
+		FindFile(list_path[i], ".imd", file);
 	}
 
 	for (int i = 0; i < m_information.size(); i++)
