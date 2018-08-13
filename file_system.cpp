@@ -140,6 +140,12 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 			output_note_set->push_back(new_note_set);
 		}
 	}
+	if (load_information)
+	{
+		output_information->file_path = path;
+		output_information->full_score = 0;
+		output_information->preview_time = 0;
+	}
 	Timeline *last_timeline = NULL;
 	int base_bpm = 0;
 	while (file_index < text.size())
@@ -206,6 +212,10 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 				{
 					mode = atoi(line.substr(6).c_str());
 					is_mode_read = true;
+					if (mode != 3)
+					{
+						return false;
+					}
 				}
 			}
 			if (!is_key_count_read)
@@ -214,13 +224,17 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 				{
 					key_count = atoi(line.substr(11).c_str());
 					is_key_count_read = true;
+					if (key_count != 4)
+					{
+						return false;
+					}
 				}
 			}
 			if (!is_audio_path_read)
 			{
 				if (line.compare(0, 15, "AudioFilename: ") == 0)
 				{
-					output_information->audio_path = line.substr(15);
+					output_information->audio_path = GetParentDir(path) + line.substr(15);
 					is_audio_path_read = true;
 				}
 			}
@@ -231,12 +245,6 @@ bool fr::LoadOSUFile(std::string path, fr::SongInformation *output_information, 
 					output_information->preview_time = atoi(line.substr(13).c_str());
 					is_preview_time_read = true;
 				}
-			}
-			success = success && mode == 3;
-			success = success && key_count == 4;
-			if (!success)
-			{
-				return false;
 			}
 		}
 
@@ -741,6 +749,12 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 			output_note_set->push_back(new_note_set);
 		}
 	}
+	if (load_information)
+	{
+		output_information->file_path = path;
+		output_information->full_score = 0;
+		output_information->preview_time = 0;
+	}
 
 	Timeline *last_timeline = NULL;
 	int base_bpm = 0;
@@ -754,7 +768,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		int char_index;
 		for (char_index = 0; text[file_index + char_index] != 10; char_index++)
 		{
-			if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+			if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t')
 			{
 				line += text[file_index + char_index];
 			}
@@ -764,93 +778,85 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 			}
 		}
 		file_index += char_index + 1;
+		line = line.substr(line.find_first_not_of(' '));
 		if (load_information)
 		{
 			if (!is_id_read)
 			{
-				if (line.compare(0, 10, "id:") == 0 && line.find(',') != std::string::npos)
+				if (line.compare(0, 6, "\"id\": ") == 0 && line.find(',') != std::string::npos)
 				{
-					output_information->id = "ma" + line.substr(10);
+					int mark_index = line.find(',', 6);
+					output_information->id = "ma" + line.substr(6, mark_index - 7);
 					is_id_read = true;
 				}
 			}
 			if (!is_title_read)
 			{
-				if (line.compare(0, 8, "\"title\":") == 0)
+				if (line.compare(0, 9, "\"title\": ") == 0)
 				{
-					int mark_index = line.find('\"', 9);
-					output_information->title = line.substr(9, mark_index - 9);
+					int mark_index = line.find('\"', 10);
+					output_information->title = line.substr(10, mark_index - 10);
 					is_title_read = true;
 				}
 			}
 			if (!is_artist_read)
 			{
-				if (line.compare(0, 9, "\"artist\":") == 0)
+				if (line.compare(0, 10, "\"artist\": ") == 0)
 				{
-					int mark_index = line.find('\"', 10);
-					output_information->artist = line.substr(10, mark_index - 10);
+					int mark_index = line.find('\"', 11);
+					output_information->artist = line.substr(11, mark_index - 11);
 					is_artist_read = true;
 				}
 			}
 			if (!is_noter_read)
 			{
-				if (line.compare(0, 10, "\"creator\":") == 0)
+				if (line.compare(0, 11, "\"creator\": ") == 0)
 				{
-					int mark_index = line.find('\"', 11);
-					output_information->noter = line.substr(11, mark_index - 11);
+					int mark_index = line.find('\"', 12);
+					output_information->noter = line.substr(12, mark_index - 12);
 					is_noter_read = true;
 				}
 			}
 			if (!is_version_read)
 			{
-				if (line.compare(0, 10, "\"version\":") == 0)
+				if (line.compare(0, 11, "\"version\": ") == 0)
 				{
-					int mark_index = line.find('\"', 11);
-					output_information->version = line.substr(11, mark_index - 11);
+					int mark_index = line.find('\"', 12);
+					output_information->version = line.substr(12, mark_index - 12);
 					is_version_read = true;
 				}
 			}
 			if (!is_mode_read)
 			{
-				if (line.compare(0, 7, "\"mode\":") == 0)
+				if (line.compare(0, 8, "\"mode\": ") == 0)
 				{
 					int mark_index = line.find(',', 8);
-					mode = atoi(line.substr(8, mark_index - 8).c_str());
+					mode = atoi(line.substr(8, mark_index - 9).c_str());
 					is_mode_read = true;
+					if (mode != 0)
+					{
+						return false;
+					}
 				}
 			}
 			if (!is_key_count_read)
 			{
-				if (line.compare(0, 9, "\"column\":") == 0)
+				if (line.compare(0, 10, "\"column\": ") == 0)
 				{
 					int mark_index = line.find(',', 10);
-					key_count = atoi(line.substr(10, mark_index - 10).c_str());
+					key_count = atoi(line.substr(10, mark_index - 11).c_str());
 					is_key_count_read = true;
+					if (key_count != 4)
+					{
+						return false;
+					}
 				}
-			}
-			if (!is_audio_path_read)
-			{
-				if (line.compare(0, 8, "\"sound\":") == 0)
-				{
-					int mark_index = line.find('\"', 11);
-					output_information->audio_path = line.substr(10, mark_index - 10);
-					is_audio_path_read = true;
-				}
-			}
-			output_information->full_score = 0;
-			output_information->preview_time = 0;
-			success = success && mode == 0;
-			success = success && key_count == 4;
-
-			if (!success)
-			{
-				return false;
 			}
 		}
 		
 		if (!is_timeline_loading)
 		{
-			if (line.compare(0, 8, "\"time\":[") == 0)
+			if (line.compare(0, 9, "\"time\": [") == 0)
 			{
 				is_timeline_loading = true;
 			}
@@ -870,7 +876,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 					brace_line = "";
 					for (char_index = 0; text[file_index + char_index] != 10; char_index++)
 					{
-						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t')
 						{
 							brace_line += text[file_index + char_index];
 						}
@@ -880,11 +886,12 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						}
 					}
 					file_index += char_index + 1;
-					if (brace_line.compare(0, 7, "\"beat\":") == 0)
+					brace_line = brace_line.substr(brace_line.find_first_not_of(' '));
+					if (brace_line.compare(0, 8, "\"beat\": ") == 0)
 					{
 						int last_mark_index = 0;
 						int mark_index = brace_line.find(',', 8);
-						new_timeline.start_time.bar = atoi(brace_line.substr(8, mark_index - 8).c_str());
+						new_timeline.start_time.bar = atoi(brace_line.substr(9, mark_index - 9).c_str());
 						last_mark_index = mark_index;
 						mark_index = brace_line.find(',', mark_index + 1);
 						new_timeline.start_time.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
@@ -892,16 +899,16 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						mark_index = brace_line.find(']', mark_index + 1);
 						new_timeline.start_time.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
 					}
-					if (brace_line.compare(0, 6, "\"bpm\":") == 0)
+					if (brace_line.compare(0, 7, "\"bpm\": ") == 0)
 					{
 						if (brace_line.find(',') != std::string::npos)
 						{
 							int mark_index = brace_line.find(',', 6);
-							new_timeline.bpm = atof(brace_line.substr(7, mark_index - 7).c_str());
+							new_timeline.bpm = atof(brace_line.substr(7, mark_index - 8).c_str());
 						}
 						else
 						{
-							new_timeline.bpm = atof(brace_line.substr(6).c_str());
+							new_timeline.bpm = atof(brace_line.substr(7).c_str());
 						}
 					}
 				}
@@ -910,7 +917,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 		}
 		if (!is_note_loading)
 		{
-			if (line.compare(0, 8, "\"note\":[") == 0)
+			if (line.compare(0, 9, "\"note\": [") == 0)
 			{
 				is_note_loading = true;
 			}
@@ -932,7 +939,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 					brace_line = "";
 					for (char_index = 0; text[file_index + char_index] != 10; char_index++)
 					{
-						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t' && text[file_index + char_index] != 32)
+						if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t')
 						{
 							brace_line += text[file_index + char_index];
 						}
@@ -942,11 +949,12 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						}
 					}
 					file_index += char_index + 1;
-					if (brace_line.compare(0, 7, "\"beat\":") == 0)
+					brace_line = brace_line.substr(brace_line.find_first_not_of(' '));
+					if (brace_line.compare(0, 8, "\"beat\": ") == 0)
 					{
 						int last_mark_index = 0;
 						int mark_index = brace_line.find(',', 8);
-						new_note.time.bar = atoi(brace_line.substr(8, mark_index - 8).c_str());
+						new_note.time.bar = atoi(brace_line.substr(9, mark_index - 9).c_str());
 						last_mark_index = mark_index;
 						mark_index = brace_line.find(',', mark_index + 1);
 						new_note.time.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
@@ -954,7 +962,7 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						mark_index = brace_line.find(']', mark_index + 1);
 						new_note.time.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
 					}
-					if (brace_line.compare(0, 9, "\"column\":") == 0)
+					if (brace_line.compare(0, 10, "\"column\": ") == 0)
 					{
 						if (brace_line.find(',') != std::string::npos)
 						{
@@ -963,15 +971,15 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						}
 						else
 						{
-							new_note.column = atoi(brace_line.substr(9).c_str());
+							new_note.column = atoi(brace_line.substr(10).c_str());
 						}
 						has_column = true;
 					}
-					if (brace_line.compare(0, 10, "\"endbeat\":") == 0)
+					if (brace_line.compare(0, 11, "\"endbeat\": ") == 0)
 					{
 						int last_mark_index = 0;
 						int mark_index = brace_line.find(',', 11);
-						new_note.time_end.bar = atoi(brace_line.substr(11, mark_index - 11).c_str());
+						new_note.time_end.bar = atoi(brace_line.substr(12, mark_index - 12).c_str());
 						last_mark_index = mark_index;
 						mark_index = brace_line.find(',', mark_index + 1);
 						new_note.time_end.beat = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
@@ -980,6 +988,25 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 						new_note.time_end.divide = atoi(brace_line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
 						is_long_note = true;
 					}
+					if (load_information && !is_audio_path_read)
+					{
+						if (brace_line.compare(0, 9, "\"sound\": ") == 0)
+						{
+							int mark_index = brace_line.find('\"', 10);
+							output_information->audio_path = GetParentDir(path) + brace_line.substr(10, mark_index - 10);
+							is_audio_path_read = true;
+						}
+					}
+					if (!is_global_offset_read)
+					{
+						if (brace_line.compare(0, 10, "\"offset\": ") == 0)
+						{
+							int mark_index = brace_line.find(',', 10);
+							global_offset = atoi(brace_line.substr(10, mark_index - 11).c_str());
+							is_global_offset_read = true;
+						}
+					}
+					//這offset和音頻的位置我就想當場殺了開源哥的🚽.jpg
 				}
 				if (!is_long_note)
 				{
@@ -989,15 +1016,6 @@ bool fr::LoadMalodyFile(std::string path, fr::SongInformation *output_informatio
 				{
 					temp_note_beat.push_back(new_note);
 				}
-			}
-		}
-		if (!is_global_offset_read)
-		{
-			if (line.compare(0, 10, "\"offset\": ") == 0)
-			{
-				int mark_index = line.find(',', 10);
-				global_offset = atoi(line.substr(10, mark_index - 11).c_str());
-				is_global_offset_read = true;
 			}
 		}
 	}
