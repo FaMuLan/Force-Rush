@@ -261,11 +261,14 @@ void fr::SoundManager::clear()
 
 void fr::SoundManager::clear(std::string path)
 {
-	for (int i = 0; i < m_sound[path]->buffer.size(); i++)
+	if (m_sound[path])
 	{
-		delete [] m_sound[path]->buffer[i];
+		for (int i = 0; i < m_sound[path]->buffer.size(); i++)
+		{
+			delete [] m_sound[path]->buffer[i];
+		}
+		m_sound[path]->buffer.clear();
 	}
-	m_sound[path]->buffer.clear();
 }
 
 bool fr::SoundManager::load(std::string path)
