@@ -81,8 +81,7 @@ void fr::FindFile(std::string path, std::string pattern_str, std::vector<File*> 
 
 std::string fr::GetParentDir(std::string path)
 {
-	std::regex parent_dir_pattern("(.*/)[^/]*");
-	return regex_replace(path, parent_dir_pattern, "$1");
+	return path.substr(0, path.find_last_of('/') + 1);
 }
 
 bool fr::LoadBeatmapFile(std::string path, SongInformation *output_information, std::vector<fr::NoteSet*> *output_note_set)
