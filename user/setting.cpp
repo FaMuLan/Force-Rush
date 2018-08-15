@@ -1,6 +1,5 @@
 #include "setting.h"
 #include <string>
-#include <regex>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "../file_system.h"
@@ -47,60 +46,146 @@ void fr::Setting::init()
 bool fr::Setting::read()
 {
 	std::string file;
+	int file_index = 0;
 	if (!ReadFile("/sdcard/ForceRush/setting.fa", file))
 	{
 		return false; 
 	}
 	song_list.clear();
 	tips_text.clear();
-	std::regex auto_pattern("auto:(.+?)\\n");
-	std::regex slide_out_pattern("slide_out:(.+?)\\n");
-	std::regex speed_pattern("speed:(\\d+?)\\n");
-	std::regex offset_pattern("offset:(-?\\d+?)\\n");
-	std::regex key_code_pattern("key (\\d+?):(\\d+?)\\n");
-	std::regex song_list_pattern("song_list:(.+?)\\n");
-	std::regex camera_portrait_pattern("camera_portrait:(-?\\d+?),(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
-	std::regex camera_landscape_pattern("camera_landscape:(-?\\d+?),(-?\\d+?),(-?\\d+?),(-?\\d+?)\\n");
-	std::regex tips_pattern("tips:(.+?)\\n");
-	std::smatch auto_line;
-	std::smatch slide_out_line;
-	std::smatch speed_line;
-	std::smatch offset_line;
-	std::smatch camera_portrait_line;
-	std::smatch camera_landscape_line;
-	std::regex_search(file, auto_line, auto_pattern);
-	std::regex_search(file, slide_out_line, slide_out_pattern);
-	std::regex_search(file, speed_line, speed_pattern);
-	std::regex_search(file, offset_line, offset_pattern);
-	std::regex_search(file, camera_portrait_line, camera_portrait_pattern);
-	std::regex_search(file, camera_landscape_line, camera_landscape_pattern);
-	is_auto = std::regex_replace(auto_line.str(), auto_pattern, "$1") == "on" ? true : false;
-	is_slide_out = std::regex_replace(slide_out_line.str(), slide_out_pattern, "$1") == "on" ? true : false;
-	speed = atoi(std::regex_replace(speed_line.str(), speed_pattern, "$1").c_str());
-	offset = atoi(std::regex_replace(offset_line.str(), offset_pattern, "$1").c_str());
-	camera_pos_y_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$1").c_str());
-	camera_pos_z_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$2").c_str());
-	camera_rotate_x_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$3").c_str());
-	force_angle_portrait = atoi(std::regex_replace(camera_portrait_line.str(), camera_portrait_pattern, "$4").c_str());
-	camera_pos_y_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$1").c_str());
-	camera_pos_z_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$2").c_str());
-	camera_rotate_x_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$3").c_str());
-	force_angle_landscape = atoi(std::regex_replace(camera_landscape_line.str(), camera_landscape_pattern, "$4").c_str());
-	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), key_code_pattern); i != std::sregex_iterator(); i++)
+
+	bool is_auto_read = false;
+	bool is_slide_out_read = false;
+	bool is_speed_read = false;
+	bool is_offset_read = false;
+	bool is_camera_pos_portrait_read = false;
+	bool is_camera_pos_landscape_read = false;
+	bool is_keycode_0_read = false;
+	bool is_keycode_1_read = false;
+	bool is_keycode_2_read = false;
+	bool is_keycode_3_read = false;
+
+	while (file_index < file.size())
 	{
-		std::smatch key_code_line = *i;
-		int column_index = atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$1").c_str());
-		key_code[column_index] = SDL_Scancode( atoi(std::regex_replace(key_code_line.str(), key_code_pattern, "$2").c_str()));
-	}
-	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), song_list_pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch song_list_line = *i;
-		song_list.push_back(std::regex_replace(song_list_line.str(), song_list_pattern, "$1"));
-	}
-	for (std::sregex_iterator i = std::sregex_iterator(file.begin(), file.end(), tips_pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch tips_line = *i;
-		tips_text.push_back(std::regex_replace(tips_line.str(), tips_pattern, "$1"));
+		std::string line;
+		int char_index;
+		for (char_index = 0; file[file_index + char_index] != 10; char_index++)
+		{
+			if (file[file_index + char_index] != 13)
+			{
+				line += file[file_index + char_index];
+			}
+			if (file_index + char_index + 1 == file.size())
+			{
+				break;
+			}
+		}
+		file_index += char_index + 1;
+		
+		if (!is_auto_read)
+		{
+			if (line.compare(0, 5, "auto:") == 0)
+			{
+				is_auto = line.substr(5) == "on" ? true : false;
+				is_auto_read = true;
+			}
+		}
+		if (!is_slide_out_read)
+		{
+			if (line.compare(0, 10, "slide_out:") == 0)
+			{
+				is_slide_out = line.substr(10) == "on" ? true : false;
+				is_slide_out_read = true;
+			}
+		}
+		if (!is_speed_read)
+		{
+			if (line.compare(0, 6, "speed:") == 0)
+			{
+				speed = atoi(line.substr(6).c_str());
+				is_speed_read = true;
+			}
+		}
+		if (!is_offset_read)
+		{
+			if (line.compare(0, 7, "offset:") == 0)
+			{
+				offset = atoi(line.substr(7).c_str());
+				is_offset_read = true;
+			}
+		}
+		if (!is_camera_pos_portrait_read)
+		{
+			if (line.compare(0, 16, "camera_portrait:") == 0)
+			{
+				int mark_index = line.find(',');
+				int last_mark_index = mark_index;
+				camera_pos_y_portrait = atoi(line.substr(16, mark_index - 16).c_str());
+				mark_index = line.find(',', mark_index + 1);
+				camera_pos_z_portrait = atoi(line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+				last_mark_index = mark_index;
+				mark_index = line.find(',', mark_index + 1);
+				camera_rotate_x_portrait = atoi(line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+				force_angle_portrait = atoi(line.substr(mark_index + 1).c_str());
+				is_camera_pos_portrait_read = true;
+			}
+		}
+		if (!is_camera_pos_landscape_read)
+		{
+			if (line.compare(0, 17, "camera_landscape:") == 0)
+			{
+				int mark_index = line.find(',');
+				int last_mark_index = mark_index;
+				camera_pos_y_landscape = atoi(line.substr(17, mark_index - 17).c_str());
+				mark_index = line.find(',', mark_index + 1);
+				camera_pos_z_landscape = atoi(line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+				last_mark_index = mark_index;
+				mark_index = line.find(',', mark_index + 1);
+				camera_rotate_x_landscape = atoi(line.substr(last_mark_index + 1, mark_index - last_mark_index - 1).c_str());
+				force_angle_landscape = atoi(line.substr(mark_index + 1).c_str());
+				is_camera_pos_landscape_read = true;
+			}
+		}
+		if (!is_keycode_0_read)
+		{
+			if (line.compare(0, 6, "Key 0:") == 0)
+			{
+				key_code[0] = SDL_Scancode(atoi(line.substr(6).c_str()));
+				is_keycode_0_read = true;
+			}
+		}
+		if (!is_keycode_1_read)
+		{
+			if (line.compare(0, 6, "Key 1:") == 0)
+			{
+				key_code[1] = SDL_Scancode(atoi(line.substr(6).c_str()));
+				is_keycode_1_read = true;
+			}
+		}
+		if (!is_keycode_2_read)
+		{
+			if (line.compare(0, 6, "Key 2:") == 0)
+			{
+				key_code[2] = SDL_Scancode(atoi(line.substr(6).c_str()));
+				is_keycode_2_read = true;
+			}
+		}
+		if (!is_keycode_3_read)
+		{
+			if (line.compare(0, 6, "Key 3:") == 0)
+			{
+				key_code[3] = SDL_Scancode(atoi(line.substr(6).c_str()));
+				is_keycode_3_read = true;
+			}
+		}
+		if (line.compare(0, 10, "song_list:") == 0)
+		{
+			song_list.push_back(line.substr(10));
+		}
+		if (line.compare(0, 5, "tips:") == 0)
+		{
+			tips_text.push_back(line.substr(5));
+		}
 	}
 	return true;
 }
