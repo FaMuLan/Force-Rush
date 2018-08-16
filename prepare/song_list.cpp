@@ -1,6 +1,5 @@
 #include "song_list.h"
 #include <vector>
-#include <regex>
 #include <cstdlib>
 #include <thread>
 #include <dirent.h>
@@ -189,97 +188,125 @@ bool fr::SongList::LoadList()
 	m_information.clear();
 
 	std::string text;
-//	std::regex pattern("\\[(.*?)\\]\\s*\\{\\s*title:(.*)\\s*artist:(.*)\\s*noter:(.*)\\s*version:(.*)\\s*difficulty:(\\d*)\\s*duration:(\\d*)\\s*audio_path:(.*)\\s*preview_time:(\\d*)\\s*file_path:(.*)\\s*score:(\\d+)\\s*rank:(\\d)\\s*\\}");
-	std::regex song_pattern("\\[(.*?)\\]\\s*?\\{[\\S\\s]*?\\}");
-	//包含ID信息在內，先截取其中一段再單獨進行提取
-	std::regex title_pattern("\\ttitle:(.*?)\\n");
-	std::regex artist_pattern("\\tartist:(.*?)\\n");
-	std::regex noter_pattern("\\tnoter:(.*?)\\n");
-	std::regex version_pattern("\\tversion:(.*?)\\n");
-	std::regex difficulty_pattern("\\tdifficulty:(\\d*?)\\n");
-	std::regex duration_pattern("\\tduration:(\\d*?)\\n");
-	std::regex audio_path_pattern("\\taudio_path:(.*?)\\n");
-	std::regex preview_time_pattern("\\tpreview_time:(\\d*?)\\n");
-	std::regex file_path_pattern("\\tfile_path:(.*?)\\n");
-	std::regex full_score_pattern("\\tfull_score:(\\d*?)\\n");
-
-	std::regex score_pattern("\\tscore:(\\d*?)\\n");
-	std::regex pure_pattern("\\tpure:(\\d*?)\\n");
-	std::regex safe_pattern("\\tsafe:(\\d*?)\\n");
-	std::regex warning_pattern("\\twarning:(\\d*?)\\n");
-	std::regex error_pattern("\\terror:(\\d*?)\\n");
-	std::regex chain_pattern("\\tchain:(\\d*?)\\n");
-	std::regex rank_pattern("\\trank:(\\d)");
-
+	int file_index = 0;
 	if (!ReadFile("/sdcard/ForceRush/song_list.fa", text))
 	{
 		return false;
 	}
-//	if (!std::regex_search(text, pattern))
-//	{
-//		return false;
-//	}
-	for (std::sregex_iterator i = std::sregex_iterator(text.begin(), text.end(), song_pattern); i != std::sregex_iterator(); i++)
-	{
-		std::smatch paragraph_match = *i;
-		std::string paragraph = paragraph_match.str();
-		std::smatch title_line;
-		std::smatch artist_line;
-		std::smatch noter_line;
-		std::smatch version_line;
-		std::smatch difficulty_line;
-		std::smatch duration_line;
-		std::smatch audio_path_line;
-		std::smatch preview_time_line;
-		std::smatch file_path_line;
-		std::smatch full_score_line;
-		std::smatch score_line;
-		std::smatch pure_line;
-		std::smatch safe_line;
-		std::smatch warning_line;
-		std::smatch error_line;
-		std::smatch chain_line;
-		std::smatch rank_line;
 
-		std::regex_search(paragraph, title_line, title_pattern);
-		std::regex_search(paragraph, artist_line, artist_pattern);
-		std::regex_search(paragraph, noter_line, noter_pattern);
-		std::regex_search(paragraph, version_line, version_pattern);
-		std::regex_search(paragraph, difficulty_line, difficulty_pattern);
-		std::regex_search(paragraph, duration_line, duration_pattern);
-		std::regex_search(paragraph, audio_path_line, audio_path_pattern);
-		std::regex_search(paragraph, preview_time_line, preview_time_pattern);
-		std::regex_search(paragraph, file_path_line, file_path_pattern);
-		std::regex_search(paragraph, full_score_line, full_score_pattern);
-		std::regex_search(paragraph, score_line, score_pattern);
-		std::regex_search(paragraph, pure_line, pure_pattern);
-		std::regex_search(paragraph, safe_line, safe_pattern);
-		std::regex_search(paragraph, warning_line, warning_pattern);
-		std::regex_search(paragraph, error_line, error_pattern);
-		std::regex_search(paragraph, chain_line, chain_pattern);
-		std::regex_search(paragraph, rank_line, rank_pattern);
-		SongInformation *new_information = new SongInformation;
-		Score *new_score = new Score;
-		new_information->id = std::regex_replace(paragraph, song_pattern, "$1");
-		new_information->title = std::regex_replace(title_line.str(), title_pattern, "$1");
-		new_information->artist = std::regex_replace(artist_line.str(), artist_pattern, "$1");
-		new_information->noter = std::regex_replace(noter_line.str(), noter_pattern, "$1");
-		new_information->version = std::regex_replace(version_line.str(), version_pattern, "$1");
-		new_information->difficulty = atoi(std::regex_replace(difficulty_line.str(), difficulty_pattern, "$1").c_str());
-		new_information->duration = atoi(std::regex_replace(duration_line.str(), duration_pattern, "$1").c_str());
-		new_information->audio_path = std::regex_replace(audio_path_line.str(), audio_path_pattern, "$1");
-		new_information->preview_time = atoi(std::regex_replace(preview_time_line.str(), preview_time_pattern, "$1").c_str());
-		new_information->file_path = std::regex_replace(file_path_line.str(), file_path_pattern, "$1");
-		new_information->full_score = atoi(std::regex_replace(full_score_line.str(), full_score_pattern, "$1").c_str());
-		new_score->score = atoi(std::regex_replace(score_line.str(), score_pattern, "$1").c_str());
-		new_score->pure = atoi(std::regex_replace(pure_line.str(), pure_pattern, "$1").c_str());
-		new_score->safe = atoi(std::regex_replace(safe_line.str(), safe_pattern, "$1").c_str());
-		new_score->warning = atoi(std::regex_replace(warning_line.str(), warning_pattern, "$1").c_str());
-		new_score->error = atoi(std::regex_replace(error_line.str(), error_pattern, "$1").c_str());
-		new_score->chain = atoi(std::regex_replace(chain_line.str(), chain_pattern, "$1").c_str());
-		new_score->rank = Rank(atoi(std::regex_replace(rank_line.str(), rank_pattern, "$1").c_str()));
-		new_information->high_score = new_score;
-		m_information.push_back(new_information);
+	while (file_index < text.size())
+	{
+		std::string line;
+		int char_index;
+		for (char_index = 0; text[file_index + char_index] != 10; char_index++)
+		{
+			if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t')
+			{
+				line += text[file_index + char_index];
+			}
+			if (file_index + char_index + 1 == text.size())
+			{
+				break;
+			}
+		}
+		file_index += char_index + 1;
+		if (line.compare(0, 1, "[") == 0)
+		{
+			std::string brace_line;
+			SongInformation *new_information = new SongInformation;
+			Score *new_score = new Score;
+			while (brace_line.compare(0, 1, "}") != 0)
+			{
+				brace_line = "";
+				for (char_index = 0; text[file_index + char_index] != 10; char_index++)
+				{
+					if (text[file_index + char_index] != 13 && text[file_index + char_index] != '\t')
+					{
+						brace_line += text[file_index + char_index];
+					}
+					if (file_index + char_index + 1 == text.size())
+					{
+						break;
+					}
+				}
+				file_index += char_index + 1;
+				if (brace_line.compare(0, 1, "[") == 0)
+				{
+					int mark_index = brace_line.find(']');
+					new_information->id = brace_line.substr(1, mark_index - 1);
+				}
+				if (brace_line.compare(0, 6, "title:") == 0)
+				{
+					new_information->title = brace_line.substr(6);
+				}
+				if (brace_line.compare(0, 7, "artist:") == 0)
+				{
+					new_information->artist = brace_line.substr(7);
+				}
+				if (brace_line.compare(0, 6, "noter:") == 0)
+				{
+					new_information->noter = brace_line.substr(6);
+				}
+				if (brace_line.compare(0, 8, "version:") == 0)
+				{
+					new_information->version = brace_line.substr(8);
+				}
+				if (brace_line.compare(0, 11, "difficulty:") == 0)
+				{
+					new_information->difficulty = atoi(brace_line.substr(11).c_str());
+				}
+				if (brace_line.compare(0, 9, "duration:") == 0)
+				{
+					new_information->duration = atoi(brace_line.substr(9).c_str());
+				}
+				if (brace_line.compare(0, 11, "audio_path:") == 0)
+				{
+					new_information->audio_path = brace_line.substr(11);
+				}
+				if (brace_line.compare(0, 13, "preview_time:") == 0)
+				{
+					new_information->preview_time = atoi(brace_line.substr(13).c_str());
+				}
+				if (brace_line.compare(0, 10, "file_path:") == 0)
+				{
+					new_information->file_path = brace_line.substr(10);
+				}
+				if (brace_line.compare(0, 11, "full_score:") == 0)
+				{
+					new_information->full_score = atoi(brace_line.substr(11).c_str());
+				}
+				if (brace_line.compare(0, 6, "score:") == 0)
+				{
+					new_score->score = atoi(brace_line.substr(5).c_str());
+				}
+				if (brace_line.compare(0, 5, "pure:") == 0)
+				{
+					new_score->pure = atoi(brace_line.substr(5).c_str());
+				}
+				if (brace_line.compare(0, 5, "safe:") == 0)
+				{
+					new_score->safe = atoi(brace_line.substr(5).c_str());
+				}
+				if (brace_line.compare(0, 8, "warning:") == 0)
+				{
+					new_score->warning = atoi(brace_line.substr(8).c_str());
+				}
+				if (brace_line.compare(0, 6, "error:") == 0)
+				{
+					new_score->error = atoi(brace_line.substr(6).c_str());
+				}
+				if (brace_line.compare(0, 6, "chain:") == 0)
+				{
+					new_score->chain = atoi(brace_line.substr(6).c_str());
+				}
+				if (brace_line.compare(0, 5, "rank:") == 0)
+				{
+					new_score->rank = Rank(atoi(brace_line.substr(5).c_str()));
+				}
+			}
+			new_information->high_score = new_score;
+			m_information.push_back(new_information);
+		}
 	}
 	shown_information = m_information;
 	is_loaded = true;
