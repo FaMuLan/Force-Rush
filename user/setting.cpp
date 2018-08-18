@@ -10,7 +10,8 @@ fr::Setting *fr::Setting::m_instance = 0;
 
 void fr::Setting::init()
 {
-	user_profile_path = "/sdcard/ForceRush/default.fa";
+	user_name = "Guest";
+	performance_point = 0;
 	is_auto = false;
 	is_slide_out = false;
 	speed = 10;
@@ -54,6 +55,8 @@ bool fr::Setting::read()
 	song_list.clear();
 	tips_text.clear();
 
+	bool is_user_name_read = false;
+	bool is_performance_point_read = false;
 	bool is_auto_read = false;
 	bool is_slide_out_read = false;
 	bool is_speed_read = false;
@@ -82,6 +85,22 @@ bool fr::Setting::read()
 		}
 		file_index += char_index + 1;
 		
+		if (!is_user_name_read)
+		{
+			if (line.compare(0, 10, "user_name:") == 0)
+			{
+				user_name = line.substr(10);
+				is_user_name_read = true;
+			}
+		}
+		if (!is_performance_point_read)
+		{
+			if (line.compare(0, 18, "performance_point:") == 0)
+			{
+				performance_point = atoi(line.substr(18).c_str());
+				is_performance_point_read = true;
+			}
+		}
 		if (!is_auto_read)
 		{
 			if (line.compare(0, 5, "auto:") == 0)
@@ -193,16 +212,20 @@ bool fr::Setting::read()
 void fr::Setting::write()
 {
 	std::string file;
+	char *performance_point_ch = new char[50];
 	char *speed_ch = new char[50];
 	char *offset_ch = new char[50];
 	char *camera_portrait_ch = new char[50];
 	char *camera_landscape_ch = new char[50];
+	sprintf(performance_point_ch, "performance_point:%d\n", performance_point);
 	sprintf(speed_ch, "speed:%d\n", speed);
 	sprintf(offset_ch, "offset:%d\n", offset);
 	sprintf(camera_portrait_ch, "camera_portrait:%d,%d,%d,%d\n", camera_pos_y_portrait, camera_pos_z_portrait, camera_rotate_x_portrait, force_angle_portrait);
 	sprintf(camera_landscape_ch, "camera_landscape:%d,%d,%d,%d\n", camera_pos_y_landscape, camera_pos_z_landscape, camera_rotate_x_landscape, force_angle_landscape);
 
 	file = "Force Rush user setting file\n";
+	file += "user_name:" + user_name + "\n";
+	file += performance_point_ch;
 	file += is_auto ? "auto:on\n" : "auto:off\n";
 	file += is_slide_out ? "slide_out:on\n" : "slide_out:off\n";
 	file += speed_ch;
@@ -236,9 +259,32 @@ void fr::Setting::write()
 	WriteFile("/sdcard/ForceRush/setting.fa", file);
 }
 
-std::string fr::Setting::GetUserProfilePath()
+std::string fr::Setting::GetUserName()
 {
-	return user_profile_path;
+	return user_name;
+}
+
+int fr::Setting::GetPerformancePoint()
+{
+	return performance_point;
+}
+
+void fr::Setting::SetUserName(std::string input)
+{
+	user_name = input;
+	write();
+}
+
+int fr::Setting::CalculatePerformancePoint(int difficulty, double acc, bool record)
+{
+	int output = difficulty * 1000 * (acc - 0.6f);
+	output = output > 0 ? output : 0;
+	if (record)
+	{
+		performance_point = output > performance_point ? output : performance_point;
+		write();
+	}
+	return output;
 }
 
 bool fr::Setting::IsAuto()
@@ -312,11 +358,6 @@ std::string fr::Setting::GetRandomTips()
 	srand(Timer::instance()->GetSystemTime());
 	int index = rand() % tips_text.size();
 	return tips_text[index];
-}
-
-void fr::Setting::SetUserProfilePath(std::string input)
-{
-	user_profile_path = input;
 }
 
 void fr::Setting::SwitchAuto()

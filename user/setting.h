@@ -23,7 +23,10 @@ namespace fr
 			bool read();
 			void write();
 
-			std::string GetUserProfilePath();
+			std::string GetUserName();
+			int GetPerformancePoint();
+			void SetUserName(std::string input);
+			int CalculatePerformancePoint(int difficulty, double acc, bool record = false);
 			bool IsAuto();
 			bool IsSlideOut();
 			int GetSpeed();
@@ -51,7 +54,8 @@ namespace fr
 			Setting() {}
 			~Setting() {}
 			static Setting *m_instance;
-			std::string user_profile_path;
+			std::string user_name;
+			int performance_point;
 			bool is_auto;
 			bool is_slide_out;
 			int speed;
