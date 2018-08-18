@@ -6,7 +6,6 @@
 #include "../control_handler.h"
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
-#include "../user/user_profile.h"
 #include "../background.h"
 #include "song_list.h"
 #include "prepare_header.h"

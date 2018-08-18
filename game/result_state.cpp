@@ -11,7 +11,6 @@
 #include "../prepare/song_list.h"
 #include "../loading/loading_state.h"
 #include "game_state.h"
-#include "../user/user_profile.h"
 #include "../user/setting.h"
 #include "../background.h"
 
@@ -84,8 +83,8 @@ void fr::ResultState::init()
 		is_new_record = true;
 	}
 
-	int previous_performance = UserProfile::instance()->GetPerformancePoint();
-	int current_performance = UserProfile::instance()->CalculatePerformancePoint(m_information->difficulty, acc, !Setting::instance()->IsAuto() && !Setting::instance()->IsSlideOut());
+	int previous_performance = Setting::instance()->GetPerformancePoint();
+	int current_performance = Setting::instance()->CalculatePerformancePoint(m_information->difficulty, acc, !Setting::instance()->IsAuto() && !Setting::instance()->IsSlideOut());
 	if (previous_performance < current_performance)
 	{
 		is_new_performance = true;
@@ -140,7 +139,7 @@ void fr::ResultState::init()
 	warning_text->init(warning_ch, score_base->GetX() + 32, score_base->GetY() + 176, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
 	error_text->init(error_ch, score_base->GetX() + 32, score_base->GetY() + 224, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
 	rank_text->init(rank_ch, rank_base->GetX() + rank_base->GetW() / 2, rank_base->GetY() + rank_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
-	user_name_text->init(UserProfile::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	user_name_text->init(Setting::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_point_text->init(performance_ch, user_base->GetX() + 32, user_base->GetY() + 80, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	new_record_text->init("Score Replaced", score_base->GetX() + 32, score_base->GetY() + 272, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	new_performance_text->init("Performance Break", user_base->GetX() + 32, user_base->GetY() + 128, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);

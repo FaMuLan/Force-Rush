@@ -10,7 +10,6 @@
 #include "../timer.h"
 #include "../song_data.h"
 #include "../loading/loading_state.h"
-#include "../user/user_profile.h"
 #include "../user/setting.h"
 #include "game_state.h"
 #include "beatmap.h"
@@ -61,7 +60,7 @@ void fr::GameHeader::init()
 	score_text->init("0", score_base->GetX() + 32, score_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	duration_text->init(" ", score_base->GetX() + 32, score_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	performance_text->init(" ", user_base->GetX() + 32, user_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 14, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	user_name_text->init(UserProfile::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	user_name_text->init(Setting::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	Animator::instance()->AddAnimation("pause_widget_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("pause_widget_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 	pause_is_shown = false;
@@ -104,11 +103,11 @@ void fr::GameHeader::clear()
 void fr::GameHeader::update()
 {
 	title_base->update();
-	int current_performance_point = UserProfile::instance()->CalculatePerformancePoint(GameState::instance()->m_information->difficulty, float(GameBeatmap::instance()->GetScore()) / float(GameState::instance()->m_information->full_score));
+	int current_performance_point = Setting::instance()->CalculatePerformancePoint(GameState::instance()->m_information->difficulty, float(GameBeatmap::instance()->GetScore()) / float(GameState::instance()->m_information->full_score));
 	char *score_ch = new char[6];
 	char *performance_ch = new char[20];
 	sprintf(score_ch, "%d", GameBeatmap::instance()->GetScore());
-	sprintf(performance_ch, "performance:%d / %d", current_performance_point, UserProfile::instance()->GetPerformancePoint());
+	sprintf(performance_ch, "performance:%d / %d", current_performance_point, Setting::instance()->GetPerformancePoint());
 	score_text->SetText(score_ch);
 	performance_text->SetText(performance_ch);
 	delete [] score_ch;
@@ -133,7 +132,7 @@ void fr::GameHeader::update()
 	duration_process_bar->SetSrcRect(Rect(0, 0, duration_process * 216.f, 8));
 	duration_process_bar->SetSize(duration_process * 216.f, 8);
 
-	float performance_process = float(current_performance_point) / float(UserProfile::instance()->GetPerformancePoint());
+	float performance_process = float(current_performance_point) / float(Setting::instance()->GetPerformancePoint());
 	performance_process = performance_process < 0 ? 0 : performance_process;
 	performance_process = performance_process > 1 ? 1 : performance_process;
 	performance_process_bar->SetSrcRect(Rect(0, 0, performance_process * 216.f, 8));

@@ -3,7 +3,6 @@
 #include "state.h"
 #include "main/main_state.h"
 #include "loading/loading_state.h"
-#include "user/user_profile.h"
 #include "user/setting.h"
 #include "texture_manager.h"
 #include "sound_manager.h"
@@ -86,7 +85,6 @@ void fr::System::init()
 	TextureManager::instance()->init(program_object);
 	SoundManager::instance()->init();
 	ControlHandler::instance()->init();
-	UserProfile::instance()->init();
 	Background::instance()->init();
 	MainState::instance()->init();
 	LoadingState::instance()->init();

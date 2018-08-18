@@ -10,7 +10,6 @@
 #include "../prepare/song_list.h"
 #include "../loading/loading_state.h"
 #include "../user/setting.h"
-#include "../user/user_profile.h"
 #include "beatmap.h"
 #include "game_header.h"
 

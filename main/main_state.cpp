@@ -6,8 +6,8 @@
 #include "../texture_manager.h"
 #include "../gui/text_input_box.h"
 #include "../system.h"
+#include "../user/setting.h"
 #include "../loading/loading_state.h"
-#include "../user/user_profile.h"
 #include "../background.h"
 
 fr::MainState *fr::MainState::m_instance = 0;
@@ -31,10 +31,10 @@ void fr::MainState::init()
 	logo->SetPos(System::instance()->GetWindowWidth() / 2 - logo->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - logo->GetH() / 2);
 
 	char *performance_point_ch = new char[50];
-	sprintf(performance_point_ch, "Performance:%d", UserProfile::instance()->GetPerformancePoint());
+	sprintf(performance_point_ch, "Performance:%d", Setting::instance()->GetPerformancePoint());
 	user_name_text->init("", Rect(32, 32, 216, 32));
 	user_name_text->InitText(0, 0, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	user_name_text->SetText(UserProfile::instance()->GetUserName());
+	user_name_text->SetText(Setting::instance()->GetUserName());
 	performance_point_text->init(performance_point_ch, 32, 120, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
 	start_text->init("Touch anywhere to activiate", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
 	delete [] performance_point_ch;
@@ -43,8 +43,8 @@ void fr::MainState::init()
 
 	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00);
 
-	performance_process_bar->SetSrcRect(Rect(0, 0, (float(UserProfile::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8));
-	performance_process_bar->SetSize((UserProfile::instance()->GetPerformancePoint() < 10000.f ? float(UserProfile::instance()->GetPerformancePoint()) / 10000.f : 1) * 216.f, 8);
+	performance_process_bar->SetSrcRect(Rect(0, 0, (float(Setting::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8));
+	performance_process_bar->SetSize((Setting::instance()->GetPerformancePoint() < 10000.f ? float(Setting::instance()->GetPerformancePoint()) / 10000.f : 1) * 216.f, 8);
 
 //	SoundManager::instance()->load("assets/BGM.wav", SOUNDTYPE_MUSIC);
 //	SoundManager::instance()->play("assets/BGM.wav", SOUNDTYPE_MUSIC);
@@ -109,7 +109,7 @@ void fr::MainState::update()
 //		SoundManager::instance()->stop();
 	}
 
-//	UserProfile::instance()->SetUserName(user_name_text->GetText());
+//	Setting::instance()->SetUserName(user_name_text->GetText());
 }
 
 void fr::MainState::lock(bool load)
