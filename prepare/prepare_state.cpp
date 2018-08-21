@@ -1,5 +1,5 @@
 #include "prepare_state.h"
-#include <thread>
+#include <pthread.h>
 #include "../gui/button.h"
 #include "../sprite.h"
 #include "../system.h"
@@ -135,8 +135,9 @@ void fr::PrepareState::update()
 		}
 		if (prepare_refresh->IsReleased() && !SongList::instance()->IsRefreshing())
 		{
-			std::thread refresh_thread(&fr::SongList::RefreshList);
-			refresh_thread.detach();
+			pthread_t thread;
+			pthread_create(&thread, NULL, &fr::SongList::RefreshList, NULL);
+			pthread_detach(thread);
 		}
 	}
 }	//void fr::PrepareState::update()

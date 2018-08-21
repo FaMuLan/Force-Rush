@@ -43,7 +43,7 @@ namespace fr
 
 			bool LoadList();
 			static void WriteList();
-			static void RefreshList();
+			static void *RefreshList(void *arguments);
 			bool IsRefreshing();
 			void RefreshListSize();
 

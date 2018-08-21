@@ -1,7 +1,7 @@
 #include "song_list.h"
 #include <vector>
 #include <cstdlib>
-#include <thread>
+#include <pthread.h>
 #include <dirent.h>
 #include "../animator.h"
 #include "../gui/button.h"
@@ -62,8 +62,9 @@ void fr::SongList::init()
 	{
 		if (!LoadList())
 		{
-			std::thread refresh_thread(&fr::SongList::RefreshList);
-			refresh_thread.detach();
+			pthread_t thread;
+			pthread_create(&thread, NULL, &fr::SongList::RefreshList, NULL);
+			pthread_detach(thread);
 		}
 	}
 	//一定要在計算列表長度之前加載好信息
@@ -398,7 +399,7 @@ void fr::SongList::WriteList()
 	WriteFile("/sdcard/ForceRush/song_list.fa", output_text);
 }
 
-void fr::SongList::RefreshList()
+void *fr::SongList::RefreshList(void *arguments)
 {
 	is_refreshing = true;
 
