@@ -66,6 +66,7 @@ namespace fr
 			GLint texture_coord_location;
 			GLint sampler_location;
 			GLint mvp_location;
+			GLint alpha_location;
 	};	//class TextureManager
 };	//namespace fr
 

@@ -22,6 +22,7 @@ void fr::TextureManager::init(GLuint program_object)
 	texture_coord_location = glGetAttribLocation(program_object, "a_texCoord");
 	sampler_location = glGetUniformLocation(program_object, "s_texture");
 	mvp_location = glGetUniformLocation(program_object, "mvp_matrix");
+	alpha_location = glGetUniformLocation(program_object, "u_alpha");
 }
 
 void fr::TextureManager::load(std::string path, Rect &output_size)
@@ -108,6 +109,7 @@ void fr::TextureManager::render(std::string path, float *load_vectrices, std::st
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &(matrix[matrix_id])[0][0]);
+	glUniform1f(alpha_location, 1.f);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -119,6 +121,7 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, std
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &(matrix[matrix_id])[0][0]);
+	glUniform1f(alpha_location, 0.2f);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -130,6 +133,7 @@ void fr::TextureManager::render(std::string path, float *load_vectrices, glm::ma
 	glBindTexture(GL_TEXTURE_2D, *texture[path]);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &load_matrix[0][0]);
+	glUniform1f(alpha_location, 1.f);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
@@ -141,6 +145,7 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, glm
 	glBindTexture(GL_TEXTURE_2D, *load_texture);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &load_matrix[0][0]);
+	glUniform1f(alpha_location, 0.2f);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
