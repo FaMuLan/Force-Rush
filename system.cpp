@@ -52,9 +52,12 @@ void fr::System::init()
 		"precision mediump float;\n"
 		"varying vec2 v_texCoord;\n"
 		"uniform sampler2D s_texture;\n"
+		"uniform float u_alpha;\n"
 		"void main()\n"
 		"{\n"
-		"	gl_FragColor = texture2D(s_texture, v_texCoord);\n"
+		"	vec4 texture_color = texture2D(s_texture, v_texCoord);\n"
+		"	texture_color.a = texture_color.a * u_alpha;\n"
+		"	gl_FragColor = texture_color;\n"
 		"}\n";
 	const char *vertex_shader_src = vertex_shader_src_str.c_str();
 	const char *fragment_shader_src = fragment_shader_src_str.c_str();
