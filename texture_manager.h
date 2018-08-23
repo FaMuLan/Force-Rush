@@ -45,10 +45,10 @@ namespace fr
 			void ClearFont(std::string path, int size);
 			void ClearMatrix(std::string id);
 			void update();
-			void render(std::string path, float *load_vectrices, std::string matrix_id = "default");
-			void render(GLuint *load_texture, float *load_vectrices, std::string matrix_id = "default");
-			void render(std::string path, float *load_vectrices, glm::mat4x4 load_matrix);
-			void render(GLuint *load_texture, float *load_vectrices, glm::mat4x4 load_matrix);
+			void render(std::string path, float *load_vectrices, int alpha = 255, std::string matrix_id = "default");
+			void render(GLuint *load_texture, float *load_vectrices, int alpha = 255, std::string matrix_id = "default");
+			void render(std::string path, float *load_vectrices, int alpha, glm::mat4x4 load_matrix);
+			void render(GLuint *load_texture, float *load_vectrices, int alpha, glm::mat4x4 load_matrix);
 			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0, bool wrapper = false);
 			//limit_w = 0 = NO_LIMIT
 			glm::mat4x4 GetMatrix(std::string id);
