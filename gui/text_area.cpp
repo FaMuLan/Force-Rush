@@ -15,6 +15,7 @@ void fr::TextArea::init(std::string text, int x, int y, std::string font_path, i
 	m_r = r;
 	m_g = g;
 	m_b = b;
+	m_a = 255;
 	m_format = format;
 	m_limited_w = limited_w;
 	m_wrapped = wrapped;
@@ -82,7 +83,7 @@ void fr::TextArea::render()
 {
 	if (m_text != "")
 	{
-		TextureManager::instance()->render(cache->texture, vectrices, matrix_id);
+		TextureManager::instance()->render(cache->texture, vectrices, m_a, matrix_id);
 	}
 }
 
@@ -116,7 +117,7 @@ void fr::TextArea::render(int x, int y, fr::TextFormat format)
 		temp_vectrices[18] = float(x + ((m_limited_w > cache->w || m_limited_w == 0) ? dest_rect.w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
 		temp_vectrices[19] = (1.f - float(y + dest_rect.h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
 		//bottom right
-		TextureManager::instance()->render(cache->texture, temp_vectrices, matrix_id);
+		TextureManager::instance()->render(cache->texture, temp_vectrices, m_a, matrix_id);
 		delete [] temp_vectrices;
 	}
 }
@@ -230,6 +231,11 @@ void fr::TextArea::SetColor(char r, char g, char b)
 		TextureManager::instance()->DestroyCache(cache);
 		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
 	}
+}
+
+void fr::TextArea::SetAlpha(int alpha)
+{
+	m_a = alpha;
 }
 
 void fr::TextArea::SetFont(std::string font_path, int font_size)

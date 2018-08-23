@@ -28,6 +28,7 @@ namespace fr
 			virtual void SetSize(int w, int h);
 			virtual void SetText(std::string text);
 			virtual void SetColor(char r, char g, char b);
+			virtual void SetAlpha(int alpha);
 			virtual void SetFont(std::string font_path, int font_size);
 			virtual void SetScale(float scale);
 			virtual int GetX();
@@ -52,6 +53,7 @@ namespace fr
 			int m_r;
 			int m_g;
 			int m_b;
+			int m_a;
 			TextFormat m_format;
 			int m_limited_w;
 			bool m_wrapped;

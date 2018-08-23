@@ -10,6 +10,7 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 	texture_size.w = 0;
 	texture_size.h = 0;
 	scale = 1;
+	alpha = 255;
 	pos_3d = { 0.f, 0.f, 0.f };
 	vectrices = new float[24];
 
@@ -91,7 +92,7 @@ void fr::Sprite::render()
 {
 	if (frame[current_index] != "")
 	{
-		TextureManager::instance()->render(frame[current_index], vectrices, matrix_id);
+		TextureManager::instance()->render(frame[current_index], vectrices, alpha, matrix_id);
 	}
 }
 
@@ -99,7 +100,7 @@ void fr::Sprite::render(int index)
 {
 	if (frame[index] != "")
 	{
-		TextureManager::instance()->render(frame[index], vectrices, matrix_id);
+		TextureManager::instance()->render(frame[index], vectrices, alpha, matrix_id);
 	}
 }
 
@@ -254,6 +255,11 @@ void fr::Sprite::SetRotation(Point load_center, double load_angle)
 {
 	center = load_center;
 	angle = load_angle;
+}
+
+void fr::Sprite::SetAlpha(int load_alpha)
+{
+	alpha = load_alpha;
 }
 
 void fr::Sprite::SetVectrices(int *load_vectrices)

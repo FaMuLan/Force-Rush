@@ -27,6 +27,7 @@ namespace fr
 			void SetSize(int w, int h);
 			void SetSrcRect(Rect load_source_rect);
 			void SetRotation(Point load_center, double load_angle);
+			void SetAlpha(int load_alpha);
 			void SetVectrices(int *load_vectrices);
 			void SetMatrix(std::string id);
 			int GetX();
@@ -47,6 +48,7 @@ namespace fr
 			float scale;
 			Point center;
 			double angle;
+			int alpha;
 			float *vectrices;
 			glm::vec3 pos_3d;
 			std::string matrix_id;
