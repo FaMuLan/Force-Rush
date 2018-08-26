@@ -1,7 +1,7 @@
 BUILD_PATH	:= build/forcerush
 LDFLAGS	:= `sdl2-config --cflags`
-CFLAGS	:= -c -g
-LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lsmpeg2 -lSDL2_ttf -lsamplerate -L./build -lmad
+CFLAGS	:= -c -g -I./
+LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -L./build -lmad -lsamplerate
 VPATH	:= main : prepare : game : loading : user : about : gui : tools
 OBJ	:= \
 	$(BUILD_PATH)/about_state.o \
@@ -48,7 +48,7 @@ prepare:
 	-mkdir build
 	-mkdir build/forcerush
 
-run: $(OBJ) build/libmad.a
+run: $(OBJ) build/libmad.a build/libsamplerate.a
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@ -g
 
 $(BUILD_PATH)/about_state.o: about_state.cpp about_state.h
@@ -118,3 +118,6 @@ $(BUILD_PATH)/timer.o: timer.cpp timer.h
 
 build/libmad.a:
 	cd ./libmad && make && cd ../
+
+build/libsamplerate.a:
+	cd ./libsamplerate && make && cd ../
