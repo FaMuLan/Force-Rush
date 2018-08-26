@@ -278,7 +278,7 @@ bool fr::SongList::LoadList()
 				}
 				if (brace_line.compare(0, 6, "score:") == 0)
 				{
-					new_score->score = atoi(brace_line.substr(5).c_str());
+					new_score->score = atoi(brace_line.substr(6).c_str());
 				}
 				if (brace_line.compare(0, 5, "pure:") == 0)
 				{
