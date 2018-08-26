@@ -13,17 +13,19 @@ OBJ	:= \
 	$(BUILD_PATH)/timer.o \
 	$(BUILD_PATH)/version.o
 
-all: $(BUILD_PATH)/libmad.a
+.PHONY: clear prepare
+
+all: prepare $(BUILD_PATH)/libmad.a
+
+clear:
+	rm -rf ../build/libmad
+
+prepare:
 	-mkdir ../build
 	-mkdir ../build/libmad
 
 $(BUILD_PATH)/libmad.a: $(OBJ)
 	$(AR) cr ../build/libmad.a $(OBJ)
-
-.PHONY: clear
-
-clear:
-	rm -rf ../build/libmad
 
 $(BUILD_PATH)/bit.o: bit.c
 	$(CC) $< $(CFLAGS) -o $@
