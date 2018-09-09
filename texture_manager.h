@@ -6,6 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <GLES2/gl2.h>
 #include <glm/glm.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <string>
 #include <vector>
 #include <map>
@@ -57,10 +59,11 @@ namespace fr
 			TextureManager() {}
 			~TextureManager() {}
 			static TextureManager *m_instance;
+			FT_Library *ft_library;
 			std::map<std::string, GLuint*> texture;
 			//保守起见用指针来确认是否加载好
 			std::map<std::string, glm::mat4x4> matrix;
-			std::map<std::string, std::map<int, TTF_Font*> > font;
+			std::map<std::string, std::map<int, FT_Face*> > font;
 			//存储字体
 			GLint position_location;
 			GLint texture_coord_location;

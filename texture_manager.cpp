@@ -1,5 +1,8 @@
 #include "texture_manager.h"
 #include <glm/ext.hpp>
+#include <ft2build.h>
+#include FT_GLYPH_H
+#include FT_FREETYPE_H
 #include "system.h"
 #include "user/setting.h"
 #include "shape.h"
@@ -8,6 +11,8 @@ fr::TextureManager *fr::TextureManager::m_instance = 0;
 
 void fr::TextureManager::init(GLuint program_object)
 {
+	ft_library = new FT_Library;
+	FT_Init_FreeType(ft_library);
 	matrix["default"] = glm::mat4(1.f);
 	glm::mat4x4 perspective_matrix;
 	glm::mat4x4 model_view_matrix;
@@ -54,7 +59,9 @@ void fr::TextureManager::LoadFont(std::string path, int size)
 {
 	if (!font[path][size])
 	{
-		TTF_Font *new_font = TTF_OpenFont(path.c_str(), size);
+		FT_Face *new_font = new FT_Face;
+		FT_New_Face(*ft_library, path.c_str(), 0, new_font);
+		FT_Set_Pixel_Sizes(*new_font, 0, size);
 		font[path][size] = new_font;
 	}
 }
@@ -81,7 +88,7 @@ void fr::TextureManager::clear(std::string path)
 
 void fr::TextureManager::ClearFont(std::string path, int size)
 {
-	TTF_CloseFont(font[path][size]);
+	FT_Done_Face(*font[path][size]);
 	font[path][size] = NULL;
 }
 
@@ -151,48 +158,77 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, int
 
 fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w, bool wrapper)
 {
-	SDL_Color color = { char(r), char(g), char(b) };
-	SDL_Surface *text_surface;
-	if (wrapper)
+	int w = 0;
+	int current_row_w = 0;
+	int h = font_size * 1.4f;
+	FT_GlyphSlot slot;
+	for (int i = 0; i < text.size(); i++)
 	{
-		std::string text_line;
-		for (int i = 0; i < text.length(); i++)
+		if (text[i] != '\n' || !wrapper)
 		{
-			text_line += text[i];
-			int load_w, load_h;
-			TTF_SizeUTF8(font[font_path][font_size], text_line.c_str(), &load_w, &load_h);
-			if (text[i] == '\n')
+			FT_Load_Char(*font[font_path][font_size], text[i], FT_LOAD_NO_BITMAP);
+			slot = (*font[font_path][font_size])->glyph;
+			if (text[i] == '\t')
 			{
-				text_line.clear();
+				current_row_w += font_size * 4;
 			}
-			else if (load_w > limited_w)
+			else
 			{
-				text.insert(i, "\n");
-				text_line.clear();
+				current_row_w += slot->advance.x / 64;
 			}
+			w = current_row_w > w ? current_row_w : w;
 		}
-		text_surface = TTF_RenderUTF8_Blended_Wrapped(font[font_path][font_size], text.c_str(), color, limited_w);
+		else
+		{
+			current_row_w = 0;
+			h += font_size;
+		}
 	}
-	else
-	{
-		text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
-	}
-	SDL_Surface *converted_surface = SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_ABGR8888, 0);
+
 	GLuint *new_texture = new GLuint;
 	glGenTextures(1, new_texture);
 	glBindTexture(GL_TEXTURE_2D, *new_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted_surface->w, converted_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted_surface->pixels);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	int w = text_surface->w;
-	int h = text_surface->h;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, w, h, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+	//Blank texture;
+	FT_Vector pen;
+	pen.x = 0;
+	pen.y = 0;
+	current_row_w = 0;
+	w = 0;
+	for (int i = 0; i < text.size(); i++)
+	{
+		if (text[i] == '\n')// && wrapper)
+		{
+			pen.y -= font_size * 64;
+			//千万不要忘记OpenGL的坐标系什么尿性(
+			pen.x = 0;
+			current_row_w = 0;
+		}
+		else if (text[i] != '\t')
+		{
+			FT_Set_Transform(*font[font_path][font_size], NULL, &pen);
+			FT_Load_Char(*font[font_path][font_size], text[i], FT_LOAD_RENDER);
+			slot = (*font[font_path][font_size])->glyph;
+			FT_Bitmap &bitmap = slot->bitmap;
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, slot->bitmap_left, font_size - slot->bitmap_top, bitmap.width, bitmap.rows, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap.buffer);
+			pen.x += slot->advance.x;
+			current_row_w += slot->advance.x / 64;
+		}
+		else
+		{
+			pen.x += font_size * 64 * 4;
+			current_row_w += font_size * 4;
+		}
+		w = current_row_w > w ? current_row_w : w;
+	}
 	TextureCache *output_cache = new TextureCache;
 	output_cache->texture = new_texture;
 	output_cache->w = w;
 	output_cache->h = h;
 
-	SDL_FreeSurface(converted_surface);
-	SDL_FreeSurface(text_surface);
 	return output_cache;
 }
 

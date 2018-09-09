@@ -190,6 +190,8 @@ void fr::TextArea::SetText(std::string text)
 		if (m_text != "")
 		{
 			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+			source_rect.w = cache->w;
+			source_rect.h = cache->h;
 			switch (m_format)
 			{
 				case TEXTFORMAT_MIDDLE:
@@ -246,6 +248,8 @@ void fr::TextArea::SetFont(std::string font_path, int font_size)
 	{
 		TextureManager::instance()->DestroyCache(cache);
 		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		source_rect.w = cache->w;
+		source_rect.h = cache->h;
 		switch (m_format)
 		{
 			case TEXTFORMAT_MIDDLE:
@@ -280,6 +284,8 @@ void fr::TextArea::SetScale(float m_scale)
 	{
 		TextureManager::instance()->DestroyCache(cache);
 		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		source_rect.w = cache->w;
+		source_rect.h = cache->h;
 		switch (m_format)
 		{
 			case TEXTFORMAT_MIDDLE:
@@ -302,7 +308,6 @@ void fr::TextArea::SetScale(float m_scale)
 		//bottom left
 		vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
 		vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		source_rect = Rect(0, 0, cache->w, cache->h);
 		//bottom right
 	}
 }
