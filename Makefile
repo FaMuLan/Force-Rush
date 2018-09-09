@@ -1,7 +1,7 @@
 BUILD_PATH	:= build/forcerush
-LDFLAGS	:= `sdl2-config --cflags`
-CFLAGS	:= -c -g -I./
-LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -L./build -lmad -lsamplerate
+LDFLAGS	:= `sdl2-config --cflags` -I./
+LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_net -ltiff -ljpeg -lpng -lz -lSDL2_ttf -lfreetype -lSDL2_mixer -lSDL2_test -lsmpeg2 -lvorbisfile -lvorbis -logg -lstdc++ -lSDL2 -lEGL -lGLESv1_CM -lGLESv2 -landroid -L./build -lmad -lsamplerate
+CFLAGS	:= -c -g -I./freetype -I./ $(LIBS)
 VPATH	:= main : prepare : game : loading : user : about : gui : tools
 OBJ	:= \
 	$(BUILD_PATH)/about_state.o \
@@ -49,7 +49,7 @@ prepare:
 	-mkdir build/forcerush
 
 run: $(OBJ) build/libmad.a build/libsamplerate.a
-	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@ -g
+	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@
 
 $(BUILD_PATH)/about_state.o: about_state.cpp about_state.h
 	$(CXX) $< $(CFLAGS) -o $@
