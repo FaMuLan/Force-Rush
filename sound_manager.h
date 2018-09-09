@@ -2,7 +2,7 @@
 #define FORCE_RUSH_SOUND_MANAGER_H
 
 #include <SDL2/SDL.h>
-#include <mad.h>
+#include <libmad/mad.h>
 #include <string>
 #include <map>
 #include <vector>

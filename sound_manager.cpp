@@ -4,8 +4,8 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <samplerate.h>
-#include <mad.h>
+#include <libsamplerate/samplerate.h>
+#include <libmad/mad.h>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/codec.h>
 
