@@ -188,9 +188,12 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	GLuint *new_texture = new GLuint;
 	glGenTextures(1, new_texture);
 	glBindTexture(GL_TEXTURE_2D, *new_texture);
+	char *pixel = new char[w * h];
+	memset(pixel, 0, w * h);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, w, h, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, w, h, 0, GL_ALPHA, GL_UNSIGNED_BYTE, pixel);
+	delete [] pixel;
 	//Blank texture;
 	FT_Vector pen;
 	pen.x = 0;
