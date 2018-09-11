@@ -188,13 +188,16 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	GLuint *new_texture = new GLuint;
 	glGenTextures(1, new_texture);
 	glBindTexture(GL_TEXTURE_2D, *new_texture);
-	char *pixel = new char[w * h];
-	memset(pixel, 0, w * h);
+	int *input_pixel = new int[w * h];
+	memset(input_pixel, 0, w * h * 4);
+	//*4是四个颜色，既然是空白，那么RBGA四个数可以都是0
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, w, h, 0, GL_ALPHA, GL_UNSIGNED_BYTE, pixel);
-	delete [] pixel;
-	//Blank texture;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, input_pixel);
+	//一定要RGBA格式，不然画不出来
+	
+	delete [] input_pixel;
+	//空纹理
 	FT_Vector pen;
 	pen.x = 0;
 	pen.y = 0;
@@ -216,7 +219,17 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 			slot = (*font[font_path][font_size])->glyph;
 			FT_Bitmap &bitmap = slot->bitmap;
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, slot->bitmap_left, font_size - slot->bitmap_top, bitmap.width, bitmap.rows, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap.buffer);
+			int *output_pixel = new int[bitmap.width * bitmap.rows];
+			for (int i = 0; i < bitmap.width * bitmap.rows; i++)
+			{
+				output_pixel[i] = 0;
+				output_pixel[i] += r << 0;
+				output_pixel[i] += g << 8;
+				output_pixel[i] += b << 16;
+				output_pixel[i] += bitmap.buffer[i] << 24;
+				//每个像素设置颜色
+			}
+			glTexSubImage2D(GL_TEXTURE_2D, 0, slot->bitmap_left, font_size - slot->bitmap_top, bitmap.width, bitmap.rows, GL_RGBA, GL_UNSIGNED_BYTE, output_pixel);
 			pen.x += slot->advance.x;
 			current_row_w += slot->advance.x / 64;
 		}
