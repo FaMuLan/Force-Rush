@@ -159,6 +159,93 @@ namespace fr
 		return CompareInt(m1->duration, m2->duration);
 	}
 	//用於排序
+
+	bool utf8_to_unicode(const std::string &utf8, std::vector<unsigned int> &unicode)
+	{
+		unsigned int utf8_length = utf8.size();
+		unsigned int utf8_cursor = 0;
+		unsigned int offset;
+		unsigned char *utf8_ch;
+		unsigned int unicode_ch;
+		unicode.clear();
+		while (utf8_cursor < utf8_length)
+		{
+			utf8_ch = (unsigned char*)&utf8[utf8_cursor];
+			if (*utf8_ch < 0xC0)
+			{
+				offset = 0;
+				unicode_ch = utf8_ch[0];
+			}
+			else if (*utf8_ch < 0xE0)
+			{
+				/*2:<11000000>*/
+				offset = 1;
+				if (utf8_cursor + offset >= utf8_length)
+				{
+					return false;
+				}
+				unicode_ch = (utf8_ch[0] & 0x1f) << 6;
+				unicode_ch |= (utf8_ch[1] & 0x3f);
+			}
+			else if (*utf8_ch < 0xF0)
+			{
+				/*3:<11100000>*/
+				offset = 2;
+				if (utf8_cursor + offset >= utf8_length)
+				{
+					return false;
+				}
+				unicode_ch = (utf8_ch[0] & 0x0f) << 12;
+				unicode_ch |= (utf8_ch[1] & 0x3f) << 6;
+				unicode_ch |= (utf8_ch[2] & 0x3f);
+			}
+			else if (*utf8_ch < 0xF8)
+			{
+				/*4:<11110000>*/
+				offset = 3;
+				if (utf8_cursor + offset >= utf8_length)
+				{
+					return false;
+				}
+				unicode_ch = (utf8_ch[0] & 0x07) << 18;
+				unicode_ch |= (utf8_ch[1] & 0x3f) << 12;
+				unicode_ch |= (utf8_ch[2] & 0x3f) << 6;
+				unicode_ch |= (utf8_ch[3] & 0x3f);
+			}
+			else if (*utf8_ch < 0xFC)
+			{
+				/*5:<11111000>*/
+				offset = 4;
+				if (utf8_cursor + offset >= utf8_length)
+				{
+					return false;
+				}
+				unicode_ch = (utf8_ch[0] & 0x03) << 24;
+				unicode_ch |= (utf8_ch[1] & 0x3f) << 18;
+				unicode_ch |= (utf8_ch[2] & 0x3f) << 12;
+				unicode_ch |= (utf8_ch[3] & 0x3f) << 6;
+				unicode_ch |= (utf8_ch[4] & 0x3f);
+			}
+			else
+			{
+				/*6:<11111100>*/
+				offset = 5;
+				if (utf8_cursor + offset >= utf8_length)
+				{
+					return false;
+				}
+				unicode_ch = (utf8_ch[0] & 0x01) << 30;
+				unicode_ch |= (utf8_ch[1] & 0x3f) << 24;
+				unicode_ch |= (utf8_ch[2] & 0x3f) << 18;
+				unicode_ch |= (utf8_ch[3] & 0x3f) << 12;
+				unicode_ch |= (utf8_ch[4] & 0x3f) << 6;
+				unicode_ch |= (utf8_ch[5] & 0x3f);
+			}
+			unicode.push_back(unicode_ch);
+			utf8_cursor += offset + 1;
+		}
+		return true;
+	}
 };
 
 #endif
