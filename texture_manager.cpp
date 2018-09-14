@@ -6,6 +6,7 @@
 #include "system.h"
 #include "user/setting.h"
 #include "shape.h"
+#include "song_data.h"
 
 fr::TextureManager *fr::TextureManager::m_instance = 0;
 
@@ -61,6 +62,7 @@ void fr::TextureManager::LoadFont(std::string path, int size)
 	{
 		FT_Face *new_font = new FT_Face;
 		FT_New_Face(*ft_library, path.c_str(), 0, new_font);
+		FT_Select_Charmap(*new_font, FT_ENCODING_UNICODE);
 		FT_Set_Pixel_Sizes(*new_font, 0, size);
 		font[path][size] = new_font;
 	}
@@ -162,13 +164,15 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	int current_row_w = 0;
 	int h = font_size * 1.4f;
 	FT_GlyphSlot slot;
-	for (int i = 0; i < text.size(); i++)
+	std::vector<unsigned int> unicode_text;
+	utf8_to_unicode(text, unicode_text);
+	for (int i = 0; i < unicode_text.size(); i++)
 	{
-		if (text[i] != '\n' || !wrapper)
+		if (unicode_text[i] != '\n' || !wrapper)
 		{
-			FT_Load_Char(*font[font_path][font_size], text[i], FT_LOAD_NO_BITMAP);
+			FT_Load_Char(*font[font_path][font_size], unicode_text[i], FT_LOAD_NO_BITMAP);
 			slot = (*font[font_path][font_size])->glyph;
-			if (text[i] == '\t')
+			if (unicode_text[i] == '\t')
 			{
 				current_row_w += font_size * 4;
 			}
@@ -203,19 +207,19 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	pen.y = 0;
 	current_row_w = 0;
 	w = 0;
-	for (int i = 0; i < text.size(); i++)
+	for (int i = 0; i < unicode_text.size(); i++)
 	{
-		if (text[i] == '\n')// && wrapper)
+		if (unicode_text[i] == '\n')// && wrapper)
 		{
 			pen.y -= font_size * 64;
 			//千万不要忘记OpenGL的坐标系什么尿性(
 			pen.x = 0;
 			current_row_w = 0;
 		}
-		else if (text[i] != '\t')
+		else if (unicode_text[i] != '\t')
 		{
 			FT_Set_Transform(*font[font_path][font_size], NULL, &pen);
-			FT_Load_Char(*font[font_path][font_size], text[i], FT_LOAD_RENDER);
+			FT_Load_Char(*font[font_path][font_size], unicode_text[i], FT_LOAD_RENDER);
 			slot = (*font[font_path][font_size])->glyph;
 			FT_Bitmap &bitmap = slot->bitmap;
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
