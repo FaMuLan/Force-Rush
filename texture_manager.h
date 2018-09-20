@@ -60,7 +60,7 @@ namespace fr
 			~TextureManager() {}
 			static TextureManager *m_instance;
 			FT_Library *ft_library;
-			std::map<std::string, GLuint*> texture;
+			std::map<std::string, TextureCache*> texture;
 			//保守起见用指针来确认是否加载好
 			std::map<std::string, glm::mat4x4> matrix;
 			std::map<std::string, std::map<int, FT_Face*> > font;

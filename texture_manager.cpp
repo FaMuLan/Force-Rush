@@ -1,5 +1,6 @@
 #include "texture_manager.h"
 #include <glm/ext.hpp>
+#include <png.h>
 #include <ft2build.h>
 #include FT_GLYPH_H
 #include FT_FREETYPE_H
@@ -33,27 +34,92 @@ void fr::TextureManager::init(GLuint program_object)
 
 void fr::TextureManager::load(std::string path, Rect &output_size)
 {
-	SDL_Surface *load_surface = IMG_Load(path.c_str());
+//	SDL_Surface *load_surface = IMG_Load(path.c_str());
 	if (!texture[path])
 	{
-		SDL_Surface *converted_surface = SDL_ConvertSurfaceFormat(load_surface, SDL_PIXELFORMAT_ABGR8888, 0);
+//		SDL_Surface *converted_surface = SDL_ConvertSurfaceFormat(load_surface, SDL_PIXELFORMAT_ABGR8888, 0);
+		png_structp png_ptr = NULL;
+		png_infop info_ptr = NULL;
+		unsigned int width, heigh;
+		unsigned char signal[8];
+		unsigned char *pixel;
+		int bit_depth;
+		int color_type;
+		unsigned int row_byte;
+		png_bytepp row_pointer;
+		FILE *file_ptr = fopen(path.c_str(), "rb");
+		fread(signal, sizeof(*signal), sizeof(signal), file_ptr);
+		if (!png_check_sig(signal, 8))
+		{
+			fclose(file_ptr);
+			exit(0);
+		}
+		png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+		info_ptr = png_create_info_struct(png_ptr);
+		if (setjmp(png_jmpbuf(png_ptr)))
+		{
+			png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+			fclose(file_ptr);
+			exit(0);
+		}
+		png_init_io(png_ptr, file_ptr);
+		png_set_sig_bytes(png_ptr, 8);
+		png_read_info(png_ptr, info_ptr);
+		png_get_IHDR(png_ptr, info_ptr, &width, &heigh, &bit_depth, &color_type, NULL, NULL, NULL);
+		if (color_type == PNG_COLOR_TYPE_PALETTE)
+		{
+			png_set_palette_to_rgb(png_ptr);
+		}
+		if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+		{
+			png_set_expand_gray_1_2_4_to_8(png_ptr);
+		}
+		if (bit_depth == 16)
+		{
+			png_set_strip_16(png_ptr);
+		}
+		if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+		{
+			png_set_tRNS_to_alpha(png_ptr);
+		}
+		if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+		{
+			png_set_gray_to_rgb(png_ptr);
+		}
+		png_read_update_info(png_ptr, info_ptr);
+
+		row_byte = png_get_rowbytes(png_ptr, info_ptr);
+		pixel = new unsigned char[row_byte * heigh];
+		row_pointer = new png_bytep[heigh];
+		for (unsigned int i = 0; i < heigh; i++)
+		{
+			row_pointer[i] = pixel + i * row_byte;
+		}
+		png_read_image(png_ptr, row_pointer);
+
 		GLuint *new_texture = new GLuint;
 		glGenTextures(1, new_texture);
 		glBindTexture(GL_TEXTURE_2D, *new_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted_surface->w, converted_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted_surface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, heigh, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		texture[path] = new_texture;
-		SDL_FreeSurface(converted_surface);
+		TextureCache *new_texture_cache = new TextureCache;
+		new_texture_cache->texture = new_texture;
+		new_texture_cache->w = width;
+		new_texture_cache->h = heigh;
+		texture[path] = new_texture_cache;
+		delete [] row_pointer;
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		fclose(file_ptr);
 	}
-	output_size.w = load_surface->w;
-	output_size.h = load_surface->h;
-	SDL_FreeSurface(load_surface);
+	output_size.w = texture[path]->w;
+	output_size.h = texture[path]->h;
+//	SDL_FreeSurface(load_surface);
 }
 
 void fr::TextureManager::load(GLuint *load_texture, std::string path)
 {
-	texture[path] = load_texture;
+	texture[path]->texture = load_texture;
 }
 
 void fr::TextureManager::LoadFont(std::string path, int size)
@@ -82,7 +148,7 @@ void fr::TextureManager::clear(std::string path)
 {
 	if (texture[path])
 	{
-		glDeleteTextures(1, texture[path]);
+		glDeleteTextures(1, texture[path]->texture);
 		delete texture[path];
 		texture[path] = NULL;
 	}
@@ -115,7 +181,7 @@ void fr::TextureManager::render(std::string path, float *load_vectrices, int alp
 	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
-	glBindTexture(GL_TEXTURE_2D, *texture[path]);
+	glBindTexture(GL_TEXTURE_2D, *texture[path]->texture);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &(matrix[matrix_id])[0][0]);
 	glUniform1f(alpha_location, float(alpha / 255.f));
@@ -139,7 +205,7 @@ void fr::TextureManager::render(std::string path, float *load_vectrices, int alp
 	GLushort indices[] = { 0, 1, 2, 1, 2, 3 };
 	glVertexAttribPointer(position_location, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[0]);
 	glVertexAttribPointer(texture_coord_location, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), &load_vectrices[4]);
-	glBindTexture(GL_TEXTURE_2D, *texture[path]);
+	glBindTexture(GL_TEXTURE_2D, *texture[path]->texture);
 	glUniform1i(sampler_location, 0);
 	glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &load_matrix[0][0]);
 	glUniform1f(alpha_location, float(alpha / 255.f));
