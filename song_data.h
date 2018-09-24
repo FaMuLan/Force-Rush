@@ -2,6 +2,7 @@
 #define FORCE_RUSH_SONG_DATA_H
 
 #include <string>
+#include <vector>
 #include "prepare/song_list.h"
 
 namespace fr
@@ -160,7 +161,7 @@ namespace fr
 	}
 	//用於排序
 
-	bool utf8_to_unicode(const std::string &utf8, std::vector<unsigned int> &unicode)
+	inline bool utf8_to_unicode(const std::string &utf8, std::vector<unsigned int> &unicode)
 	{
 		unsigned int utf8_length = utf8.size();
 		unsigned int utf8_cursor = 0;
