@@ -109,6 +109,7 @@ void fr::TextureManager::load(std::string path, Rect &output_size)
 		new_texture_cache->h = heigh;
 		texture[path] = new_texture_cache;
 		delete [] row_pointer;
+		delete [] pixel;
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(file_ptr);
 	}
@@ -265,7 +266,7 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, input_pixel);
 	//一定要RGBA格式，不然画不出来
-	
+
 	delete [] input_pixel;
 	//空纹理
 	FT_Vector pen;
@@ -302,6 +303,7 @@ fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string fo
 			glTexSubImage2D(GL_TEXTURE_2D, 0, slot->bitmap_left, font_size - slot->bitmap_top, bitmap.width, bitmap.rows, GL_RGBA, GL_UNSIGNED_BYTE, output_pixel);
 			pen.x += slot->advance.x;
 			current_row_w += slot->advance.x / 64;
+			delete [] output_pixel;
 		}
 		else
 		{
@@ -328,6 +330,7 @@ void fr::TextureManager::DestroyCache(fr::TextureCache *cache)
 	if (cache)
 	{
 		glDeleteTextures(1, cache->texture);
+		delete cache->texture;
 	}
 	delete cache;
 }
