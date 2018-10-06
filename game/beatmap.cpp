@@ -410,11 +410,11 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 	int time_diff = note_time - Setting::instance()->GetOffset() - Timer::instance()->GetTime("game");
 	if (is_pressed)
 	{
-		if (time_diff > 250 && !is_ln_pressing)
+		if (time_diff > 150 && !is_ln_pressing)
 		{
 			return JUDGEMENT_NONE;
 		}
-		else if (time_diff > 150 && is_ln_pressing)
+		else if (time_diff > 100 && is_ln_pressing)
 		{
 			m_score->score += (m_score->score + JUDGEMENT_ER) > 0 ? JUDGEMENT_ER : -m_score->score;
 			//因為error要扣分，為了友好起見不把分數弄到負分
@@ -434,7 +434,7 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			Animator::instance()->Animate("chain");
 			return JUDGEMENT_ER;
 		}
-		else if (time_diff > 150 && !is_ln_pressing)
+		else if (time_diff > 100 && !is_ln_pressing)
 		{
 			m_score->score += (m_score->score + JUDGEMENT_ER) > 0 ? JUDGEMENT_ER : -m_score->score;
 			current_chain = 0;
@@ -455,7 +455,7 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 		}
 		else if (!error_only)
 		{
-			if (time_diff > 100 || time_diff < -100)
+			if (time_diff > 50 || time_diff < -50)
 			{
 				m_score->score += (m_score->score + JUDGEMENT_GD) > 0 ? JUDGEMENT_GD : -m_score->score;
 				current_chain++;
@@ -486,7 +486,7 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 				Animator::instance()->Animate("chain");
 				return JUDGEMENT_GD;
 			}
-			else if (time_diff > 50 || time_diff < -50)
+			else if (time_diff > 25 || time_diff < -25)
 			{
 				m_score->score += JUDGEMENT_GR;
 				current_chain++;
@@ -540,7 +540,7 @@ fr::Judgement fr::GameBeatmap::judge(int note_time, bool is_pressed, bool is_ln_
 			return JUDGEMENT_SAFE;
 		}
 	}
-	else if (time_diff < -150)
+	else if (time_diff < -100)
 	{
 		m_score->score += (m_score->score + JUDGEMENT_ER) > 0 ? JUDGEMENT_ER : -m_score->score;
 		current_chain = 0;
