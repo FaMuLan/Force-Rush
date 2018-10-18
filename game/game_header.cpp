@@ -44,7 +44,7 @@ void fr::GameHeader::init()
 	pause_retire->AddPressedFrame("assets/base/sort_button_pressed.png");
 	pause_retire->AddText("Retire", pause_retire->GetW() / 2, pause_retire->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
 
-	tips_text->init("Tips: " + Setting::instance()->GetRandomTips(), pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188, "assets/fonts/Miui-Regular.ttf", 25, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560, true);
+	tips_text->init("Tips: " + Setting::instance()->GetRandomTips(), pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188, "assets/fonts/Miui-Regular.ttf", 25, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560);
 
 	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
 	title_base->AddPressedFrame("assets/game/title_base_pressed.png");

@@ -40,7 +40,7 @@ void fr::AboutState::init()
 		"\t}\n"
 		"\t还有那个一直在关注我成长的你\n"
 		"}\n";
-	text->init(str, System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Miui-Bold.ttf", 30, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560, true);
+	text->init(str, System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Miui-Bold.ttf", 30, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560);
 }
 
 void fr::AboutState::clear()

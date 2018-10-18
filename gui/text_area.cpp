@@ -3,7 +3,7 @@
 #include "../texture_manager.h"
 #include "../system.h"
 
-void fr::TextArea::init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w, bool wrapped)
+void fr::TextArea::init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
 {
 	m_text = text;
 	dest_rect.x = x;
@@ -18,7 +18,6 @@ void fr::TextArea::init(std::string text, int x, int y, std::string font_path, i
 	m_a = 255;
 	m_format = format;
 	m_limited_w = limited_w;
-	m_wrapped = wrapped;
 	m_scale = 1;
 	TextureManager::instance()->LoadFont(font_path, font_size);
 	matrix_id = "default";
@@ -47,7 +46,7 @@ void fr::TextArea::init(std::string text, int x, int y, std::string font_path, i
 
 	if (m_text != "")
 	{
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
 
 		switch (m_format)
 		{
@@ -189,7 +188,7 @@ void fr::TextArea::SetText(std::string text)
 		m_text = text;
 		if (m_text != "")
 		{
-			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
 			source_rect.w = cache->w;
 			source_rect.h = cache->h;
 			switch (m_format)
@@ -231,7 +230,7 @@ void fr::TextArea::SetColor(char r, char g, char b)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
 	}
 }
 
@@ -247,7 +246,7 @@ void fr::TextArea::SetFont(std::string font_path, int font_size)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
 		source_rect.w = cache->w;
 		source_rect.h = cache->h;
 		switch (m_format)
@@ -283,7 +282,7 @@ void fr::TextArea::SetScale(float m_scale)
 	if (m_text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w, m_wrapped);
+		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
 		source_rect.w = cache->w;
 		source_rect.h = cache->h;
 		switch (m_format)

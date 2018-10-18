@@ -20,7 +20,7 @@ namespace fr
 	class TextArea
 	{
 		public:
-			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0, bool wrapped = false);
+			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
 			virtual void render();
 			virtual void render(int x, int y, TextFormat format = TEXTFORMAT_NONE);
 			virtual void clear();
@@ -56,7 +56,6 @@ namespace fr
 			int m_a;
 			TextFormat m_format;
 			int m_limited_w;
-			bool m_wrapped;
 			float m_scale;
 			TextureCache *cache;
 			float *vectrices;
