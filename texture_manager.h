@@ -51,7 +51,7 @@ namespace fr
 			void render(GLuint *load_texture, float *load_vectrices, int alpha = 255, std::string matrix_id = "default");
 			void render(std::string path, float *load_vectrices, int alpha, glm::mat4x4 load_matrix);
 			void render(GLuint *load_texture, float *load_vectrices, int alpha, glm::mat4x4 load_matrix);
-			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0, bool wrapper = false);
+			TextureCache *CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w = 0);
 			//limit_w = 0 = NO_LIMIT
 			glm::mat4x4 GetMatrix(std::string id);
 			void DestroyCache(TextureCache *cache);
@@ -63,7 +63,7 @@ namespace fr
 			std::map<std::string, TextureCache*> texture;
 			//保守起见用指针来确认是否加载好
 			std::map<std::string, glm::mat4x4> matrix;
-			std::map<std::string, std::map<int, FT_Face*> > font;
+			std::map<std::string, std::map<int, TTF_Font*> > font;
 			//存储字体
 			GLint position_location;
 			GLint texture_coord_location;
