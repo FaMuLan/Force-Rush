@@ -3,7 +3,6 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <map>

@@ -83,7 +83,6 @@ void fr::System::init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	TTF_Init();
-	IMG_Init(0);
 	Setting::instance()->init();
 	TextureManager::instance()->init(program_object);
 	SoundManager::instance()->init();
@@ -122,7 +121,6 @@ void fr::System::clear()
 	SDL_DestroyWindow(system_window);
 	system_window = NULL;
 	TTF_Quit();
-	IMG_Quit();
 }
 
 void fr::System::RefreshWindowSize()
