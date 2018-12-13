@@ -1,7 +1,7 @@
 BUILD_PATH	:= build/forcerush
-LDFLAGS	:= `sdl2-config --cflags` -I./
-LIBS	:= `sdl2-config --libs` -lSDL2_image -lSDL2_net -ltiff -ljpeg -lpng -lz -lSDL2_ttf -lfreetype -lSDL2_mixer -lSDL2_test -lsmpeg2 -lvorbisfile -lvorbis -logg -lstdc++ -lSDL2 -lEGL -lGLESv1_CM -lGLESv2 -landroid -L./build -lmad -lsamplerate
-CFLAGS	:= -c -g -I./freetype -I./ $(LIBS)
+LDFLAGS	:= `sdl2-config --cflags`
+LIBS	:= `sdl2-config --libs` -ltiff -ljpeg -lpng -lz -lSDL2_ttf -lfreetype -lmad -lvorbisfile -lvorbisenc -lvorbis -logg -lsamplerate -lstdc++ -lSDL2 -lEGL -lGLESv1_CM -lGLESv2 -landroid -L./build
+CFLAGS	:= -c -g $(LIBS)
 VPATH	:= main : prepare : game : loading : user : about : gui : tools
 OBJ	:= \
 	$(BUILD_PATH)/about_state.o \
@@ -48,7 +48,7 @@ prepare:
 	-mkdir build
 	-mkdir build/forcerush
 
-run: $(OBJ) build/libmad.a build/libsamplerate.a
+run: $(OBJ)
 	$(CXX) $(LDFLAGS) $(LIBS) $(OBJ) -o $@
 
 $(BUILD_PATH)/about_state.o: about_state.cpp about_state.h
@@ -115,9 +115,3 @@ $(BUILD_PATH)/texture_manager.o: texture_manager.cpp texture_manager.h
 	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/timer.o: timer.cpp timer.h
 	$(CXX) $< $(CFLAGS) -o $@
-
-build/libmad.a:
-	cd ./libmad && make && cd ../
-
-build/libsamplerate.a:
-	cd ./libsamplerate && make && cd ../
