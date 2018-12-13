@@ -335,7 +335,8 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	m_column[1]->AddNote(new_note_set[1]);
 	m_column[2]->AddNote(new_note_set[2]);
 	m_column[3]->AddNote(new_note_set[3]);
-	SoundManager::instance()->load(audio_path);
+//	SoundManager::instance()->load(audio_path);
+	SoundManager::instance()->seek("default_music", 0);
 
 	Timer::instance()->RunTimer("game");
 }

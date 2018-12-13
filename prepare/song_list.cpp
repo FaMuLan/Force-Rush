@@ -91,7 +91,7 @@ void fr::SongList::clear()
 {
 	cell.clear();
 	SoundManager::instance()->GetProcess("default_music")->is_playing = false;
-	SoundManager::instance()->clear(m_information[selected_index]->audio_path);
+//	SoundManager::instance()->clear(m_information[selected_index]->audio_path);
 }
 
 void fr::SongList::update()
