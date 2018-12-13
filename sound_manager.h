@@ -2,10 +2,13 @@
 #define FORCE_RUSH_SOUND_MANAGER_H
 
 #include <SDL2/SDL.h>
-#include <libmad/mad.h>
+#include <mad.h>
 #include <string>
 #include <map>
 #include <vector>
+#include <mad.h>
+#include <vorbis/vorbisfile.h>
+#include <vorbis/codec.h>
 
 namespace fr
 {
@@ -25,8 +28,11 @@ namespace fr
 	struct Sound
 	{
 		std::string path;
+		FILE *fp;
+		void *interface;
+		AudioFileType type;
 		unsigned char *file_start;
-		unsigned int file_length;
+		unsigned int file_size;
 		int src_sample_index;
 		int dest_sample_index;
 		float *new_buffer;
@@ -37,6 +43,7 @@ namespace fr
 		std::vector<unsigned char*> buffer;
 		unsigned int buffer_duration;
 		unsigned int sound_duration;
+		bool abort;
 	};
 
 	struct SoundProcess
@@ -49,19 +56,48 @@ namespace fr
 		bool is_playing;
 	};
 
-	namespace ogg
-	{
-		static int decode(Sound *load_sound);
-	};
-
 	namespace mp3
 	{
+		struct MP3Frame
+		{
+			int frequency;
+			int channels;
+			int time;
+			unsigned char *file_frame_start;
+			unsigned int file_frame_size;
+			unsigned int samples_count;
+			unsigned int start_time;
+		};
+		struct MP3File
+		{
+			std::string path;
+			std::vector<MP3Frame*> frame;
+			int samples_count;
+			unsigned int decode_start_time;
+			unsigned int decode_frame;
+		};
 		static enum mad_flow input(void *data, struct mad_stream *stream);
 		static inline signed int scale(mad_fixed_t sample);
 		static enum mad_flow output(void *data, struct mad_header const *header, struct mad_pcm *pcm);
 		static enum mad_flow error(void *data, struct mad_stream *stream, struct mad_frame *frame);
-		static int decode(Sound *load_sound);
-		static bool IsMP3File(unsigned char *magic);
+		void prepare(Sound *load_sound);
+		void *decode(void *arguments);
+		void seek(Sound *load_sound, unsigned int time);
+		void clear(Sound *load_sound);
+	};
+
+	namespace ogg
+	{
+		struct OGGFile
+		{
+			OggVorbis_File file;
+			vorbis_info *info;
+		};
+		//你以为vorbisfile那么方便就不需要写struct了吗.jpg
+		void prepare(Sound *load_sound);
+		void *decode(void *arguments);
+		void seek(Sound *load_sound, unsigned int time);
+		void clear(Sound *load_sound);
 	};
 
 	class SoundManager
@@ -82,8 +118,6 @@ namespace fr
 			void play(std::string process_name);
 			void seek(std::string process_name, int time);
 			void SwitchPause(std::string process_name);
-			void LoadMP3(std::string path);
-			void LoadOGG(std::string path);
 			static void AudioCallback(void *userdata, unsigned char *stream, int len);
 			void AddProcess(std::string name, SoundProcess *load_process);
 			SoundProcess *GetProcess(std::string name);
