@@ -15,7 +15,7 @@ enum mad_flow fr::mp3::input(void *data, struct mad_stream *stream)
 {
 	Sound *m_sound = (Sound*)data;
 	MP3File *m_interface = (MP3File*)m_sound->interface;
-	if (!m_interface->decode_frame == m_interface->frame.size() || m_sound->abort)
+	if (m_interface->decode_frame + 1 == m_interface->frame.size() || m_sound->abort)
 	{
 		return MAD_FLOW_STOP;
 	}
@@ -126,7 +126,7 @@ void *fr::mp3::decode(void *arguments)
 	Sound *load_sound = (Sound*)arguments;
 	struct mad_decoder m_decoder;
 	mad_decoder_init(&m_decoder, load_sound, mp3::input, 0, 0, mp3::output, mp3::error, 0);
-	mad_decoder_run(&m_decoder, MAD_DECODER_MODE_SYNC);
+	mad_decoder_run(&m_decoder, MAD_DECODER_MODE_ASYNC);
 	mad_decoder_finish(&m_decoder);
 }
 
