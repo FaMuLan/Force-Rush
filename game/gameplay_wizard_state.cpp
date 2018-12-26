@@ -9,7 +9,7 @@
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
 #include "../system.h"
-#include "../song_data.h"
+#include "../data.h"
 #include "../user/setting.h"
 
 fr::GameplayWizardBeatmap *fr::GameplayWizardBeatmap::m_instance = 0;
@@ -21,10 +21,10 @@ void fr::GameplayWizardBeatmap::init()
 
 	hit_offset_num = new TextArea;
 	current_offset_text = new TextArea;
-	hit_offset_num->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 120, 0, 0, 0);
+	hit_offset_num->init(" ", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2), "assets/fonts/Audiowide.ttf", 120, Color(0, 0, 0));
 	char *current_offset_ch = new char[30];
 	sprintf(current_offset_ch, "current: %dms", Setting::instance()->GetOffset());
-	current_offset_text->init(current_offset_ch, System::instance()->GetWindowWidth() / 2, 36, "assets/fonts/Audiowide.ttf", 36, 0, 0, 0);
+	current_offset_text->init(current_offset_ch, Point2Di(System::instance()->GetWindowWidth() / 2, 36), "assets/fonts/Audiowide.ttf", 36, Color(0, 0, 0));
 	delete current_offset_ch;
 
 	audio_path = "assets/base/offset_wizard_bgm.ogg";
@@ -205,10 +205,10 @@ void fr::GameplayWizardState::init()
 	widget_base->SetPos(System::instance()->GetWindowWidth() / 2 - widget_base->GetW() / 2, System::instance()->GetWindowHeigh() / 2 - widget_base->GetH() / 2);
 	back->init("assets/base/sort_button.png");
 	back->AddPressedFrame("assets/base/sort_button_pressed.png");
-	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	back->AddText("Back", Point2Di(back->GetW() / 2, back->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	offset_wizard_switch->init("assets/base/sort_button.png", Rect(widget_base->GetX() + 464, widget_base->GetY() + 32, 0, 0));
 	offset_wizard_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
-	offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	offset_wizard_switch->AddText("START", Point2Di(offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 
 	
 	camera_pos_y_left->init("assets/base/arrow_left.png", Rect(widget_base->GetX() + 430,  widget_base->GetY() + 154, 0, 0));
@@ -244,11 +244,11 @@ void fr::GameplayWizardState::init()
 	force_angle_right_dual->init("assets/base/arrow_right_dual.png", Rect(widget_base->GetX() + 660, widget_base->GetY() + 466, 0, 0));
 	force_angle_right_dual->AddPressedFrame("assets/base/arrow_right_dual_pressed.png");
 
-	offset_wizard_text->init("OFFSET WIZARD", widget_base->GetX() + 32, widget_base->GetY() + 50, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_pos_y_text->init("CAM POS Y", widget_base->GetX() + 32, widget_base->GetY() + 154, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_pos_z_text->init("CAM POS Z", widget_base->GetX() + 32, widget_base->GetY() + 258, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	camera_rotate_x_text->init("CAM ROTATE X", widget_base->GetX() + 32, widget_base->GetY() + 362, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	force_angle_text->init("FORCE ANGLE", widget_base->GetX() + 32, widget_base->GetY() + 466, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	offset_wizard_text->init("OFFSET WIZARD", Point2Di(widget_base->GetX() + 32, widget_base->GetY() + 50), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	camera_pos_y_text->init("CAM POS Y", Point2Di(widget_base->GetX() + 32, widget_base->GetY() + 154), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	camera_pos_z_text->init("CAM POS Z", Point2Di(widget_base->GetX() + 32, widget_base->GetY() + 258), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	camera_rotate_x_text->init("CAM ROTATE X", Point2Di(widget_base->GetX() + 32, widget_base->GetY() + 362), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	force_angle_text->init("FORCE ANGLE", Point2Di(widget_base->GetX() + 32, widget_base->GetY() + 466), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	char *camera_pos_y_ch = new char[10];
 	char *camera_pos_z_ch = new char[10];
 	char *camera_rotate_x_ch = new char[10];
@@ -257,10 +257,10 @@ void fr::GameplayWizardState::init()
 	sprintf(camera_pos_z_ch, "%d", Setting::instance()->GetCameraPosZ());
 	sprintf(camera_rotate_x_ch, "%d", Setting::instance()->GetCameraRotateX());
 	sprintf(force_angle_ch, "%d", Setting::instance()->GetForceAngle());
-	camera_pos_y_num->init(camera_pos_y_ch, widget_base->GetX() + 544, widget_base->GetY() + 172, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	camera_pos_z_num->init(camera_pos_z_ch, widget_base->GetX() + 544, widget_base->GetY() + 276, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	camera_rotate_x_num->init(camera_rotate_x_ch, widget_base->GetX() + 544, widget_base->GetY() + 380, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	force_angle_num->init(force_angle_ch, widget_base->GetX() + 544, widget_base->GetY() + 484, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	camera_pos_y_num->init(camera_pos_y_ch, Point2Di(widget_base->GetX() + 544, widget_base->GetY() + 172), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	camera_pos_z_num->init(camera_pos_z_ch, Point2Di(widget_base->GetX() + 544, widget_base->GetY() + 276), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	camera_rotate_x_num->init(camera_rotate_x_ch, Point2Di(widget_base->GetX() + 544, widget_base->GetY() + 380), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	force_angle_num->init(force_angle_ch, Point2Di(widget_base->GetX() + 544, widget_base->GetY() + 484), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	delete [] camera_pos_y_ch;
 	delete [] camera_pos_z_ch;
 	delete [] camera_rotate_x_ch;
@@ -357,7 +357,7 @@ void fr::GameplayWizardState::update()
 		if (offset_wizard_switch->IsReleased())
 		{
 			offset_wizard_switch->ClearText();
-			offset_wizard_switch->AddText("START", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+			offset_wizard_switch->AddText("START", Point2Di(offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 			GameplayWizardBeatmap::instance()->stop();
 		}
 	}
@@ -366,7 +366,7 @@ void fr::GameplayWizardState::update()
 		if (offset_wizard_switch->IsReleased())
 		{
 			offset_wizard_switch->ClearText();
-			offset_wizard_switch->AddText("STOP", offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+			offset_wizard_switch->AddText("STOP", Point2Di(offset_wizard_switch->GetW() / 2, offset_wizard_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 			GameplayWizardBeatmap::instance()->start();
 		}
 	}
