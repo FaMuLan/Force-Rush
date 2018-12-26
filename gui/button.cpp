@@ -3,9 +3,9 @@
 #include "../texture_manager.h"
 #include "../loading/loading_state.h"
 
-void fr::Button::init(std::string path, Rect load_dest_rect, Rect load_source_rect)
+void fr::Button::init(std::string input_path, Rect input_dest_rect, Rect input_source_rect)
 {
-	Sprite::init(path, load_dest_rect, load_source_rect);
+	Sprite::init(input_path, input_dest_rect, input_source_rect);
 	is_pressed = false;
 }
 
@@ -40,14 +40,14 @@ void fr::Button::update()
 	{
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
-			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.x >= dest_rect.x && load_finger.y >= dest_rect.y && load_finger.x <= (dest_rect.x + dest_rect.w) && load_finger.y <= (dest_rect.y + dest_rect.h))
+			Finger input_finger = ControlHandler::instance()->GetFinger(i);
+			if (input_finger.x >= dest_rect.x && input_finger.y >= dest_rect.y && input_finger.x <= (dest_rect.x + dest_rect.w) && input_finger.y <= (dest_rect.y + dest_rect.h))
 			{
-				if (!load_finger.moved)
+				if (!input_finger.moved)
 				//從外側劃進來的是不會被檢測到的。
 				{
 					is_pressed = true;
-					has_pressed_id = load_finger.id;
+					has_pressed_id = input_finger.id;
 					//防止干擾記錄下標
 				}
 			}
@@ -61,15 +61,15 @@ void fr::Button::update()
 	{
 		for (int i = 0; i < ControlHandler::instance()->GetFingerCount(); i++)
 		{
-			Finger load_finger = ControlHandler::instance()->GetFinger(i);
-			if (load_finger.id == has_pressed_id)
+			Finger input_finger = ControlHandler::instance()->GetFinger(i);
+			if (input_finger.id == has_pressed_id)
 			{
-//				if (load_finger.x < dest_rect.x || load_finger.y < dest_rect.y || load_finger.x > (dest_rect.x + dest_rect.w) || load_finger.y > (dest_rect.y + dest_rect.h))
-				if (load_finger.moved)
+//				if (input_finger.x < dest_rect.x || input_finger.y < dest_rect.y || input_finger.x > (dest_rect.x + dest_rect.w) || input_finger.y > (dest_rect.y + dest_rect.h))
+				if (input_finger.moved)
 				{
 					is_pressed = false;
 				}
-				if (load_finger.released)
+				if (input_finger.released)
 				{
 					is_released = true;
 					is_pressed = false;
@@ -110,14 +110,9 @@ void fr::Button::clear()
 	}
 }
 
-void fr::Button::SetRotation(Point load_center, double load_angle)
+void fr::Button::AddPressedFrame(std::string input_path)
 {
-	Sprite::SetRotation(load_center, load_angle);
-}
-
-void fr::Button::AddPressedFrame(std::string path)
-{
-	Sprite::AddFrame(path);
+	Sprite::AddFrame(input_path);
 	pressed_index = frame.size() - 1;
 }
 
@@ -136,16 +131,16 @@ bool fr::Button::IsReleased()
 	return is_released && !LoadingState::instance()->IsSwitching();
 }
 
-void fr::Button::AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
+void fr::Button::AddText(std::string input_text, Point2Di input_position, std::string input_font_path, int input_font_size, Color input_color, TextFormat input_format, int input_limited_w)
 {
 	TextArea *new_text = new TextArea;
-	new_text->init(load_text, x, y, font_path, font_size, r, g, b, format, limited_w);
+	new_text->init(input_text, input_position, input_font_path, input_font_size, input_color, input_format, input_limited_w);
 	text.push_back(new_text);
 }
 
-void fr::Button::AddText(TextArea *load_text)
+void fr::Button::AddText(TextArea *input_text)
 {
-	text.push_back(load_text);
+	text.push_back(input_text);
 }
 
 void fr::Button::ClearText()
@@ -163,9 +158,9 @@ void fr::Button::SetSize(int w, int h)
 	Sprite::SetSize(w, h);
 }
 
-void fr::Button::SetSrcRect(fr::Rect load_source_rect)
+void fr::Button::SetSrcRect(fr::Rect input_source_rect)
 {
-	Sprite::SetSrcRect(load_source_rect);
+	Sprite::SetSrcRect(input_source_rect);
 	for (int i = 0; i < text.size(); i++)
 	{
 		Rect text_source_rect = Rect(0, 0, 0, 0);

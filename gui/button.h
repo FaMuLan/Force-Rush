@@ -4,9 +4,9 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include "../data.h"
 #include "../sprite.h"
 #include "text_area.h"
-#include "../shape.h"
 
 namespace fr
 {
@@ -16,23 +16,22 @@ namespace fr
 	class Button : public Sprite
 	{
 		public:
-			virtual void init(std::string path, Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
+			virtual void init(std::string input_path, Rect input_dest_rect = Rect(0, 0, 0, 0), Rect input_source_rect = Rect(0, 0, 0, 0));
 			virtual void clear();
 			virtual void update();
 			virtual void render();
-			virtual void SetRotation(Point load_centet, double load_angle);
 
-			virtual void AddPressedFrame(std::string path);
+			virtual void AddPressedFrame(std::string input_path);
 			virtual bool IsPressed();
 			virtual bool IsReleased();
 			virtual bool IsOutsidePressed();
-			void AddText(std::string load_text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
-			void AddText(TextArea *load_text);
+			void AddText(std::string input_text, Point2Di input_position, std::string input_font_path, int input_font_size, Color input_color, TextFormat input_format = TEXTFORMAT_MIDDLE, int input_limited_w = 0);
+			void AddText(TextArea *input_text);
 			void ClearText();
 			TextArea *GetText(int index);
 
 			virtual void SetSize(int w, int h);
-			virtual void SetSrcRect(Rect load_source_rect);
+			virtual void SetSrcRect(Rect input_source_rect);
 		protected:
 			bool is_pressed;
 			bool is_released;
@@ -43,7 +42,6 @@ namespace fr
 			//adden
 			std::vector<TextArea*> text;
 			//text & font
-			Shape press_area;
 	};	//class Button : public Sprite
 };	//namespace fr
 
