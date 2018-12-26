@@ -11,6 +11,7 @@ OBJ	:= \
 	$(BUILD_PATH)/button.o \
 	$(BUILD_PATH)/column.o \
 	$(BUILD_PATH)/control_handler.o \
+	$(BUILD_PATH)/data.o \
 	$(BUILD_PATH)/file_explorer.o \
 	$(BUILD_PATH)/file_system.o \
 	$(BUILD_PATH)/gameplay_wizard_state.o \
@@ -26,7 +27,6 @@ OBJ	:= \
 	$(BUILD_PATH)/prepare_state.o \
 	$(BUILD_PATH)/result_state.o \
 	$(BUILD_PATH)/setting.o \
-	$(BUILD_PATH)/shape.o \
 	$(BUILD_PATH)/song_list.o \
 	$(BUILD_PATH)/song_path_manager.o \
 	$(BUILD_PATH)/sound_manager.o \
@@ -65,6 +65,8 @@ $(BUILD_PATH)/column.o: column.cpp column.h
 	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/control_handler.o: control_handler.cpp control_handler.h
 	$(CXX) $< $(CFLAGS) -o $@
+$(BUILD_PATH)/data.o: data.cpp data.h
+	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/file_explorer.o: file_explorer.cpp file_explorer.h
 	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/file_system.o: file_system.cpp file_system.h
@@ -94,8 +96,6 @@ $(BUILD_PATH)/prepare_state.o: prepare_state.cpp prepare_state.h state.h
 $(BUILD_PATH)/result_state.o: result_state.cpp result_state.h state.h
 	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/setting.o: setting.cpp setting.h
-	$(CXX) $< $(CFLAGS) -o $@
-$(BUILD_PATH)/shape.o: shape.cpp shape.h
 	$(CXX) $< $(CFLAGS) -o $@
 $(BUILD_PATH)/song_list.o: song_list.cpp song_list.h
 	$(CXX) $< $(CFLAGS) -o $@
