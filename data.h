@@ -198,7 +198,7 @@ namespace fr
 	inline bool CompareNoterReverse(const SongInformation *arg1, const SongInformation *arg2);
 	inline bool CompareDifficultyReverse(const SongInformation *arg1, const SongInformation *arg2);
 	inline bool CompareDurationReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareNote(const Note *arg1, comst Note *arg2);
+	inline bool CompareNote(const Note *arg1, const Note *arg2);
 };
 
 #endif

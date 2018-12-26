@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <SDL2/SDL.h>
 #include <map>
-#include "song_data.h"
+#include "data.h"
 
 bool fr::ReadFile(std::string path, std::string &output)
 {
