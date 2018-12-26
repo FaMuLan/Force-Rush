@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <SDL2/SDL.h>
-#include "../shape.h"
+#include "../data.h"
 
 namespace fr
 {
@@ -32,8 +32,8 @@ namespace fr
 			Sprite *s_note;
 			Sprite *s_feedback;
 			Sprite *s_light;
-			int *note_vectrices;
-			int *feedback_vectrices;
+			float *note_vectrices;
+			float *feedback_vectrices;
 			int m_x_l;
 			int m_x_r;
 			SDL_Scancode keyboard_key;

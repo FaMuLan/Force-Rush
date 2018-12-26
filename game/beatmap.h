@@ -40,9 +40,9 @@ namespace fr
 			Sprite *play_base;
 			Sprite *wall;
 			Sprite *ground;
-			int *wall_vectrices;
-			int *ground_vectrices;
-			int *play_base_vectrices;
+			float *wall_vectrices;
+			float *ground_vectrices;
+			float *play_base_vectrices;
 			std::vector<Column*> m_column;
 			float last_angle;
 			float current_angle;

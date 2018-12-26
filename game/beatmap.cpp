@@ -10,7 +10,7 @@
 #include "../user/setting.h"
 #include "../control_handler.h"
 #include "../sound_manager.h"
-#include "../song_data.h"
+#include "../data.h"
 #include "../texture_manager.h"
 #include "../file_system.h"
 #include "../system.h"
@@ -31,9 +31,9 @@ void fr::Beatmap::init()
 	wall->init("assets/game/wall.png");
 	ground->init("assets/game/ground.png");
 	Animator::instance()->AddAnimation("rotate", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
-	wall_vectrices = new int[24];
-	ground_vectrices = new int[24];
-	play_base_vectrices = new int [24];
+	wall_vectrices = new float[24];
+	ground_vectrices = new float[24];
+	play_base_vectrices = new float[24];
 	force = 0;
 	last_force = 0;
 	current_angle = 0;
@@ -41,91 +41,91 @@ void fr::Beatmap::init()
 	angle_diff = 0;
 	last_frame_time = 0;
 
-	wall_vectrices[0] = 0;
+	wall_vectrices[0] = -360.f / 360.f;
 	wall_vectrices[1] = 0;
 	wall_vectrices[2] = 0;
 	wall_vectrices[3] = 1;
 	wall_vectrices[4] = 0;
 	wall_vectrices[5] = 0;
 	//top left
-	wall_vectrices[6] = 0;
+	wall_vectrices[6] = -360.f / 360.f;
 	wall_vectrices[7] = 0;
-	wall_vectrices[8] = wall->GetW();
+	wall_vectrices[8] = wall->GetW() / 360.f;
 	wall_vectrices[9] = 1;
-	wall_vectrices[10] = wall->GetW();
+	wall_vectrices[10] = 1;
 	wall_vectrices[11] = 0;
 	//top right
-	wall_vectrices[12] = 0;
-	wall_vectrices[13] = System::instance()->GetWindowHeigh();
+	wall_vectrices[12] = -360.f / 360.f;
+	wall_vectrices[13] = -360.f / 360.f;
 	wall_vectrices[14] = 0;
 	wall_vectrices[15] = 1;
 	wall_vectrices[16] = 0;
-	wall_vectrices[17] = wall->GetH();
+	wall_vectrices[17] = 1;
 	//bottom left
-	wall_vectrices[18] = 0;
-	wall_vectrices[19] = System::instance()->GetWindowHeigh();
-	wall_vectrices[20] = wall->GetW();
+	wall_vectrices[18] = -360.f / 360.f;
+	wall_vectrices[19] = -360.f / 360.f;
+	wall_vectrices[20] = wall->GetW() / 360.f;
 	wall_vectrices[21] = 1;
-	wall_vectrices[22] = wall->GetW();
-	wall_vectrices[23] = wall->GetH();
+	wall_vectrices[22] = 1;
+	wall_vectrices[23] = 1;
 	//bottom right
 
-	ground_vectrices[0] = 0;
+	ground_vectrices[0] = -360.f / 360.f;
 	ground_vectrices[1] = 0;
 	ground_vectrices[2] = 0;
 	ground_vectrices[3] = 1;
 	ground_vectrices[4] = 0;
 	ground_vectrices[5] = 0;
 	//top left
-	ground_vectrices[6] = System::instance()->GetWindowWidth();
+	ground_vectrices[6] = 360.f / 360.f;
 	ground_vectrices[7] = 0;
 	ground_vectrices[8] = 0;
 	ground_vectrices[9] = 1;
-	ground_vectrices[10] = ground->GetW();
+	ground_vectrices[10] = 1;
 	ground_vectrices[11] = 0;
 	//top right
-	ground_vectrices[12] = 0;
+	ground_vectrices[12] = -360.f / 360.f;
 	ground_vectrices[13] = 0;
-	ground_vectrices[14] = ground->GetH();
+	ground_vectrices[14] = ground->GetH() / 320.f;
 	ground_vectrices[15] = 1;
 	ground_vectrices[16] = 0;
-	ground_vectrices[17] = ground->GetH();
+	ground_vectrices[17] = 1;
 	//bottom left
-	ground_vectrices[18] = System::instance()->GetWindowWidth();
+	ground_vectrices[18] = 360.f / 360.f;
 	ground_vectrices[19] = 0;
-	ground_vectrices[20] = ground->GetH();
+	ground_vectrices[20] = ground->GetH() / 360.f;
 	ground_vectrices[21] = 1;
-	ground_vectrices[22] = ground->GetW();
-	ground_vectrices[23] = ground->GetH();
+	ground_vectrices[22] = 0;
+	ground_vectrices[23] = 0;
 	//bottom right
 
-	play_base_vectrices[0] = 0;
-	play_base_vectrices[1] = System::instance()->GetWindowHeigh();
-	play_base_vectrices[2] = play_base->GetH();
+	play_base_vectrices[0] = -360.f / 360.f;
+	play_base_vectrices[1] = -360.f / 360.f;
+	play_base_vectrices[2] = -play_base->GetH() / 360.f;
 	play_base_vectrices[3] = 1;
 	play_base_vectrices[4] = 0;
 	play_base_vectrices[5] = 0;
 	//top left
-	play_base_vectrices[6] = System::instance()->GetWindowWidth();
-	play_base_vectrices[7] = System::instance()->GetWindowHeigh();
-	play_base_vectrices[8] = play_base->GetH();
+	play_base_vectrices[6] = 360.f / 360.f;
+	play_base_vectrices[7] = -360.f / 360.f;
+	play_base_vectrices[8] = -play_base->GetH() / 360.f;
 	play_base_vectrices[9] = 1;
-	play_base_vectrices[10] = play_base->GetW();
+	play_base_vectrices[10] = 1;
 	play_base_vectrices[11] = 0;
 	//top right
-	play_base_vectrices[12] = 0;
-	play_base_vectrices[13] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[12] = -360.f / 360.f;
+	play_base_vectrices[13] = -360.f / 360.f;
 	play_base_vectrices[14] = 0;
 	play_base_vectrices[15] = 1;
 	play_base_vectrices[16] = 0;
-	play_base_vectrices[17] = play_base->GetH();
+	play_base_vectrices[17] = 1;
 	//bottom left
-	play_base_vectrices[18] = System::instance()->GetWindowWidth();
-	play_base_vectrices[19] = System::instance()->GetWindowHeigh();
+	play_base_vectrices[18] = 360.f / 360.f;
+	play_base_vectrices[19] = -360.f / 360.f;
 	play_base_vectrices[20] = 0;
 	play_base_vectrices[21] = 1;
-	play_base_vectrices[22] = play_base->GetW();
-	play_base_vectrices[23] = play_base->GetH();
+	play_base_vectrices[22] = 1;
+	play_base_vectrices[23] = 1;
 	//bottom right
 	wall->SetVectrices(wall_vectrices);
 	wall->SetMatrix("mvp");
@@ -315,10 +315,10 @@ void fr::GameBeatmap::load(fr::SongInformation *load_information)
 	late_text = new TextArea;
 	show_early = false;
 	show_late = false;
-	chain_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Audiowide.ttf", 140, 0xBB, 0xBB, 0xBB);
-	judge_text->init(" ", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
-	early_text->init("EARLY", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
-	late_text->init("LATE", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160, "assets/fonts/Audiowide.ttf", 40, 0xBB, 0xBB, 0xBB);
+	chain_text->init(" ", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2), "assets/fonts/Audiowide.ttf", 140, Color(0xBB, 0xBB, 0xBB));
+	judge_text->init(" ", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 120), "assets/fonts/Audiowide.ttf", 40, Color(0xBB, 0xBB, 0xBB));
+	early_text->init("EARLY", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 80), "assets/fonts/Audiowide.ttf", 40, Color(0xBB, 0xBB, 0xBB));
+	late_text->init("LATE", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2 + 160), "assets/fonts/Audiowide.ttf", 40, Color(0xBB, 0xBB, 0xBB));
 	Animator::instance()->AddAnimation("chain", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->ResetAnimation("chain");
 
