@@ -3,7 +3,7 @@
 
 #include <string>
 #include "../texture_manager.h"
-#include "../shape.h"
+#include "../data.h"
 
 namespace fr
 {
@@ -20,17 +20,18 @@ namespace fr
 	class TextArea
 	{
 		public:
-			virtual void init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format = TEXTFORMAT_MIDDLE, int limited_w = 0);
+			virtual void init(std::string input_text, Point2Di input_position, std::string input_font_path, int input_font_size, Color input_color, TextFormat input_format = TEXTFORMAT_MIDDLE, int input_limited_w = 0, bool input_is_wrapped = false, int input_roll_speed = 0);
 			virtual void render();
-			virtual void render(int x, int y, TextFormat format = TEXTFORMAT_NONE);
+			virtual void render(int x, int y, TextFormat input_format = TEXTFORMAT_NONE);
 			virtual void clear();
-			virtual void SetPos(int x, int y);
-			virtual void SetSize(int w, int h);
+			virtual void SetPos(int input_x, int input_y);
+			virtual void SetSize(int input_w, int input_h);
 			virtual void SetText(std::string text);
-			virtual void SetColor(char r, char g, char b);
-			virtual void SetAlpha(int alpha);
-			virtual void SetFont(std::string font_path, int font_size);
-			virtual void SetScale(float scale);
+			virtual void SetColor(Color input_color);
+			virtual void SetAlpha(int input_alpha);
+			virtual void SetFont(std::string input_font_path, int input_font_size);
+			virtual void SetScale(float input_scale);
+			virtual void SetRollSpeed(int input_roll_speed);
 			virtual int GetX();
 			virtual int GetY();
 			virtual int GetUserX();
@@ -41,21 +42,18 @@ namespace fr
 			virtual int GetTextureH();
 			virtual std::string GetText();
 			virtual float GetScale();
-			virtual void SetSrcRect(Rect load_source_rect);
+			virtual void SetSrcRect(Rect input_source_rect);
 		protected:
-			std::string m_text;
-			std::string m_font_path;
-			int m_font_size;
+			std::string text;
+			std::string font_path;
+			int font_size;
 			Rect dest_rect;
 			Rect source_rect;
-			int m_x;
-			int m_y;
-			int m_r;
-			int m_g;
-			int m_b;
-			int m_a;
+			Point2Di position;
+			Color color;
+			int roll_speed;
 			TextFormat m_format;
-			int m_limited_w;
+			int limited_w;
 			float m_scale;
 			TextureCache *cache;
 			float *vectrices;

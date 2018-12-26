@@ -3,120 +3,76 @@
 #include "../texture_manager.h"
 #include "../system.h"
 
-void fr::TextArea::init(std::string text, int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
+void fr::TextArea::init(std::string input_text, fr::Point2Di input_position, std::string input_font_path, int input_font_size, Color input_color, TextFormat input_format, int input_limited_w, bool input_is_wrapped, int input_roll_speed)
 {
-	m_text = text;
-	dest_rect.x = x;
-	dest_rect.y = y;
-	m_font_path = font_path;
-	m_font_size = font_size;
-	m_x = x;
-	m_y = y;
-	m_r = r;
-	m_g = g;
-	m_b = b;
-	m_a = 255;
-	m_format = format;
-	m_limited_w = limited_w;
-	m_scale = 1;
+	text = text;
+	dest_rect.x = input_position.x;
+	dest_rect.y = input_position.y;
+	position = input_position;
+	font_path = input_font_path;
+	font_size = input_font_size;
+	color = input_color
+	format = input_format;
+	limited_w = input_limited_w;
+	is_wrapped = input_is_wrapped;
+	roll_speed = input_roll_speed;
+	scale = 1;
 	TextureManager::instance()->LoadFont(font_path, font_size);
 	matrix_id = "default";
 	source_rect = Rect(0, 0, 0, 0);
 	vectrices = new float[24];
-	vectrices[2] = 0.f;
-	vectrices[3] = 1.f;
-	vectrices[4] = 0.f;
-	vectrices[5] = 0.f;
-	//top left
-	vectrices[8] = 0.f;
-	vectrices[9] = 1.f;
-	vectrices[10] = 1.f;
-	vectrices[11] = 0.f;
-	//top right
-	vectrices[14] = 0.f;
-	vectrices[15] = 1.f;
-	vectrices[16] = 0.f;
-	vectrices[17] = 1.f;
-	//bottom left
-	vectrices[20] = 0.f;
-	vectrices[21] = 1.f;
-	vectrices[22] = 1.f;
-	vectrices[23] = 1.f;
-	//bottom right
 
-	if (m_text != "")
+	if (text != "")
 	{
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
+		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w, is_wrapped);
 
 		switch (m_format)
 		{
 			case TEXTFORMAT_MIDDLE:
-				dest_rect.x = m_x - ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
-				dest_rect.y = m_y - cache->h / 2;
+				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
+				dest_rect.y = position.y - cache->h / 2;
 			break;
 			case TEXTFORMAT_RIGHT:
-				dest_rect.x = m_x - (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
+				dest_rect.x = position.x - (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 			break;
 		}
 
-		vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top left
-		vectrices[6] = (float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top right
-		vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[13] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom left
-		vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		source_rect.w = cache->w;
-		source_rect.h = cache->h;
-		dest_rect.w = cache->w;
+		dest_rect.w = (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 		dest_rect.h = cache->h;
-		//bottom right
+		source_rect.w = dest_rect.w / cache->w;
+		source_rect.h = cache->h;
+		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
 	}
 }
 
 void fr::TextArea::render()
 {
-	if (m_text != "")
+	if (text != "")
 	{
-		TextureManager::instance()->render(cache->texture, vectrices, m_a, matrix_id);
+		TextureManager::instance()->render(cache->texture, vectrices, color.a, matrix_id);
 	}
 }
 
 void fr::TextArea::render(int x, int y, fr::TextFormat format)
 {
-	if (m_text != "")
+	if (text != "")
 	{
 		format = format == TEXTFORMAT_NONE ? m_format : format;
 		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
-				x -= ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
+				x -= ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
 				y -= cache->h / 2;
 			break;
 			case TEXTFORMAT_RIGHT:
-				x -= (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
+				x -= (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 			break;
 		}
 
 		float *temp_vectrices = new float[24];
 		memcpy(temp_vectrices, vectrices, 24 * sizeof(float));
-		temp_vectrices[0] = (float(x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		temp_vectrices[1] = (1.f - float(y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top left
-		temp_vectrices[6] = (float(x + ((m_limited_w > dest_rect.w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		temp_vectrices[7] = (1.f - float(y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top right
-		temp_vectrices[12] = (float(x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		temp_vectrices[13] = (1.f - float(y + dest_rect.h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom left
-		temp_vectrices[18] = float(x + ((m_limited_w > cache->w || m_limited_w == 0) ? dest_rect.w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		temp_vectrices[19] = (1.f - float(y + dest_rect.h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom right
-		TextureManager::instance()->render(cache->texture, temp_vectrices, m_a, matrix_id);
+		
+		TextureManager::instance()->render(cache->texture, temp_vectrices, color.a, matrix_id);
 		delete [] temp_vectrices;
 	}
 }
@@ -131,31 +87,20 @@ void fr::TextArea::SetPos(int x, int y)
 {
 	if (cache)
 	{
-		dest_rect.x = m_x = x;
-		dest_rect.y = m_y = y;
+		dest_rect.x = position.x = x;
+		dest_rect.y = position.y = y;
 		switch (m_format)
 		{
 			case TEXTFORMAT_MIDDLE:
-				dest_rect.x = m_x - ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
-				dest_rect.y = m_y - cache->h / 2;
+				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
+				dest_rect.y = position.y - cache->h / 2;
 			break;
 			case TEXTFORMAT_RIGHT:
-				dest_rect.x = m_x - (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
+				dest_rect.x = position.x - (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 			break;
 		}
 
-		vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top left
-		vectrices[6] = (float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top right
-		vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[13] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom left
-		vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom right
+		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, false, 1);
 	}
 }
 
@@ -163,151 +108,111 @@ void fr::TextArea::SetSize(int w, int h)
 {
 	dest_rect.w = w;
 	dest_rect.h = h;
-	vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top left
-	vectrices[6] = (float(dest_rect.x + dest_rect.w * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top right
-	vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom left
-	vectrices[18] = float(dest_rect.x + dest_rect.w * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom right
+	Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, false, 1);
 }
 
-void fr::TextArea::SetText(std::string text)
+void fr::TextArea::SetText(std::string input_text)
 {
-	if (m_text != text)
+	if (text != input_text)
 	{
-		if (m_text != "")
+		if (text != "")
 		{
 			TextureManager::instance()->DestroyCache(cache);
 		}
-		m_text = text;
-		if (m_text != "")
+		text = input_text;
+		if (text != "")
 		{
-			cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
+			cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
 			source_rect.w = cache->w;
 			source_rect.h = cache->h;
 			switch (m_format)
 			{
 				case TEXTFORMAT_MIDDLE:
-					dest_rect.x = m_x - ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
-					dest_rect.y = m_y - cache->h / 2;
+					dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
+					dest_rect.y = position.y - cache->h / 2;
 				break;
 				case TEXTFORMAT_RIGHT:
-					dest_rect.x = m_x - (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
+					dest_rect.x = position.x - (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 				break;
 			}
 
-			vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-			vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-			//top left
-			vectrices[6] = (float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-			vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-			//top right
-			vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-			vectrices[13] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-			//bottom left
-			vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-			vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-			source_rect = Rect(0, 0, cache->w, cache->h);
-			dest_rect.w = cache->w;
+			dest_rect.w = (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 			dest_rect.h = cache->h;
-			//bottom right
+			source_rect.w = dest_rect.w / cache->w;
+			source_rect.h = cache->h;
+			Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
 		}
 	}
 
 }
 
-void fr::TextArea::SetColor(char r, char g, char b)
+void fr::TextArea::SetColor(Color input_color)
 {
-	m_r = r;
-	m_g = g;
-	m_b = b;
-	if (m_text != "")
+	color = input_color;
+	if (text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
+		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
 	}
 }
 
-void fr::TextArea::SetAlpha(int alpha)
+void fr::TextArea::SetAlpha(int input_alpha)
 {
-	m_a = alpha;
+	color.a = alpha;
 }
 
-void fr::TextArea::SetFont(std::string font_path, int font_size)
+void fr::TextArea::SetFont(std::string input_font_path, int input_font_size)
 {
-	m_font_path = font_path;
-	m_font_size = font_size;
-	if (m_text != "")
+	font_path = input_font_path;
+	font_size = input_font_size;
+	if (text != "")
 	{
 		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
+		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
+		switch (m_format)
+		{
+			case TEXTFORMAT_MIDDLE:
+				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
+				dest_rect.y = position.y - cache->h / 2;
+			break;
+			case TEXTFORMAT_RIGHT:
+				dest_rect.x = position.x - (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
+			break;
+		}
+
+		dest_rect.w = (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
+		dest_rect.h = cache->h;
+		source_rect.w = dest_rect.w / cache->w;
+		source_rect.h = cache->h;
+		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
+	}
+}
+
+void fr::TextArea::SetScale(float input_scale)
+{
+	scale = input_scale;
+	if (text != "")
+	{
+		TextureManager::instance()->DestroyCache(cache);
+		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
 		source_rect.w = cache->w;
 		source_rect.h = cache->h;
 		switch (m_format)
 		{
 			case TEXTFORMAT_MIDDLE:
-				dest_rect.x = m_x - ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
-				dest_rect.y = m_y - cache->h / 2;
+				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
+				dest_rect.y = position.y - cache->h / 2;
 			break;
 			case TEXTFORMAT_RIGHT:
-				dest_rect.x = m_x - (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
+				dest_rect.x = position.x - (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
 			break;
 		}
 
-		vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top left
-		vectrices[6] = (float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top right
-		vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[13] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom left
-		vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		source_rect = Rect(0, 0, cache->w, cache->h);
-		//bottom right
-	}
-}
-
-void fr::TextArea::SetScale(float m_scale)
-{
-	m_scale = m_scale;
-	if (m_text != "")
-	{
-		TextureManager::instance()->DestroyCache(cache);
-		cache = TextureManager::instance()->CacheText(m_text, m_font_path, m_font_size, m_r, m_g, m_b, m_limited_w);
-		source_rect.w = cache->w;
+		dest_rect.w = (limited_w > cache->w || limited_w == 0) ? cache->w : limited_w;
+		dest_rect.h = cache->h;
+		source_rect.w = dest_rect.w / cache->w;
 		source_rect.h = cache->h;
-		switch (m_format)
-		{
-			case TEXTFORMAT_MIDDLE:
-				dest_rect.x = m_x - ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) / 2;
-				dest_rect.y = m_y - cache->h / 2;
-			break;
-			case TEXTFORMAT_RIGHT:
-				dest_rect.x = m_x - (m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w;
-			break;
-		}
-
-		vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top left
-		vectrices[6] = (float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//top right
-		vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[13] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom left
-		vectrices[18] = float(dest_rect.x + ((m_limited_w > cache->w || m_limited_w == 0) ? cache->w : m_limited_w) * m_scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		vectrices[19] = (1.f - float(dest_rect.y + cache->h * m_scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		//bottom right
+		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
 	}
 }
 
@@ -333,11 +238,11 @@ int fr::TextArea::GetH()
 
 int fr::TextArea::GetUserX()
 {
-	return m_x;
+	return position.x;
 }
 int fr::TextArea::GetUserY()
 {
-	return m_y;
+	return position.y;
 }
 
 int fr::TextArea::GetTextureW()
@@ -352,12 +257,12 @@ int fr::TextArea::GetTextureH()
 
 std::string fr::TextArea::GetText()
 {
-	return m_text;
+	return text;
 }
 
 float fr::TextArea::GetScale()
 {
-	return m_scale;
+	return scale;
 }
 
 void fr::TextArea::SetSrcRect(fr::Rect load_source_rect)
