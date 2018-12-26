@@ -4,31 +4,29 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
-#include "shape.h"
+#include "data.h"
 
 namespace fr
 {
 	class Sprite
 	{
 		public:
-			virtual void init(std::string path = "", Rect load_dest_rect = Rect(0, 0, 0, 0), Rect load_source_rect = Rect(0, 0, 0, 0));
+			virtual void init(std::string path = "", Rect input_dest_rect = Rect(0, 0, 0, 0), Rect input_source_rect = Rect(0, 0, 0, 0));
 			virtual void update();
 			virtual void render();
 			virtual void render(int index);
 			virtual void clear();
 
-			void AddFrame(std::string path = "");
-			void SetAnimate(int load_start, int load_end, int load_duration);
+			void AddFrame(std::string input_path = "");
+			void SetAnimate(int input_start, int input_end, int input_duration);
 			int GetCurrentIndex();
 			void SetBaseFrame(int index);
-			void SetPos(int x, int y);
-			void SetPos(int x, int y, int z);
-			void SetScale(float load_scale);
-			void SetSize(int w, int h);
-			void SetSrcRect(Rect load_source_rect);
-			void SetRotation(Point load_center, double load_angle);
-			void SetAlpha(int load_alpha);
-			void SetVectrices(int *load_vectrices);
+			void SetPos(int input_x, int input_y);
+			void SetScale(float input_scale);
+			void SetSize(int input_w, int input_h);
+			void SetSrcRect(Rect input_source_rect);
+			void SetAlpha(int input_alpha);
+			void SetVectrices(float *input_vectrices);
 			void SetMatrix(std::string id);
 			int GetX();
 			int GetY();
@@ -46,8 +44,6 @@ namespace fr
 			Rect texture_size;
 			Rect source_rect;
 			float scale;
-			Point center;
-			double angle;
 			int alpha;
 			float *vectrices;
 			glm::vec3 pos_3d;

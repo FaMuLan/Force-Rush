@@ -3,10 +3,10 @@
 #include "timer.h"
 #include "system.h"
 
-void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_rect)
+void fr::Sprite::init(std::string input_path, Rect input_dest_rect, Rect input_source_rect)
 {
-	dest_rect = load_dest_rect;
-	source_rect = load_source_rect;
+	dest_rect = input_dest_rect;
+	source_rect = input_source_rect;
 	texture_size.w = 0;
 	texture_size.h = 0;
 	scale = 1;
@@ -16,49 +16,22 @@ void fr::Sprite::init(std::string path, Rect load_dest_rect, Rect load_source_re
 
 	if (path != "")
 	{
-		TextureManager::instance()->load(path, texture_size);
-		if (load_source_rect.w == 0 && load_source_rect.h == 0)
+		TextureManager::instance()->load(input_path, texture_size);
+		if (input_source_rect.w == 0 && input_source_rect.h == 0)
 		{
 			source_rect.w = texture_size.w;
 			source_rect.h = texture_size.h;
 		}
-		if (load_dest_rect.w == 0 && load_dest_rect.h == 0)
+		if (input_dest_rect.w == 0 && input_dest_rect.h == 0)
 		{
 			dest_rect.w = texture_size.w;
 			dest_rect.h = texture_size.h;
 		}
 	}
 
-	vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[2] = 0.f;
-	vectrices[3] = 1.f;
-	vectrices[4] = float(source_rect.x) / float(texture_size.w);
-	vectrices[5] = float(source_rect.y) / float(texture_size.h);
-	//top left
-	vectrices[6] = (float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[8] = 0.f;
-	vectrices[9] = 1.f;
-	vectrices[10] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-	vectrices[11] = float(source_rect.y) / float(texture_size.h);
-	//top right
-	vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[14] = 0.f;
-	vectrices[15] = 1.f;
-	vectrices[16] = float(source_rect.x) / float(texture_size.w);
-	vectrices[17] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-	//bottom left
-	vectrices[18] = float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[20] = 0.f;
-	vectrices[21] = 1.f;
-	vectrices[22] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-	vectrices[23] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-	//bottom right
+	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, true, scale);
 
-	frame.push_back(path);
+	frame.push_back(input_path);
 	base_index = 0;
 	start_time = 0;
 	duration = 0;
@@ -110,50 +83,31 @@ void fr::Sprite::clear()
 	delete [] vectrices;
 }
 
-void fr::Sprite::AddFrame(std::string path)
+void fr::Sprite::AddFrame(std::string input_path)
 {
-	Rect load_size;
+	Rect input_size;
 	if (path != "")
 	{
-		TextureManager::instance()->load(path, load_size);
+		TextureManager::instance()->load(input_path, input_size);
 	}
 	if (texture_size.w == 0 && texture_size.h == 0)
 	{
-		texture_size.w = load_size.w;
-		texture_size.h = load_size.h;
-		dest_rect.w = load_size.w;
-		dest_rect.h = load_size.h;
-		source_rect.w = load_size.w;
-		source_rect.h = load_size.h;
-		vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		vectrices[4] = float(source_rect.x) / float(texture_size.w);
-		vectrices[5] = float(source_rect.y) / float(texture_size.h);
-		//top left
-		vectrices[6] = (float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		vectrices[10] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-		vectrices[11] = float(source_rect.y) / float(texture_size.h);
-		//top right
-		vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-		vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		vectrices[16] = float(source_rect.x) / float(texture_size.w);
-		vectrices[17] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-		//bottom left
-		vectrices[18] = float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-		vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-		vectrices[22] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-		vectrices[23] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-		//bottom right
+		texture_size.w = input_size.w;
+		texture_size.h = input_size.h;
+		dest_rect.w = input_size.w;
+		dest_rect.h = input_size.h;
+		source_rect.w = input_size.w;
+		source_rect.h = input_size.h;
+		Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, true, scale);
 	}
 	frame.push_back(path);
 }
 
-void fr::Sprite::SetAnimate(int load_start, int load_end, int load_duration)
+void fr::Sprite::SetAnimate(int input_start, int input_end, int input_duration)
 {
-	frame_start = load_start;
-	frame_end = load_end;
-	duration = load_duration;
+	frame_start = input_start;
+	frame_end = input_end;
+	duration = input_duration;
 	start_time = Timer::instance()->GetSystemTime();
 }
 
@@ -171,127 +125,35 @@ void fr::Sprite::SetPos(int x, int y)
 {
 	dest_rect.x = x;
 	dest_rect.y = y;
-	vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top left
-	vectrices[6] = (float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top right
-	vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom left
-	vectrices[18] = float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom right
+	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, false, scale);
 }
 
-void fr::Sprite::SetPos(int x, int y, int z)
+void fr::Sprite::SetScale(float input_scale)
 {
-	pos_3d = { float(x), float(y), float(z) };
-	glm::vec4 gl_pos(float(x) / System::instance()->GetWindowWidth() * 2.f - 1.f, (1.f - float(y) / System::instance()->GetWindowHeigh()) * 2.f - 1.f, -float(z) / 360.f, 1.f);
-//	glm::vec4 gl_pos(float(x), float(y), float(z), 1.f);
-
-	glm::mat4x4 mvp_matrix = TextureManager::instance()->GetMatrix("mvp");
-	glm::vec4 converted_pos;
-	converted_pos = mvp_matrix * gl_pos;
-	converted_pos = converted_pos * (1.0f / converted_pos.w);
-	dest_rect.x = ((converted_pos.x + 1.f) / 2.f * System::instance()->GetWindowWidth()) - dest_rect.w / 2;
-	dest_rect.y = (1.f - (converted_pos.y + 1.f) / 2.f) * System::instance()->GetWindowHeigh() - dest_rect.h / 2;
-	vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top left
-	vectrices[6] = (float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top right
-	vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom left
-	vectrices[18] = float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom right
-}
-
-void fr::Sprite::SetScale(float load_scale)
-{
-	scale = load_scale;
+	scale = input_scale;
 }
 
 void fr::Sprite::SetSize(int w, int h)
 {
 	dest_rect.w = w;
 	dest_rect.h = h;
-	vectrices[0] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top left
-	vectrices[6] = (float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(dest_rect.y) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//top right
-	vectrices[12] = (float(dest_rect.x) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom left
-	vectrices[18] = float(dest_rect.x + dest_rect.w * scale) / float(System::instance()->GetWindowWidth()) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(dest_rect.y + dest_rect.h * scale) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	//bottom right
+	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, false, scale);
 }
 
-void fr::Sprite::SetSrcRect(Rect load_source_rect)
+void fr::Sprite::SetSrcRect(Rect input_source_rect)
 {
-	source_rect = load_source_rect;
-	vectrices[4] = float(source_rect.x) / float(texture_size.w);
-	vectrices[5] = float(source_rect.y) / float(texture_size.h);
-	//top left
-	vectrices[10] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-	vectrices[11] = float(source_rect.y) / float(texture_size.h);
-	//top right
-	vectrices[16] = float(source_rect.x) / float(texture_size.w);
-	vectrices[17] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-	//bottom left
-	vectrices[22] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-	vectrices[23] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-	//bottom right
+	source_rect = input_source_rect;
+	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, false, true, scale);
 }
 
-void fr::Sprite::SetRotation(Point load_center, double load_angle)
+void fr::Sprite::SetAlpha(int input_alpha)
 {
-	center = load_center;
-	angle = load_angle;
+	alpha = input_alpha;
 }
 
-void fr::Sprite::SetAlpha(int load_alpha)
+void fr::Sprite::SetVectrices(float *input_vectrices)
 {
-	alpha = load_alpha;
-}
-
-void fr::Sprite::SetVectrices(int *load_vectrices)
-{
-	vectrices[0] = (float(load_vectrices[0]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[1] = (1.f - float(load_vectrices[1]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[2] = -float(load_vectrices[2]) / float(360);
-	vectrices[3] = 1.f;
-	vectrices[4] = float(load_vectrices[4]) / float(texture_size.w);
-	vectrices[5] = float(load_vectrices[5]) / float(texture_size.h);
-	//top left
-	vectrices[6] = (float(load_vectrices[6]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[7] = (1.f - float(load_vectrices[7]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[8] = -float(load_vectrices[8]) / float(360);
-	vectrices[9] = 1.f;
-	vectrices[10] = float(load_vectrices[10]) / float(texture_size.w);
-	vectrices[11] = float(load_vectrices[11]) / float(texture_size.h);
-	//top right
-	vectrices[12] = (float(load_vectrices[12]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[13] = (1.f - float(load_vectrices[13]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[14] = -float(load_vectrices[14]) / float(360);
-	vectrices[15] = 1.f;
-	vectrices[16] = float(load_vectrices[16]) / float(texture_size.w);
-	vectrices[17] = float(load_vectrices[17]) / float(texture_size.h);
-	//bottom left
-	vectrices[18] = (float(load_vectrices[18]) / float(System::instance()->GetWindowWidth())) * 2.f - 1.f;
-	vectrices[19] = (1.f - float(load_vectrices[19]) / float(System::instance()->GetWindowHeigh())) * 2.f - 1.f;
-	vectrices[20] = -float(load_vectrices[20]) / float(360);
-	vectrices[21] = 1.f;
-	vectrices[22] = float(load_vectrices[22]) / float(texture_size.w);
-	vectrices[23] = float(load_vectrices[23]) / float(texture_size.h);
-	//bottom right
+	vectrices = input_vectrices;
 }
 
 void fr::Sprite::SetMatrix(std::string id)
