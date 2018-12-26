@@ -15,7 +15,7 @@ void fr::AboutState::init()
 	text = new TextArea;
 	back->init("assets/base/sort_button.png");
 	back->AddPressedFrame( "assets/base/sort_button_pressed.png");
-	back->AddText("Back", back->GetW() / 2, back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	back->AddText("Back", Point2Di(back->GetW() / 2, back->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	std::string str =
 		"程序: FaMuLan\n"
 		"版本: beta 1.3.5\n"
@@ -40,7 +40,7 @@ void fr::AboutState::init()
 		"\t}\n"
 		"\t还有那个一直在关注我成长的你\n"
 		"}\n";
-	text->init(str, System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2, "assets/fonts/Miui-Bold.ttf", 30, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560);
+	text->init(str, Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() / 2), "assets/fonts/Miui-Bold.ttf", 30, Color(0x00, 0x00, 0x00), TEXTFORMAT_MIDDLE, 560);
 }
 
 void fr::AboutState::clear()
