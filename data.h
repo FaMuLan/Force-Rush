@@ -1,9 +1,8 @@
-#ifndef FORCE_RUSH_SONG_DATA_H
-#define FORCE_RUSH_SONG_DATA_H
+#ifndef FORCE_RUSH_DATA_H
+#define FORCE_RUSH_DATA_H
 
 #include <string>
 #include <vector>
-#include "prepare/song_list.h"
 
 namespace fr
 {
@@ -45,11 +44,14 @@ namespace fr
 		float speed;
 	};
 
-	struct Beat
+	class Beat
 	{
-		unsigned int bar;
-		unsigned int beat;
-		unsigned int divide;
+		public:
+			Beat() {}
+			Beat(unsigned int input_bar, unsigned int input_beat, unsigned int input_divide) : bar(input_bar), beat(input_beat), divide(input_divide) {}
+			unsigned int bar;
+			unsigned int beat;
+			unsigned int divide;
 	};
 
 	struct BeatNote
@@ -97,156 +99,106 @@ namespace fr
 		Score *high_score;
 		int full_score;
 	};
-
-	inline bool CompareString(std::string str1, std::string str2)
+	
+	class Vector2Di
 	{
-		for (int i = 0; (i < str1.size()) && (i < str2.size()); i++)
-		{
-			if (str1[i] > str2[i])
-			{
-				return SongList::instance()->IsReverse();
-			}
-			else if (str1[i] < str2[i])
-			{
-				return !SongList::instance()->IsReverse();
-			}
-		}
-		if (str1.length() > str2.length())
-		{
-			return SongList::instance()->IsReverse();
-		}
-		else
-		{
-			return !SongList::instance()->IsReverse();
-		}
-	}
+		public:
+			Vector2Di() {}
+			Vector2Di(int input_x, int input_y);
+			Vector2Di(double input_length, double input_angle);
+			Vector2Di operator+(Vector2Di input);
+			Vector2Di operator-(Vector2Di input);
+			Vector2Di operator*(double input);
+			Vector2Di operator/(double input);
+			int operator*(Vector2Di input);
+			double GetIntersectingAngle(Vector2Di input);
 
-	inline bool CompareInt(int a, int b)
-	{
-		if (a < b)
-		{
-			return !SongList::instance()->IsReverse();
-		}
-		return SongList::instance()->IsReverse();
-	}
+			int x;
+			int y;
+			double length;
+			double angle;
+	};
 
-	inline bool CompareNote(const Note *note1, const Note *note2)
+	class Vector3Df
 	{
-		return note1->time < note2->time;
-	}
+		public:
+			Vector3Df() {}
+			Vector3Df(float input_x, float input_y, float input_z) : x(input_x), y(input_y), z(input_z) {}
+			Vector3Df(double input_length, double input_angle);
+			Vector3Df operator+(Vector3Df input);
+			Vector3Df operator-(Vector3Df input);
+			Vector3Df operator*(double input);
+			Vector3Df operator/(double input);
+			int operator*(Vector3Df input);
 
-	inline bool CompareArtist(const SongInformation *m1, const SongInformation *m2)
-	{
-		return CompareString(m1->artist, m2->artist);
-	}
+			float x;
+			float y;
+			float z;
+			double length;
+			double angle_x;
+			double angle_y;
+	};
 
-	inline bool CompareNoter(const SongInformation *m1, const SongInformation *m2)
+	class Point2Di
 	{
-		return CompareString(m1->noter, m2->noter);
-	}
+		public:
+			Point2Di() {}
+			Point2Di(int input_x, int input_y) : x(input_x), y(input_y) {}
+			Vector2Di operator-(Point2Di input);
+			Point2Di operator+(Vector2Di input);
+			int x;
+			int y;
+	};
 
-	inline bool CompareTitle(const SongInformation *m1, const SongInformation *m2)
+	class Point3Df
 	{
-		return CompareString(m1->title, m2->title);
-	}
+		public:
+			Point3Df() {}
+			Point3Df(float input_x, float input_y, float input_z) : x(input_x), y(input_y), z(input_z) {}
+			Vector3Df operator-(Point3Df input);
+			Point3Df operator+(Vector3Df input);
+			float x;
+			float y;
+			float z;
+	};
 
-	inline bool CompareDifficulty(const SongInformation *m1, const SongInformation *m2)
+	class Color
 	{
-		return CompareInt(m1->difficulty, m2->difficulty);
-	}
+		public:
+			Color() {}
+			Color(int input_r, int input_g, int input_b, int input_a = 0) : r(input_r), g(input_g), b(input_b), a(input_a) {}
+			int r;
+			int g;
+			int b;
+			int a;
+	};
 
-	inline bool CompareDuration(const SongInformation *m1, const SongInformation *m2)
+	class Rect
 	{
-		return CompareInt(m1->duration, m2->duration);
-	}
-	//用於排序
+		public:
+			Rect() {}
+			Rect(int input_x, int input_y, int input_w, int input_h) : x(input_x), y(input_y), w(input_w), h(input_h) {}
+			int x;
+			int y;
+			int w;
+			int h;
+	};
 
-	inline bool utf8_to_unicode(const std::string &utf8, std::vector<unsigned int> &unicode)
-	{
-		unsigned int utf8_length = utf8.size();
-		unsigned int utf8_cursor = 0;
-		unsigned int offset;
-		unsigned char *utf8_ch;
-		unsigned int unicode_ch;
-		unicode.clear();
-		while (utf8_cursor < utf8_length)
-		{
-			utf8_ch = (unsigned char*)&utf8[utf8_cursor];
-			if (*utf8_ch < 0xC0)
-			{
-				offset = 0;
-				unicode_ch = utf8_ch[0];
-			}
-			else if (*utf8_ch < 0xE0)
-			{
-				/*2:<11000000>*/
-				offset = 1;
-				if (utf8_cursor + offset >= utf8_length)
-				{
-					return false;
-				}
-				unicode_ch = (utf8_ch[0] & 0x1f) << 6;
-				unicode_ch |= (utf8_ch[1] & 0x3f);
-			}
-			else if (*utf8_ch < 0xF0)
-			{
-				/*3:<11100000>*/
-				offset = 2;
-				if (utf8_cursor + offset >= utf8_length)
-				{
-					return false;
-				}
-				unicode_ch = (utf8_ch[0] & 0x0f) << 12;
-				unicode_ch |= (utf8_ch[1] & 0x3f) << 6;
-				unicode_ch |= (utf8_ch[2] & 0x3f);
-			}
-			else if (*utf8_ch < 0xF8)
-			{
-				/*4:<11110000>*/
-				offset = 3;
-				if (utf8_cursor + offset >= utf8_length)
-				{
-					return false;
-				}
-				unicode_ch = (utf8_ch[0] & 0x07) << 18;
-				unicode_ch |= (utf8_ch[1] & 0x3f) << 12;
-				unicode_ch |= (utf8_ch[2] & 0x3f) << 6;
-				unicode_ch |= (utf8_ch[3] & 0x3f);
-			}
-			else if (*utf8_ch < 0xFC)
-			{
-				/*5:<11111000>*/
-				offset = 4;
-				if (utf8_cursor + offset >= utf8_length)
-				{
-					return false;
-				}
-				unicode_ch = (utf8_ch[0] & 0x03) << 24;
-				unicode_ch |= (utf8_ch[1] & 0x3f) << 18;
-				unicode_ch |= (utf8_ch[2] & 0x3f) << 12;
-				unicode_ch |= (utf8_ch[3] & 0x3f) << 6;
-				unicode_ch |= (utf8_ch[4] & 0x3f);
-			}
-			else
-			{
-				/*6:<11111100>*/
-				offset = 5;
-				if (utf8_cursor + offset >= utf8_length)
-				{
-					return false;
-				}
-				unicode_ch = (utf8_ch[0] & 0x01) << 30;
-				unicode_ch |= (utf8_ch[1] & 0x3f) << 24;
-				unicode_ch |= (utf8_ch[2] & 0x3f) << 18;
-				unicode_ch |= (utf8_ch[3] & 0x3f) << 12;
-				unicode_ch |= (utf8_ch[4] & 0x3f) << 6;
-				unicode_ch |= (utf8_ch[5] & 0x3f);
-			}
-			unicode.push_back(unicode_ch);
-			utf8_cursor += offset + 1;
-		}
-		return true;
-	}
+	void Rect2DtoGLVectrices(Rect dest_rect, Rect source_rect, Rect texture_size, float *vectrices, bool modify_dest_rect = true, bool modify_source_rect = true, float scale = 1);
+	bool UTF8toUnicode(const std::string &utf8, std::vector<unsigned int> &unicode);
+	Point2Di Point3DftoPoint2Di(Point3Df input);
+	bool CompareString(std::string str1, std::string str2);
+	inline bool CompareTitle(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareArtist(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareNoter(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareDifficulty(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareDuration(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareTitleReverse(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareArtistReverse(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareNoterReverse(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareDifficultyReverse(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareDurationReverse(const SongInformation *arg1, const SongInformation *arg2);
+	inline bool CompareNote(const Note *arg1, comst Note *arg2);
 };
 
 #endif
