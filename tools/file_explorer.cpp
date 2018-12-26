@@ -24,8 +24,8 @@ void fr::FileExplorerWidget::init()
 	widget_base_foot->init("assets/base/long_widget_foot.png");
 	confirm->init("assets/base/widget_button_single.png");
 	confirm->AddPressedFrame("assets/base/widget_button_single_pressed.png");
-	confirm->AddText("CONFIRM", confirm->GetW() / 2, confirm->GetH() / 2, "assets/fonts/Audiowide.ttf", 30, 0x00, 0x00, 0x00);
-	current_path->init("NULL", widget_base_head->GetX() + 120, widget_base_head->GetY() + 52, "assets/fonts/Ubuntu-M.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 544);
+	confirm->AddText("CONFIRM", Point2Di(confirm->GetW() / 2, confirm->GetH() / 2), "assets/fonts/Audiowide.ttf", 30, Color(0x00, 0x00, 0x00));
+	current_path->init("NULL", Point2Di(widget_base_head->GetX() + 120, widget_base_head->GetY() + 52), "assets/fonts/Ubuntu-M.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 544);
 	parent_dir->init("assets/base/arrow_back.png");
 	parent_dir->AddPressedFrame("assets/base/arrow_back_pressed.png");
 	body_count = (System::instance()->GetWindowHeigh() - 560) / 140;
@@ -182,7 +182,7 @@ void fr::FileList::init()
 	cell_base_pressed_path = "assets/base/wide_list_cell_pressed.png";
 	cell_base_selected_path = "assets/base/wide_list_cell_selected.png";
 	no_dir_label = new TextArea;
-	no_dir_label->init("EMPTY", dest_rect.x + dest_rect.w / 2, dest_rect.y + dest_rect.h / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	no_dir_label->init("EMPTY", Point2Di(dest_rect.x + dest_rect.w / 2, dest_rect.y + dest_rect.h / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	current_path = "/sdcard";
 	std::vector<File*> file_list;
 	ListDir(current_path, file_list);
@@ -240,12 +240,12 @@ void fr::FileList::PushText()
 		if (current_index == selected_index)
 		{
 			cell[i]->GetText(0)->SetText(dir_list[current_index]);
-			cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+			cell[i]->GetText(0)->SetColor(Color(0xFF, 0xFF, 0xFF));
 		}
 		else
 		{
 			cell[i]->GetText(0)->SetText(dir_list[current_index]);
-			cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+			cell[i]->GetText(0)->SetColor(Color(0x00, 0x00, 0x00));
 		}
 		current_index++;
 	}
@@ -273,7 +273,7 @@ void fr::FileList::RefreshListSize()
 	List::RefreshListSize();
 	for (int i = 0; i < cell.size(); i++)
 	{
-		cell[i]->AddText("??", 24, 20, "assets/fonts/Ubuntu-M.ttf", 24, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 608);
+		cell[i]->AddText("??", Point2Di(24, 20), "assets/fonts/Ubuntu-M.ttf", 24, Color(0xFF, 0xFF, 0xFF), TEXTFORMAT_LEFT, 608);
 	}
 	no_dir_label->SetPos(dest_rect.x + dest_rect.w / 2, dest_rect.y + dest_rect.h / 2);
 }
