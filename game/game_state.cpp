@@ -5,7 +5,7 @@
 #include "../gui/text_area.h"
 #include "../texture_manager.h"
 #include "../timer.h"
-#include "../song_data.h"
+#include "../data.h"
 #include "../sound_manager.h"
 #include "../prepare/song_list.h"
 #include "../loading/loading_state.h"

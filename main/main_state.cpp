@@ -35,13 +35,13 @@ void fr::MainState::init()
 	user_name_text->init("", Rect(32, 32, 216, 32));
 	user_name_text->InitText(0, 0, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
 	user_name_text->SetText(Setting::instance()->GetUserName());
-	performance_point_text->init(performance_point_ch, 32, 120, "assets/fonts/Audiowide.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	start_text->init("Touch anywhere to activiate", System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+	performance_point_text->init(performance_point_ch, Point2Di(32, 120), "assets/fonts/Audiowide.ttf", 18, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	start_text->init("Touch anywhere to activiate", Point2Di(System::instance()->GetWindowWidth() / 2, System::instance()->GetWindowHeigh() - 180), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 	delete [] performance_point_ch;
 
 	is_locked = false;
 
-	main_about->AddText("About", main_about->GetW() / 2, main_about->GetH() / 2, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00);
+	main_about->AddText("About", Point2Di(main_about->GetW() / 2, main_about->GetH() / 2), "assets/fonts/Audiowide.ttf", 32, Color(0x00, 0x00, 0x00));
 
 	performance_process_bar->SetSrcRect(Rect(0, 0, (float(Setting::instance()->GetPerformancePoint()) / 10000.f) * 216.f, 8));
 	performance_process_bar->SetSize((Setting::instance()->GetPerformancePoint() < 10000.f ? float(Setting::instance()->GetPerformancePoint()) / 10000.f : 1) * 216.f, 8);

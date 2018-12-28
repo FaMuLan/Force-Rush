@@ -2,7 +2,7 @@
 #include "../texture_manager.h"
 #include "../gui/button.h"
 #include "../system.h"
-#include "../song_data.h"
+#include "../data.h"
 
 fr::PrepareHeader *fr::PrepareHeader::m_instance = 0;
 
@@ -40,20 +40,20 @@ void fr::PrepareHeader::init()
 		score_base->SetPos(System::instance()->GetWindowWidth() - 280, 0);
 	}
 
-	artist_text->init("NULL", 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	noter_text->init("NULL", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	version_text->init("NULL", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	duration_text->init("NULL", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	score_text->init("NULL", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	rank_text->init("?", 138, 126, "assets/fonts/Audiowide.ttf", 156, 0x00, 0x00, 0x00);
-	pure_text->init("PURE      ??", 32, 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	safe_text->init("GREAT     ??", 32, 92, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	warning_text->init("GOOD      ??", 32, 152, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	error_text->init("ERROR     ??", 32, 212, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 216);
-	artist_label->init("Artist", 32, 16, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	noter_label->init("Noter", 32, 76, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	version_label->init("Version", 32, 136, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	duration_label->init("Length", 32, 196, "assets/fonts/Audiowide.ttf", 16, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	artist_text->init("NULL", Point2Di(32, 32), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	noter_text->init("NULL", Point2Di(32, 92), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	version_text->init("NULL", Point2Di(32, 152), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	duration_text->init("NULL", Point2Di(32, 212), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	score_text->init("NULL", Point2Di(32, 212), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	rank_text->init("?", Point2Di(138, 126), "assets/fonts/Audiowide.ttf", 156, Color(0x00, 0x00, 0x00));
+	pure_text->init("PURE      ??", Point2Di(32, 32), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	safe_text->init("GREAT     ??", Point2Di(32, 92), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	warning_text->init("GOOD      ??", Point2Di(32, 152), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	error_text->init("ERROR     ??", Point2Di(32, 212), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 216);
+	artist_label->init("Artist", Point2Di(32, 16), "assets/fonts/Audiowide.ttf", 16, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	noter_label->init("Noter", Point2Di(32, 76), "assets/fonts/Audiowide.ttf", 16, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	version_label->init("Version", Point2Di(32, 136), "assets/fonts/Audiowide.ttf", 16, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	duration_label->init("Length", Point2Di(32, 196), "assets/fonts/Audiowide.ttf", 16, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	information_base->AddText(artist_text);
 	information_base->AddText(noter_text);
 	information_base->AddText(version_text);

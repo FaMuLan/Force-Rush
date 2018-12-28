@@ -26,7 +26,7 @@ void fr::ListWidget::init()
 	manage_path_switch = new Button;
 
 	widget_base->init("assets/base/widget_base.png");
-	sort_type_label->init("SORT", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	sort_type_label->init("SORT", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	sort_type_left->init("assets/base/arrow_left.png");
 	sort_type_left->AddPressedFrame("assets/base/arrow_left_pressed.png");
 	sort_type_right->init("assets/base/arrow_right.png");
@@ -34,32 +34,32 @@ void fr::ListWidget::init()
 	switch (SongList::instance()->GetSortType())
 	{
 		case SORTTYPE_DEFAULT:
-			sort_type_text->init("DEFAULT", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("DEFAULT", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 		case SORTTYPE_ARTIST:
-			sort_type_text->init("ARTIST", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("ARTIST", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 		case SORTTYPE_NOTER:
-			sort_type_text->init("NOTER", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("NOTER", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 		case SORTTYPE_TITLE:
-			sort_type_text->init("TITLE", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("TITLE", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 		case SORTTYPE_DIFFICULTY:
-			sort_type_text->init("DIFFICULTY", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("DIFFICULTY", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 		case SORTTYPE_DURATION:
-			sort_type_text->init("LENGTH", 0, 0, "assets/fonts/Audiowide.ttf", 24, 0x00, 0x00, 0x00);
+			sort_type_text->init("LENGTH", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 24, Color(0x00, 0x00, 0x00));
 		break;
 	}
-	reverse_label->init("REVERSE", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	reverse_label->init("REVERSE", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	reverse_switch->init("assets/base/sort_button.png");
 	reverse_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
-	reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", reverse_switch->GetW() / 2, reverse_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	manage_path_label->init("MANAGE PATH", 0, 0, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", Point2Di(reverse_switch->GetW() / 2, reverse_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	manage_path_label->init("MANAGE PATH", Point2Di(0, 0), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	manage_path_switch->init("assets/base/sort_button.png");
 	manage_path_switch->AddPressedFrame("assets/base/sort_button_pressed.png");
-	manage_path_switch->AddText("OPEN", manage_path_switch->GetW() / 2, manage_path_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	manage_path_switch->AddText("OPEN", Point2Di(manage_path_switch->GetW() / 2, manage_path_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 
 	is_shown = false;
 	is_entered = false;
@@ -183,7 +183,7 @@ void fr::ListWidget::update()
 		{
 			SongList::instance()->SwitchSort(SongList::instance()->GetSortType(), !SongList::instance()->IsReverse());
 			reverse_switch->ClearText();
-			reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", reverse_switch->GetW() / 2, reverse_switch->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+			reverse_switch->AddText(SongList::instance()->IsReverse() ? "ON" : "OFF", Point2Di(reverse_switch->GetW() / 2, reverse_switch->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 		}
 		if (manage_path_switch->IsReleased() && !FileExplorerWidget::instance()->IsShown() && !SongPathManagerWidget::instance()->IsShown())
 		{

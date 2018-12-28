@@ -8,7 +8,7 @@
 #include "../system.h"
 #include "../sound_manager.h"
 #include "../timer.h"
-#include "../song_data.h"
+#include "../data.h"
 #include "../loading/loading_state.h"
 #include "../user/setting.h"
 #include "game_state.h"
@@ -36,19 +36,19 @@ void fr::GameHeader::init()
 	pause_widget_base->init("assets/game/pause_widget_base.png");
 	pause_resume->init("assets/base/sort_button.png");
 	pause_resume->AddPressedFrame("assets/base/sort_button_pressed.png");
-	pause_resume->AddText("Resume", pause_resume->GetW() / 2, pause_resume->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	pause_resume->AddText("Resume", Point2Di(pause_resume->GetW() / 2, pause_resume->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	pause_retry->init("assets/base/sort_button.png");
 	pause_retry->AddPressedFrame("assets/base/sort_button_pressed.png");
-	pause_retry->AddText("Retry", pause_retry->GetW() / 2, pause_retry->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	pause_retry->AddText("Retry", Point2Di(pause_retry->GetW() / 2, pause_retry->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	pause_retire->init("assets/base/sort_button.png");
 	pause_retire->AddPressedFrame("assets/base/sort_button_pressed.png");
-	pause_retire->AddText("Retire", pause_retire->GetW() / 2, pause_retire->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	pause_retire->AddText("Retire", Point2Di(pause_retire->GetW() / 2, pause_retire->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 
-	tips_text->init("Tips: " + Setting::instance()->GetRandomTips(), pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188, "assets/fonts/Miui-Regular.ttf", 25, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 560);
+	tips_text->init("Tips: " + Setting::instance()->GetRandomTips(), Point2Di(pause_widget_base->GetX() + pause_widget_base->GetW() / 2, pause_widget_base->GetY() + 188), "assets/fonts/Miui-Regular.ttf", 25, Color(0x00, 0x00, 0x00), TEXTFORMAT_MIDDLE, 560);
 
 	title_base->init("assets/game/title_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, 0, 0, 0));
 	title_base->AddPressedFrame("assets/game/title_base_pressed.png");
-	title_base->AddText(GameState::instance()->m_information->title, title_base->GetW() / 2, title_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_MIDDLE, 720);
+	title_base->AddText(GameState::instance()->m_information->title, Point2Di(title_base->GetW() / 2, title_base->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_MIDDLE, 720);
 	score_base->init("assets/base/widget_min_base.png");
 	score_base->SetPos(0, title_base->GetX() >= score_base->GetW() ? 0 : 64);
 	user_base->init("assets/base/widget_min_base.png");
@@ -57,10 +57,10 @@ void fr::GameHeader::init()
 	duration_process_bar->SetPos(score_base->GetX() + 32, score_base->GetY() + 124);
 	performance_process_bar->init("assets/base/process_bar.png");
 	performance_process_bar->SetPos(user_base->GetX() + 32, user_base->GetY() + 124);
-	score_text->init("0", score_base->GetX() + 32, score_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 56, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	duration_text->init(" ", score_base->GetX() + 32, score_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 20, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	performance_text->init(" ", user_base->GetX() + 32, user_base->GetY() + 88, "assets/fonts/Audiowide.ttf", 14, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	user_name_text->init(Setting::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 16, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	score_text->init("0", Point2Di(score_base->GetX() + 32, score_base->GetY() + 16), "assets/fonts/Audiowide.ttf", 56, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	duration_text->init(" ", Point2Di(score_base->GetX() + 32, score_base->GetY() + 88), "assets/fonts/Audiowide.ttf", 20, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	performance_text->init(" ", Point2Di(user_base->GetX() + 32, user_base->GetY() + 88), "assets/fonts/Audiowide.ttf", 14, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	user_name_text->init(Setting::instance()->GetUserName(), Point2Di(user_base->GetX() + 32, user_base->GetY() + 16), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 	Animator::instance()->AddAnimation("pause_widget_enter", ANIMATIONTYPE_UNIFORMLY_DECELERATED, 300);
 	Animator::instance()->AddAnimation("pause_widget_exit", ANIMATIONTYPE_UNIFORMLY_ACCELERATED, 300);
 	pause_is_shown = false;

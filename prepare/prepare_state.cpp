@@ -38,10 +38,10 @@ void fr::PrepareState::init()
 	prepare_refresh->init("assets/base/sort_button.png", Rect(0, 216, 0, 0));
 	prepare_refresh->AddPressedFrame( "assets/base/sort_button_pressed.png");
 
-	prepare_back->AddText("Back", prepare_back->GetW() / 2, prepare_back->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	prepare_mod->AddText("Mod", prepare_mod->GetW() / 2, prepare_mod->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	prepare_list->AddText("List", prepare_list->GetW() / 2, prepare_list->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
-	prepare_refresh->AddText("Refresh", prepare_refresh->GetW() / 2, prepare_refresh->GetH() / 2, "assets/fonts/Audiowide.ttf", 32, 0x00, 0x00, 0x00);
+	prepare_back->AddText("Back", Point2Di(prepare_back->GetW() / 2, prepare_back->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	prepare_mod->AddText("Mod", Point2Di(prepare_mod->GetW() / 2, prepare_mod->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	prepare_list->AddText("List", Point2Di(prepare_list->GetW() / 2, prepare_list->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
+	prepare_refresh->AddText("Refresh", Point2Di(prepare_refresh->GetW() / 2, prepare_refresh->GetH() / 2), "assets/fonts/Audiowide.ttf", 32, Color(0x00, 0x00, 0x00));
 
 	if (System::instance()->GetWindowRotation() == WINDOWROTATION_PORTRAIT)
 	{
