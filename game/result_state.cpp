@@ -47,10 +47,10 @@ void fr::ResultState::init()
 	user_base->init("assets/result/user_base.png", Rect(System::instance()->GetWindowWidth() / 2 - 360, System::instance()->GetWindowHeigh() / 2 - 68, 0, 0));
 	b_return->init("assets/base/sort_button.png", Rect(0, System::instance()->GetWindowHeigh() - 80, 176, 80));
 	b_return->AddPressedFrame( "assets/base/sort_button_pressed.png");
-	b_return->AddText("Return", b_return->GetW() / 2, b_return->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	b_return->AddText("Return", Point2Di(b_return->GetW() / 2, b_return->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	b_retry->init("assets/base/sort_button.png", Rect(System::instance()->GetWindowWidth() - 176, System::instance()->GetWindowHeigh() - 80, 176, 80));
 	b_retry->AddPressedFrame("assets/base/sort_button_pressed.png");
-	b_retry->AddText("Retry", b_retry->GetW() / 2, b_retry->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	b_retry->AddText("Retry", Point2Di(b_retry->GetW() / 2, b_retry->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	is_new_record = false;
 	is_new_performance = false;
 
@@ -129,20 +129,20 @@ void fr::ResultState::init()
 		break;
 	}
 
-	title_text->init(m_information->title, song_base->GetX() + 32, song_base->GetY() + 24, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	artist_text->init(m_information->artist, song_base->GetX() + 32, song_base->GetY() + 72, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	version_text->init(m_information->version, song_base->GetX() + 96, song_base->GetY() + 112, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 416);
-	difficulty_text->init(difficulty_ch, song_base->GetX() + 32, song_base->GetY() + 112, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 56);
-	score_text->init(score_ch, score_base->GetX() + 32, score_base->GetY() + 24, "assets/fonts/Ubuntu-R.ttf", 32, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	pure_text->init(pure_ch, score_base->GetX() + 32, score_base->GetY() + 80, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	safe_text->init(safe_ch, score_base->GetX() + 32, score_base->GetY() + 128, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	warning_text->init(warning_ch, score_base->GetX() + 32, score_base->GetY() + 176, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	error_text->init(error_ch, score_base->GetX() + 32, score_base->GetY() + 224, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT, 184);
-	rank_text->init(rank_ch, rank_base->GetX() + rank_base->GetW() / 2, rank_base->GetY() + rank_base->GetH() / 2, "assets/fonts/Audiowide.ttf", 168, 0x00, 0x00, 0x00);
-	user_name_text->init(Setting::instance()->GetUserName(), user_base->GetX() + 32, user_base->GetY() + 32, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	performance_point_text->init(performance_ch, user_base->GetX() + 32, user_base->GetY() + 80, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_record_text->init("Score Replaced", score_base->GetX() + 32, score_base->GetY() + 272, "assets/fonts/Ubuntu-R.ttf", 24, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
-	new_performance_text->init("Performance Break", user_base->GetX() + 32, user_base->GetY() + 128, "assets/fonts/Ubuntu-R.ttf", 18, 0x00, 0x00, 0x00, TEXTFORMAT_LEFT);
+	title_text->init(m_information->title, Point2Di(song_base->GetX() + 32, song_base->GetY() + 24), "assets/fonts/Ubuntu-R.ttf", 32, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 416);
+	artist_text->init(m_information->artist, Point2Di(song_base->GetX() + 32, song_base->GetY() + 72), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 416);
+	version_text->init(m_information->version, Point2Di(song_base->GetX() + 96, song_base->GetY() + 112), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 416);
+	difficulty_text->init(difficulty_ch, Point2Di(song_base->GetX() + 32, song_base->GetY() + 112), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 56);
+	score_text->init(score_ch, Point2Di(score_base->GetX() + 32, score_base->GetY() + 24), "assets/fonts/Ubuntu-R.ttf", 32, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 184);
+	pure_text->init(pure_ch, Point2Di(score_base->GetX() + 32, score_base->GetY() + 80), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 184);
+	safe_text->init(safe_ch, Point2Di(score_base->GetX() + 32, score_base->GetY() + 128), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 184);
+	warning_text->init(warning_ch, Point2Di(score_base->GetX() + 32, score_base->GetY() + 176), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 184);
+	error_text->init(error_ch, Point2Di(score_base->GetX() + 32, score_base->GetY() + 224), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT, 184);
+	rank_text->init(rank_ch, Point2Di(rank_base->GetX() + rank_base->GetW() / 2, rank_base->GetY() + rank_base->GetH() / 2), "assets/fonts/Audiowide.ttf", 168, Color(0x00, 0x00, 0x00));
+	user_name_text->init(Setting::instance()->GetUserName(), Point2Di(user_base->GetX() + 32, user_base->GetY() + 32), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	performance_point_text->init(performance_ch, Point2Di(user_base->GetX() + 32, user_base->GetY() + 80), "assets/fonts/Ubuntu-R.ttf", 18, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	new_record_text->init("Score Replaced", Point2Di(score_base->GetX() + 32, score_base->GetY() + 272), "assets/fonts/Ubuntu-R.ttf", 24, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
+	new_performance_text->init("Performance Break", Point2Di(user_base->GetX() + 32, user_base->GetY() + 128), "assets/fonts/Ubuntu-R.ttf", 18, Color(0x00, 0x00, 0x00), TEXTFORMAT_LEFT);
 
 	delete [] difficulty_ch;
 	delete [] pure_ch;
