@@ -4,8 +4,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "system.h"
 #include "user/setting.h"
-#include "shape.h"
-#include "song_data.h"
+#include "data.h"
 
 fr::TextureManager *fr::TextureManager::m_instance = 0;
 
@@ -219,27 +218,34 @@ void fr::TextureManager::render(GLuint *load_texture, float *load_vectrices, int
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, char r, char g, char b, int limited_w)
+fr::TextureCache *fr::TextureManager::CacheText(std::string text, std::string font_path, int font_size, Color input_color, int limited_w, bool input_is_wrapped)
 {
-	SDL_Color color = { char(r), char(g), char(b) };
+	SDL_Color color = { char(input_color.r), char(input_color.g), char(input_color.b) };
 	SDL_Surface *text_surface;
-	std::string text_line;
-	for (int i = 0; i < text.length(); i++)
+	if (input_is_wrapped)
 	{
-		text_line += text[i];
-		int load_w, load_h;
-		TTF_SizeUTF8(font[font_path][font_size], text_line.c_str(), &load_w, &load_h);
-		if (text[i] == '\n')
+		std::string text_line;
+		for (int i = 0; i < text.length(); i++)
 		{
-			text_line.clear();
+			text_line += text[i];
+			int load_w, load_h;
+			TTF_SizeUTF8(font[font_path][font_size], text_line.c_str(), &load_w, &load_h);
+			if (text[i] == '\n')
+			{
+				text_line.clear();
+			}
+			else if (load_w > limited_w && limited_w != 0)
+			{
+				text.insert(i, "\n");
+				text_line.clear();
+			}
 		}
-		else if (load_w > limited_w && limited_w != 0)
-		{
-			text.insert(i, "\n");
-			text_line.clear();
-		}
+		text_surface = TTF_RenderUTF8_Blended_Wrapped(font[font_path][font_size], text.c_str(), color, limited_w);
 	}
-	text_surface = TTF_RenderUTF8_Blended_Wrapped(font[font_path][font_size], text.c_str(), color, limited_w);
+	else
+	{
+		text_surface = TTF_RenderUTF8_Blended(font[font_path][font_size], text.c_str(), color);
+	}
 	SDL_Surface *converted_surface = SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_ABGR8888, 0);
 	GLuint *new_texture = new GLuint;
 	glGenTextures(1, new_texture);

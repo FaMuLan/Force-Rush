@@ -49,7 +49,7 @@ namespace fr
 			void render(GLuint *load_texture, float *input_vectrices, int alpha = 255, std::string matrix_id = "default");
 			void render(std::string path, float *load_vectrices, int alpha, glm::mat4x4 input_matrix);
 			void render(GLuint *load_texture, float *load_vectrices, int alpha, glm::mat4x4 input_matrix);
-			TextureCache *CacheText(std::string input_text, std::string input_font_path, int input_font_size, Color input_color, int input_limited_w = 0);
+			TextureCache *CacheText(std::string input_text, std::string input_font_path, int input_font_size, Color input_color, int input_limited_w = 0, bool input_is_wrapped = false);
 			//limit_w = 0 = NO_LIMIT
 			glm::mat4x4 GetMatrix(std::string id);
 			void DestroyCache(TextureCache *cache);
