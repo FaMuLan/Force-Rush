@@ -14,7 +14,7 @@
 #include "../timer.h"
 #include "../file_system.h"
 #include "../sound_manager.h"
-#include "../song_data.h"
+#include "../data.h"
 #include "../loading/loading_state.h"
 #include "../game/game_state.h"
 #include "../user/setting.h"
@@ -157,16 +157,16 @@ void fr::SongList::PushText()
 			if (current_index == selected_index)
 			{
 				cell[i]->GetText(0)->SetText(difficulty_ch);
-				cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+				cell[i]->GetText(0)->SetColor(Color(0xFF, 0xFF, 0xFF));
 				cell[i]->GetText(1)->SetText(shown_information[current_index]->title);
-				cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
+				cell[i]->GetText(1)->SetColor(Color(0xFF, 0xFF, 0xFF));
 			}
 			else
 			{
 				cell[i]->GetText(0)->SetText(difficulty_ch);
-				cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+				cell[i]->GetText(0)->SetColor(Color(0x00, 0x00, 0x00));
 				cell[i]->GetText(1)->SetText(shown_information[current_index]->title);
-				cell[i]->GetText(1)->SetColor(0x00, 0x00, 0x00);
+				cell[i]->GetText(1)->SetColor(Color(0x00, 0x00, 0x00));
 			}
 
 			delete [] difficulty_ch;
@@ -175,9 +175,9 @@ void fr::SongList::PushText()
 		else
 		{
 			cell[i]->GetText(0)->SetText("??");
-			cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+			cell[i]->GetText(0)->SetColor(Color(0xFF, 0xFF, 0xFF));
 			cell[i]->GetText(1)->SetText(null_information->title);
-			cell[i]->GetText(1)->SetColor(0xFF, 0xFF, 0xFF);
+			cell[i]->GetText(1)->SetColor(Color(0xFF, 0xFF, 0xFF));
 			PrepareHeader::instance()->SetInformation(null_information);
 			list_length = cell_h;
 		}
@@ -466,8 +466,8 @@ void fr::SongList::RefreshListSize()
 	List::RefreshListSize();
 	for (int i = 0; i < cell.size(); i++)
 	{
-		cell[i]->AddText("??", 24, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 40);
-		cell[i]->AddText("NULL", 96, 16, "assets/fonts/Ubuntu-M.ttf", 32, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 616);
+		cell[i]->AddText("??", Point2Di(24, 16), "assets/fonts/Ubuntu-M.ttf", 32, Color(0xFF, 0xFF, 0xFF), TEXTFORMAT_LEFT, 40);
+		cell[i]->AddText("NULL", Point2Di(96, 16), "assets/fonts/Ubuntu-M.ttf", 32, Color(0xFF, 0xFF, 0xFF), TEXTFORMAT_LEFT, 616);
 	}
 }
 
@@ -475,30 +475,60 @@ void fr::SongList::SwitchSort(SortType type, bool reverse)
 {
 	is_reverse = reverse;
 	sort_type = type;
+		shown_information = m_information;
 	switch (type)
 	{
 		case SORTTYPE_DEFAULT:
-			shown_information = m_information;
 		break;
 		case SORTTYPE_ARTIST:
-			shown_information = m_information;
-			std::sort(shown_information.begin(), shown_information.end(), CompareArtist);
+			if (is_reverse)
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareArtistReverse);
+			}
+			else
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareArtist);
+			}
 		break;
 		case SORTTYPE_NOTER:
-			shown_information = m_information;
-			std::sort(shown_information.begin(), shown_information.end(), CompareNoter);
+			if (is_reverse)
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareNoterReverse);
+			}
+			else
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareNoter);
+			}
 		break;
 		case SORTTYPE_TITLE:
-			shown_information = m_information;
-			std::sort(shown_information.begin(), shown_information.end(), CompareTitle);
+			if (is_reverse)
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareTitleReverse);
+			}
+			else
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareTitle);
+			}
 		break;
 		case SORTTYPE_DIFFICULTY:
-			shown_information = m_information;
-			std::sort(shown_information.begin(), shown_information.end(), CompareDifficulty);
+			if (is_reverse)
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareDifficultyReverse);
+			}
+			else
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareDifficulty);
+			}
 		break;
 		case SORTTYPE_DURATION:
-			shown_information = m_information;
-			std::sort(shown_information.begin(), shown_information.end(), CompareDuration);
+			if (is_reverse)
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareDurationReverse);
+			}
+			else
+			{
+				std::sort(shown_information.begin(), shown_information.end(), CompareDuration);
+			}
 		break;
 	}
 }
