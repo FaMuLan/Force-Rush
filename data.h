@@ -166,7 +166,7 @@ namespace fr
 	{
 		public:
 			Color() {}
-			Color(int input_r, int input_g, int input_b, int input_a = 0) : r(input_r), g(input_g), b(input_b), a(input_a) {}
+			Color(int input_r, int input_g, int input_b, int input_a = 255) : r(input_r), g(input_g), b(input_b), a(input_a) {}
 			int r;
 			int g;
 			int b;
