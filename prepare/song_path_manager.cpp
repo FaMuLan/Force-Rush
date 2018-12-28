@@ -19,10 +19,10 @@ void fr::SongPathManagerWidget::init()
 	widget_base->init("assets/base/widget_base.png");
 	new_path->init("assets/base/sort_button.png");
 	new_path->AddPressedFrame("assets/base/sort_button_pressed.png");
-	new_path->AddText("NEW", new_path->GetW() / 2, new_path->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	new_path->AddText("NEW", Point2Di(new_path->GetW() / 2, new_path->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	delete_path->init("assets/base/sort_button.png");
 	delete_path->AddPressedFrame("assets/base/sort_button_pressed.png");
-	delete_path->AddText("DEL", delete_path->GetW() / 2, delete_path->GetH() / 2, "assets/fonts/Audiowide.ttf", 36, 0x00, 0x00, 0x00);
+	delete_path->AddText("DEL", Point2Di(delete_path->GetW() / 2, delete_path->GetH() / 2), "assets/fonts/Audiowide.ttf", 36, Color(0x00, 0x00, 0x00));
 	SongPathList::instance()->init();
 	SongPathList::instance()->SetPos(widget_base->GetX() + 192, widget_base->GetY() + 32);
 
@@ -202,12 +202,12 @@ void fr::SongPathList::PushText()
 		if (current_index == selected_index)
 		{
 			cell[i]->GetText(0)->SetText(list_path[current_index]);
-			cell[i]->GetText(0)->SetColor(0xFF, 0xFF, 0xFF);
+			cell[i]->GetText(0)->SetColor(Color(0xFF, 0xFF, 0xFF));
 		}
 		else
 		{
 			cell[i]->GetText(0)->SetText(list_path[current_index]);
-			cell[i]->GetText(0)->SetColor(0x00, 0x00, 0x00);
+			cell[i]->GetText(0)->SetColor(Color(0x00, 0x00, 0x00));
 		}
 		current_index++;
 	}
@@ -225,6 +225,6 @@ void fr::SongPathList::RefreshListSize()
 	List::RefreshListSize();
 	for (int i = 0; i < cell.size(); i++)
 	{
-		cell[i]->AddText("??", 24, 20, "assets/fonts/Ubuntu-M.ttf", 24, 0xFF, 0xFF, 0xFF, TEXTFORMAT_LEFT, 448);
+		cell[i]->AddText("??", Point2Di(24, 20), "assets/fonts/Ubuntu-M.ttf", 24, Color(0xFF, 0xFF, 0xFF), TEXTFORMAT_LEFT, 448);
 	}
 }
