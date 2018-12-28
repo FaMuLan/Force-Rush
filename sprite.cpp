@@ -14,7 +14,7 @@ void fr::Sprite::init(std::string input_path, Rect input_dest_rect, Rect input_s
 	pos_3d = { 0.f, 0.f, 0.f };
 	vectrices = new float[24];
 
-	if (path != "")
+	if (input_path != "")
 	{
 		TextureManager::instance()->load(input_path, texture_size);
 		if (input_source_rect.w == 0 && input_source_rect.h == 0)
@@ -29,7 +29,7 @@ void fr::Sprite::init(std::string input_path, Rect input_dest_rect, Rect input_s
 		}
 	}
 
-	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, true, scale);
+	Rect2DtoGLVectrices(dest_rect, source_rect, texture_size, vectrices, true, true, scale);
 
 	frame.push_back(input_path);
 	base_index = 0;
@@ -57,7 +57,11 @@ void fr::Sprite::update()
 	}
 	if (pos_3d.z != 0)
 	{
-		SetPos(pos_3d.x, pos_3d.y, pos_3d.z);
+		Point3Df pos_3d_temp = Point3Df(pos_3d.x, pos_3d.y, pos_3d.z);
+		Point2Di pos_2d = Point3DftoPoint2Di(pos_3d_temp);
+		pos_2d.x -= texture_size.w / 2;
+		pos_2d.y -= texture_size.h / 2;
+		SetPos(pos_2d.x, pos_2d.y);
 	}
 }
 
@@ -86,7 +90,7 @@ void fr::Sprite::clear()
 void fr::Sprite::AddFrame(std::string input_path)
 {
 	Rect input_size;
-	if (path != "")
+	if (input_path != "")
 	{
 		TextureManager::instance()->load(input_path, input_size);
 	}
@@ -98,9 +102,9 @@ void fr::Sprite::AddFrame(std::string input_path)
 		dest_rect.h = input_size.h;
 		source_rect.w = input_size.w;
 		source_rect.h = input_size.h;
-		Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, true, scale);
+		Rect2DtoGLVectrices(dest_rect, source_rect, texture_size, vectrices, true, true, scale);
 	}
-	frame.push_back(path);
+	frame.push_back(input_path);
 }
 
 void fr::Sprite::SetAnimate(int input_start, int input_end, int input_duration)
@@ -125,7 +129,7 @@ void fr::Sprite::SetPos(int x, int y)
 {
 	dest_rect.x = x;
 	dest_rect.y = y;
-	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, false, scale);
+	Rect2DtoGLVectrices(dest_rect, source_rect, texture_size, vectrices, true, false, scale);
 }
 
 void fr::Sprite::SetScale(float input_scale)
@@ -137,13 +141,13 @@ void fr::Sprite::SetSize(int w, int h)
 {
 	dest_rect.w = w;
 	dest_rect.h = h;
-	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, true, false, scale);
+	Rect2DtoGLVectrices(dest_rect, source_rect, texture_size, vectrices, true, false, scale);
 }
 
 void fr::Sprite::SetSrcRect(Rect input_source_rect)
 {
 	source_rect = input_source_rect;
-	Rect2DtoGLVectrices(dest_rect, source_rect, vectrices, false, true, scale);
+	Rect2DtoGLVectrices(dest_rect, source_rect, texture_size, vectrices, false, true, scale);
 }
 
 void fr::Sprite::SetAlpha(int input_alpha)
