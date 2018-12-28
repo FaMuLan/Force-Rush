@@ -44,7 +44,7 @@ void fr::TextInputBox::render()
 void fr::TextInputBox::InitText(int x, int y, std::string font_path, int font_size, char r, char g, char b, TextFormat format, int limited_w)
 {
 	current_text = new TextArea;
-	current_text->init("", x, y, font_path, font_size, r, g, b, format, limited_w);
+	current_text->init("", Point2Di(x, y), font_path, font_size, Color(r, g, b), format, limited_w);
 }
 
 std::string fr::TextInputBox::GetText()
