@@ -51,10 +51,11 @@ namespace fr
 			Rect source_rect;
 			Point2Di position;
 			Color color;
+			bool is_wrapped;
 			int roll_speed;
-			TextFormat m_format;
+			TextFormat format;
 			int limited_w;
-			float m_scale;
+			float scale;
 			TextureCache *cache;
 			float *vectrices;
 			std::string matrix_id;

@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "../texture_manager.h"
 #include "../system.h"
+#include "../data.h"
 
 void fr::TextArea::init(std::string input_text, fr::Point2Di input_position, std::string input_font_path, int input_font_size, Color input_color, TextFormat input_format, int input_limited_w, bool input_is_wrapped, int input_roll_speed)
 {
@@ -11,7 +12,7 @@ void fr::TextArea::init(std::string input_text, fr::Point2Di input_position, std
 	position = input_position;
 	font_path = input_font_path;
 	font_size = input_font_size;
-	color = input_color
+	color = input_color;
 	format = input_format;
 	limited_w = input_limited_w;
 	is_wrapped = input_is_wrapped;
@@ -26,7 +27,7 @@ void fr::TextArea::init(std::string input_text, fr::Point2Di input_position, std
 	{
 		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w, is_wrapped);
 
-		switch (m_format)
+		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
 				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
@@ -41,7 +42,7 @@ void fr::TextArea::init(std::string input_text, fr::Point2Di input_position, std
 		dest_rect.h = cache->h;
 		source_rect.w = dest_rect.w / cache->w;
 		source_rect.h = cache->h;
-		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
+		Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, true, 1);
 	}
 }
 
@@ -57,7 +58,7 @@ void fr::TextArea::render(int x, int y, fr::TextFormat format)
 {
 	if (text != "")
 	{
-		format = format == TEXTFORMAT_NONE ? m_format : format;
+		format = format == TEXTFORMAT_NONE ? format : format;
 		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
@@ -89,7 +90,7 @@ void fr::TextArea::SetPos(int x, int y)
 	{
 		dest_rect.x = position.x = x;
 		dest_rect.y = position.y = y;
-		switch (m_format)
+		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
 				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
@@ -100,7 +101,7 @@ void fr::TextArea::SetPos(int x, int y)
 			break;
 		}
 
-		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, false, 1);
+		Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, false, 1);
 	}
 }
 
@@ -108,7 +109,7 @@ void fr::TextArea::SetSize(int w, int h)
 {
 	dest_rect.w = w;
 	dest_rect.h = h;
-	Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, false, 1);
+	Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, false, 1);
 }
 
 void fr::TextArea::SetText(std::string input_text)
@@ -125,7 +126,7 @@ void fr::TextArea::SetText(std::string input_text)
 			cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
 			source_rect.w = cache->w;
 			source_rect.h = cache->h;
-			switch (m_format)
+			switch (format)
 			{
 				case TEXTFORMAT_MIDDLE:
 					dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
@@ -140,7 +141,7 @@ void fr::TextArea::SetText(std::string input_text)
 			dest_rect.h = cache->h;
 			source_rect.w = dest_rect.w / cache->w;
 			source_rect.h = cache->h;
-			Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
+			Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, true, 1);
 		}
 	}
 
@@ -158,7 +159,7 @@ void fr::TextArea::SetColor(Color input_color)
 
 void fr::TextArea::SetAlpha(int input_alpha)
 {
-	color.a = alpha;
+	color.a = input_alpha;
 }
 
 void fr::TextArea::SetFont(std::string input_font_path, int input_font_size)
@@ -169,7 +170,7 @@ void fr::TextArea::SetFont(std::string input_font_path, int input_font_size)
 	{
 		TextureManager::instance()->DestroyCache(cache);
 		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
-		switch (m_format)
+		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
 				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
@@ -184,7 +185,7 @@ void fr::TextArea::SetFont(std::string input_font_path, int input_font_size)
 		dest_rect.h = cache->h;
 		source_rect.w = dest_rect.w / cache->w;
 		source_rect.h = cache->h;
-		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
+		Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, true, 1);
 	}
 }
 
@@ -197,7 +198,7 @@ void fr::TextArea::SetScale(float input_scale)
 		cache = TextureManager::instance()->CacheText(text, font_path, font_size, color, limited_w);
 		source_rect.w = cache->w;
 		source_rect.h = cache->h;
-		switch (m_format)
+		switch (format)
 		{
 			case TEXTFORMAT_MIDDLE:
 				dest_rect.x = position.x - ((limited_w > cache->w || limited_w == 0) ? cache->w : limited_w) / 2;
@@ -212,8 +213,13 @@ void fr::TextArea::SetScale(float input_scale)
 		dest_rect.h = cache->h;
 		source_rect.w = dest_rect.w / cache->w;
 		source_rect.h = cache->h;
-		Rect2DtoVectrices(dest_rect, source_rect, vectrices, true, true, 1);
+		Rect2DtoGLVectrices(dest_rect, source_rect, Rect(0, 0, cache->w, cache->h), vectrices, true, true, 1);
 	}
+}
+
+void fr::TextArea::SetRollSpeed(int input_roll_speed)
+{
+	roll_speed = input_roll_speed;
 }
 
 int fr::TextArea::GetX()
