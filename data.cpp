@@ -22,18 +22,36 @@ void fr::Rect2DtoGLVectrices(Rect dest_rect, Rect source_rect, Rect texture_size
 	}
 	if (modify_source_rect)
 	{
-		vectrices[4] = float(source_rect.x) / float(texture_size.w);
-		vectrices[5] = float(source_rect.y) / float(texture_size.h);
-		//top left
-		vectrices[10] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-		vectrices[11] = float(source_rect.y) / float(texture_size.h);
-		//top right
-		vectrices[16] = float(source_rect.x) / float(texture_size.w);
-		vectrices[17] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-		//bottom left
-		vectrices[22] = float(source_rect.x + source_rect.w) / float(texture_size.w);
-		vectrices[23] = float(source_rect.y + source_rect.h) / float(texture_size.h);
-		//bottom right
+		if (texture_size.w != 0 && texture_size.h != 0)
+		{
+			vectrices[4] = float(source_rect.x) / float(texture_size.w);
+			vectrices[5] = float(source_rect.y) / float(texture_size.h);
+			//top left
+			vectrices[10] = float(source_rect.x + source_rect.w) / float(texture_size.w);
+			vectrices[11] = float(source_rect.y) / float(texture_size.h);
+			//top right
+			vectrices[16] = float(source_rect.x) / float(texture_size.w);
+			vectrices[17] = float(source_rect.y + source_rect.h) / float(texture_size.h);
+			//bottom left
+			vectrices[22] = float(source_rect.x + source_rect.w) / float(texture_size.w);
+			vectrices[23] = float(source_rect.y + source_rect.h) / float(texture_size.h);
+			//bottom right
+		}
+		else
+		{
+			vectrices[4] = 0;
+			vectrices[5] = 0;
+			//top left
+			vectrices[10] = 0;
+			vectrices[11] = 0;
+			//top right
+			vectrices[16] = 0;
+			vectrices[17] = 0;
+			//bottom left
+			vectrices[22] = 0;
+			vectrices[23] = 0;
+			//bottom right
+		}
 	}
 
 	vectrices[2] = 0.f;
