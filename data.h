@@ -188,17 +188,17 @@ namespace fr
 	bool UTF8toUnicode(const std::string &utf8, std::vector<unsigned int> &unicode);
 	Point2Di Point3DftoPoint2Di(Point3Df input);
 	bool CompareString(std::string str1, std::string str2);
-	inline bool CompareTitle(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareArtist(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareNoter(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareDifficulty(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareDuration(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareTitleReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareArtistReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareNoterReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareDifficultyReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareDurationReverse(const SongInformation *arg1, const SongInformation *arg2);
-	inline bool CompareNote(const Note *arg1, const Note *arg2);
+	bool CompareTitle(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareArtist(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareNoter(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareDifficulty(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareDuration(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareTitleReverse(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareArtistReverse(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareNoterReverse(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareDifficultyReverse(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareDurationReverse(const SongInformation *arg1, const SongInformation *arg2);
+	bool CompareNote(const Note *arg1, const Note *arg2);
 };
 
 #endif
