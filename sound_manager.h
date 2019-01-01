@@ -114,9 +114,9 @@ namespace fr
 			void init();
 			void clear();
 			void clear(std::string path);
-			bool load(std::string path);
+			bool load(std::string path, unsigned int time = 0);
 			void play(std::string process_name);
-			void seek(std::string process_name, int time);
+			void seek(std::string process_name, unsigned int time);
 			void SwitchPause(std::string process_name);
 			static void AudioCallback(void *userdata, unsigned char *stream, int len);
 			void AddProcess(std::string name, SoundProcess *load_process);

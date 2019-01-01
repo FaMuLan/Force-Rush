@@ -15,12 +15,16 @@ enum mad_flow fr::mp3::input(void *data, struct mad_stream *stream)
 {
 	Sound *m_sound = (Sound*)data;
 	MP3File *m_interface = (MP3File*)m_sound->interface;
-	if (m_interface->decode_frame + 1 == m_interface->frame.size() || m_sound->abort)
+	if (m_interface->decode_frame + 1 >= m_interface->frame.size() || m_sound->abort)
 	{
+		m_sound->abort = true;
 		return MAD_FLOW_STOP;
 	}
-	mad_stream_buffer(stream, m_interface->frame[m_interface->decode_frame]->file_frame_start, m_interface->frame[m_interface->decode_frame]->file_frame_size);
-	m_interface->decode_frame++;
+	else
+	{
+		mad_stream_buffer(stream, m_interface->frame[m_interface->decode_frame]->file_frame_start, m_interface->frame[m_interface->decode_frame]->file_frame_size);
+		m_interface->decode_frame++;
+	}
 	return MAD_FLOW_CONTINUE;
 }
 
@@ -124,9 +128,10 @@ enum mad_flow fr::mp3::error(void *data, struct mad_stream *stream, struct mad_f
 void *fr::mp3::decode(void *arguments)
 {
 	Sound *load_sound = (Sound*)arguments;
+	MP3File *interface = (MP3File*)load_sound->interface;
 	struct mad_decoder m_decoder;
 	mad_decoder_init(&m_decoder, load_sound, mp3::input, 0, 0, mp3::output, mp3::error, 0);
-	mad_decoder_run(&m_decoder, MAD_DECODER_MODE_ASYNC);
+	mad_decoder_run(&m_decoder, MAD_DECODER_MODE_SYNC);
 	mad_decoder_finish(&m_decoder);
 }
 
@@ -254,16 +259,36 @@ void fr::mp3::prepare(Sound *load_sound)
 void fr::mp3::seek(Sound *load_sound, unsigned int time)
 {
 	MP3File *m_interface = (MP3File*)load_sound->interface;
+	while (1)
+	{
+		if (m_interface->decode_frame + 2 >= m_interface->frame.size())
+		{
+			if (m_interface->frame[m_interface->decode_frame + 1]->start_time < time)
+			{
+				m_interface->decode_frame++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	/*
 	while (m_interface->frame[m_interface->decode_frame]->start_time < time)
 	{
 		m_interface->decode_frame++;
-		if (!m_interface->frame[m_interface->decode_frame])
+		if (m_interface->decode_frame + 1 == m_interface->frame.size())
 		{
 			break;
 		}
 	}
 	m_interface->decode_frame--;
 	m_interface->decode_start_time = time;
+	*/
 }
 
 void fr::mp3::clear(Sound *load_sound)
@@ -407,7 +432,7 @@ void fr::SoundManager::clear(std::string path)
 	}
 }
 
-bool fr::SoundManager::load(std::string path)
+bool fr::SoundManager::load(std::string path, unsigned int time)
 {
 	Sound *new_sound = new Sound;
 	new_sound->buffer.reserve(100000);
@@ -428,6 +453,7 @@ bool fr::SoundManager::load(std::string path)
 	{
 		ogg::prepare(new_sound);
 		new_sound->type = AUDIOFILETYPE_OGG;
+		ogg::seek(new_sound, time);
 		pthread_t thread;
 		pthread_create(&thread, NULL, &fr::ogg::decode, new_sound);
 		pthread_detach(thread);
@@ -436,6 +462,7 @@ bool fr::SoundManager::load(std::string path)
 	{
 		mp3::prepare(new_sound);
 		new_sound->type = AUDIOFILETYPE_MP3;
+		mp3::seek(new_sound, time);
 		pthread_t thread;
 		pthread_create(&thread, NULL, &fr::mp3::decode, new_sound);
 		pthread_detach(thread);
@@ -456,11 +483,23 @@ void fr::SoundManager::play(std::string process_name)
 	m_process[process_name]->sound_process = 0;
 }
 
-void fr::SoundManager::seek(std::string process_name, int time)
+void fr::SoundManager::seek(std::string process_name, unsigned int time)
 {
+	Sound *load_sound = m_sound[m_process[process_name]->path];
+	/*
 	m_process[process_name]->sound_process = time;
 	m_process[process_name]->buffer_index = float(time) * 44.1f / 4096.f;
 	m_process[process_name]->buffer_process = int(time * 44.1f) % 4096;
+	*/
+	switch (load_sound->type)
+	{
+		case AUDIOFILETYPE_MP3:
+			mp3::seek(load_sound, time);
+		break;
+		case AUDIOFILETYPE_OGG:
+			ogg::seek(load_sound, time);
+		break;
+	}
 }
 
 void fr::SoundManager::SwitchPause(std::string process_name)
