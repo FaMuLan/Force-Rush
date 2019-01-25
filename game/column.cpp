@@ -99,7 +99,7 @@ void fr::Column::init(int load_column_index, Beatmap *parent)
 	feedback_vectrices[16] = 0;
 	feedback_vectrices[17] = 1;
 	//bottom left
-	feedback_vectrices[19] = 720.f / 360.f;
+	feedback_vectrices[19] = -360.f / 360.f;
 	feedback_vectrices[20] = 20.f / 360;
 	feedback_vectrices[21] = 1;
 	feedback_vectrices[22] = 1;
