@@ -6,27 +6,11 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <samplerate.h>
+#include <assert.h>
 
 fr::SoundManager *fr::SoundManager::m_instance = 0;
 std::map<std::string, fr::Sound*> fr::SoundManager::m_sound;
 std::map<std::string, fr::SoundProcess*> fr::SoundManager::m_process;
-
-enum mad_flow fr::mp3::input(void *data, struct mad_stream *stream)
-{
-	Sound *m_sound = (Sound*)data;
-	MP3File *m_interface = (MP3File*)m_sound->interface;
-	if (m_interface->decode_frame + 1 >= m_interface->frame.size() || m_sound->abort)
-	{
-		m_sound->abort = true;
-		return MAD_FLOW_STOP;
-	}
-	else
-	{
-		mad_stream_buffer(stream, m_interface->frame[m_interface->decode_frame]->file_frame_start, m_interface->frame[m_interface->decode_frame]->file_frame_size);
-		m_interface->decode_frame++;
-	}
-	return MAD_FLOW_CONTINUE;
-}
 
 inline signed int fr::mp3::scale(mad_fixed_t sample)
 {
@@ -42,97 +26,114 @@ inline signed int fr::mp3::scale(mad_fixed_t sample)
 	return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
 
-enum mad_flow fr::mp3::output(void *data, struct mad_header const *header, struct mad_pcm *pcm)
-{
-	static SRC_DATA src_data;
-	int samplerate_error = -1;
-	unsigned int channels_count, samples_count, frequency;
-	mad_fixed_t const *left_ch, *right_ch;
-
-	Sound *m_sound = (Sound*)data;
-
-	channels_count  = pcm->channels;
-	samples_count   = pcm->length;
-	frequency = pcm->samplerate;
-	left_ch    = pcm->samples[0];
-	right_ch   = pcm->samples[1];
-	m_sound->buffer_duration = 4096 * 4;
-	if (frequency != 44100)
-	{
-		src_data.end_of_input = 0;
-		src_data.data_in = m_sound->new_buffer;
-		src_data.input_frames = 0;
-		src_data.src_ratio = 44100.f / frequency;
-		src_data.data_out = m_sound->converted_buffer;
-		src_data.output_frames = 4096 * 44100.f / frequency;
-	}
-
-	while (samples_count--)
-	{
-		float sample;
-		sample = scale(*left_ch++);
-		m_sound->new_buffer[m_sound->src_sample_index++] = sample;
-		if (channels_count == 2)
-		{
-			sample = scale(*right_ch++);
-		}
-		m_sound->new_buffer[m_sound->src_sample_index++] = sample;
-		if (m_sound->src_sample_index >= 4096 * 2)
-		{
-			m_sound->src_sample_index = 0;
-			//默认频率是44100，如果音频不是44100音频的话要交给libsamplerate转换
-			if (frequency != 44100)
-			{
-				src_data.data_in = m_sound->new_buffer;
-				src_data.input_frames = 4096;
-				if (src_simple(&src_data, SRC_LINEAR, 2) == 0)
-				{
-					for (int i = 0; i < src_data.output_frames_gen * 2; i++)
-					{
-						m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->converted_buffer[i]) >> 0) & 0xFF;
-						m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->converted_buffer[i]) >> 8) & 0xFF;
-						if (m_sound->dest_sample_index >= 4096 * 4)
-						{
-							m_sound->dest_sample_index = 0;
-							m_sound->buffer.push_back(m_sound->output_buffer);
-							m_sound->output_buffer = new unsigned char[4096 * 4];
-						}
-					}
-				}
-			}
-			//是44100的话还需要做float -> unsigned char的转换工作
-			else
-			{
-				for (int i = 0; i < 4096 * 2; i++)
-				{
-					m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->new_buffer[i]) >> 0) & 0xFF;
-					m_sound->output_buffer[m_sound->dest_sample_index++] = (int(m_sound->new_buffer[i]) >> 8) & 0xFF;
-				}
-				m_sound->buffer.push_back(m_sound->output_buffer);
-				m_sound->dest_sample_index = 0;
-				m_sound->output_buffer = new unsigned char[4096 * 4];
-			}
-		}
-	}
-
-	return MAD_FLOW_CONTINUE;
-}
-
-enum mad_flow fr::mp3::error(void *data, struct mad_stream *stream, struct mad_frame *frame)
-{
-	Sound *m_sound = (Sound*)data;
-	fprintf(stderr, "decoding error 0x%04x (%s) at byte offset %u\n", stream->error, mad_stream_errorstr(stream), stream->this_frame - m_sound->file_start);
-	return MAD_FLOW_CONTINUE;
-}
-
 void *fr::mp3::decode(void *arguments)
 {
 	Sound *load_sound = (Sound*)arguments;
 	MP3File *interface = (MP3File*)load_sound->interface;
-	struct mad_decoder m_decoder;
-	mad_decoder_init(&m_decoder, load_sound, mp3::input, 0, 0, mp3::output, mp3::error, 0);
-	mad_decoder_run(&m_decoder, MAD_DECODER_MODE_SYNC);
-	mad_decoder_finish(&m_decoder);
+	struct mad_stream stream;
+	struct mad_frame frame;
+	struct mad_synth synth;
+	mad_stream_init(&stream);
+	mad_frame_init(&frame);
+	mad_synth_init(&synth);
+	mad_stream_buffer(&stream, interface->frame[interface->decode_frame]->file_frame_start, load_sound->file_size + load_sound->file_start - interface->frame[interface->decode_frame]->file_frame_start);
+
+	while (1)
+	{
+		if (interface->decode_frame + 1 >= interface->frame.size() || load_sound->abort)
+		{
+			load_sound->abort = true;
+			break;
+		}
+		else if (stream.error != MAD_ERROR_BUFLEN)
+		{
+			static SRC_DATA src_data;
+			int samplerate_error = -1;
+			int mad_error = 0;
+			unsigned int channels_count, samples_count, frequency;
+			mad_fixed_t const *left_ch, *right_ch;
+
+//			assert(stream.error != MAD_ERROR_BUFLEN);
+
+			mad_error = mad_frame_decode(&frame, &stream);
+			mad_synth_frame(&synth, &frame);
+			struct mad_pcm *pcm = &synth.pcm;
+
+			channels_count  = pcm->channels;
+			samples_count   = pcm->length;
+			frequency = pcm->samplerate;
+			left_ch    = pcm->samples[0];
+			right_ch   = pcm->samples[1];
+			load_sound->buffer_duration = 4096 * 4;
+			if (frequency != 44100)
+			{
+				src_data.end_of_input = 0;
+				src_data.data_in = load_sound->new_buffer;
+				src_data.input_frames = 0;
+				src_data.src_ratio = 44100.f / frequency;
+				src_data.data_out = load_sound->converted_buffer;
+				src_data.output_frames = 4096 * 44100.f / frequency;
+			}
+
+			while (samples_count--)
+			{
+				float sample;
+				sample = scale(*left_ch++);
+				load_sound->new_buffer[load_sound->src_sample_index++] = sample;
+				if (channels_count == 2)
+				{
+					sample = scale(*right_ch++);
+				}
+				load_sound->new_buffer[load_sound->src_sample_index++] = sample;
+				if (load_sound->src_sample_index >= 4096 * 2)
+				{
+					load_sound->src_sample_index = 0;
+					//默认频率是44100，如果音频不是44100音频的话要交给libsamplerate转换
+					if (frequency != 44100)
+					{
+						src_data.data_in = load_sound->new_buffer;
+						src_data.input_frames = 4096;
+						if (src_simple(&src_data, SRC_LINEAR, 2) == 0)
+						{
+							for (int i = 0; i < src_data.output_frames_gen * 2; i++)
+							{
+								load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->converted_buffer[i]) >> 0) & 0xFF;
+								load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->converted_buffer[i]) >> 8) & 0xFF;
+						if (load_sound->dest_sample_index >= 4096 * 4)
+						{
+									load_sound->dest_sample_index = 0;
+									load_sound->buffer.push_back(load_sound->output_buffer);
+									load_sound->output_buffer = new unsigned char[4096 * 4];
+								}
+							}
+						}
+					}
+					//是44100的话还需要做float -> unsigned char的转换工作
+					else
+					{
+						for (int i = 0; i < 4096 * 2; i++)
+						{
+							load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->new_buffer[i]) >> 0) & 0xFF;
+							load_sound->output_buffer[load_sound->dest_sample_index++] = (int(load_sound->new_buffer[i]) >> 8) & 0xFF;
+						}
+						load_sound->buffer.push_back(load_sound->output_buffer);
+						load_sound->dest_sample_index = 0;
+						load_sound->output_buffer = new unsigned char[4096 * 4];
+					}
+				}
+			}
+
+			interface->decode_frame++;
+		}
+		else
+		{
+//			exit(0);
+			break;
+		}
+	}
+	mad_stream_finish(&stream);
+	mad_frame_finish(&frame);
+	mad_synth_finish(&synth);
 }
 
 void fr::mp3::prepare(Sound *load_sound)
@@ -142,118 +143,50 @@ void fr::mp3::prepare(Sound *load_sound)
 	fseek(load_sound->fp, 0, SEEK_SET);
 	load_sound->file_start = new unsigned char[load_sound->file_size];
 	fread(load_sound->file_start, 1, load_sound->file_size, load_sound->fp);
-	unsigned int i = 0;
-	if (memcmp(load_sound->file_start, "ID3", 3) == 0)
-	{
-		int offset = (load_sound->file_start[6] & 0x7F) * 0x200000 + (load_sound->file_start[7] & 0x7F) * 0x400 + (load_sound->file_start[8] & 0x7F) * 0x80 + (load_sound->file_start[9] & 0x7F);
-		i += offset;
-	}
 	MP3File *new_interface = new MP3File;
 	load_sound->interface = new_interface;
 	new_interface->decode_start_time = 0;
 	new_interface->decode_frame = 0;
-
-	MP3Frame *last_frame;
-	while (i < load_sound->file_size)
+	unsigned int current_time = 0;
+	int mad_error = 0;
+	struct mad_stream stream;
+	struct mad_header header;
+	mad_stream_init(&stream);
+	mad_header_init(&header);
+	mad_stream_buffer(&stream, load_sound->file_start, load_sound->file_size);
+	while (stream.error != MAD_ERROR_BUFLEN)
 	{
-		if (load_sound->file_start[i] == 0xFF)
+		mad_header_decode(&header, &stream);
+		if (MAD_RECOVERABLE(stream.error))
 		{
 			MP3Frame *new_frame = new MP3Frame;
-			new_frame->file_frame_start = load_sound->file_start + i;
-			if (new_interface->frame.size() > 0)
+			new_frame->file_frame_start = stream.this_frame;
+			new_frame->file_frame_size = stream.next_frame - stream.this_frame;
+			if (new_frame->file_frame_size == 0)
 			{
-				last_frame->file_frame_size = &(new_frame->file_frame_start) - &(last_frame->file_frame_start);
+				new_frame->file_frame_size = load_sound->file_size - ((uintptr_t)stream.this_frame - (uintptr_t)load_sound->file_start);
 			}
-			/*
-				samples count:
-				+----------+----------+----------+----------+
-				|          |  MPEG 1  |  MPEG 2  | MPEG 2.5 |
-				| Layer  1 |   384    |   384    |   384    |
-				| Layer  2 |   1152   |   1152   |   1152   |
-				| Layer  3 |   1152   |   576    |   576    |
-				+----------+----------+----------+----------+
-				frequency(kHz):
-				+----------+----------+----------+----------+
-				|          |  MPEG 1  |  MPEG 2  | MPEG 2.5 |
-				|    00    |   44.1   |   22.05  |  11.025  |
-				|    01    |   48.0   |   24.0   |   12.0   |
-				|    10    |   32.0   |   16.0   |   8.0    |
-				+----------+----------+----------+----------+
-			*/
-			//[11111111] [xxx11000] before
-			//[11111111] [000xxx11] after '> 3'
-			//00000011 = 0x03
-			//这TM叫RNA转录.jpg
-			unsigned int version = (load_sound->file_start[i + 1] > 3) & 0x03;
-			/*
-				version:
-					MPEG 1:    11
-					MPEG 2:    10
-					UNDEFINED: 01
-					MPEG 2.5:  00
-			*/
-			unsigned int layer = load_sound->file_start[i + 1] & 0x03;
-			/*
-				layer:
-					UNDEFINED: 00
-					Layer 1:   11
-					Layer 2:   10
-					Layer 3:   01
-				
-			*/
-			switch ((load_sound->file_start[i + 3] > 2) & 0x03)
+			new_frame->start_time = current_time;
+			new_frame->duration = 1000 * header.duration.seconds;
+			new_frame->duration += 1000.f * header.duration.fraction / MAD_TIMER_RESOLUTION;
+			current_time += new_frame->duration;
+			new_frame->frequency = header.samplerate;
+			switch (header.mode)
 			{
-				case 0x00:
-					new_frame->frequency = 44100;
+				case MAD_MODE_SINGLE_CHANNEL:
+					new_frame->channels = 1;
 				break;
-				case 0x01:
-					new_frame->frequency = 48000;
-				break;
-				case 0x02:
-					new_frame->frequency = 32000;
+				case MAD_MODE_DUAL_CHANNEL:
+				case MAD_MODE_JOINT_STEREO:
+				case MAD_MODE_STEREO:
+					new_frame->channels = 2;
 				break;
 			}
-			switch (layer)
-			{
-				case 0x03:
-					new_frame->samples_count = 384;
-				break;
-				case 0x02:
-					new_frame->samples_count = 1152;
-				break;
-				case 0x01:
-					new_frame->samples_count = 1152;
-				break;
-			}
-			switch (version)
-			{
-				case 0x03:
-					
-				break;
-				case 0x02:
-					new_frame->frequency /= 2;
-					if (layer == 0x01)
-					{
-						new_frame->samples_count /= 2;
-					}
-				break;
-				case 0x00:
-					new_frame->frequency /= 4;
-					if (layer == 0x01)
-					{
-						new_frame->samples_count /= 2;
-					}
-				break;
-			}
-			new_frame->start_time = new_interface->samples_count * 1000.f / new_frame->frequency;
-			new_interface->samples_count += new_frame->samples_count;
-
 			new_interface->frame.push_back(new_frame);
-			last_frame = new_frame;
 		}
-		i++;
 	}
-	last_frame->file_frame_size = &(last_frame->file_frame_start) - &(load_sound->file_start) + load_sound->file_size;
+	mad_header_finish(&header);
+	mad_stream_finish(&stream);
 }
 
 void fr::mp3::seek(Sound *load_sound, unsigned int time)
@@ -261,11 +194,13 @@ void fr::mp3::seek(Sound *load_sound, unsigned int time)
 	MP3File *m_interface = (MP3File*)load_sound->interface;
 	while (1)
 	{
-		if (m_interface->decode_frame + 2 >= m_interface->frame.size())
+		int temp_size = m_interface->frame.size();
+		if (m_interface->decode_frame + 2 < m_interface->frame.size())
 		{
-			if (m_interface->frame[m_interface->decode_frame + 1]->start_time < time)
+			if (m_interface->frame[m_interface->decode_frame]->start_time < time)
 			{
 				m_interface->decode_frame++;
+				int temp_time = m_interface->frame[m_interface->decode_frame]->start_time;
 			}
 			else
 			{

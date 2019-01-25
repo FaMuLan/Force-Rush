@@ -62,24 +62,19 @@ namespace fr
 		{
 			int frequency;
 			int channels;
-			int time;
-			unsigned char *file_frame_start;
-			unsigned int file_frame_size;
-			unsigned int samples_count;
 			unsigned int start_time;
+			unsigned int duration;
+			const unsigned char *file_frame_start;
+			unsigned int file_frame_size;
 		};
 		struct MP3File
 		{
 			std::string path;
 			std::vector<MP3Frame*> frame;
-			int samples_count;
 			unsigned int decode_start_time;
 			unsigned int decode_frame;
 		};
-		static enum mad_flow input(void *data, struct mad_stream *stream);
 		static inline signed int scale(mad_fixed_t sample);
-		static enum mad_flow output(void *data, struct mad_header const *header, struct mad_pcm *pcm);
-		static enum mad_flow error(void *data, struct mad_stream *stream, struct mad_frame *frame);
 		void prepare(Sound *load_sound);
 		void *decode(void *arguments);
 		void seek(Sound *load_sound, unsigned int time);
