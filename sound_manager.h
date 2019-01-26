@@ -62,8 +62,8 @@ namespace fr
 		{
 			int frequency;
 			int channels;
-			unsigned int start_time;
-			unsigned int duration;
+			float start_time;
+			float duration;
 			const unsigned char *file_frame_start;
 			unsigned int file_frame_size;
 		};

@@ -147,7 +147,7 @@ void fr::mp3::prepare(Sound *load_sound)
 	load_sound->interface = new_interface;
 	new_interface->decode_start_time = 0;
 	new_interface->decode_frame = 0;
-	unsigned int current_time = 0;
+	float current_time = 0;
 	int mad_error = 0;
 	struct mad_stream stream;
 	struct mad_header header;
